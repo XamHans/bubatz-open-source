@@ -8,11 +8,11 @@ export enum ClubMemberStatus {
   }
   
 export interface MemberProps {
-    id?: string;
-    avatar_url: string | "";
-    first_name: string;
-    last_name: string;
-    member_status: ClubMemberStatus | string;
+    id: string;
+    avatar_url?: string | "";
+    firstName: string;
+    lastName: string;
+    status: ClubMemberStatus | string;
     street: string;
     zip: string;
     city: string;
@@ -20,9 +20,9 @@ export interface MemberProps {
     email?: string;
     phone?: string;
     is_admin: boolean;
+}
 
-  }
-
+export  type UpdateMemberInput = Omit<MemberProps, 'is_admin'>;
 
   export const colorForClubMemberStatus = new Map<ClubMemberStatus, string>([
     [ClubMemberStatus.ACTIVE, "bg-green-400"],

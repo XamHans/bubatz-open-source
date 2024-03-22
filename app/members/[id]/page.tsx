@@ -7,7 +7,6 @@ import { MemberGeneralInfo } from "./components/MemberGeneralInfo"
 
 const MemberDetailPage = async () => {
 
-
   return (
     <Container >
       <div className="h-full w-full flex-1 flex-col space-y-12 md:flex ">

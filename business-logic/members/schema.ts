@@ -1,7 +1,7 @@
-import { boolean, date, pgTable, serial, text } from "drizzle-orm/pg-core";
+import { boolean, date, pgTable, text, uuid } from "drizzle-orm/pg-core";
 
 export const members = pgTable('profiles', {
-  id: serial('id').primaryKey(),
+  id: uuid('id').primaryKey(),
   
   // general info
   firstName: text('first_name'),
@@ -18,3 +18,4 @@ export const members = pgTable('profiles', {
   status: text('member_status'),
   isAdmin: boolean('is_admin'),
 });
+

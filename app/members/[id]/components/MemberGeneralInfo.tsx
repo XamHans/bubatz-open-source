@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { t } from "i18next";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { EditMemberModal } from "./EditMemberModal";
 
 const MemberGeneralInfo = () => {
     const params = useParams<{ id: string; }>()
@@ -31,7 +32,7 @@ const MemberGeneralInfo = () => {
 
             <Card className="max-w-2xl">
                 <CardHeader className="text-end">
-                    Edit
+                  <EditMemberModal member={member} />
                 </CardHeader>
 
                 <CardContent>
