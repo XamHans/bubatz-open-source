@@ -9,7 +9,9 @@
     "start": "next start",
     "lint": "next lint",
     "typegen": "npx supabase gen types typescript --project-id 'fytmwwwieonvsqdufcgt' --schema public > types/database.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "db:generate": "drizzle-kit generate:pg --config drizzle.config.ts",
+    "db:push": "drizzle-kit push:pg --config drizzle.config.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
@@ -27,6 +29,8 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@supabase/auth-helpers-nextjs": "^0.9.0",
     "@supabase/ssr": "^0.1.0",
+    "@tanstack/react-query": "^5.17.15",
+    "@tanstack/react-query-devtools": "^5.17.18",
     "@tanstack/react-table": "^8.13.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -37,6 +41,7 @@
     "lucide-react": "^0.314.0",
     "next": "14.1.0",
     "next-i18n-router": "^5.3.1",
+    "next-safe-action": "^6.2.0",
     "next-themes": "^0.2.1",
     "postgres": "^3.4.3",
     "react": "^18",

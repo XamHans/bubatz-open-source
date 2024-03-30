@@ -1,23 +1,31 @@
 "use client";
 
 import configuration from "@/app/configuration";
-import { MemberQueryData } from "@/business-logic/members/schema";
-import { MemberProps, colorForClubMemberStatus } from "@/business-logic/members/types";
+import { useGetMembers } from "@/business-logic/members/hooks";
+import {
+  MemberProps,
+  colorForClubMemberStatus,
+} from "@/business-logic/members/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
-  ColumnDef,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   ColumnFiltersState,
   SortingState,
   VisibilityState,
@@ -29,21 +37,19 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { t } from "i18next";
-import { ArrowUpDown, ChevronDown, EyeIcon } from "lucide-react";
+import { ArrowUpDown, EyeIcon } from "lucide-react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import { useState } from "react";
 import { AddMemberModal } from "./AddMemberModal";
 
-const getUserTableColumns = (router: AppRouterInstance): ColumnDef<MemberQueryData>[] => {
-  
+const getUserTableColumns = (router: AppRouterInstance) => {
   const handleDelete = async (confirmed: boolean, member: MemberProps) => {
     if (confirmed) {
-      if (!member.id) throw Error("No member id available")
-   
+      if (!member.id) throw Error("No member id available");
     }
-  }
+  };
 
   return [
     {
@@ -88,8 +94,8 @@ const getUserTableColumns = (router: AppRouterInstance): ColumnDef<MemberQueryDa
 
     {
       accessorKey: "name",
-      accessorFn: (row ) => {
-        return row.firstName + " " + row.lastName
+      accessorFn: (row) => {
+        return row.firstName + " " + row.lastName;
       },
       header: ({ column }) => {
         return (
@@ -100,7 +106,7 @@ const getUserTableColumns = (router: AppRouterInstance): ColumnDef<MemberQueryDa
             Name
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <div className="capitalize">{row.getValue("name")}</div>
@@ -117,14 +123,12 @@ const getUserTableColumns = (router: AppRouterInstance): ColumnDef<MemberQueryDa
             Status
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => (
         <Badge
           variant="outline"
-          className={`${colorForClubMemberStatus.get(
-            row.getValue("status")
-          )}`}
+          className={`${colorForClubMemberStatus.get(row.getValue("status"))}`}
         >
           ${row.getValue("status")}
         </Badge>
@@ -134,7 +138,7 @@ const getUserTableColumns = (router: AppRouterInstance): ColumnDef<MemberQueryDa
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
-        const member = row.original
+        const member = row.original;
         return (
           <div className="flex justify-center ">
             <Button
@@ -142,7 +146,9 @@ const getUserTableColumns = (router: AppRouterInstance): ColumnDef<MemberQueryDa
               className="hover:bg-inherit"
               onClick={() => {
                 // router.push(configuration.paths.MEMBER_DETAIL.replace(":id", member:id!))
-                 router.push(configuration.paths.members.detail.replace(":id", member.id!))
+                router.push(
+                  configuration.paths.members.detail.replace(":id", member.id!)
+                );
               }}
             >
               <TooltipProvider>
@@ -164,21 +170,30 @@ const getUserTableColumns = (router: AppRouterInstance): ColumnDef<MemberQueryDa
               deleteConfirmationText={t("member:ACTIONS.DELETE_TEXT")}
             />{" "} */}
           </div>
-        )
+        );
       },
     },
-  ]
-}
+  ];
+};
 
-export default  function MemberTable({ data }: { data: MemberQueryData[] }) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = useState({})
+export default function MemberTable() {
+  const { data, error: getMemberError, fetchStatus } = useGetMembers();
+  const [members, setMembers] = React.useState<MemberProps[]>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
   const router = useRouter();
 
+  React.useEffect(() => {
+    if (data) {
+      console.log("MEMBERS TABLE MEMBER RESULT: ", data);
+      setMembers(data);
+    }
+  }, [fetchStatus, getMemberError]);
+
   const table = useReactTable({
-    data,
+    data: members,
     columns: getUserTableColumns(router),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -194,50 +209,22 @@ export default  function MemberTable({ data }: { data: MemberQueryData[] }) {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
-//  const {t} = await initializeI18nClient('en')
+  //  const {t} = await initializeI18nClient('en')
 
   return (
     <div className="space-y-4 ">
       <div className="flex items-center space-x-2">
         <Input
           placeholder={t("member:ACTIONS.SEARCH") ?? ""}
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
-        <AddMemberModal  />
-      
-         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              {t("GENERAL.DATA_TABLE.COLUMNS")}{" "}
-              <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu> 
+        <AddMemberModal />
       </div>
       <div className="rounded-md border">
         <Table className="bg-white rounded-md">
@@ -254,7 +241,7 @@ export default  function MemberTable({ data }: { data: MemberQueryData[] }) {
                             header.getContext()
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -313,5 +300,5 @@ export default  function MemberTable({ data }: { data: MemberQueryData[] }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

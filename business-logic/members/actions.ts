@@ -7,53 +7,23 @@ import postgres from 'postgres';
 import { members } from './schema';
 import { UpdateMemberInput } from './types';
 const connectionString = process.env.DATABASE_URL
+
+if(!connectionString) {
+    throw new Error('DATABASE_URL is not set')
+}
 const client = postgres(connectionString!, { prepare: false })
 const db = drizzle(client);
-
-// Enhanced Either type
-interface Either<L, R> {
-  onSuccess<T>(f: (value: R) => T): Either<L, T>;
-  onError<T>(f: (value: L) => T): Either<T, R>;
-}
-
-class Left<L> implements Either<L, never> {
-  constructor(private value: L) {}
-
-  onSuccess<T>(_: (value: never) => T): Either<L, T> {
-    return this; // No-op for Left
-  }
-
-  onError<T>(f: (value: L) => T): Either<T, never> {
-    return new Left(f(this.value));
-  }
-}
-
-class Right<R> implements Either<never, R> {
-  constructor(private value: R) {}
-
-  onSuccess<T>(f: (value: R) => T): Either<never, T> {
-    return new Right(f(this.value)); // Apply the function if Right
-  }
-
-  onError<T>(_: (value: never) => T): Either<T, R> {
-    return this; // No-op for Right
-  }
-}
 
 type UpdateError = {
     message: string;
     error: unknown;
 }
 
-type DB_SUCCESS = "DB_SUCCESS";
-
-// Factory functions for convenience
-const left = <L>(value: L): Either<L, never> => new Left(value);
-const right = <R>(value: R): Either<never, R> => new Right(value);
 
 
 const getMembers = async () => {
     const allMembers = await db.select().from(members);
+    console.log('allmembers', allMembers)
     return allMembers;
 }
 export type GetMembersQueryData = AsyncReturnType<typeof getMembers>
