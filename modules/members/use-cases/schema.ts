@@ -1,6 +1,6 @@
 import { boolean, date, pgTable, text, uuid } from "drizzle-orm/pg-core";
 
-export const members = pgTable('profiles', {
+export const members = pgTable('members', {
   id: uuid('id').primaryKey(),
   
   // general info

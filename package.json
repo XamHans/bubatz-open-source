@@ -4,14 +4,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev ",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "typegen": "npx supabase gen types typescript --project-id 'fytmwwwieonvsqdufcgt' --schema public > types/database.ts",
     "postinstall": "prisma generate",
     "db:generate": "drizzle-kit generate:pg --config drizzle.config.ts",
-    "db:push": "drizzle-kit push:pg --config drizzle.config.ts"
+    "db:migrate": "npx tsx './lib/db/migrator.ts' "
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
@@ -34,7 +34,9 @@
     "@tanstack/react-table": "^8.13.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "dotenv": "^16.4.5",
     "drizzle-orm": "^0.30.3",
+    "drizzle-zod": "^0.5.1",
     "framer-motion": "^11.0.14",
     "i18next": "^23.10.1",
     "i18next-resources-to-backend": "^1.2.0",
@@ -43,7 +45,9 @@
     "next-i18n-router": "^5.3.1",
     "next-safe-action": "^6.2.0",
     "next-themes": "^0.2.1",
-    "postgres": "^3.4.3",
+    "pino": "^8.20.0",
+    "pino-pretty": "^11.0.0",
+    "postgres": "^3.4.4",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.51.0",

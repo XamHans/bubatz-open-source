@@ -1,4 +1,4 @@
-import { getMembers } from "@/business-logic/members/actions";
+import { getMembers } from "@/modules/members/data-access";
 import {
   HydrationBoundary,
   QueryClient,

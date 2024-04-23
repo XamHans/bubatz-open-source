@@ -1,11 +1,7 @@
 "use client";
 
 import configuration from "@/app/configuration";
-import { useGetMembers } from "@/business-logic/members/hooks";
-import {
-  MemberProps,
-  colorForClubMemberStatus,
-} from "@/business-logic/members/types";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,6 +21,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { getMembers } from "@/modules/members/data-access";
+import { MemberProps, colorForClubMemberStatus } from "@/modules/members/types";
+import { useQuery } from "@tanstack/react-query";
 import {
   ColumnFiltersState,
   SortingState,
@@ -177,7 +176,14 @@ const getUserTableColumns = (router: AppRouterInstance) => {
 };
 
 export default function MemberTable() {
-  const { data, error: getMemberError, fetchStatus } = useGetMembers();
+  const {
+    data,
+    error: getMemberError,
+    fetchStatus,
+  } = useQuery({
+    queryFn: async () => getMembers(),
+    queryKey: ["members"],
+  });
   const [members, setMembers] = React.useState<MemberProps[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);

@@ -15,7 +15,7 @@ export const Sidebar = ({ className }: Props) => {
         className
       )}
     >
-      <Link href="/learn">
+      <Link href="/">
         <div className="pt-8 pl-4 pb-7 flex items-center gap-x-3">
           {/* <Image src="/mascot.svg" height={40} width={40} alt="Mascot" /> */}
           <h1 className="text-2xl font-extrabold text-black tracking-wide">
@@ -24,14 +24,9 @@ export const Sidebar = ({ className }: Props) => {
         </div>
       </Link>
       <div className="flex flex-col gap-y-2 flex-1">
-        <SidebarItem label="Learn" href="/learn" iconSrc="/learn.svg" />
-        <SidebarItem
-          label="Leaderboard"
-          href="/leaderboard"
-          iconSrc="/leaderboard.svg"
-        />
-        <SidebarItem label="quests" href="/quests" iconSrc="/quests.svg" />
-        <SidebarItem label="shop" href="/shop" iconSrc="/shop.svg" />
+        <SidebarItem label="members" href="/members" iconSrc="/users.svg" />
+        <SidebarItem label="output" href="/output" iconSrc="/shop.svg" />
+        <SidebarItem label="plants" href="/plants" iconSrc="/plant.svg" />
       </div>
       {/* <div className="p-4">
         <ClerkLoading>
