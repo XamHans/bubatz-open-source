@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { SignUpForm } from '../components/SignUpForm';
+import { SignUpWithPasswordForm } from '../components/SignUpForm';
 
 export const metadata: Metadata = {
   title: 'Sign up into SUPA_TEMPLATE',
@@ -77,7 +77,7 @@ export default function SignUpPage() {
                 Enter your email below to create your account
               </p>
             </div>
-            <SignUpForm />
+            <SignUpWithPasswordForm />
             <p className='px-8 text-center text-sm text-muted-foreground'>
               By clicking continue, you agree to our{' '}
               <Link

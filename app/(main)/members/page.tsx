@@ -1,22 +1,27 @@
+import { auth } from "@/auth";
 import { getMembers } from "@/modules/members/data-access";
 import {
   HydrationBoundary,
   QueryClient,
   dehydrate,
 } from "@tanstack/react-query";
-import { Container } from "../../components/Container";
+import { SessionProvider } from "next-auth/react";
+import { Container } from "../../../components/custom/Container";
 import { Hero } from "../../components/Hero";
 import MemberTable from "./components/MemberTable";
 
 async function MemberListPage() {
   const queryClient = new QueryClient();
-
+    const session = await auth();
+  console.log('session inside members', session)
   await queryClient.prefetchQuery({
     queryKey: ["members"],
     queryFn: getMembers,
   });
 
   return (
+    <SessionProvider session={session}>
+
     <Container className="space-y-12">
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Hero
@@ -26,6 +31,7 @@ async function MemberListPage() {
         <MemberTable />
       </HydrationBoundary>
     </Container>
+    </SessionProvider>
   );
 }
 

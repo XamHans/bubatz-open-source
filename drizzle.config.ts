@@ -1,14 +1,20 @@
 
 import 'dotenv/config';
-import type { Config } from 'drizzle-kit';
-export default {
-  schema: "./modules/**/**/schema.ts",
-  out: './lib/db/migrations',
-  driver: 'pg', // 'pg' | 'mysql2' | 'better-sqlite' | 'libsql' | 'turso'
+import { defineConfig } from "drizzle-kit";
+// export default {
+//   schema: "./modules/**/**/schema.ts",
+//   out: './lib/db/migrations',
+//   dialect: "postgresql", // "mysql" | "sqlite" | "postgresql"
+//   dbCredentials: {
+//     url: process.env.DATABASE_URL,
+//   }
+// } satisfies Config;
+
+export default defineConfig({
+  dialect: "postgresql", // "mysql" | "sqlite" | "postgresql"
+  schema: "./lib/db/schema.ts",
+  out: "./lib/db/migrations",
   dbCredentials: {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-  },
-} satisfies Config;
+  url: process.env.DATABASE_URL!, 
+  }
+});

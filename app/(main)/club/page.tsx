@@ -1,4 +1,4 @@
-import { Container } from "../../components/Container";
+import { Container } from "../../../components/custom/Container";
 import { Hero } from "../../components/Hero";
 import { ClubForm, ClubImageAndTerms } from "./components/client.components";
 
