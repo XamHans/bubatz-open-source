@@ -9,6 +9,7 @@ import { eq } from "drizzle-orm"
 import { AuthError } from "next-auth"
 import { unstable_noStore as noStore } from "next/cache"
 
+import { EmailVerificationEmail } from "@/components/email/email-verification-email"
 import { resend } from "@/config/email"
 import { db } from "@/lib/db/db"
 import { users } from "@/lib/db/schema"
@@ -24,7 +25,7 @@ import {
   type SignInWithPasswordFormInput,
   type SignUpWithPasswordFormInput,
 } from "../validations/auth"
-import { getUserByEmail } from "./user"
+import { getUserByEmail, getUserByResetPasswordToken } from "./user"
 
 export async function signUpWithPassword(
   rawInput: SignUpWithPasswordFormInput
@@ -53,15 +54,15 @@ export async function signUpWithPassword(
       })
       .returning()
       console.log({newUser})
-    // const emailSent = await resend.emails.send({
-    //   from: process.env.RESEND_EMAIL_FROM,
-    //   to: [validatedInput.data.email],
-    //   subject: "Verify your email address",
-    //   react: EmailVerificationEmail({
-    //     email: validatedInput.data.email,
-    //     emailVerificationToken,
-    //   }),
-    // })
+    const emailSent = await resend.emails.send({
+      from: process.env.RESEND_EMAIL_FROM,
+      to: [validatedInput.data.email],
+      subject: "Verify your email address",
+      react: EmailVerificationEmail({
+        email: validatedInput.data.email,
+        emailVerificationToken,
+      }),
+    })
 
     return newUser && emailSent ? "success" : "error"
   } catch (error) {
@@ -84,7 +85,7 @@ export async function signInWithPassword(
   try {
     const validatedInput = signInWithPasswordSchema.safeParse(rawInput)
     if (!validatedInput.success) return "invalid-input"
-
+    console.log({validatedInput})
     const existingUser = await getUserByEmail({
       email: validatedInput.data.email,
     })
@@ -92,6 +93,7 @@ export async function signInWithPassword(
 
     if (!existingUser.email || !existingUser.passwordHash)
       return "incorrect-provider"
+     console.log({existingUser})
 
     if (!existingUser.emailVerified) return "unverified-email"
 
@@ -143,7 +145,7 @@ export async function resetPassword(
       .returning()
 
     const emailSent = await resend.emails.send({
-      from: env.RESEND_EMAIL_FROM,
+      from: process.env.RESEND_EMAIL_FROM,
       to: [validatedInput.data.email],
       subject: "Reset your password",
       react: ResetPasswordEmail({

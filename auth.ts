@@ -14,9 +14,9 @@ export const {
 } = NextAuth({
   debug: process.env.NODE_ENV === "development",
   pages: {
-    signIn: "/signin",
-    signOut: "/signout",
-    verifyRequest: "/signin/magic-link-signin",
+    signIn: "/sign-in",
+    signOut: "/sign-out",
+    verifyRequest: "/sign-in/magic-link-signin",
   },
   secret: process.env.AUTH_SECRET,
   session: {
@@ -43,7 +43,8 @@ export const {
       if (account?.provider !== "credentials") return true
 
       const existingUser = await getUserById({ id: user.id })
-
+      console.log({ existingUser })
+      return true;
       return !existingUser?.emailVerified ? false : true
     },
   },

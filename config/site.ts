@@ -1,15 +1,9 @@
 import { type NavItem, type NavItemFooter } from "@/types"
 
 const links = {
-  github:
-    "https://github.com/pjborowiecki/SAASY-LAND-Next-14-Starters-With-Authentication-And-Database-Implemented",
-  twitter: "https://twitter.com/pjborowiecki",
-  linkedin: "https://www.linkedin.com/in/pjborowiecki",
-  discord: "",
-  authorsWebsite: "https://pjborowiecki.com",
-  authorsGitHub: "https://github.com/pjborowiecki",
-  openGraphImage: "https://saasyland.com/images/opengraph-image.png",
-  manifestFile: "https://saasyland.com/site.webmanifest",
+  signIn: '/sign-in',
+  signUp: '/sign-up',
+  members: '/members',
 }
 
 export const siteConfig = {
@@ -126,4 +120,5 @@ export const siteConfig = {
       ],
     },
   ] satisfies NavItemFooter[],
+  
 }

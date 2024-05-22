@@ -1,21 +1,20 @@
 import { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { SignInForm } from '../components/SignInForm';
+import { SignInWithPasswordForm } from '../components/SignInForm';
 
 export const metadata: Metadata = {
   title: 'Sign into SUPA_TEMPLATE',
   description: 'Authentication made easy with SUPA_TEMPLATE.',
 };
 
-export default function SignUpPage() {
+export default function SignInPage() {
   return (
     <>
       <div className='md:hidden'>
-        <Image
+        {/* <Image
           src='/examples/authentication-light.png'
           width={1280}
           height={843}
@@ -28,7 +27,7 @@ export default function SignUpPage() {
           height={843}
           alt='Authentication'
           className='hidden dark:block'
-        />
+        /> */}
       </div>
       <div className='container relative hidden h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0'>
         <Link
@@ -75,7 +74,7 @@ export default function SignUpPage() {
                 Sign into your account
               </h1>
             </div>
-            <SignInForm />
+            <SignInWithPasswordForm />
             <p className='px-8 text-center text-sm text-muted-foreground'>
               By clicking continue, you agree to our{' '}
               <Link

@@ -24,6 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { siteConfig } from "@/config/site"
 import { PasswordInput } from "./PasswordInput"
 
 export function SignUpWithPasswordForm(): JSX.Element {
@@ -63,7 +64,7 @@ export function SignUpWithPasswordForm(): JSX.Element {
               title: "Success!",
               description: "Check your inbox to verify your email address",
             })
-            router.push("/signin")
+            router.push(siteConfig.links.signIn)
             break
           default:
             toast({
