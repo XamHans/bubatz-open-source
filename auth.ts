@@ -43,9 +43,7 @@ export const {
       if (account?.provider !== "credentials") return true
 
       const existingUser = await getUserById({ id: user.id })
-      console.log({ existingUser })
-      return true;
-      return !existingUser?.emailVerified ? false : true
+      return !!existingUser;
     },
   },
   adapter: DrizzleAdapter(db),

@@ -1,13 +1,13 @@
 import {
-    Body,
-    Button,
-    Container,
-    Head,
-    Html,
-    Preview,
-    Section,
-    Tailwind,
-    Text,
+  Body,
+  Button,
+  Container,
+  Head,
+  Html,
+  Preview,
+  Section,
+  Tailwind,
+  Text,
 } from "@react-email/components"
 
 import { siteConfig } from "@/config/site"
@@ -44,7 +44,7 @@ export function EmailVerificationEmail({
                 Please verify this address by clicking the button below
               </Text>
               <Button
-                href={`${process.env.NEXT_PUBLIC_APP_URL}/signup/verify-email?token=${emailVerificationToken}`}
+                href={`${process.env.NEXT_PUBLIC_APP_URL}/sign-up/verify-email?token=${emailVerificationToken}`}
               >
                 Verify email now
               </Button>

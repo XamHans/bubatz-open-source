@@ -64,7 +64,7 @@ export async function signUpWithPassword(
       }),
     })
 
-    return newUser && emailSent ? "success" : "error"
+    return (newUser && emailSent) ? "success" : "error"
   } catch (error) {
     console.log(error)
    
