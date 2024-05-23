@@ -77,15 +77,15 @@ export function SignUpForm() {
   return (
     <div className={cn('grid gap-2')}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
-            name='email'
+            name="email"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder='joe@johnson.com' {...field} />
+                  <Input placeholder="joe@johnson.com" {...field} />
                 </FormControl>
 
                 {/* this shows the error message */}
@@ -95,12 +95,12 @@ export function SignUpForm() {
           />
           <FormField
             control={form.control}
-            name='password'
+            name="password"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type='password' {...field} />
+                  <Input type="password" {...field} />
                 </FormControl>
                 <FormDescription>
                   Please enter your Password, it must be at least 8 characters
@@ -113,39 +113,39 @@ export function SignUpForm() {
 
           <FormField
             control={form.control}
-            name='repeatPassword'
+            name="repeatPassword"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Repeat Password</FormLabel>
                 <FormControl>
-                  <Input type='password' {...field} />
+                  <Input type="password" {...field} />
                 </FormControl>
                 <FormDescription>Please re-enter your password</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button className='w-full md:mb-2 md:mt-2' type='submit'>
+          <Button className="w-full md:mb-2 md:mt-2" type="submit">
             Submit
           </Button>
         </form>
       </Form>
 
-      <div className='relative'>
-        <div className='absolute inset-0 flex items-center'>
-          <span className='w-full border-t' />
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
         </div>
-        <div className='relative flex justify-center text-xs uppercase'>
-          <span className='bg-background px-2 text-muted-foreground'>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">
             Or continue with
           </span>
         </div>
       </div>
-      <Button variant='outline' type='button' disabled={isLoading}>
+      <Button variant="outline" type="button" disabled={isLoading}>
         {isLoading ? (
-          <FaSpinner className='mr-2 h-4 w-4 animate-spin' />
+          <FaSpinner className="mr-2 h-4 w-4 animate-spin" />
         ) : (
-          <FaGithub className='mr-2 h-4 w-4' />
+          <FaGithub className="mr-2 h-4 w-4" />
         )}{' '}
         GitHub
       </Button>

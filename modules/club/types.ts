@@ -1,22 +1,20 @@
-
-
 export enum ClubMemberStatus {
-  ACTIVE = "ACTIVE",
-  PENDING = "PENDING",
-  REQUEST = "REQUEST",
-  PAUSED = "PAUSED",
-  EXITED = "EXITED",
+  ACTIVE = 'ACTIVE',
+  PENDING = 'PENDING',
+  REQUEST = 'REQUEST',
+  PAUSED = 'PAUSED',
+  EXITED = 'EXITED',
 }
 
 export enum ClubStatus {
-  IN_FOUNDATION = "IN_FOUNDATION",
-  ESTABLISHED = "ESTABLISHED",
+  IN_FOUNDATION = 'IN_FOUNDATION',
+  ESTABLISHED = 'ESTABLISHED',
 }
 export enum PaymentPaidVia {
-  CASH = "CASH",
-  WIRE = "WIRE",
-  DEBIT = "DEBIT",
-  OTHER = "OTHER",
+  CASH = 'CASH',
+  WIRE = 'WIRE',
+  DEBIT = 'DEBIT',
+  OTHER = 'OTHER',
 }
 
 export interface ClubProps {
@@ -56,15 +54,15 @@ export interface ClubMemberRelationProps {
 }
 
 export enum ClubCostInterval {
-  WEEKLY = "WEEKLY",
-  MONTHLY = "MONTHLY",
-  YEARLY = "YEARLY",
+  WEEKLY = 'WEEKLY',
+  MONTHLY = 'MONTHLY',
+  YEARLY = 'YEARLY',
 }
 
 export enum PaymentStatus {
-  PAID = "PAID",
-  UNPAID = "UNPAID",
-  PENDING = "PENDING",
+  PAID = 'PAID',
+  UNPAID = 'UNPAID',
+  PENDING = 'PENDING',
 }
 
 export type ClubCostProps = {
@@ -97,34 +95,32 @@ export type ClubRecurringCostProps = {
   updated_at: Date | string;
 };
 
-
-
-import { z } from "zod";
+import { z } from 'zod';
 
 export const updateClubSchema = z.object({
   name: z.string().min(3, { message: "Name des CSC's ist erforderlich" }),
-  description: z.string().default("").optional(),
+  description: z.string().default('').optional(),
 
-  email: z.string().email({ message: "Email ist erforderlich" }),
-  phone: z.string().default("").optional(),
+  email: z.string().email({ message: 'Email ist erforderlich' }),
+  phone: z.string().default('').optional(),
 
-  zip: z.string().min(3, { message: "PLZ ist erforderlich" }),
-  city: z.string().min(3, { message: "Ort ist erforderlich" }),
+  zip: z.string().min(3, { message: 'PLZ ist erforderlich' }),
+  city: z.string().min(3, { message: 'Ort ist erforderlich' }),
 
-  street: z.string().min(3, { message: "Straße ist erforderlich" }),
-  status: z.string().default("VERFICATION_PENDING"),
+  street: z.string().min(3, { message: 'Straße ist erforderlich' }),
+  status: z.string().default('VERFICATION_PENDING'),
   birthday: z
 
     .date()
     .min(new Date(1900, 0, 1), {
-      message: "Gründungstag kann nicht vor 1980 liegen",
+      message: 'Gründungstag kann nicht vor 1980 liegen',
     })
     .max(new Date(), {
-      message: "Gründungstag kann nicht in der Zukunft liegen",
+      message: 'Gründungstag kann nicht in der Zukunft liegen',
     }),
 
-  avatar_url: z.string().default("").optional(),
-  cover_img_url: z.string().default("").optional(),
+  avatar_url: z.string().default('').optional(),
+  cover_img_url: z.string().default('').optional(),
 
   // terms: z
   //   .instanceof(File)

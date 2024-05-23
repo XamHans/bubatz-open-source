@@ -1,5 +1,5 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,15 +8,15 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { CreditCard, Home, Settings } from "lucide-react";
+} from '@/components/ui/dropdown-menu';
+import { CreditCard, Home, Settings } from 'lucide-react';
 
-import Link from "next/link";
+import Link from 'next/link';
 
 export const navItems = [
-  { name: "Home", href: "/dashboard", icon: Home },
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
-  { name: "Billing", href: "/dashboard/billing", icon: CreditCard },
+  { name: 'Home', href: '/dashboard', icon: Home },
+  { name: 'Settings', href: '/dashboard/settings', icon: Settings },
+  { name: 'Billing', href: '/dashboard/billing', icon: CreditCard },
 ];
 
 export function UserNav({
@@ -53,11 +53,11 @@ export function UserNav({
             <DropdownMenuItem asChild key={index}>
               <Link
                 href={item.href}
-                className="w-full flex justify-between items-center"
+                className="flex w-full items-center justify-between"
               >
                 {item.name}
                 <span>
-                  <item.icon className="w-4 h-4" />
+                  <item.icon className="h-4 w-4" />
                 </span>
               </Link>
             </DropdownMenuItem>
@@ -66,11 +66,9 @@ export function UserNav({
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
-          className="w-full flex justify-between items-center"
+          className="flex w-full items-center justify-between"
           asChild
-        >
-       
-        </DropdownMenuItem>
+        ></DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
