@@ -19,8 +19,8 @@ function getLogger() {
     transport: {
       target: 'pino-pretty',
       options: {
-        colorize: true
-      }
+        colorize: true,
+      },
     },
     level: 'debug',
     base: {

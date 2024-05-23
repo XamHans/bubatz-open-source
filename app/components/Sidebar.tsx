@@ -1,7 +1,7 @@
-import Link from "next/link";
+import Link from 'next/link';
 
-import { cn } from "@/lib/utils";
-import { SidebarItem } from "./Sidbar-Item";
+import { cn } from '@/lib/utils';
+import { SidebarItem } from './Sidbar-Item';
 
 type Props = {
   className?: string;
@@ -11,19 +11,19 @@ export const Sidebar = ({ className }: Props) => {
   return (
     <div
       className={cn(
-        "flex h-full lg:w-[256px] lg:fixed left-0 top-0 px-4 border-r-2 flex-col",
-        className
+        'left-0 top-0 flex h-full flex-col border-r-2 px-4 lg:fixed lg:w-[256px]',
+        className,
       )}
     >
       <Link href="/">
-        <div className="pt-8 pl-4 pb-7 flex items-center gap-x-3">
+        <div className="flex items-center gap-x-3 pb-7 pl-4 pt-8">
           {/* <Image src="/mascot.svg" height={40} width={40} alt="Mascot" /> */}
-          <h1 className="text-2xl font-extrabold text-black tracking-wide">
+          <h1 className="text-2xl font-extrabold tracking-wide text-black">
             Bubatz Club Manager
           </h1>
         </div>
       </Link>
-      <div className="flex flex-col gap-y-2 flex-1">
+      <div className="flex flex-1 flex-col gap-y-2">
         <SidebarItem label="members" href="/members" iconSrc="/users.svg" />
         <SidebarItem label="output" href="/output" iconSrc="/shop.svg" />
         <SidebarItem label="plants" href="/plants" iconSrc="/plant.svg" />

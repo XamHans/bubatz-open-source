@@ -18,7 +18,7 @@ const keys = {
 const getServerSupabaseClient = cache(() => {
   if (!keys.url || !keys.anonKey) {
     throw new Error(
-      'Can not create Server Supabase Client: Supabase URL and/or Anon Key not provided'
+      'Can not create Server Supabase Client: Supabase URL and/or Anon Key not provided',
     );
   }
 
@@ -60,8 +60,4 @@ function getCookiesStrategy() {
   };
 }
 
-export {
-  getServerSupabaseClient,
-  getSupabaseServerAdminClient
-};
-
+export { getServerSupabaseClient, getSupabaseServerAdminClient };

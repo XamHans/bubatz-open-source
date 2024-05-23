@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 
 type Props = {
   label: string;
@@ -18,8 +18,8 @@ export const SidebarItem = ({ label, iconSrc, href }: Props) => {
 
   return (
     <Button
-      variant={active ? "sidebarOutline" : "sidebar"}
-      className="justify-start h-[52px]"
+      variant={active ? 'sidebarOutline' : 'sidebar'}
+      className="h-[52px] justify-start"
       asChild
     >
       <Link href={href}>

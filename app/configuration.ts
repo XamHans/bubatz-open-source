@@ -37,7 +37,7 @@ const configuration = {
   production,
   environment: process.env.NEXT_PUBLIC_ENVIRONMENT ?? process.env.NODE_ENV,
   theme: Themes.Light,
- 
+
   paths: {
     signIn: '/auth/sign-in',
     signUp: '/auth/sign-up',
@@ -45,15 +45,12 @@ const configuration = {
     onboarding: `/onboarding`,
     appHome: '/dashboard',
     authCallback: '/auth/callback',
-    
-   members: {
-    all: 'members/',
-    detail: 'members/:id',
-   }
+
+    members: {
+      all: 'members/',
+      detail: 'members/:id',
+    },
   },
- 
 };
 
 export default configuration;
-
-
