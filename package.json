@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev ",
-    "build": "next build",
+    "build": "npx prettier --write . && next build",
     "start": "next start",
     "lint": "npx prettier --write .",
     "typegen": "npx supabase gen types typescript --project-id 'fytmwwwieonvsqdufcgt' --schema public > types/database.ts",
