@@ -36,6 +36,7 @@ export const {
         },
         session({ session, token }) {
             session.user.role = token.role as 'USER' | 'ADMIN'
+            session.sessionToken = token.sub as string
             return session
         },
         async signIn({ user, account }) {
