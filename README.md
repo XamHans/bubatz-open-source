@@ -59,6 +59,12 @@ To get started with Bubatz Club:
    npm run dev
    ```
 
+# License
+
+This project is licensed under the MIT License for personal, educational, and non-commercial use.
+
+For commercial use, please contact us to obtain a commercial license.
+
 ## Contact
 
 For assistance, feature requests, or data import help, contact us at [contact@bubatz.club](mailto:contact@bubatz.club).
