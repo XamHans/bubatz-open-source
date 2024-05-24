@@ -22,7 +22,11 @@ import {
     TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { getMembers } from '@/modules/members/data-access'
-import { MemberProps, colorForClubMemberStatus } from '@/modules/members/types'
+import {
+    ClientProps,
+    MemberProps,
+    colorForClubMemberStatus,
+} from '@/modules/members/types'
 import { useQuery } from '@tanstack/react-query'
 import {
     ColumnFiltersState,
@@ -43,6 +47,7 @@ import * as React from 'react'
 import { useState } from 'react'
 import { AddMemberModal } from './AddMemberModal'
 import { useSession } from 'next-auth/react'
+import { psGetAllClients } from '@/lib/db/prepared/statements'
 
 const getUserTableColumns = (router: AppRouterInstance) => {
     const handleDelete = async (confirmed: boolean, member: MemberProps) => {
@@ -76,14 +81,9 @@ const getUserTableColumns = (router: AppRouterInstance) => {
         {
             id: 'avatar',
             header: 'Image',
-            cell: ({ row }) => (
-                // <Checkbox
-                //   checked={row.getIsSelected()}
-                //   onCheckedChange={(value) => row.toggleSelected(!!value)}
-                //   aria-label="Select row"
-                // />
+            cell: ({ row }: { row: ClientProps }) => (
                 <Avatar className="w-12 h-12 ">
-                    <AvatarImage src={``} />
+                    <AvatarImage src={`${row.image}`} />
                     <AvatarFallback>
                         {' '}
                         {(row.getValue('name') as string).charAt(0)}
@@ -190,16 +190,8 @@ const getUserTableColumns = (router: AppRouterInstance) => {
     ]
 }
 
-export default function MemberTable() {
-    const {
-        data,
-        error: getMemberError,
-        fetchStatus,
-    } = useQuery({
-        queryFn: async () => getMembers(),
-        queryKey: ['members'],
-    })
-    const [members, setMembers] = React.useState<MemberProps[]>([])
+export default function MemberTable({ clients }: { clients: ClientProps[] }) {
+    const [members, setMembers] = React.useState<ClientProps[]>(clients)
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
@@ -207,12 +199,6 @@ export default function MemberTable() {
     )
     const [rowSelection, setRowSelection] = useState({})
     const router = useRouter()
-    React.useEffect(() => {
-        if (data) {
-            console.log('MEMBERS TABLE MEMBER RESULT: ', data)
-            setMembers(data)
-        }
-    }, [fetchStatus, getMemberError])
 
     const table = useReactTable({
         data: members,
@@ -315,7 +301,7 @@ export default function MemberTable() {
         </div> */}
                 <div className="space-x-2">
                     <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
@@ -323,7 +309,7 @@ export default function MemberTable() {
                         {t('GENERAL.PAGINATION.PREVIOUS')}
                     </Button>
                     <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
