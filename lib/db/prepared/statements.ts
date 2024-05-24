@@ -3,7 +3,12 @@ import { eq, sql } from 'drizzle-orm'
 import { db } from '@/lib/db/db'
 import { users } from '@/lib/db/schema'
 
-export const psGetAllClients = db
+export const psDeleteUserById = db
+    .delete(users)
+    .where(eq(users.id, sql.placeholder('id')))
+    .prepare('psDeleteUserById')
+
+export const psGetAllClientsUsers = db
     .select()
     .from(users)
     .where(eq(users.role, 'USER'))

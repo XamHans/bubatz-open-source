@@ -3,14 +3,14 @@ import { SessionProvider } from 'next-auth/react'
 import MemberTable from './components/MemberTable'
 import { Container } from '@/components/generic/Container'
 import { Hero } from '@/components/generic/Hero'
-import { psGetAllClients } from '@/lib/db/prepared/statements'
+import { psGetAllClientsUsers } from '@/lib/db/prepared/statements'
 import { ClientProps } from '@/modules/members/types'
 
 async function MemberListPage() {
     const session = await auth()
     console.log('session inside members', session)
 
-    const clients: ClientProps[] = await psGetAllClients.execute()
+    const clients: ClientProps[] = await psGetAllClientsUsers.execute()
 
     return (
         <SessionProvider session={session}>

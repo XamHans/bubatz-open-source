@@ -24,6 +24,7 @@ export interface MemberProps {
 }
 
 export interface ClientProps {
+    id: string
     role: IUserTypes
     name: string | null
     surname: string | null
