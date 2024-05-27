@@ -1,5 +1,3 @@
-import { IUserTypes } from '@/types/user'
-
 export enum ClubMemberStatus {
     ACTIVE = 'ACTIVE',
     PENDING = 'PENDING',
@@ -21,22 +19,6 @@ export interface MemberProps {
     email?: string
     phone?: string
     is_admin: boolean
-}
-
-export interface ClientProps {
-    id: string
-    role: IUserTypes
-    name: string | null
-    surname: string | null
-    username: string | null
-    email: string
-    emailVerified: Date | null
-    emailVerificationToken: string | null
-    passwordHash: string | null
-    resetPasswordToken: string | null
-    resetPasswordTokenExpiry: Date | null
-    image: string | null
-    createdAt: Date | null
 }
 
 export type UpdateMemberInput = Omit<MemberProps, 'is_admin'>

@@ -3,7 +3,6 @@
 import { unstable_noStore as noStore } from 'next/cache'
 
 import {
-    psGetAllClientsUsers,
     psGetUserByEmail,
     psGetUserByEmailVerificationToken,
     psGetUserById,
@@ -20,21 +19,6 @@ import {
     type GetUserByIdInput,
     type GetUserByResetPasswordTokenInput,
 } from '@/validations/user'
-
-export async function deleteUserById(): Promise<void> {
-    throw new Error('Not implemented')
-}
-
-export async function getUsers(): Promise<User[]> {
-    try {
-        noStore()
-        const users = await psGetAllClientsUsers.execute()
-        return users
-    } catch (error) {
-        console.error(error)
-        throw new Error('Error getting users')
-    }
-}
 
 export async function getUserById(
     rawInput: GetUserByIdInput
