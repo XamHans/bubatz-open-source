@@ -1,6 +1,6 @@
 'use server';
 
-import { createMember } from '../data-access';
+import { createMember, getMembers } from '../data-access';
 
 import getLogger from '@/lib/logger';
 import { createSafeActionClient } from 'next-safe-action';
@@ -12,6 +12,7 @@ const action = createSafeActionClient();
 export const addMemberUseCase = action(
   addMemberInputSchema,
   async ({ ...data }) => {
+    console.log('data', data);
     if (!data) {
       return { failure: 'No data provided, cant create new member' };
     }
@@ -20,3 +21,9 @@ export const addMemberUseCase = action(
     return { success: newMemberId };
   },
 );
+
+export const fetchMembersUseCase = action({}, async () => {
+  getLogger().debug('Creating new member addMemberUseCase');
+  const members = await getMembers();
+  return { members: members };
+});

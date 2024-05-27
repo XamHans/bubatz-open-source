@@ -73,7 +73,7 @@ const AddMemberModal = () => {
         >
           <FormField
             control={form.control}
-            name="firstName"
+            name=""
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t('MEMBER.FIRST_NAME')}</FormLabel>

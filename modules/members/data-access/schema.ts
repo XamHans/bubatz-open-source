@@ -3,7 +3,7 @@ import { boolean, date, pgTable, text, uuid } from 'drizzle-orm/pg-core';
 import { createInsertSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
-export const members = pgTable('members', {
+export const members = pgTable('profiles', {
   id: uuid('id')
     .primaryKey()
     .default(sql`gen_random_uuid()`),

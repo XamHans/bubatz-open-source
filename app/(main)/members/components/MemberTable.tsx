@@ -21,9 +21,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { getMembers } from '@/modules/members/data-access';
 import { MemberProps, colorForClubMemberStatus } from '@/modules/members/types';
-import { useQuery } from '@tanstack/react-query';
+import { fetchMembersUseCase } from '@/modules/members/use-cases';
 import {
   ColumnFiltersState,
   SortingState,
@@ -37,10 +36,11 @@ import {
 } from '@tanstack/react-table';
 import { t } from 'i18next';
 import { ArrowUpDown, EyeIcon } from 'lucide-react';
+import { useAction } from 'next-safe-action/hooks';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AddMemberModal } from './AddMemberModal';
 
 const getUserTableColumns = (router: AppRouterInstance) => {
@@ -176,27 +176,25 @@ const getUserTableColumns = (router: AppRouterInstance) => {
 };
 
 export default function MemberTable() {
-  const {
-    data,
-    error: getMemberError,
-    fetchStatus,
-  } = useQuery({
-    queryFn: async () => getMembers(),
-    queryKey: ['members'],
+  const { execute, status } = useAction(fetchMembersUseCase, {
+    onSuccess: (result) => {
+      console.log(' Members fetched successfully ', result.members);
+    },
+    onError: (error) => {
+      console.log('Error fetching members', error);
+    },
   });
+
+  useEffect(() => {
+    execute(null);
+  }, []);
+
   const [members, setMembers] = React.useState<MemberProps[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const router = useRouter();
-
-  React.useEffect(() => {
-    if (data) {
-      console.log('MEMBERS TABLE MEMBER RESULT: ', data);
-      setMembers(data);
-    }
-  }, [fetchStatus, getMemberError]);
 
   const table = useReactTable({
     data: members,
