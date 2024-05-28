@@ -1,0 +1,12 @@
+{
+    "id": "incremental id",
+    "sales_by_id": "uuid of admin",
+    "user_id": "uuid of user",
+    "plant_id": "uuid of plant",
+    "weight_grams": 25,
+    "total_price": 250,
+    "paid_via": "payment method | cash, card, wallet",
+    "created_at": "timestamp",
+    "updated_at": "timestamp"
+  }
+  
