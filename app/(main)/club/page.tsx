@@ -1,5 +1,5 @@
-import { Container } from '../../components/Container';
-import { Hero } from '../../components/Hero';
+import { Container } from '@/components/generic/Container';
+import { Hero } from '@/components/generic/Hero';
 import { ClubForm, ClubImageAndTerms } from './components/client.components';
 
 async function ClubPage() {

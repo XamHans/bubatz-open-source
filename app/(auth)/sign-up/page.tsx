@@ -1,9 +1,8 @@
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
-import { SignUpForm } from '../components/SignUpForm';
+import { SignUpWithPasswordForm } from '../components/SignUpForm';
 
 export const metadata: Metadata = {
   title: 'Sign up into SUPA_TEMPLATE',
@@ -13,7 +12,7 @@ export const metadata: Metadata = {
 export default function SignUpPage() {
   return (
     <>
-      <div className="md:hidden">
+      {/* <div className='md:hidden'>
         <Image
           src="/examples/authentication-light.png"
           width={1280}
@@ -28,8 +27,8 @@ export default function SignUpPage() {
           alt="Authentication"
           className="hidden dark:block"
         />
-      </div>
-      <div className="container relative hidden h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+      </div> */}
+      <div className='container relative hidden h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0'>
         <Link
           href="/auth/sign-in"
           className={cn(
@@ -77,8 +76,8 @@ export default function SignUpPage() {
                 Enter your email below to create your account
               </p>
             </div>
-            <SignUpForm />
-            <p className="px-8 text-center text-sm text-muted-foreground">
+            <SignUpWithPasswordForm />
+            <p className='px-8 text-center text-sm text-muted-foreground'>
               By clicking continue, you agree to our{' '}
               <Link
                 href="/terms"
