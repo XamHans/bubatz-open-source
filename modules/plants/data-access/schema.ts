@@ -14,6 +14,10 @@ export const plantsRelations = relations(plants, ({many}) => ({
     transactions: many(transactions),
 }))
 
+/**
+ * * Input schemas
+ */
+
 export const createPlantInputSchema = createInsertSchema(plants, {
     /**
      * TODO: To be implemented

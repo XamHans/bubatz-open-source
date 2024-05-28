@@ -37,6 +37,10 @@ export const transactionsRelations = relations(transactions, ({one}) => ({
     }),
 }))
 
+/**
+ * * Input schemas
+ */
+
 export const createSaleInputSchema = createInsertSchema(sales, {
     /**
      * TODO: To be implemented
