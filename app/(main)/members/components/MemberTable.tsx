@@ -21,9 +21,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { getMembers } from '@/modules/members/data-access'
 import { MemberProps, colorForClubMemberStatus } from '@/modules/members/types'
-import { useQuery } from '@tanstack/react-query'
 import {
     ColumnFiltersState,
     SortingState,
@@ -42,7 +40,6 @@ import { useRouter } from 'next/navigation'
 import * as React from 'react'
 import { useState } from 'react'
 import { AddMemberModal } from './AddMemberModal'
-import { useSession } from 'next-auth/react'
 
 const getUserTableColumns = (router: AppRouterInstance) => {
     const handleDelete = async (confirmed: boolean, member: MemberProps) => {
@@ -191,14 +188,19 @@ const getUserTableColumns = (router: AppRouterInstance) => {
 }
 
 export default function MemberTable() {
-    const {
-        data,
-        error: getMemberError,
-        fetchStatus,
-    } = useQuery({
-        queryFn: async () => getMembers(),
-        queryKey: ['members'],
-    })
+    /**
+     * TODO: REPLACE FOR GET USE CASE WITH NEXT ACTION
+     */
+
+    // const {
+    //     data,
+    //     error: getMemberError,
+    //     fetchStatus,
+    // } = useQuery({
+    //     queryFn: async () => getMembers(),
+    //     queryKey: ['members'],
+    // })
+
     const [members, setMembers] = React.useState<MemberProps[]>([])
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
