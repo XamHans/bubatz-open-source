@@ -1,4 +1,4 @@
-import { Container } from '@/app/components/Container';
+import { Container } from '@/components/generic/Container';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
