@@ -1,7 +1,7 @@
 import { buttonVariants } from '@/components/ui/button';
 import { ExternalLinkIcon } from 'lucide-react';
 import Link from 'next/link';
-import { Container } from '../components/Container';
+import { Container } from '@/components/generic/Container';
 import { Icons } from './components/Icons';
 import Features from './components/features';
 import { Testimonials } from './components/testimonials';
