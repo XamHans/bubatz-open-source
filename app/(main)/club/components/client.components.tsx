@@ -1,43 +1,65 @@
-"use client";
+'use client';
 
-import configuration from "@/app/configuration";
-import { ClubProps, ClubStatus, UpdateClubDTO, updateClubSchema } from "@/business-logic/club/types";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { DialogFooter } from "@/components/ui/dialog";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { User } from "@supabase/auth-helpers-nextjs";
-import { useEffect, useState } from "react";
-import { Form, SubmitHandler, useForm } from "react-hook-form";
+import configuration from '@/app/configuration';
+import {
+  ClubProps,
+  ClubStatus,
+  UpdateClubDTO,
+  updateClubSchema,
+} from '@/business-logic/club/types';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { DialogFooter } from '@/components/ui/dialog';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { User } from '@supabase/auth-helpers-nextjs';
+import { useEffect, useState } from 'react';
+import { Form, SubmitHandler, useForm } from 'react-hook-form';
 
 const ClubImageAndTerms = ({ club, user }: { club: ClubProps; user: User }) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [coverImg, setCoverImg] = useState<File | null>(null)
-  const { name } = club
-  const [clubTermsUrl, setClubTermsUrl] = useState<string>("")
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [coverImg, setCoverImg] = useState<File | null>(null);
+  const { name } = club;
+  const [clubTermsUrl, setClubTermsUrl] = useState<string>('');
   // const { showSuccessToast, showErrorToast } = useToast()
 
   const handleTermsInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const file = event.target.files && event.target.files[0]
-    setSelectedFile(file || null)
-  }
+    const file = event.target.files && event.target.files[0];
+    setSelectedFile(file || null);
+  };
 
   const handleCoverImgInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const file = event.target.files && event.target.files[0]
-    setCoverImg(file || null)
-  }
+    const file = event.target.files && event.target.files[0];
+    setCoverImg(file || null);
+  };
 
   async function getTermsUrl() {
     // const preSignedUrlResult = await uploadService.createSignedUrl(
@@ -53,20 +75,20 @@ const ClubImageAndTerms = ({ club, user }: { club: ClubProps; user: User }) => {
     const updateClubResult = await updateClubUseCase.execute({
       ...club,
       terms_url: url,
-    })
+    });
     if (updateClubResult.isLeft()) {
-      console.log("updateClubResult ERROR:", updateClubResult.value)
+      console.log('updateClubResult ERROR:', updateClubResult.value);
     }
-  }
+  };
 
   const handleUpload = async ({
     file,
     path,
     translationKey,
   }: {
-    file: File | null
-    path: string
-    translationKey: string
+    file: File | null;
+    path: string;
+    translationKey: string;
   }) => {
     if (file) {
       // const uploadResult = await uploadService.uploadFile({
@@ -74,41 +96,39 @@ const ClubImageAndTerms = ({ club, user }: { club: ClubProps; user: User }) => {
       //   path: path,
       //   bucket: "clubs",
       // })
-
       // if (uploadResult.isLeft()) {
       //   //@ts-ignore
       //   showErrorToast(t(translationKey))
       // } else {
       //   showSuccessToast(t(translationKey))
       // }
-
       // return right(uploadResult.value)
     } else {
       // return left("No file selected.")
     }
-  }
+  };
 
   const onTermsUploadButtonClick = async () => {
     const uploadResult = await handleUpload({
       file: selectedFile,
       path: `/${club.id}/satzung.pdf`,
-      translationKey: "CLUB.UPLOAD_TERMS_SUCCESS",
-    })
+      translationKey: 'CLUB.UPLOAD_TERMS_SUCCESS',
+    });
     // if (uploadResult.isLeft()) {
     //   //@ts-ignore
     //   throw new FrontendError(uploadResult.value)
     // }
     //@ts-ignore
-    updateClubWithNewTermsUrl(uploadResult.value)
-    getTermsUrl()
-  }
+    updateClubWithNewTermsUrl(uploadResult.value);
+    getTermsUrl();
+  };
 
   const onCoverImgUploadButtonClick = async () => {
     const uploadResult = await handleUpload({
       file: coverImg,
       path: `/${club.id}/coverImg.png`,
-      translationKey: "CLUB.UPLOAD_COVERIMG_SUCCESS",
-    })
+      translationKey: 'CLUB.UPLOAD_COVERIMG_SUCCESS',
+    });
 
     // if (uploadResult.isRight()) {
     //   const { data } = supabaseClient.storage
@@ -124,15 +144,15 @@ const ClubImageAndTerms = ({ club, user }: { club: ClubProps; user: User }) => {
     //   updateClubResult.isLeft() &&
     //     showErrorToast(updateClubResult.value.message)
     // }
-  }
+  };
 
   useEffect(() => {
-    getTermsUrl()
-  }, [])
+    getTermsUrl();
+  }, []);
 
   return (
     <section className="max-w-5xl sm:grid sm:grid-cols-2">
-      <div className="sm:flex space-x-4 justify-center items-center">
+      <div className="items-center justify-center space-x-4 sm:flex">
         {/* <ImageEditor
           title={t("GENERAL.ACTIONS.EDIT_IMAGE")}
           description={t("GENERAL.ACTIONS.EDIT_IMAGE_DESCRIPTION", {
@@ -142,20 +162,20 @@ const ClubImageAndTerms = ({ club, user }: { club: ClubProps; user: User }) => {
           club_id={club.id}
         /> */}
         <a
-          href={configuration.paths.members.replace(":id", club.id.toString())}
+          href={configuration.paths.members.replace(':id', club.id.toString())}
           target="_blank"
           rel="noopener noreferrer"
         >
-          {" "}
+          {' '}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <h3 className="flex-auto  hover:text-primary text-2xl font-bold text-gray-900 dark:text-white">
+                <h3 className="flex-auto  text-2xl font-bold text-gray-900 hover:text-primary dark:text-white">
                   {name}
                 </h3>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{t("CLUB.LANDING_PAGE")}</p>
+                <p>{t('CLUB.LANDING_PAGE')}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -163,14 +183,14 @@ const ClubImageAndTerms = ({ club, user }: { club: ClubProps; user: User }) => {
       </div>
       <Tabs defaultValue="terms">
         <TabsList>
-          <TabsTrigger value="terms">{t("CLUB.TERMS")}</TabsTrigger>
-          <TabsTrigger value="coverimg">{t("CLUB.COVER_IMG")}</TabsTrigger>
+          <TabsTrigger value="terms">{t('CLUB.TERMS')}</TabsTrigger>
+          <TabsTrigger value="coverimg">{t('CLUB.COVER_IMG')}</TabsTrigger>
         </TabsList>
         <TabsContent value="terms">
           <div className="flex items-end gap-x-4">
             <div className="w-full">
               <Label className="text-muted-foreground" htmlFor="file">
-                {t("CLUB.PICK_TERMS")}
+                {t('CLUB.PICK_TERMS')}
               </Label>
               <Input
                 className="cursor-pointer"
@@ -182,25 +202,25 @@ const ClubImageAndTerms = ({ club, user }: { club: ClubProps; user: User }) => {
             <Button
               disabled={!user.email_confirmed_at}
               onClick={() => {
-                onTermsUploadButtonClick()
+                onTermsUploadButtonClick();
               }}
               type="button"
             >
-              {t("GENERAL.ACTIONS.UPLOAD")}
+              {t('GENERAL.ACTIONS.UPLOAD')}
             </Button>
           </div>
           {clubTermsUrl && (
-            <div className="py-2 flex items-center text-sm">
+            <div className="flex items-center py-2 text-sm">
               <Badge>
-                {" "}
+                {' '}
                 <a
-                  className="font-bold cursor-pointer text-lime hover:text-primay-600"
+                  className="text-lime hover:text-primay-600 cursor-pointer font-bold"
                   target="_blank"
                   href={clubTermsUrl}
                   rel="noopener noreferrer"
                 >
-                  {t("CLUB.TERMS")}.pdf
-                </a>{" "}
+                  {t('CLUB.TERMS')}.pdf
+                </a>{' '}
               </Badge>
             </div>
           )}
@@ -209,7 +229,7 @@ const ClubImageAndTerms = ({ club, user }: { club: ClubProps; user: User }) => {
           <div className="flex items-end gap-x-4">
             <div className="w-full">
               <Label className="text-muted-foreground" htmlFor="file">
-                {t("CLUB.PICK_COVERIMG")}
+                {t('CLUB.PICK_COVERIMG')}
               </Label>
               <Input
                 className="cursor-pointer"
@@ -221,37 +241,37 @@ const ClubImageAndTerms = ({ club, user }: { club: ClubProps; user: User }) => {
 
             <Button
               onClick={() => {
-                onCoverImgUploadButtonClick()
+                onCoverImgUploadButtonClick();
               }}
               type="button"
             >
-              {t("GENERAL.ACTIONS.UPLOAD")}
+              {t('GENERAL.ACTIONS.UPLOAD')}
             </Button>
           </div>
           {club?.cover_img_url && (
-            <div className="py-2 flex items-center text-sm">
+            <div className="flex items-center py-2 text-sm">
               <Badge>
-                {" "}
+                {' '}
                 <a
-                  className="font-bold cursor-pointer text-lime hover:text-primay-600"
+                  className="text-lime hover:text-primay-600 cursor-pointer font-bold"
                   target="_blank"
                   href={club?.cover_img_url}
                   rel="noopener noreferrer"
                 >
-                  {t("CLUB.COVER_IMG")}.png
-                </a>{" "}
+                  {t('CLUB.COVER_IMG')}.png
+                </a>{' '}
               </Badge>
             </div>
           )}
         </TabsContent>
       </Tabs>
     </section>
-  )
-}
+  );
+};
 
 const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
   const form = useForm<UpdateClubDTO>({
-    mode: "onBlur",
+    mode: 'onBlur',
     resolver: zodResolver(updateClubSchema),
     defaultValues: {
       name: club.name,
@@ -264,17 +284,17 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
       city: club.city,
       street: club.street,
     },
-  })
+  });
   // const { showSuccessToast, showErrorToast } = useToast()
 
   const handleDateChange = (selectedDate: string) => {
-    if (!selectedDate) return
+    if (!selectedDate) return;
 
-    form.setValue("birthday", new Date(selectedDate), {
+    form.setValue('birthday', new Date(selectedDate), {
       shouldValidate: true,
       shouldDirty: true,
-    })
-  }
+    });
+  };
 
   const onSubmit: SubmitHandler<UpdateClubDTO> = async (data) => {
     // Logger.debug(`The club form works! Your s: ${data}`)
@@ -283,14 +303,14 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
     const updateClubResult = await updateClubUseCase.execute({
       ...data,
       id: club.id,
-    })
+    });
     if (updateClubResult.isLeft()) {
       //@ts-ignore
-      showErrorToast(t("CLUB.UPDATE_CLUB_ERROR"))
+      showErrorToast(t('CLUB.UPDATE_CLUB_ERROR'));
     } else {
       // showSuccessToast(t("CLUB.UPDATE_CLUB_SUCCESS"))
     }
-  }
+  };
 
   return (
     <section className="max-w-5xl rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
@@ -306,7 +326,7 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("ONBOARDING.STEP_3.NAME")}</FormLabel>
+                <FormLabel>{t('ONBOARDING.STEP_3.NAME')}</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -320,7 +340,7 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
             name="street"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("MEMBER.STREET")}</FormLabel>
+                <FormLabel>{t('MEMBER.STREET')}</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -334,7 +354,7 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
             name="zip"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("MEMBER.ZIP")}</FormLabel>
+                <FormLabel>{t('MEMBER.ZIP')}</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -348,7 +368,7 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
             name="city"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("MEMBER.CITY")}</FormLabel>
+                <FormLabel>{t('MEMBER.CITY')}</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -362,7 +382,7 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("CLUB.STATUS")}</FormLabel>
+                <FormLabel>{t('CLUB.STATUS')}</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -374,10 +394,10 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
                   </FormControl>
                   <SelectContent>
                     <SelectItem value={ClubStatus.IN_FOUNDATION}>
-                      {t("CLUB.STATUS_OPTIONS.IN_FOUNDATION")}
+                      {t('CLUB.STATUS_OPTIONS.IN_FOUNDATION')}
                     </SelectItem>
                     <SelectItem value={ClubStatus.ESTABLISHED}>
-                      {t("CLUB.STATUS_OPTIONS.ESTABLISHED")}
+                      {t('CLUB.STATUS_OPTIONS.ESTABLISHED')}
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -391,7 +411,7 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
             render={({ field }) => (
               <FormItem className="p-2">
                 <FormLabel className="block">
-                  {t("ONBOARDING.STEP_3.BIRTH")}
+                  {t('ONBOARDING.STEP_3.BIRTH')}
                 </FormLabel>
                 <FormControl>
                   <DatePicker
@@ -405,7 +425,7 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
             )}
           />
 
-          <Separator className="col-span-2 mt-2 mb-2" />
+          <Separator className="col-span-2 mb-2 mt-2" />
           {/* Contact Details */}
 
           <FormField
@@ -413,7 +433,7 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel> {t("ONBOARDING.STEP_3.EMAIL")} </FormLabel>
+                <FormLabel> {t('ONBOARDING.STEP_3.EMAIL')} </FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -427,7 +447,7 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel> {t("ONBOARDING.STEP_3.PHONE")} </FormLabel>
+                <FormLabel> {t('ONBOARDING.STEP_3.PHONE')} </FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -436,7 +456,7 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
             )}
           />
 
-          <Separator className="col-span-2 mt-2 mb-2" />
+          <Separator className="col-span-2 mb-2 mt-2" />
 
           {/* Club Description Details */}
           <div className="col-span-2">
@@ -445,7 +465,7 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
               name="description"
               render={({ field }) => (
                 <FormItem className="block">
-                  <FormLabel> {t("CLUB.DESCRIPTION_TEXT")} </FormLabel>
+                  <FormLabel> {t('CLUB.DESCRIPTION_TEXT')} </FormLabel>
                   <FormControl>
                     <Textarea {...field} />
                   </FormControl>
@@ -456,12 +476,12 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
           </div>
 
           <DialogFooter className="col-span-2">
-            <Button type="submit">{t("GENERAL.ACTIONS.SAVE")}</Button>
+            <Button type="submit">{t('GENERAL.ACTIONS.SAVE')}</Button>
           </DialogFooter>
         </form>
       </Form>
     </section>
-  )
-}
+  );
+};
 
 export { ClubForm, ClubImageAndTerms };

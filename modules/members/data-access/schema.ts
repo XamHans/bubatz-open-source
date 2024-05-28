@@ -1,10 +1,12 @@
-import { sql } from "drizzle-orm";
-import { boolean, date, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { sql } from 'drizzle-orm';
+import { boolean, date, pgTable, text, uuid } from 'drizzle-orm/pg-core';
 import { createInsertSchema } from 'drizzle-zod';
-import { z } from "zod";
+import { z } from 'zod';
 
-export const members = pgTable('members', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+export const members = pgTable('profiles', {
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
 
   // general info
   firstName: text('first_name'),
@@ -23,15 +25,14 @@ export const members = pgTable('members', {
 });
 
 // Schema for inserting a user - can be used to validate API requests
- export const addMemberInputSchema = createInsertSchema(members, {
+export const addMemberInputSchema = createInsertSchema(members, {
   email: (schema) => schema.email.email(),
   phone: (schema) => schema.phone.optional(),
-  status: (schema) => schema.status.default("PENDING"),
+  status: (schema) => schema.status.default('PENDING'),
   isAdmin: (schema) => schema.isAdmin.default(false),
   id: (schema) => schema.id.optional(),
 });
 export type AddMemberInput = z.infer<typeof addMemberInputSchema>;
-
 
 // Schema for selecting a user - can be used to validate API responses
 // const selectUserSchema = createSelectSchema(members);
@@ -47,4 +48,3 @@ export type AddMemberInput = z.infer<typeof addMemberInputSchema>;
 //   email: (schema) => schema.email.email(),
 //   role: z.string(),
 // });
-

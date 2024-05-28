@@ -1,5 +1,13 @@
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import React, { ReactNode } from 'react';
 
 interface GenericModalProps {
@@ -10,7 +18,13 @@ interface GenericModalProps {
   onAbort: () => void;
 }
 
-const GenericModal: React.FC<GenericModalProps> = ({ headerTitle, description, children, onSave, onAbort }) => {
+const GenericModal: React.FC<GenericModalProps> = ({
+  headerTitle,
+  description,
+  children,
+  onSave,
+  onAbort,
+}) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -19,9 +33,7 @@ const GenericModal: React.FC<GenericModalProps> = ({ headerTitle, description, c
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{headerTitle}</DialogTitle>
-          <DialogDescription>
-            {description}
-          </DialogDescription>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         {children}
         <DialogClose asChild>

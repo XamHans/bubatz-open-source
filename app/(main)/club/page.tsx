@@ -1,6 +1,6 @@
-import { Container } from "../../../components/custom/Container";
-import { Hero } from "../../components/Hero";
-import { ClubForm, ClubImageAndTerms } from "./components/client.components";
+import { Container } from '@/components/generic/Container';
+import { Hero } from '@/components/generic/Hero';
+import { ClubForm, ClubImageAndTerms } from './components/client.components';
 
 async function ClubPage() {
   const user = {};
