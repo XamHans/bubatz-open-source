@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 import { boolean, date, pgTable, text, uuid } from 'drizzle-orm/pg-core';
-import { createInsertSchema } from 'drizzle-zod';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
 export const members = pgTable('profiles', {
@@ -35,7 +35,10 @@ export const addMemberInputSchema = createInsertSchema(members, {
 export type AddMemberInput = z.infer<typeof addMemberInputSchema>;
 
 // Schema for selecting a user - can be used to validate API responses
-// const selectUserSchema = createSelectSchema(members);
+
+// export const selectUserSchema = createSelectSchema(members);
+
+// export type selectUser = z.infer<typeof selectUserSchema>;
 
 // Overriding the fields
 // const insertUserSchema = createInsertSchema(members, {
