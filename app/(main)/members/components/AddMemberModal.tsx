@@ -30,6 +30,10 @@ import { ClubMemberStatus } from '@/modules/club/types';
 import { addMemberUseCase } from '@/modules/members/use-cases';
 import { useAction } from 'next-safe-action/hooks';
 import { GenericModal } from '@/components/generic/GenericModal';
+import DatePicker from 'react-datepicker';
+import { useState } from 'react';
+import 'react-datepicker/dist/react-datepicker.css';
+import { FaCalendarAlt } from 'react-icons/fa';
 
 const AddMemberModal = () => {
   const { execute, status } = useAction(addMemberUseCase, {
@@ -48,15 +52,33 @@ const AddMemberModal = () => {
 
   const onSubmit = async (data: AddMemberInput) => {
     console.log('ADD MEMBER FORM ', data);
-    execute(data);
+    // execute(data);
   };
 
-  const handleSave = () => {
+  const handleSave = form.handleSubmit((data: AddMemberInput) => {
     console.log('Save action');
-  };
+    console.log('Data', data);
+    execute(data);
+  });
 
   const handleAbort = () => {
     console.log('Abort action');
+  };
+
+  const [startDate, setStartDate] = useState(new Date());
+
+  const customInput = ({ value, onClick }) => {
+    return (
+      <div className="flex items-center">
+        <Input
+          value={value}
+          onClick={onClick}
+          placeholder="Enter date of birth"
+          readOnly
+        />
+        <FaCalendarAlt />
+      </div>
+    );
   };
 
   return (
@@ -76,9 +98,10 @@ const AddMemberModal = () => {
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('MEMBER.FIRST_NAME')}</FormLabel>
+                {/* <FormLabel>{t('MEMBER.FIRST_NAME')}</FormLabel> */}
+                <FormLabel>First Name</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input placeholder="Enter first name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -90,9 +113,10 @@ const AddMemberModal = () => {
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('MEMBER.LAST_NAME')}</FormLabel>
+                {/* <FormLabel>{t('MEMBER.LAST_NAME')}</FormLabel> */}
+                <FormLabel>Last Name</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input placeholder="Enter last name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -106,7 +130,7 @@ const AddMemberModal = () => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input placeholder="Enter email" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -118,41 +142,48 @@ const AddMemberModal = () => {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('GENERAL.PHONE')}</FormLabel>
+                {/* <FormLabel>{t('GENERAL.PHONE')}</FormLabel> */}
+                <FormLabel>Phone Number</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input placeholder="Enter phone number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          {/* <FormField
-              control={form.control}
-              name="birthday"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("MEMBER.BIRTHDAY")}</FormLabel>
-                  <FormControl>
-                    <DatePicker
-                      initialVale={field.value}
-                      onSelect={handleChange}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
+          <FormField
+            control={form.control}
+            name="birthday"
+            render={({ field }) => (
+              <FormItem>
+                {/* <FormLabel>{t('MEMBER.BIRTHDAY')}</FormLabel> */}
+                <FormLabel>Date of Birth</FormLabel>
+                <FormControl>
+                  {/* <DatePicker
+                    initialVale={field.value}
+                    onSelect={handleChange}
+                    {...field}
+                  /> */}
+                  <DatePicker
+                    selected={startDate}
+                    onChange={(date) => setStartDate(date || new Date())}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}
             name="zip"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('MEMBER.ZIP')}</FormLabel>
+                {/* <FormLabel>{t('MEMBER.ZIP')}</FormLabel> */}
+                <FormLabel>Zip Code</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input placeholder="Enter zip code" {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -163,9 +194,10 @@ const AddMemberModal = () => {
             name="city"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('MEMBER.CITY')}</FormLabel>
+                {/* <FormLabel>{t('MEMBER.CITY')}</FormLabel> */}
+                <FormLabel>City</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input placeholder="Enter city's name" {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -176,7 +208,8 @@ const AddMemberModal = () => {
             name="street"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('MEMBER.STREET')}</FormLabel>
+                {/* <FormLabel>{t('MEMBER.STREET')}</FormLabel> */}
+                <FormLabel>Street</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter street" {...field} />
                 </FormControl>
@@ -189,7 +222,8 @@ const AddMemberModal = () => {
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('MEMBER.STATUS')}</FormLabel>
+                {/* <FormLabel>{t('MEMBER.STATUS')}</FormLabel> */}
+                <FormLabel>Status</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -201,13 +235,16 @@ const AddMemberModal = () => {
                   </FormControl>
                   <SelectContent>
                     <SelectItem value={ClubMemberStatus.REQUEST}>
-                      {t('MEMBER.STATUS_OPTIONS.REQUEST')}
+                      {/* {t('MEMBER.STATUS_OPTIONS.REQUEST')} */}
+                      Request
                     </SelectItem>
                     <SelectItem value={ClubMemberStatus.PENDING}>
-                      {t('MEMBER.STATUS_OPTIONS.PENDING')}
+                      {/* {t('MEMBER.STATUS_OPTIONS.PENDING')} */}
+                      Pending
                     </SelectItem>
                     <SelectItem value={ClubMemberStatus.ACTIVE}>
-                      {t('MEMBER.STATUS_OPTIONS.ACTIVE')}
+                      {/* {t('MEMBER.STATUS_OPTIONS.ACTIVE')} */}
+                      Active
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -215,14 +252,15 @@ const AddMemberModal = () => {
             )}
           />
 
-          <DialogFooter className="col-span-2">
+          {/* <DialogFooter className="col-span-2">
             <DialogClose asChild>
               <Button type="submit" disabled={!form?.formState?.isValid}>
                 {' '}
                 {t('GENERAL.ACTIONS.SAVE')}
+                Create Member
               </Button>
             </DialogClose>
-          </DialogFooter>
+          </DialogFooter> */}
         </form>
       </Form>
     </GenericModal>

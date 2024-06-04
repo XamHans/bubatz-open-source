@@ -1,11 +1,13 @@
 'use client';
 
-import { ClubMemberStatus } from '@/business-logic/club/types';
+import {
+  ClubMemberStatus,
+  colorForClubMemberStatus,
+} from '@/modules/members/types';
 import {
   GetMemberDetailQueryData,
   getMemberDetail,
-} from '@/business-logic/members/actions';
-import { colorForClubMemberStatus } from '@/business-logic/members/types';
+} from '@/modules/members/data-access/index';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';

@@ -1,14 +1,11 @@
 'use client';
 
-import { GenericModal } from '@/app/components/GenericModal';
+import { GenericModal } from '@/components/generic/GenericModal';
 import {
   GetMemberDetailQueryData,
   updateMember,
-} from '@/business-logic/members/actions';
-import {
-  ClubMemberStatus,
-  UpdateMemberInput,
-} from '@/business-logic/members/types';
+} from '@/modules/members/data-access/index';
+import { ClubMemberStatus, UpdateMemberInput } from '@/modules/members/types';
 import { Button } from '@/components/ui/button';
 import { DialogClose, DialogFooter } from '@/components/ui/dialog';
 import {
@@ -107,7 +104,10 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('MEMBER.FIRST_NAME')}</FormLabel>
+                <FormLabel>
+                  {t('MEMBER.FIRST_NAME')}
+                  First Name
+                </FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -121,7 +121,10 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('MEMBER.LAST_NAME')}</FormLabel>
+                <FormLabel>
+                  {t('MEMBER.LAST_NAME')}
+                  Last Name
+                </FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -149,7 +152,10 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('GENERAL.PHONE')}</FormLabel>
+                <FormLabel>
+                  {t('GENERAL.PHONE')}
+                  Phone Number
+                </FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -181,7 +187,10 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
             name="zip"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('MEMBER.ZIP')}</FormLabel>
+                <FormLabel>
+                  {t('MEMBER.ZIP')}
+                  Zip Code
+                </FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -194,7 +203,10 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
             name="city"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('MEMBER.CITY')}</FormLabel>
+                <FormLabel>
+                  {t('MEMBER.CITY')}
+                  City Name
+                </FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -207,7 +219,10 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
             name="street"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('MEMBER.STREET')}</FormLabel>
+                <FormLabel>
+                  {t('MEMBER.STREET')}
+                  Street
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="Enter street" {...field} />
                 </FormControl>
@@ -220,7 +235,10 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
             name="member_status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('MEMBER.STATUS')}</FormLabel>
+                <FormLabel>
+                  {t('MEMBER.STATUS')}
+                  Status
+                </FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
