@@ -4,7 +4,9 @@ import { createMember, getMembers } from '../data-access';
 
 import getLogger from '@/lib/logger';
 import { createSafeActionClient } from 'next-safe-action';
-import { addMemberInputSchema } from '../data-access/schema';
+import { UserSchema, addMemberInputSchema } from '../data-access/schema';
+import { get } from 'http';
+import { MemberProps } from '../types';
 const action = createSafeActionClient();
 
 // This schema is used to validate input from client.
@@ -23,7 +25,12 @@ export const addMemberUseCase = action(
 );
 
 export const fetchMembersUseCase = action({}, async () => {
-  getLogger().debug('Creating new member addMemberUseCase');
-  const members = await getMembers();
-  return { members: members };
+  getLogger().debug('Fetching members from database');
+  const members: UserSchema[] = await getMembers();
+
+  const parsedMembers: MemberProps[] = members.map((member) => {
+    return { ...member, birthday: new Date(member.birthday) };
+  });
+
+  return { members: parsedMembers };
 });

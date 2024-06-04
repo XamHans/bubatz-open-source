@@ -42,13 +42,14 @@ import { useState } from 'react';
 import { AddMemberModal } from './AddMemberModal';
 import { fetchMembersUseCase } from '@/modules/members/use-cases';
 import { useAction } from 'next-safe-action/hooks';
-import {
-  selectUser,
-  selectUserSchema,
-} from '@/modules/members/data-access/schema';
+// import {
+//   selectUser,
+//   selectUserSchema,
+// } from '@/modules/members/data-access/schema';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { getMembers } from '@/modules/members/data-access';
+import { Schema } from 'zod';
 
 const getUserTableColumns = (router: AppRouterInstance) => {
   const handleDelete = async (confirmed: boolean, member: MemberProps) => {
@@ -187,27 +188,24 @@ export default function MemberTable() {
    * TODO: REPLACE FOR GET USE CASE WITH NEXT ACTION
    */
 
-  //   const {
-  //       data,
-  //       error: getMemberError,
-  //       fetchStatus,
-  //   } = useQuery({
-  //       queryFn: async () => getMembers(),
-  //       queryKey: ['members'],
-  //   })
+  // const {
+  //     data,
+  //     error: getMemberError,
+  //     fetchStatus,
+  // } = useQuery({
+  //     queryFn: async () => getMembers(),
+  //     queryKey: ['members'],
+  // })
 
-const {
-    result,
-    execute,
-    status: fetchStatus,
-} = useAction(fetchMembersUseCase, {
-    onSuccess: () => {
-            console.log('Members fetched successfully');
+  const { execute, status } = useAction(fetchMembersUseCase, {
+    onSuccess: (data) => {
+      console.log('Member added successfully');
+      setMembers(data.members);
     },
     onError: (error) => {
-            console.log('Error fetching members', error);
+      console.log('Error adding member', error);
     },
-});
+  });
 
   const [members, setMembers] = React.useState<MemberProps[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -225,8 +223,12 @@ const {
   //   );
 
   React.useEffect(() => {
-    execute(result);
-  }, []);
+    const data = getMembers();
+    if (data) {
+      console.log('MEMBERS TABLE MEMBER RESULT: ', data);
+      execute(data);
+    }
+  }, [execute]);
 
   const table = useReactTable({
     data: members,

@@ -19,7 +19,10 @@ export const createMember = async (input: AddMemberInput) => {
   logger.debug('Creating new member', input);
   const newMemberId = await db
     .insert(members)
-    .values(input)
+    .values({
+      ...input,
+      phone: input.phone || '', // Set phone to an empty string if it's undefined
+    })
     .returning({ insertedId: members.id });
   return newMemberId;
 };
