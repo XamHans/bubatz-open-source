@@ -1,4 +1,5 @@
-import { sql } from 'drizzle-orm';
+import { sales } from '@/modules/sales/data-access/schema';
+import { relations, sql } from 'drizzle-orm';
 import { boolean, date, pgTable, text, uuid } from 'drizzle-orm/pg-core';
 import { createInsertSchema } from 'drizzle-zod';
 import { z } from 'zod';
@@ -23,6 +24,14 @@ export const members = pgTable('profiles', {
   status: text('member_status'),
   isAdmin: boolean('is_admin'),
 });
+
+/**
+ * * Relations
+ */
+
+export const membersRelations = relations(members, ({ many }) => ({
+  buyer: many(members),
+}));
 
 // Schema for inserting a user - can be used to validate API requests
 export const addMemberInputSchema = createInsertSchema(members, {
