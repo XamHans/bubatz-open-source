@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { defineConfig } from "drizzle-kit";
+import { defineConfig } from 'drizzle-kit';
 // export default {
 //   schema: "./modules/**/**/schema.ts",
 //   out: './lib/db/migrations',
@@ -10,10 +10,15 @@ import { defineConfig } from "drizzle-kit";
 // } satisfies Config;
 
 export default defineConfig({
-  dialect: "postgresql", // "mysql" | "sqlite" | "postgresql"
-  schema: "./lib/db/schema.ts",
-  out: "./lib/db/migrations",
+  dialect: 'postgresql', // "mysql" | "sqlite" | "postgresql"
+  schema: [
+    './lib/db/schema.ts',
+    './modules/plants/data-access/schema.ts',
+    './modules/members/data-access/schema.ts',
+    './modules/sales/data-access/schema.ts',
+  ],
+  out: './lib/db/migrations',
   dbCredentials: {
-  url: process.env.DATABASE_URL!, 
-  }
+    url: process.env.DATABASE_URL!,
+  },
 });

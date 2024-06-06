@@ -10,7 +10,7 @@
     "lint": "npx prettier --write .",
     "typegen": "npx supabase gen types typescript --project-id 'fytmwwwieonvsqdufcgt' --schema public > types/database.ts",
     "postinstall": "prisma generate",
-    "db:generate": "drizzle-kit generate:pg ",
+    "db:generate": "drizzle-kit generate ",
     "db:migrate": "npx tsx './lib/db/migrator.ts' ",
     "db:push": "drizzle-kit push --config=drizzle.config.ts",
     "db:pull": "drizzle-kit introspect --config=drizzle.config.ts"
