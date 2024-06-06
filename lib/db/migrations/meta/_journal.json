@@ -29,6 +29,20 @@
       "when": 1717518996235,
       "tag": "0003_skinny_korvac",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1717691418569,
+      "tag": "0004_organic_wilson_fisk",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1717691762490,
+      "tag": "0005_spooky_hawkeye",
+      "breakpoints": true
     }
   ]
 }
