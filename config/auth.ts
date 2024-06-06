@@ -1,18 +1,17 @@
-import { getUserByEmail } from "@/actions/user"
-import bcryptjs from "bcryptjs"
-import type { NextAuthConfig } from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
-import GitHubProvider from "next-auth/providers/github"
-import ResendProvider from "next-auth/providers/resend"
+import { getUserByEmail } from '@/actions/user';
+import bcryptjs from 'bcryptjs';
+import type { NextAuthConfig } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import GitHubProvider from 'next-auth/providers/github';
+import ResendProvider from 'next-auth/providers/resend';
 
-import { MagicLinkEmail } from "@/components/email/magic-link-email"
-import { resend } from "@/config/email"
-import { siteConfig } from "@/config/site"
-import { signInWithPasswordSchema } from "@/validations/auth"
+import { MagicLinkEmail } from '@/components/email/magic-link-email';
+import { resend } from '@/config/email';
+import { siteConfig } from '@/config/site';
+import { signInWithPasswordSchema } from '@/validations/auth';
 
 export default {
   providers: [
-  
     GitHubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
@@ -21,22 +20,22 @@ export default {
     CredentialsProvider({
       async authorize(rawCredentials) {
         const validatedCredentials =
-          signInWithPasswordSchema.safeParse(rawCredentials)
+          signInWithPasswordSchema.safeParse(rawCredentials);
 
         if (validatedCredentials.success) {
           const user = await getUserByEmail({
             email: validatedCredentials.data.email,
-          })
-          if (!user || !user.passwordHash) return null
+          });
+          if (!user || !user.passwordHash) return null;
 
           const passwordIsValid = await bcryptjs.compare(
             validatedCredentials.data.password,
-            user.passwordHash
-          )
+            user.passwordHash,
+          );
 
-          if (passwordIsValid) return user
+          if (passwordIsValid) return user;
         }
-        return null
+        return null;
       },
     }),
     ResendProvider({
@@ -52,8 +51,8 @@ export default {
         identifier,
         url,
       }: {
-        identifier: string
-        url: string
+        identifier: string;
+        url: string;
       }) {
         try {
           await resend.emails.send({
@@ -61,13 +60,13 @@ export default {
             to: [identifier],
             subject: `${siteConfig.name} magic link sign in`,
             react: MagicLinkEmail({ identifier, url }),
-          })
+          });
 
-          console.log("Verification email sent")
+          console.log('Verification email sent');
         } catch (error) {
-          throw new Error("Failed to send verification email")
+          throw new Error('Failed to send verification email');
         }
       },
     }),
   ],
-} satisfies NextAuthConfig
+} satisfies NextAuthConfig;
