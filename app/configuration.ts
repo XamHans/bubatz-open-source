@@ -1,4 +1,4 @@
-import type { Provider } from '@supabase/gotrue-js';
+import { Provider } from '@supabase/supabase-js';
 
 const production = process.env.NODE_ENV === 'production';
 
@@ -49,6 +49,10 @@ const configuration = {
     members: {
       all: 'members/',
       detail: 'members/:id',
+    },
+    sales: {
+      all: 'sales/',
+      detail: 'sales/:id',
     },
   },
 };
