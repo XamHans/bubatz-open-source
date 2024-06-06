@@ -33,6 +33,9 @@ export interface EditMemberModalProps {
 }
 
 import { z } from 'zod';
+import { useState } from 'react';
+import { useAction } from 'next-safe-action/hooks';
+import { updateMemberUseCase } from '@/modules/members/use-cases';
 
 export const memberProfileSchema = z.object({
   firstName: z.string().min(3, { message: 'First name is required' }),
@@ -61,18 +64,33 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
 
   const onSubmit: SubmitHandler<UpdateMemberInput> = async (data) => {
     console.log('ON SUBMIT HANDLER REACHED');
-    const result = await updateMember(member.id, data);
-    result
-      .onSuccess((updatedMemberResult) =>
-        console.log('Member updated successfully:', updatedMemberResult),
-      )
-      .onError((error) =>
-        console.error('Failed to update member:', error.message),
-      );
+    try {
+      const result = await updateMember(member.id, data);
+      console.log('Member updated successfully:', result);
+    } catch (error) {
+      console.error('Failed to update member:', (error as Error).message);
+    }
   };
 
-  const handleSave = () => {
+  const { execute, status } = useAction(updateMemberUseCase, {
+    onSuccess: (data) => {
+      console.log('Member added successfully');
+    },
+    onError: (error) => {
+      console.log('Error adding member', error);
+    },
+  });
+
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+
+  const handleSave = async (data: UpdateMemberInput) => {
     console.log('Save action');
+    if (!form.formState.isValid) {
+      setButtonDisabled(true);
+      return;
+    }
+    setButtonDisabled(false);
+    return execute(data);
   };
 
   const handleAbort = () => {
@@ -91,12 +109,12 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
     <GenericModal
       headerTitle="Edit Member"
       description="Here you can change the information of a member."
-      onSave={handleSave}
+      onSave={() => handleSave(form.getValues())}
       onAbort={handleAbort}
     >
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(handleSave)}
           className="grid gap-2 sm:grid-cols-2 md:gap-4"
         >
           <FormField
@@ -250,19 +268,34 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
                   </FormControl>
                   <SelectContent>
                     <SelectItem value={ClubMemberStatus.REQUEST}>
-                      {t('MEMBER.STATUS_OPTIONS.REQUEST')}
+                      <FormLabel>
+                        Request
+                        {t('MEMBER.STATUS_OPTIONS.REQUEST')}
+                      </FormLabel>
                     </SelectItem>
                     <SelectItem value={ClubMemberStatus.PENDING}>
-                      {t('MEMBER.STATUS_OPTIONS.PENDING')}
+                      <FormLabel>
+                        Pending
+                        {t('MEMBER.STATUS_OPTIONS.PENDING')}
+                      </FormLabel>
                     </SelectItem>
                     <SelectItem value={ClubMemberStatus.ACTIVE}>
-                      {t('MEMBER.STATUS_OPTIONS.ACTIVE')}
+                      <FormLabel>
+                        Active
+                        {t('MEMBER.STATUS_OPTIONS.ACTIVE')}
+                      </FormLabel>
                     </SelectItem>
                     <SelectItem value={ClubMemberStatus.PAUSED}>
-                      {t('MEMBER.STATUS_OPTIONS.PAUSED')}
+                      <FormLabel>
+                        Paused
+                        {t('MEMBER.STATUS_OPTIONS.PAUSED')}
+                      </FormLabel>
                     </SelectItem>
                     <SelectItem value={ClubMemberStatus.EXITED}>
-                      {t('MEMBER.STATUS_OPTIONS.EXITED')}
+                      <FormLabel>
+                        Exited
+                        {t('MEMBER.STATUS_OPTIONS.EXITED')}
+                      </FormLabel>
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -270,7 +303,7 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
             )}
           />
 
-          <DialogFooter className="col-span-2">
+          {/* <DialogFooter className="col-span-2">
             <DialogClose asChild>
               <Button variant="ghost"> {t('GENERAL.ACTIONS.ABORT')}</Button>
             </DialogClose>
@@ -278,10 +311,10 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
               <Button type="submit" disabled={!form?.formState?.isValid}>
                 {' '}
                 SUBMIT FORM
-                {/* {t("GENERAL.ACTIONS.SAVE")} */}
+                {t('GENERAL.ACTIONS.SAVE')}
               </Button>
             </DialogClose>
-          </DialogFooter>
+          </DialogFooter> */}
         </form>
       </Form>
     </GenericModal>
