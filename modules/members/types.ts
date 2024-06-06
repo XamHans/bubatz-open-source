@@ -21,7 +21,7 @@ export interface MemberProps {
   isAdmin: boolean;
 }
 
-export type UpdateMemberInput = Omit<MemberProps, 'is_admin'>;
+// export type UpdateMemberInput = Omit<MemberProps, 'is_admin'>;
 
 export const colorForClubMemberStatus = new Map<ClubMemberStatus, string>([
   [ClubMemberStatus.ACTIVE, 'bg-green-400'],

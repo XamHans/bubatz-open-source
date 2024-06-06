@@ -4,7 +4,7 @@ import { db } from '@/lib/db/db';
 import getLogger from '@/lib/logger';
 import { AddMemberInput, members } from './schema';
 import { AsyncReturnType } from '@/lib/types';
-import { UpdateMemberInput } from '../types';
+import { UpdateMemberInput } from './schema';
 import { eq } from 'drizzle-orm/sql/expressions/conditions';
 const logger = getLogger();
 /**
@@ -41,12 +41,12 @@ const getMemberDetail = async (id: string) => {
 };
 export type GetMemberDetailQueryData = AsyncReturnType<typeof getMemberDetail>;
 
-const updateMember = async (id: string, data: UpdateMemberInput) => {
+const updateMember = async (data: UpdateMemberInput) => {
   try {
     const updatedMemberResult = await db
       .update(members)
-      .set({ ...data, birthday: data.birthday.toString() })
-      .where(eq(members.id, id));
+      .set({ ...data, birthday: data.birthday?.toString() }) // Added nullish coalescing operator
+      .where(eq(members.id, data.id ?? ''));
     console.log('updateMember', updatedMemberResult);
     return 'Success';
   } catch (error) {
