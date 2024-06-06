@@ -89,11 +89,10 @@ export const createSaleInputSchema = createInsertSchema(sales, {
   createdAt: (schema) => schema.createdAt.optional(),
   updatedAt: (schema) => schema.updatedAt.optional(),
 });
-
-export const getSaleInputSchema = createSelectSchema(sales);
-
 export type CreateSaleInput = z.infer<typeof createSaleInputSchema>;
-export type GetSaleInput = z.infer<typeof getSaleInputSchema>;
+
+export const getSaleSchema = createSelectSchema(sales);
+export type Sale = z.infer<typeof getSaleSchema>;
 
 const paymentMethodsSchema = z.enum(paymentMethods.enumValues);
 export type PaymentMethodsEnum = z.infer<typeof paymentMethodsSchema>;
