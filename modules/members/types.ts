@@ -18,7 +18,7 @@ export interface MemberProps {
   birthday: Date;
   email?: string;
   phone?: string;
-  is_admin: boolean;
+  isAdmin: boolean;
 }
 
 export type UpdateMemberInput = Omit<MemberProps, 'is_admin'>;

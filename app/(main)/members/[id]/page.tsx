@@ -1,4 +1,4 @@
-import { Container } from '@/app/components/Container';
+import { Container } from '@/components/generic/Container';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MemberGeneralInfo } from './components/MemberGeneralInfo';
 
