@@ -65,7 +65,7 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
   const onSubmit: SubmitHandler<UpdateMemberInput> = async (data) => {
     console.log('ON SUBMIT HANDLER REACHED');
     try {
-      const result = await updateMember(member.id, data);
+      const result = await updateMember(data);
       console.log('Member updated successfully:', result);
     } catch (error) {
       console.error('Failed to update member:', (error as Error).message);
