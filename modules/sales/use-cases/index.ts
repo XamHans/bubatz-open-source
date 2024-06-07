@@ -6,7 +6,6 @@ import {
   createSaleInputSchema,
   getSaleSchema,
 } from '../data-access/schema';
-import { get } from 'http';
 import getLogger from '@/lib/logger';
 import { createSale, getSaleById, getSales } from '../data-access';
 
