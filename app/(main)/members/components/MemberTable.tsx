@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { MemberProps, colorForClubMemberStatus } from '@/modules/members/types';
+import { fetchMembersUseCase } from '@/modules/members/use-cases';
 import {
   ColumnFiltersState,
   SortingState,
@@ -255,14 +256,6 @@ export default function MemberTable() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const router = useRouter();
-  //   React.useEffect(() => {
-  //       if (data) {
-  //         console.log('MEMBERS TABLE MEMBER RESULT: ', data);
-  //         execute(data);
-  //       }
-  //     },
-  //     [],
-  //   );
 
   useEffect(() => {
     const data = getMembers();
