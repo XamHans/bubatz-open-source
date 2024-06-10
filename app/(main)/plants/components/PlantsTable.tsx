@@ -22,7 +22,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { MemberProps, colorForClubMemberStatus } from '@/modules/members/types';
-import { fetchMembersUseCase } from '@/modules/members/use-cases';
 import {
   ColumnFiltersState,
   SortingState,
@@ -36,18 +35,19 @@ import {
 } from '@tanstack/react-table';
 import { t } from 'i18next';
 import { ArrowUpDown, EyeIcon } from 'lucide-react';
-import { useAction } from 'next-safe-action/hooks';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
-import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { AddMemberModal } from './AddMemberModal';
+// import { AddMemberModal } from './AddMemberModal';
+import { useAction } from 'next-safe-action/hooks';
 // import {
 //   selectUser,
 //   selectUserSchema,
 // } from '@/modules/members/data-access/schema';
+import { GetPlants } from '@/modules/plants/data-access/schema';
+import { fetchPlantsUseCase } from '@/modules/plants/use-cases';
 
-const getUserTableColumns = (router: AppRouterInstance) => {
+const getPlantTableColumns = (router: AppRouterInstance) => {
   const handleDelete = async (confirmed: boolean, member: MemberProps) => {
     if (confirmed) {
       if (!member.id) throw Error('No member id available');
@@ -179,31 +179,31 @@ const getUserTableColumns = (router: AppRouterInstance) => {
   ];
 };
 
-export default function MemberTable() {
-  const { execute, status } = useAction(fetchMembersUseCase, {
+export default function PlantsTable() {
+  const { execute, status } = useAction(fetchPlantsUseCase, {
     onSuccess: (data) => {
-      console.log('Member added successfully');
-      setMembers(data.members);
+      console.log(data.plants);
+      setPlants(data?.plants as GetPlants[]);
     },
     onError: (error) => {
-      console.log('Error adding member', error);
+      console.log('Error fetching plants', error);
     },
   });
 
-  const [members, setMembers] = React.useState<MemberProps[]>([]);
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [plants, setPlants] = useState<GetPlants[]>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const router = useRouter();
 
   useEffect(() => {
-    execute({});
+    execute(undefined);
   }, [execute]);
 
   const table = useReactTable({
-    data: members,
-    columns: getUserTableColumns(router),
+    data: plants,
+    columns: getPlantTableColumns(router),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -233,7 +233,7 @@ export default function MemberTable() {
           }
           className="max-w-sm"
         />
-        <AddMemberModal />
+        {/* <AddMemberModal /> */}
       </div>
       <div className="rounded-md border">
         <Table className="rounded-md bg-white">

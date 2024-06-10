@@ -1,9 +1,9 @@
-import { ThemeProvider } from "@/components/generic/theme-provider";
-import { Toaster } from "@/components/ui/toaster";
-import Providers from "@/lib/query-provider";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import { ThemeProvider } from '@/components/generic/theme-provider';
+import { Toaster } from '@/components/ui/toaster';
+import Providers from '@/lib/query-provider';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,7 +20,8 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-      // className={` ${inter.className} ${data?.colorScheme ?? "theme-orange"}`}
+        className={`${inter.className} bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]`}
+        // className={` ${inter.className} ${data?.colorScheme ?? "theme-orange"}`}
       >
         <ThemeProvider
           attribute="class"
@@ -30,7 +31,6 @@ export default async function RootLayout({
         >
           <Providers>{children}</Providers>
           <Toaster />
-
         </ThemeProvider>
       </body>
     </html>
