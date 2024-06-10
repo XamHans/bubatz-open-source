@@ -106,6 +106,9 @@ export const plants = pgTable('plants', {
   health: text('health').default('healthy'),
   seedToSale: jsonb('seed_to_sale').notNull().default(defaultSeedToSale),
 });
+export const batchesRelations = relations(batches, ({ many }) => ({
+  plants: many(plants),
+}));
 
 export const batchesRelations = relations(batches, ({ many }) => ({
   plants: many(plants),
