@@ -39,7 +39,7 @@ import { useAction } from 'next-safe-action/hooks';
 export default function SaleForm() {
   const session = useSession();
 
-  const { execute, data, error } = useAction(createSaleUseCase, {
+  const { execute } = useAction(createSaleUseCase, {
     onSuccess: (result) => {
       console.log('result', result);
     },
@@ -123,7 +123,7 @@ export default function SaleForm() {
           <FormField
             control={form.control}
             name="userId"
-            render={({ field }) => (
+            render={() => (
               <FormItem>
                 <FormLabel>Member</FormLabel>
                 <Select
@@ -150,7 +150,7 @@ export default function SaleForm() {
           <FormField
             control={form.control}
             name="paidVia"
-            render={({ field }) => (
+            render={() => (
               <FormItem>
                 <FormLabel>Paid Via</FormLabel>
                 <Select
