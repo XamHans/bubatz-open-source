@@ -1,5 +1,4 @@
-import { salesItems } from '@/modules/sales/data-access/schema';
-import { sql } from 'drizzle-orm';
+import { salesItems } from '../../sales/data-access/schema';
 import {
   date,
   jsonb,
@@ -10,6 +9,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm/relations';
+import { sql } from 'drizzle-orm/sql';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
