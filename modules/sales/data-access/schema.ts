@@ -38,7 +38,7 @@ export const sales = pgTable('sales', {
     .default(sql`now()`),
 });
 
-export const transactions = pgTable('transactions', {
+export const salesItems = pgTable('sales_items', {
   id: serial('id').primaryKey(),
   quantity: real('quantity').notNull(),
   weightGrams: real('weight_grams').notNull(),
@@ -59,20 +59,20 @@ export const salesRelations = relations(sales, ({ many, one }) => ({
     fields: [sales.userId],
     references: [members.id],
   }),
-  transactions: many(transactions),
+  transactions: many(salesItems),
   seller: one(members, {
     fields: [sales.salesById],
     references: [members.id],
   }),
 }));
 
-export const transactionsRelations = relations(transactions, ({ one }) => ({
+export const salesItemsRelations = relations(salesItems, ({ one }) => ({
   sale: one(sales, {
-    fields: [transactions.saleId],
+    fields: [salesItems.saleId],
     references: [sales.id],
   }),
   plant: one(plants, {
-    fields: [transactions.plantId],
+    fields: [salesItems.plantId],
     references: [plants.id],
   }),
 }));
@@ -90,6 +90,15 @@ export const createSaleInputSchema = createInsertSchema(sales, {
   updatedAt: (schema) => schema.updatedAt.optional(),
 });
 export type CreateSaleInput = z.infer<typeof createSaleInputSchema>;
+
+export const createSaleItemInputSchema = createInsertSchema(salesItems, {
+  quantity: (schema) => schema.quantity.positive(),
+  weightGrams: (schema) => schema.weightGrams.positive(),
+  price: (schema) => schema.price.positive(),
+  plantId: (schema) => schema.plantId.positive().optional(),
+  saleId: (schema) => schema.saleId.positive().optional(),
+});
+export type CreateSaleItemInput = z.infer<typeof createSaleItemInputSchema>;
 
 export const getSaleSchema = createSelectSchema(sales);
 export type Sale = z.infer<typeof getSaleSchema>;

@@ -1,7 +1,5 @@
 'use client';
 
-import configuration from '@/app/configuration';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -11,14 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import { MemberProps } from '@/modules/members/types';
-import { getSales } from '@/modules/sales/data-access';
 import { Sale } from '@/modules/sales/data-access/schema';
 import { fetchSalesUseCase } from '@/modules/sales/use-cases';
 import {
@@ -34,7 +25,6 @@ import {
 } from '@tanstack/react-table';
 import { t } from 'i18next';
 import { ArrowUpDown } from 'lucide-react';
-import { useAction } from 'next-safe-action/hooks';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
@@ -138,14 +128,9 @@ export default function MemberTable() {
   });
 
   React.useEffect(() => {
-    getSales()
-      .then((data) => {
-        console.log('data', data);
-        setSales(data.sales);
-      })
-      .catch((error) => {
-        console.error('Error fetching sales: ', error);
-      });
+    fetchSalesUseCase().then((sales) => {
+      setSales(sales);
+    });
   }, []);
 
   //  const {t} = await initializeI18nClient('en')

@@ -15,14 +15,11 @@ const action = createSafeActionClient();
  * Get all sales.
  * @returns Array of all sales.
  */
-export const fetchSalesUseCase = action(
-  getSaleSchema,
-  async (): Promise<{ sales: Sale[] }> => {
-    getLogger().debug('Fetching sales from DB.');
-    const { sales }: { sales: Sale[] } = await getSales();
-    return { sales: sales };
-  },
-);
+export async function fetchSalesUseCase(): Promise<Sale[]> {
+  console.info('Fetching sales from DB.');
+  const { sales }: { sales: Sale[] } = await getSales();
+  return sales;
+}
 
 /**
  * Get a sale by its id.

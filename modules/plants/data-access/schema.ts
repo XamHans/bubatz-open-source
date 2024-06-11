@@ -1,4 +1,4 @@
-import { transactions } from '@/modules/sales/data-access/schema';
+import { salesItems } from '@/modules/sales/data-access/schema';
 import { jsonb, pgTable, real, serial, text } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm/relations';
 import { sql } from 'drizzle-orm/sql';
@@ -84,7 +84,7 @@ export const plants = pgTable('plants', {
 });
 
 export const plantsRelations = relations(plants, ({ many }) => ({
-  transactions: many(transactions),
+  transactions: many(salesItems),
 }));
 
 /**
