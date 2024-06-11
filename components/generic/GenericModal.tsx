@@ -16,6 +16,7 @@ interface GenericModalProps {
   children: ReactNode;
   onSave: () => void;
   onAbort: () => void;
+  disabled: boolean;
 }
 
 const GenericModal: React.FC<GenericModalProps> = ({
@@ -24,6 +25,7 @@ const GenericModal: React.FC<GenericModalProps> = ({
   children,
   onSave,
   onAbort,
+  disabled,
 }) => {
   return (
     <Dialog>
@@ -37,7 +39,7 @@ const GenericModal: React.FC<GenericModalProps> = ({
         </DialogHeader>
         {children}
         <DialogClose asChild>
-          <Button type="button" onClick={onSave}>
+          <Button disabled={false} type="button" onClick={onSave}>
             Save
           </Button>
         </DialogClose>

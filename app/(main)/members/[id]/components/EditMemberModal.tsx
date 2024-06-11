@@ -5,7 +5,8 @@ import {
   GetMemberDetailQueryData,
   updateMember,
 } from '@/modules/members/data-access/index';
-import { ClubMemberStatus, UpdateMemberInput } from '@/modules/members/types';
+import { ClubMemberStatus } from '@/modules/members/types';
+import { UpdateMemberInput } from '@/modules/members/data-access/schema';
 import { Button } from '@/components/ui/button';
 import { DialogClose, DialogFooter } from '@/components/ui/dialog';
 import {
@@ -36,6 +37,8 @@ import { z } from 'zod';
 import { useState } from 'react';
 import { useAction } from 'next-safe-action/hooks';
 import { updateMemberUseCase } from '@/modules/members/use-cases';
+import { useParams } from 'next/navigation';
+import { UUID } from 'crypto';
 
 export const memberProfileSchema = z.object({
   firstName: z.string().min(3, { message: 'First name is required' }),
@@ -62,48 +65,50 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
     resolver: zodResolver(memberProfileSchema),
   });
 
-  const onSubmit: SubmitHandler<UpdateMemberInput> = async (data) => {
-    console.log('ON SUBMIT HANDLER REACHED');
-    try {
-      const result = await updateMember(data);
-      console.log('Member updated successfully:', result);
-    } catch (error) {
-      console.error('Failed to update member:', (error as Error).message);
-    }
-  };
+  // const onSubmit: SubmitHandler<UpdateMemberInput> = async (data) => {
+  //   console.log('ON SUBMIT HANDLER REACHED');
+  //   try {
+  //     const result = await updateMember(data);
+  //     console.log('Member updated successfully:', result);
+  //   } catch (error) {
+  //     console.error('Failed to update member:', (error as Error).message);
+  //   }
+  // };
 
   const { execute, status } = useAction(updateMemberUseCase, {
-    onSuccess: (data) => {
-      console.log('Member added successfully');
+    onSuccess: () => {
+      console.log('Member updated successfully');
     },
     onError: (error) => {
-      console.log('Error adding member', error);
+      console.log('Error updating member', error);
     },
   });
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
+  const params = useParams<{ id: UUID }>();
+
   const handleSave = async (data: UpdateMemberInput) => {
-    console.log('Save action');
-    if (!form.formState.isValid) {
-      setButtonDisabled(true);
-      return;
+    console.log('Data:', data);
+    try {
+      const result = await execute({ ...data, id: params.id });
+      console.log('Member updated successfully', result);
+    } catch (error) {
+      console.log('Error updating member', error);
     }
-    setButtonDisabled(false);
-    return execute(data);
   };
 
   const handleAbort = () => {
     console.log('Abort action');
   };
 
-  const handleChange = (selectedDate: string) => {
-    if (!selectedDate) return;
-    form.setValue('birthday', new Date(selectedDate), {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-  };
+  // const handleChange = (selectedDate: string) => {
+  //   if (!selectedDate) return;
+  //   form.setValue('birthday', new Date(selectedDate), {
+  //     shouldValidate: true,
+  //     shouldDirty: true,
+  //   });
+  // };
 
   return (
     <GenericModal
@@ -111,6 +116,7 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
       description="Here you can change the information of a member."
       onSave={() => handleSave(form.getValues())}
       onAbort={handleAbort}
+      disabled={buttonDisabled}
     >
       <Form {...form}>
         <form
@@ -250,7 +256,7 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
 
           <FormField
             control={form.control}
-            name="member_status"
+            name="status"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
@@ -269,31 +275,31 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
                   <SelectContent>
                     <SelectItem value={ClubMemberStatus.REQUEST}>
                       <FormLabel>
-                        Request
+                        REQUEST
                         {t('MEMBER.STATUS_OPTIONS.REQUEST')}
                       </FormLabel>
                     </SelectItem>
                     <SelectItem value={ClubMemberStatus.PENDING}>
                       <FormLabel>
-                        Pending
+                        PENDING
                         {t('MEMBER.STATUS_OPTIONS.PENDING')}
                       </FormLabel>
                     </SelectItem>
                     <SelectItem value={ClubMemberStatus.ACTIVE}>
                       <FormLabel>
-                        Active
+                        ACTIVE
                         {t('MEMBER.STATUS_OPTIONS.ACTIVE')}
                       </FormLabel>
                     </SelectItem>
                     <SelectItem value={ClubMemberStatus.PAUSED}>
                       <FormLabel>
-                        Paused
+                        PAUSED
                         {t('MEMBER.STATUS_OPTIONS.PAUSED')}
                       </FormLabel>
                     </SelectItem>
                     <SelectItem value={ClubMemberStatus.EXITED}>
                       <FormLabel>
-                        Exited
+                        EXITED
                         {t('MEMBER.STATUS_OPTIONS.EXITED')}
                       </FormLabel>
                     </SelectItem>

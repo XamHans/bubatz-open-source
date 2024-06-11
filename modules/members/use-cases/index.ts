@@ -22,14 +22,17 @@ export const addMemberUseCase = action(
     if (!data) {
       return { failure: 'No data provided, cant create new member' };
     }
-    getLogger().debug('Creating new member addMemberUseCase', data);
-    const newMemberId = await createMember(data);
+    // getLogger().debug('Creating new member addMemberUseCase', data);
+    const newMemberId = await createMember({
+      ...data,
+      id: crypto.randomUUID(),
+    });
     return { success: newMemberId };
   },
 );
 
 export const fetchMembersUseCase = action({}, async () => {
-  getLogger().debug('Fetching members from database');
+  // getLogger().debug('Fetching members from database');
   const members: UserSchema[] = await getMembers();
 
   const parsedMembers: UserSchema[] = members.map((member) => {
@@ -59,7 +62,7 @@ export const updateMemberUseCase = action(
     if (!data) {
       return { failure: 'No data provided, cant update member' };
     }
-    getLogger().debug('Updating member updateMemberUseCase', data);
+    // getLogger().debug('Updating member updateMemberUseCase', data);
     const updatedMember = await updateMember(data);
     return { success: updatedMember };
   },

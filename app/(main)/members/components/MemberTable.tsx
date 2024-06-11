@@ -34,7 +34,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { t } from 'i18next';
-import { ArrowUpDown, EyeIcon } from 'lucide-react';
+import { ArrowUpDown, Trash2, Pencil } from 'lucide-react';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
@@ -48,8 +48,9 @@ import { useAction } from 'next-safe-action/hooks';
 // } from '@/modules/members/data-access/schema';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { getMembers } from '@/modules/members/data-access';
+import { deleteMember, getMembers } from '@/modules/members/data-access';
 import { Schema } from 'zod';
+import { UserSchema } from '@/modules/members/data-access/schema';
 
 const getUserTableColumns = (router: AppRouterInstance) => {
   const handleDelete = async (confirmed: boolean, member: MemberProps) => {
@@ -150,7 +151,7 @@ const getUserTableColumns = (router: AppRouterInstance) => {
           <div className="flex justify-center ">
             <Button
               variant="ghost"
-              className="hover:bg-inherit"
+              className="transition-transform duration-200 hover:scale-110 hover:bg-inherit hover:text-green-400"
               onClick={() => {
                 // router.push(configuration.paths.MEMBER_DETAIL.replace(":id", member:id!))
                 router.push(
@@ -161,14 +162,38 @@ const getUserTableColumns = (router: AppRouterInstance) => {
               <TooltipProvider>
                 <Tooltip delayDuration={0}>
                   <TooltipTrigger>
-                    <EyeIcon className="h-6 w-6 cursor-pointer" />
+                    <Pencil className="h-6 w-6 cursor-pointer" />
                   </TooltipTrigger>
                   <TooltipContent align="end">
-                    <Badge> {t('member:ACTIONS.DETAIL')}</Badge>
+                    <Badge className="bg-inherit text-black hover:bg-inherit">
+                      {' '}
+                      {t('member:ACTIONS.DETAIL')} Edit
+                    </Badge>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              className="transition-transform duration-200 hover:scale-110 hover:bg-inherit hover:text-red-400"
+              onClick={handleDelete}
+            >
+              <TooltipProvider>
+                <Tooltip delayDuration={0}>
+                  <TooltipTrigger>
+                    <Trash2 className="h-6 w-6 cursor-pointer" />
+                  </TooltipTrigger>
+                  <TooltipContent align="end">
+                    <Badge className="bg-inherit text-black hover:bg-inherit">
+                      {' '}
+                      {t('member:ACTIONS.DETAIL')} Delete
+                    </Badge>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </Button>
+
             {/* <EditMemberModal member={member} />
             <DeleteModal<MemberProps>
               entity={member}
@@ -207,7 +232,7 @@ export default function MemberTable() {
     },
   });
 
-  const [members, setMembers] = React.useState<MemberProps[]>([]);
+  const [members, setMembers] = React.useState<UserSchema[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -326,6 +351,7 @@ export default function MemberTable() {
             disabled={!table.getCanPreviousPage()}
           >
             {t('GENERAL.PAGINATION.PREVIOUS')}
+            Previous
           </Button>
           <Button
             variant="default"
@@ -334,6 +360,7 @@ export default function MemberTable() {
             disabled={!table.getCanNextPage()}
           >
             {t('GENERAL.PAGINATION.NEXT')}
+            Next
           </Button>
         </div>
       </div>

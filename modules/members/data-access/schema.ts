@@ -33,7 +33,7 @@ export const members = pgTable('members', {
   city: text('city').notNull(),
   zip: text('zip').notNull(),
   //club info
-  status: text('member_status').notNull().default('PENDING'),
+  status: text('status').notNull().default('PENDING'),
   // isAdmin: boolean('is_admin').notNull().default(false),
   role: userRoleEnum('role').notNull().default('USER'),
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
@@ -58,11 +58,17 @@ export const membersRelations = relations(members, ({ many }) => ({
 
 // Schema for inserting a user - can be used to validate API requests
 export const addMemberInputSchema = createInsertSchema(members, {
-  email: (schema) => schema.email.email().default(''),
-  phone: (schema) => schema.phone.optional(),
+  id: (schema) => schema.id.uuid(),
+  firstName: (schema) => schema.firstName.min(3),
+  lastName: (schema) => schema.lastName.min(3),
+  email: (schema) => schema.email.email(),
+  phone: (schema) => schema.phone.min(9),
+  street: (schema) => schema.street.min(5),
+  city: (schema) => schema.city.min(3),
+  zip: (schema) => schema.zip.min(7),
+  birthday: (schema) => schema.birthday,
   status: (schema) => schema.status.default('PENDING'),
   role: (schema) => schema.role.default('USER'),
-  id: (schema) => schema.id.optional(),
 });
 export type AddMemberInput = z.infer<typeof addMemberInputSchema>;
 
@@ -72,9 +78,8 @@ export type UserSchema = z.infer<typeof selectUserSchema>;
 
 // Schema for updating a user
 export const updateMemberInputSchema = createInsertSchema(members, {
-  role: (schema) => schema.role,
-  id: (schema) => schema.id,
-
+  // role: (schema) => schema.role,
+  // id: (schema) => schema.id,
   firstName: (schema) => schema.firstName,
   lastName: (schema) => schema.lastName,
   email: (schema) => schema.email,
@@ -83,7 +88,7 @@ export const updateMemberInputSchema = createInsertSchema(members, {
   street: (schema) => schema.street,
   city: (schema) => schema.city,
   zip: (schema) => schema.zip,
-  birthday: (schema) => schema.birthday,
+  // birthday: (schema) => schema.birthday,
 });
 export type UpdateMemberInput = z.infer<typeof updateMemberInputSchema>;
 

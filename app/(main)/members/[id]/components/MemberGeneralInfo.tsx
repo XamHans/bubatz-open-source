@@ -67,7 +67,8 @@ const MemberGeneralInfo = () => {
                         member.status as ClubMemberStatus,
                       )}`}
                     >
-                      {t(`MEMBER.STATUS_OPTIONS.${member.status}`)}
+                      {/* {t(`MEMBER.STATUS_OPTIONS.${member.status}`)} */}
+                      {member.status}
                     </Badge>
                   </div>
                 </div>

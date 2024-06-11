@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/select';
 import {
   AddMemberInput,
+  UserSchema,
   addMemberInputSchema,
 } from '@/modules/members/data-access/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -34,6 +35,7 @@ import DatePicker from 'react-datepicker';
 import { useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt } from 'react-icons/fa';
+import React from 'react';
 
 const AddMemberModal = () => {
   const { execute, status } = useAction(addMemberUseCase, {
@@ -55,17 +57,22 @@ const AddMemberModal = () => {
     // execute(data);
   };
 
-  const handleSave = form.handleSubmit((data: AddMemberInput) => {
-    console.log('Save action');
-    console.log('Data', data);
-    execute(data);
-  });
+  const handleSave = async (data: AddMemberInput) => {
+    console.log('Data:', data);
+    try {
+      const result = await execute(data);
+      console.log('Member added successfully', result);
+    } catch (error) {
+      console.log('Error added member', error);
+    }
+  };
 
   const handleAbort = () => {
     console.log('Abort action');
   };
 
   const [startDate, setStartDate] = useState(new Date());
+  const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const customInput = ({ value, onClick }) => {
     return (
@@ -85,12 +92,13 @@ const AddMemberModal = () => {
     <GenericModal
       headerTitle="Add Member"
       description="Fill in the details to add a new member."
-      onSave={handleSave}
+      onSave={() => handleSave(form.getValues())}
       onAbort={handleAbort}
+      disabled={buttonDisabled}
     >
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(handleSave)}
           className="grid gap-2 sm:grid-cols-2 md:gap-4"
         >
           <FormField
@@ -160,15 +168,7 @@ const AddMemberModal = () => {
                 {/* <FormLabel>{t('MEMBER.BIRTHDAY')}</FormLabel> */}
                 <FormLabel>Date of Birth</FormLabel>
                 <FormControl>
-                  {/* <DatePicker
-                    initialVale={field.value}
-                    onSelect={handleChange}
-                    {...field}
-                  /> */}
-                  <DatePicker
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date || new Date())}
-                  />
+                  <Input placeholder="dd/mm/yyyy" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
