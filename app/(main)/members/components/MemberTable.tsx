@@ -360,8 +360,8 @@ export default function MemberTable() {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            {/* {t('GENERAL.PAGINATION.PREVIOUS')} */}
-            <ChevronLeft />
+            {t('GENERAL.PAGINATION.PREVIOUS')}
+            Previous
           </Button>
           <Button
             variant="default"
@@ -369,8 +369,8 @@ export default function MemberTable() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            {/* {t('GENERAL.PAGINATION.NEXT')} */}
-            <ChevronRight />
+            {t('GENERAL.PAGINATION.NEXT')}
+            Next
           </Button>
         </div>
       </div>
