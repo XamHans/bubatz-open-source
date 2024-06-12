@@ -52,11 +52,6 @@ const AddMemberModal = () => {
     resolver: zodResolver(addMemberInputSchema),
   });
 
-  const onSubmit = async (data: AddMemberInput) => {
-    console.log('ADD MEMBER FORM ', data);
-    // execute(data);
-  };
-
   const handleSave = async (data: AddMemberInput) => {
     console.log('Data:', data);
     try {
@@ -71,22 +66,21 @@ const AddMemberModal = () => {
     console.log('Abort action');
   };
 
-  const [startDate, setStartDate] = useState(new Date());
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
-  const customInput = ({ value, onClick }) => {
-    return (
-      <div className="flex items-center">
-        <Input
-          value={value}
-          onClick={onClick}
-          placeholder="Enter date of birth"
-          readOnly
-        />
-        <FaCalendarAlt />
-      </div>
-    );
-  };
+  // const customInput = ({ value, onClick }) => {
+  //   return (
+  //     <div className="flex items-center">
+  //       <Input
+  //         value={value}
+  //         onClick={onClick}
+  //         placeholder="Enter date of birth"
+  //         readOnly
+  //       />
+  //       <FaCalendarAlt />
+  //     </div>
+  //   );
+  // };
 
   return (
     <GenericModal

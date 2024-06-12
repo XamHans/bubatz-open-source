@@ -34,12 +34,19 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { t } from 'i18next';
-import { ArrowUpDown, Trash2, Pencil } from 'lucide-react';
+import {
+  ArrowUpDown,
+  Trash2,
+  Pencil,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AddMemberModal } from './AddMemberModal';
+import { DeleteMemberModal } from './DeleteMemberModal';
 import { fetchMembersUseCase } from '@/modules/members/use-cases';
 import { useAction } from 'next-safe-action/hooks';
 // import {
@@ -53,11 +60,10 @@ import { Schema } from 'zod';
 import { UserSchema } from '@/modules/members/data-access/schema';
 
 const getUserTableColumns = (router: AppRouterInstance) => {
-  const handleDelete = async (confirmed: boolean, member: MemberProps) => {
-    if (confirmed) {
-      if (!member.id) throw Error('No member id available');
-    }
-  };
+  // const handleDelete = async (id: string) => {
+  //   const result = await deleteMember(id);
+  //   console.log('deleted member', result);
+  // };
 
   return [
     {
@@ -177,7 +183,7 @@ const getUserTableColumns = (router: AppRouterInstance) => {
               type="button"
               variant="ghost"
               className="transition-transform duration-200 hover:scale-110 hover:bg-inherit hover:text-red-400"
-              onClick={handleDelete}
+              onClick={() => DeleteMemberModal}
             >
               <TooltipProvider>
                 <Tooltip delayDuration={0}>
@@ -247,7 +253,7 @@ export default function MemberTable() {
   //     [],
   //   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     const data = getMembers();
     if (data) {
       console.log('MEMBERS TABLE MEMBER RESULT: ', data);
@@ -350,8 +356,8 @@ export default function MemberTable() {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            {t('GENERAL.PAGINATION.PREVIOUS')}
-            Previous
+            {/* {t('GENERAL.PAGINATION.PREVIOUS')} */}
+            <ChevronLeft />
           </Button>
           <Button
             variant="default"
@@ -359,8 +365,8 @@ export default function MemberTable() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            {t('GENERAL.PAGINATION.NEXT')}
-            Next
+            {/* {t('GENERAL.PAGINATION.NEXT')} */}
+            <ChevronRight />
           </Button>
         </div>
       </div>

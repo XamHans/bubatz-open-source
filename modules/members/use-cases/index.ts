@@ -1,12 +1,18 @@
 'use server';
 
-import { createMember, getMembers, updateMember } from '../data-access';
+import {
+  createMember,
+  deleteMember,
+  getMembers,
+  updateMember,
+} from '../data-access';
 
 import getLogger from '@/lib/logger';
 import { createSafeActionClient } from 'next-safe-action';
 import {
   UserSchema,
   addMemberInputSchema,
+  deleteMemberInputSchema,
   updateMemberInputSchema,
 } from '../data-access/schema';
 import { get } from 'http';
@@ -42,19 +48,6 @@ export const fetchMembersUseCase = action({}, async () => {
   return { members: parsedMembers };
 });
 
-// export const updateMemberUseCase = action(
-//   updateMemberInputSchema,
-//   async (id: string, { ...data }) => {
-//     console.log('data', data);
-//     if (!data) {
-//       return { failure: 'No data provided, cant update member' };
-//     }
-//     getLogger().debug('Updating member updateMemberUseCase', data);
-//     const updatedMember = await updateMember(data, id);
-//     return { success: updatedMember };
-//   },
-// );
-
 export const updateMemberUseCase = action(
   updateMemberInputSchema,
   async ({ ...data }) => {
@@ -65,5 +58,17 @@ export const updateMemberUseCase = action(
     // getLogger().debug('Updating member updateMemberUseCase', data);
     const updatedMember = await updateMember(data);
     return { success: updatedMember };
+  },
+);
+
+export const deleteMemberUseCase = action(
+  deleteMemberInputSchema,
+  async ({ id }) => {
+    console.log('id', id);
+    if (!id) {
+      return { failure: 'No data provided, cant delete member' };
+    }
+    const deletedMember = await deleteMember(id);
+    return { success: deletedMember };
   },
 );

@@ -75,7 +75,7 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
   //   }
   // };
 
-  const { execute, status } = useAction(updateMemberUseCase, {
+  const { execute } = useAction(updateMemberUseCase, {
     onSuccess: () => {
       console.log('Member updated successfully');
     },

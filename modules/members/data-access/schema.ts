@@ -1,3 +1,4 @@
+import { UUID } from 'crypto';
 import { relations, sql } from 'drizzle-orm';
 import {
   date,
@@ -91,6 +92,13 @@ export const updateMemberInputSchema = createInsertSchema(members, {
   // birthday: (schema) => schema.birthday,
 });
 export type UpdateMemberInput = z.infer<typeof updateMemberInputSchema>;
+
+// Schema for deleting a user
+export const deleteMemberInputSchema = z.object({
+  id: z.string(),
+});
+
+export type deleteMemberInput = { id: UUID };
 
 // Overriding the fields
 // const insertUserSchema = createInsertSchema(members, {
