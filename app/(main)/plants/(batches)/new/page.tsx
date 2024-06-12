@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 const CreateBatchPage = () => {
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Members', href: '/members' },
-    { label: 'Create New Member' },
+    { label: 'Plants', href: '/plants' },
+    { label: 'Create New Batch' },
   ];
   return (
     <>

@@ -15,17 +15,29 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from '@/components/ui/select';
+import {
   CreateBatchInput,
   createBatchInputSchema,
 } from '@/modules/plants/data-access/schema';
+import { GrowPhase } from '@/modules/plants/types';
 import { addBatchUseCase } from '@/modules/plants/use-cases';
 import { useAction } from 'next-safe-action/hooks';
+import { useRouter } from 'next/navigation';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const CreateBatchForm = () => {
+  const router = useRouter();
+
   const { execute, status } = useAction(addBatchUseCase, {
     onSuccess: (data) => {
-      console.log('Batch created successfully', data);
+      console.log('Batch id', data.success[0].insertedId);
+      const batchId = data.success[0].insertedId;
+      router.push(`/plants/${batchId}`);
     },
     onError: (error) => {
       console.log('Error creating batch', error);
@@ -38,7 +50,6 @@ const CreateBatchForm = () => {
 
   const onSubmit = (data: CreateBatchInput) => {
     execute(data);
-    form.reset();
   };
 
   return (
@@ -47,6 +58,19 @@ const CreateBatchForm = () => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="grid gap-2 sm:grid-cols-2 md:gap-4"
       >
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="strain"
@@ -97,46 +121,29 @@ const CreateBatchForm = () => {
           name="currentGrowthStage"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Current Growth Stage</FormLabel>
+              <FormLabel>Select Grow Phase</FormLabel>
               <FormControl>
-                <Input placeholder="Enter current growth stage" {...field} />
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="w-full">
+                    <span>{field.value || 'Select Grow Phase'}</span>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.values(GrowPhase).map((phase) => (
+                      <SelectItem key={phase} value={phase}>
+                        {phase}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="estimatedYield"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Estimated Yield (grams)</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="Enter estimated yield"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="otherDetails"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Other Details</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter other details" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <Button
           type="submit"
           disabled={status === 'loading'}

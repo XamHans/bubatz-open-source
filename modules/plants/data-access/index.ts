@@ -4,7 +4,7 @@ import { db } from '@/lib/db/db';
 import getLogger from '@/lib/logger';
 import { AsyncReturnType } from '@/lib/types';
 import { eq } from 'drizzle-orm/sql';
-import { CreateBatchInput, batches, plants } from './schema';
+import { CreateBatchInput, UpdateBatchInput, batches, plants } from './schema';
 const logger = getLogger();
 /**
  * Here is an example CRUD methods for the plants table.
@@ -25,10 +25,10 @@ const getBatches = async () => {
 };
 
 export const createBatch = async (input: CreateBatchInput) => {
-  logger.debug('Creating new batch', input);
+  console.log('input', input);
   const newBatchId = await db
     .insert(batches)
-    .values({ ...input })
+    .values(input)
     .returning({ insertedId: batches.id });
   return newBatchId;
 };
@@ -42,6 +42,23 @@ const getBatchDetail = async (id: string) => {
   return foundBatches[0];
 };
 
-export type GetBatchDetailQueryData = AsyncReturnType<typeof getBatchDetail>;
+export const getBatchById = async (id: string) => {
+  const result = await db
+    .select()
+    .from(batches)
+    .where(eq(batches.id, id))
+    .limit(1);
+  return result[0];
+};
+
+export const getPlantsByBatchId = async (batchId: string) => {
+  return await db.select().from(plants).where(eq(plants.batchId, batchId));
+};
+
+export const updateBatch = async (id: string, data: UpdateBatchInput) => {
+  return await db.update(batches).set(data).where(eq(batches.id, id));
+};
+
+export type BatchDetailsData = AsyncReturnType<typeof getBatchDetail>;
 
 export { getBatchDetail, getBatches, getPlants };
