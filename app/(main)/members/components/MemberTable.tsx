@@ -59,162 +59,174 @@ import { deleteMember, getMembers } from '@/modules/members/data-access';
 import { Schema } from 'zod';
 import { UserSchema } from '@/modules/members/data-access/schema';
 
-const getUserTableColumns = (router: AppRouterInstance) => {
-  // const handleDelete = async (id: string) => {
-  //   const result = await deleteMember(id);
-  //   console.log('deleted member', result);
-  // };
+export default function MemberTable() {
 
-  return [
-    {
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected()}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      id: 'avatar',
-      header: 'Image',
-      cell: ({ row }) => (
-        // <Checkbox
-        //   checked={row.getIsSelected()}
-        //   onCheckedChange={(value) => row.toggleSelected(!!value)}
-        //   aria-label="Select row"
-        // />
-        <Avatar className="h-12 w-12 ">
-          <AvatarImage src={``} />
-          <AvatarFallback>
-            {' '}
-            {(row.getValue('name') as string).charAt(0)}
-          </AvatarFallback>
-        </Avatar>
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
+  const getUserTableColumns = (router: AppRouterInstance) => {
+    // const handleDelete = async (id: string) => {
+    //   const result = await deleteMember(id);
+    //   console.log('deleted member', result);
+    // };
 
-    {
-      accessorKey: 'name',
-      accessorFn: (row) => {
-        return row.firstName + ' ' + row.lastName;
+    return [
+      {
+        id: 'select',
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllPageRowsSelected()}
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
+            aria-label="Select all"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
       },
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
+      {
+        id: 'avatar',
+        header: 'Image',
+        cell: ({ row }) => (
+          // <Checkbox
+          //   checked={row.getIsSelected()}
+          //   onCheckedChange={(value) => row.toggleSelected(!!value)}
+          //   aria-label="Select row"
+          // />
+          <Avatar className="h-12 w-12 ">
+            <AvatarImage src={``} />
+            <AvatarFallback>
+              {' '}
+              {(row.getValue('name') as string).charAt(0)}
+            </AvatarFallback>
+          </Avatar>
+        ),
+        enableSorting: false,
+        enableHiding: false,
       },
-      cell: ({ row }) => (
-        <div className="capitalize">{row.getValue('name')}</div>
-      ),
-    },
-    {
-      accessorKey: 'status',
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Status
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <Badge
-          variant="outline"
-          className={`${colorForClubMemberStatus.get(row.getValue('status'))}`}
-        >
-          ${row.getValue('status')}
-        </Badge>
-      ),
-    },
-    {
-      id: 'actions',
-      enableHiding: false,
-      cell: ({ row }) => {
-        const member = row.original;
-        return (
-          <div className="flex justify-center ">
+
+      {
+        accessorKey: 'name',
+        accessorFn: (row) => {
+          return row.firstName + ' ' + row.lastName;
+        },
+        header: ({ column }) => {
+          return (
             <Button
               variant="ghost"
-              className="transition-transform duration-200 hover:scale-110 hover:bg-inherit hover:text-green-400"
-              onClick={() => {
-                // router.push(configuration.paths.MEMBER_DETAIL.replace(":id", member:id!))
-                router.push(
-                  configuration.paths.members.detail.replace(':id', member.id!),
-                );
-              }}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === 'asc')
+              }
             >
-              <TooltipProvider>
-                <Tooltip delayDuration={0}>
-                  <TooltipTrigger>
-                    <Pencil className="h-6 w-6 cursor-pointer" />
-                  </TooltipTrigger>
-                  <TooltipContent align="end">
-                    <Badge className="bg-inherit text-black hover:bg-inherit">
-                      {' '}
-                      {t('member:ACTIONS.DETAIL')} Edit
-                    </Badge>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              Name
+              <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
+          );
+        },
+        cell: ({ row }) => (
+          <div className="capitalize">{row.getValue('name')}</div>
+        ),
+      },
+      {
+        accessorKey: 'status',
+        header: ({ column }) => {
+          return (
             <Button
-              type="button"
               variant="ghost"
-              className="transition-transform duration-200 hover:scale-110 hover:bg-inherit hover:text-red-400"
-              onClick={() => DeleteMemberModal}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === 'asc')
+              }
             >
-              <TooltipProvider>
-                <Tooltip delayDuration={0}>
-                  <TooltipTrigger>
-                    <Trash2 className="h-6 w-6 cursor-pointer" />
-                  </TooltipTrigger>
-                  <TooltipContent align="end">
-                    <Badge className="bg-inherit text-black hover:bg-inherit">
-                      {' '}
-                      {t('member:ACTIONS.DETAIL')} Delete
-                    </Badge>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              Status
+              <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
+          );
+        },
+        cell: ({ row }) => (
+          <Badge
+            variant="outline"
+            className={`${colorForClubMemberStatus.get(row.getValue('status'))}`}
+          >
+            ${row.getValue('status')}
+          </Badge>
+        ),
+      },
+      {
+        id: 'actions',
+        enableHiding: false,
+        cell: ({ row }) => {
+          const member = row.original;
+          return (
+            <div className="flex justify-center ">
+              <Button
+                variant="ghost"
+                className="transition-transform duration-200 hover:scale-110 hover:bg-inherit hover:text-green-400"
+                onClick={() => {
+                  // router.push(configuration.paths.MEMBER_DETAIL.replace(":id", member:id!))
+                  router.push(
+                    configuration.paths.members.detail.replace(
+                      ':id',
+                      member.id!,
+                    ),
+                  );
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger>
+                      <Pencil className="h-6 w-6 cursor-pointer" />
+                    </TooltipTrigger>
+                    <TooltipContent align="end">
+                      <Badge className="bg-inherit text-black hover:bg-inherit">
+                        {' '}
+                        {t('member:ACTIONS.DETAIL')} Edit
+                      </Badge>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                className="transition-transform duration-200 hover:scale-110 hover:bg-inherit hover:text-red-400"
+              >
+                <TooltipProvider>
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger>
+                      <DeleteMemberModal
+                        member={member}
+                        setMembers={setMembers}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent align="end">
+                      <Badge className="bg-inherit text-black hover:bg-inherit">
+                        {' '}
+                        {t('member:ACTIONS.DETAIL')} Delete
+                      </Badge>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </Button>
 
-            {/* <EditMemberModal member={member} />
+              {/* <EditMemberModal member={member} />
             <DeleteModal<MemberProps>
               entity={member}
               onDelete={handleDelete}
               deleteConfirmationHeader={t("member:ACTIONS.DELETE")}
               deleteConfirmationText={t("member:ACTIONS.DELETE_TEXT")}
             />{" "} */}
-          </div>
-        );
+            </div>
+          );
+        },
       },
-    },
-  ];
-};
+    ];
+  };
 
-export default function MemberTable() {
   /**
    * TODO: REPLACE FOR GET USE CASE WITH NEXT ACTION
    */

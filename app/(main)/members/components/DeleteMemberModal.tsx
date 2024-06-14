@@ -1,44 +1,37 @@
 import { deleteMember } from '@/modules/members/data-access';
-import { deleteMemberInput } from '@/modules/members/data-access/schema';
+import {
+  UserSchema,
+  deleteMemberInput,
+} from '@/modules/members/data-access/schema';
 import { deleteMemberUseCase } from '@/modules/members/use-cases';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogClose,
-} from '@radix-ui/react-dialog';
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { UUID } from 'crypto';
 import { useAction } from 'next-safe-action/hooks';
 import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/router';
+import { Trash2 } from 'lucide-react';
 
 interface DeleteMemberModalProps {
-  firstName: string;
-  lastName: string;
-  open: boolean;
+  member: UserSchema;
+  setMembers: React.Dispatch<React.SetStateAction<UserSchema[]>>;
 }
 
 const DeleteMemberModal: React.FC<DeleteMemberModalProps> = ({
-  firstName,
-  lastName,
-  open,
+  member,
+  setMembers,
 }) => {
-  const { execute } = useAction(deleteMemberUseCase, {
-    onSuccess: () => {
-      console.log('Member deleted successfully');
-    },
-    onError: (error) => {
-      console.log('Error deleting member', error);
-    },
-  });
-
-  const params = useParams<{ id: UUID }>();
-
   const handleDelete = async () => {
-    const data: deleteMemberInput = { id: params.id };
-    const result = await execute(data);
+    const data = { id: member.id as UUID };
+    const result = await deleteMember(data.id);
     console.log('deleted member', result);
+    setMembers((prev) => prev.filter((m) => m.id !== data.id));
   };
 
   const handleAbort = () => {
@@ -46,16 +39,17 @@ const DeleteMemberModal: React.FC<DeleteMemberModalProps> = ({
   };
 
   return (
-    <Dialog open={open}>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Trash2 className="h-6 w-6 cursor-pointer" />
+      </DialogTrigger>
       <DialogContent>
         <DialogDescription>
-          <p>
-            Are you sure you want to delete the member{' '}
-            <strong>
-              {firstName} {lastName}
-            </strong>
-            ?
-          </p>
+          Are you sure you want to delete the member{' '}
+          <strong>
+            {member.firstName} {member.lastName}
+          </strong>
+          ?
         </DialogDescription>
         <DialogClose asChild>
           <Button type="button" onClick={handleDelete}>
