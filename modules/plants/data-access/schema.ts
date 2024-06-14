@@ -135,7 +135,7 @@ export const updateBatchInputSchema = createInsertSchema(batches, {
 
 export const createPlantInputSchema = createInsertSchema(plants, {
   name: z.string().min(1),
-  batchId: z.string().min(1),
+  batchId: z.string().optional(), // id is coming from context not from form
   position: z.string().min(1),
 });
 

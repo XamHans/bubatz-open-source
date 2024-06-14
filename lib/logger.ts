@@ -1,34 +1,14 @@
-import type { Logger } from 'pino';
+const pino = require('pino');
+import { Logger } from 'pino';
 
-let logger: Logger;
-
-/**
- * @name getLogger
- */
-function getLogger() {
-  if (logger) {
-    return logger;
-  }
-
-  const pino = require('pino');
-
-  logger = pino({
-    browser: {
-      asObject: true,
+export const logger: Logger = pino({
+  transport: {
+    target: 'pino-pretty',
+    options: {
+      colorize: true,
     },
-    transport: {
-      target: 'pino-pretty',
-      options: {
-        colorize: true,
-      },
-    },
-    level: 'debug',
-    base: {
-      env: process.env.NODE_ENV,
-    },
-  });
+  },
+  level: process.env.PINO_LOG_LEVEL || 'info',
 
-  return logger;
-}
-
-export default getLogger;
+  redact: [], // prevent logging of sensitive data
+});
