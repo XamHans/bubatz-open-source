@@ -6,7 +6,10 @@ import {
   updateMember,
 } from '@/modules/members/data-access/index';
 import { ClubMemberStatus } from '@/modules/members/types';
-import { UpdateMemberInput } from '@/modules/members/data-access/schema';
+import {
+  UpdateMemberInput,
+  UserSchema,
+} from '@/modules/members/data-access/schema';
 import { Button } from '@/components/ui/button';
 import { DialogClose, DialogFooter } from '@/components/ui/dialog';
 import {
@@ -39,6 +42,7 @@ import { useAction } from 'next-safe-action/hooks';
 import { updateMemberUseCase } from '@/modules/members/use-cases';
 import { useParams } from 'next/navigation';
 import { UUID } from 'crypto';
+import React from 'react';
 
 export const memberProfileSchema = z.object({
   firstName: z.string().min(3, { message: 'First name is required' }),
@@ -84,6 +88,7 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
     },
   });
 
+  const [members, setMembers] = React.useState<UserSchema[]>([]);
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const params = useParams<{ id: UUID }>();
