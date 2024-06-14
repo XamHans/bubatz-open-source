@@ -1,7 +1,15 @@
 import { transactions } from '@/modules/sales/data-access/schema';
-import { jsonb, pgTable, real, serial, text } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
+import {
+  date,
+  jsonb,
+  pgTable,
+  real,
+  serial,
+  text,
+  uuid,
+} from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm/relations';
-import { sql } from 'drizzle-orm/sql';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
@@ -73,34 +81,70 @@ const defaultSeedToSale = {
   },
 };
 
+export const batches = pgTable('batches', {
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  name: text('name').notNull(),
+  strain: text('strain').notNull(),
+  startDate: date('start_date')
+    .notNull()
+    .default(sql`now()`),
+  endDate: date('end_date').notNull(),
+  currentGrowthStage: text('current_growth_stage').notNull(),
+  pricePerGram: real('price_per_gram'),
+  otherDetails: jsonb('other_details').default('{}'),
+});
+
 export const plants = pgTable('plants', {
   id: serial('id').primaryKey(),
-  name: text('quantity').notNull(),
-  pricePerGram: real('price_per_gram').notNull(),
-  strain: text('strain').notNull(),
-  batchId: text('batch_id').notNull(), // ? Should be a table of its own in the future ?
-  currentGrowtStage: text('current_growth_stage').notNull(),
+  name: text('name').notNull(),
+  batchId: uuid('batch_id')
+    .notNull()
+    .references(() => batches.id, { onDelete: 'cascade' }),
+  position: text('position').notNull(),
+  health: text('health').default('healthy'),
   seedToSale: jsonb('seed_to_sale').notNull().default(defaultSeedToSale),
 });
+
+export const batchesRelations = relations(batches, ({ many }) => ({
+  plants: many(plants),
+}));
 
 export const plantsRelations = relations(plants, ({ many }) => ({
   transactions: many(transactions),
 }));
 
-/**
- * * Input schemas
- */
+export const createBatchInputSchema = createInsertSchema(batches, {
+  name: z.string().min(1),
+  startDate: z.date(),
+  endDate: z.date().optional(),
+  currentGrowthStage: z.string().min(1),
+
+  otherDetails: z.object({}).optional(),
+});
+
+export const updateBatchInputSchema = createInsertSchema(batches, {
+  name: z.string().min(1),
+  startDate: z.date(),
+  endDate: z.date().optional(),
+  currentGrowthStage: z.string().min(1),
+  pricePerGram: z.number().optional(),
+  otherDetails: z.object({}).optional(),
+});
 
 export const createPlantInputSchema = createInsertSchema(plants, {
   name: z.string().min(1),
-  pricePerGram: z.number().positive(),
-  strain: z.string().min(1),
-  batchId: z.string().min(1),
-  currentGrowtStage: z.string().min(1),
-  seedToSale: z.object({}).default(defaultSeedToSale),
+  batchId: z.string().optional(), // id is coming from context not from form
+  position: z.string().min(1),
 });
 
-export const getPlantInputSchema = createSelectSchema(plants);
+export const getBatchesSchema = createSelectSchema(batches);
+export const getPlantsSchema = createSelectSchema(plants);
+
+export type CreateBatchInput = z.infer<typeof createBatchInputSchema>;
+export type UpdateBatchInput = z.infer<typeof updateBatchInputSchema>;
 
 export type CreatePlantInput = z.infer<typeof createPlantInputSchema>;
-export type GetPlantInput = z.infer<typeof getPlantInputSchema>;
+export type GetBatches = z.infer<typeof getBatchesSchema>;
+export type GetPlants = z.infer<typeof getPlantsSchema>;

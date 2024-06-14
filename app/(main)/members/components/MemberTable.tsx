@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { MemberProps, colorForClubMemberStatus } from '@/modules/members/types';
+import { fetchMembersUseCase } from '@/modules/members/use-cases';
 import {
   ColumnFiltersState,
   SortingState,
@@ -35,21 +36,16 @@ import {
 } from '@tanstack/react-table';
 import { t } from 'i18next';
 import { ArrowUpDown, EyeIcon } from 'lucide-react';
+import { useAction } from 'next-safe-action/hooks';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AddMemberModal } from './AddMemberModal';
-import { fetchMembersUseCase } from '@/modules/members/use-cases';
-import { useAction } from 'next-safe-action/hooks';
 // import {
 //   selectUser,
 //   selectUserSchema,
 // } from '@/modules/members/data-access/schema';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { getMembers } from '@/modules/members/data-access';
-import { Schema } from 'zod';
 
 const getUserTableColumns = (router: AppRouterInstance) => {
   const handleDelete = async (confirmed: boolean, member: MemberProps) => {
@@ -184,19 +180,6 @@ const getUserTableColumns = (router: AppRouterInstance) => {
 };
 
 export default function MemberTable() {
-  /**
-   * TODO: REPLACE FOR GET USE CASE WITH NEXT ACTION
-   */
-
-  // const {
-  //     data,
-  //     error: getMemberError,
-  //     fetchStatus,
-  // } = useQuery({
-  //     queryFn: async () => getMembers(),
-  //     queryKey: ['members'],
-  // })
-
   const { execute, status } = useAction(fetchMembersUseCase, {
     onSuccess: (data) => {
       console.log('Member added successfully');
@@ -213,21 +196,9 @@ export default function MemberTable() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const router = useRouter();
-  //   React.useEffect(() => {
-  //       if (data) {
-  //         console.log('MEMBERS TABLE MEMBER RESULT: ', data);
-  //         execute(data);
-  //       }
-  //     },
-  //     [],
-  //   );
 
-  React.useEffect(() => {
-    const data = getMembers();
-    if (data) {
-      console.log('MEMBERS TABLE MEMBER RESULT: ', data);
-      execute(data);
-    }
+  useEffect(() => {
+    execute({});
   }, [execute]);
 
   const table = useReactTable({

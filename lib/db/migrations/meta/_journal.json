@@ -1,47 +1,12 @@
 {
-  "version": "5",
-  "dialect": "pg",
+  "version": "6",
+  "dialect": "postgresql",
   "entries": [
     {
       "idx": 0,
-      "version": "5",
-      "when": 1713876389680,
-      "tag": "0000_robust_spencer_smythe",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
       "version": "6",
-      "when": 1716388448341,
-      "tag": "0001_normal_scream",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1717518746023,
-      "tag": "0002_serious_jack_power",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1717518996235,
-      "tag": "0003_skinny_korvac",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1717691418569,
-      "tag": "0004_organic_wilson_fisk",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "6",
-      "when": 1717691762490,
-      "tag": "0005_spooky_hawkeye",
+      "when": 1718097450237,
+      "tag": "0000_brainy_meteorite",
       "breakpoints": true
     }
   ]
