@@ -54,6 +54,11 @@ const configuration = {
       all: 'sales/',
       detail: 'sales/:id',
     },
+    plants: {
+      all: 'plants/',
+      new: '/plants/new',
+      detail: 'plants/:id',
+    },
   },
 };
 

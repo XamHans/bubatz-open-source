@@ -1,12 +1,8 @@
 'use client';
 
 import configuration from '@/app/configuration';
-
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -21,7 +17,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { MemberProps, colorForClubMemberStatus } from '@/modules/members/types';
+import { fetchBatchesUseCase } from '@/modules/plants/use-cases';
 import {
   ColumnFiltersState,
   SortingState,
@@ -35,122 +31,119 @@ import {
 } from '@tanstack/react-table';
 import { t } from 'i18next';
 import { ArrowUpDown, EyeIcon } from 'lucide-react';
+import { useAction } from 'next-safe-action/hooks';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-// import { AddMemberModal } from './AddMemberModal';
-import { useAction } from 'next-safe-action/hooks';
-// import {
-//   selectUser,
-//   selectUserSchema,
-// } from '@/modules/members/data-access/schema';
-import { GetPlants } from '@/modules/plants/data-access/schema';
-import { fetchPlantsUseCase } from '@/modules/plants/use-cases';
 
 const getPlantTableColumns = (router: AppRouterInstance) => {
-  const handleDelete = async (confirmed: boolean, member: MemberProps) => {
-    if (confirmed) {
-      if (!member.id) throw Error('No member id available');
-    }
-  };
-
   return [
     {
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected()}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      id: 'avatar',
-      header: 'Image',
-      cell: ({ row }) => (
-        // <Checkbox
-        //   checked={row.getIsSelected()}
-        //   onCheckedChange={(value) => row.toggleSelected(!!value)}
-        //   aria-label="Select row"
-        // />
-        <Avatar className="h-12 w-12 ">
-          <AvatarImage src={``} />
-          <AvatarFallback>
-            {' '}
-            {(row.getValue('name') as string).charAt(0)}
-          </AvatarFallback>
-        </Avatar>
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-
-    {
-      accessorKey: 'name',
-      accessorFn: (row) => {
-        return row.firstName + ' ' + row.lastName;
-      },
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <div className="capitalize">{row.getValue('name')}</div>
-      ),
-    },
-    {
-      accessorKey: 'status',
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Status
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <Badge
-          variant="outline"
-          className={`${colorForClubMemberStatus.get(row.getValue('status'))}`}
+      id: 'id',
+      accessorKey: 'id',
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="justify-start text-xs"
         >
-          ${row.getValue('status')}
+          Batch ID
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <div className="ml-4 text-left">
+          {String(row.getValue('id')).slice(-6)}
+        </div>
+      ),
+    },
+    {
+      id: 'name',
+      accessorKey: 'name',
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="justify-start text-xs"
+        >
+          Batch Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <div className="ml-4 text-left">{row.getValue('name')}</div>
+      ),
+    },
+    {
+      id: 'strain',
+      accessorKey: 'strain',
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="justify-start text-xs"
+        >
+          Strain
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <Badge className="ml-4" variant="outline">
+          {row.getValue('strain')}
         </Badge>
+      ),
+    },
+    {
+      id: 'startDate',
+      accessorKey: 'startDate',
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="justify-start text-xs"
+        >
+          Start Date
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <div className="text-lef ml-4">
+          {new Date(row.getValue('startDate')).toLocaleDateString()}
+        </div>
+      ),
+    },
+    {
+      id: 'currentGrowthStage',
+      accessorKey: 'currentGrowthStage',
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="justify-start text-xs"
+        >
+          Current Growth Stage
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <div className="ml-4 text-left">
+          <Badge variant="outline">{row.getValue('currentGrowthStage')}</Badge>
+        </div>
       ),
     },
     {
       id: 'actions',
       enableHiding: false,
       cell: ({ row }) => {
-        const member = row.original;
+        const plant = row.original;
         return (
-          <div className="flex justify-center ">
+          <div className="flex justify-start">
             <Button
               variant="ghost"
               className="hover:bg-inherit"
               onClick={() => {
-                // router.push(configuration.paths.MEMBER_DETAIL.replace(":id", member:id!))
                 router.push(
-                  configuration.paths.members.detail.replace(':id', member.id!),
+                  configuration.paths.plants.detail.replace(':id', plant.id),
                 );
               }}
             >
@@ -159,19 +152,10 @@ const getPlantTableColumns = (router: AppRouterInstance) => {
                   <TooltipTrigger>
                     <EyeIcon className="h-6 w-6 cursor-pointer" />
                   </TooltipTrigger>
-                  <TooltipContent align="end">
-                    <Badge> {t('member:ACTIONS.DETAIL')}</Badge>
-                  </TooltipContent>
+                  <TooltipContent align="end">Zur Detail Seite</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </Button>
-            {/* <EditMemberModal member={member} />
-            <DeleteModal<MemberProps>
-              entity={member}
-              onDelete={handleDelete}
-              deleteConfirmationHeader={t("member:ACTIONS.DELETE")}
-              deleteConfirmationText={t("member:ACTIONS.DELETE_TEXT")}
-            />{" "} */}
           </div>
         );
       },
@@ -180,17 +164,16 @@ const getPlantTableColumns = (router: AppRouterInstance) => {
 };
 
 export default function PlantsTable() {
-  const { execute, status } = useAction(fetchPlantsUseCase, {
+  const { execute, status } = useAction(fetchBatchesUseCase, {
     onSuccess: (data) => {
-      console.log(data.plants);
-      setPlants(data?.plants as GetPlants[]);
+      setPlants(data?.batches);
     },
     onError: (error) => {
       console.log('Error fetching plants', error);
     },
   });
 
-  const [plants, setPlants] = useState<GetPlants[]>([]);
+  const [plants, setPlants] = useState([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -220,94 +203,51 @@ export default function PlantsTable() {
     },
   });
 
-  //  const {t} = await initializeI18nClient('en')
-
   return (
-    <div className="space-y-4 ">
-      <div className="flex items-center space-x-2">
-        <Input
-          placeholder={t('member:ACTIONS.SEARCH') ?? ''}
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event) =>
-            table.getColumn('name')?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        {/* <AddMemberModal /> */}
-      </div>
-      <div className="rounded-md border">
-        <Table className="rounded-md bg-white">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
+    <Table className="rounded-md bg-white">
+      <TableHeader>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableRow key={headerGroup.id}>
+            {headerGroup.headers.map((header) => (
+              <TableHead
+                key={header.id}
+                className="text-left text-xs sm:table-cell"
+              >
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+              </TableHead>
             ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell className="mx-auto" key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell className="h-24 text-center">
-                  {t('GENERAL.DATA_TABLE.NO_RESULTS', {
-                    entity: t('member:TITLE'),
-                  })}
+          </TableRow>
+        ))}
+      </TableHeader>
+      <TableBody>
+        {table.getRowModel().rows?.length ? (
+          table.getRowModel().rows.map((row) => (
+            <TableRow
+              key={row.id}
+              data-state={row.getIsSelected() && 'selected'}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <TableCell className="text-left" key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        {/* <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div> */}
-        <div className="space-x-2">
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            {t('GENERAL.PAGINATION.PREVIOUS')}
-          </Button>
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            {t('GENERAL.PAGINATION.NEXT')}
-          </Button>
-        </div>
-      </div>
-    </div>
+              ))}
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell className="h-24 text-center">
+              {t('GENERAL.DATA_TABLE.NO_RESULTS', {
+                entity: t('plants:TITLE'),
+              })}
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
   );
 }
