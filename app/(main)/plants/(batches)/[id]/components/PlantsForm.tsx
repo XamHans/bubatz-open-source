@@ -1,6 +1,7 @@
 'use client';
 
-import { GenericSheet } from '@/components/generic/GenericSheet';
+import { GenericModal } from '@/components/generic/GenericModal';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -9,6 +10,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -20,9 +29,18 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { fetchPlantsFromBatchUseCase } from '@/modules/plants/use-cases';
+import {
+  CreatePlantInput,
+  createPlantInputSchema,
+} from '@/modules/plants/data-access/schema';
+
+import {
+  createPlantUseCase,
+  fetchPlantsFromBatchUseCase,
+} from '@/modules/plants/use-cases';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAction } from 'next-safe-action/hooks';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export interface PlantFormProps {
@@ -30,12 +48,27 @@ export interface PlantFormProps {
 }
 
 const PlantsForm: React.FC<PlantFormProps> = ({ batchId }) => {
-  const form = useForm();
+  const [open, setOpen] = useState(false);
 
   const { execute } = useAction(fetchPlantsFromBatchUseCase, {
     onSuccess: (data) => console.log('Plants ', data),
     onError: (error) => console.log('Error fetching plants by batch', error),
   });
+
+  const { execute: createPlantExecute } = useAction(createPlantUseCase, {
+    onSuccess: (data) => console.log('Plants ', data),
+    onError: (error) => console.log('Error fetching plants by batch', error),
+  });
+
+  const form = useForm<CreatePlantInput>({
+    resolver: zodResolver(createPlantInputSchema),
+  });
+
+  const onSubmit = (data: CreatePlantInput) => {
+    console.log('Create Plant ', data);
+    createPlantExecute({ ...data, batchId, health: 'healthy' });
+    setOpen(false);
+  };
 
   useEffect(() => {
     execute({ batchId });
@@ -84,39 +117,57 @@ const PlantsForm: React.FC<PlantFormProps> = ({ batchId }) => {
         </Table>
       </CardContent>
       <CardFooter className="justify-center border-t p-4">
-        <GenericSheet
+        <GenericModal
           headerTitle="Add New Plant"
           description="Fill out the details below to add a new plant to the batch."
-          onSave={() => console.log('Save plant')} // Adjust logic as needed
-          onAbort={() => console.log('Abort')}
+          open={open}
+          setOpen={setOpen}
         >
-          <div className="grid gap-4 space-y-2">
-            <div>
-              <Label htmlFor="new-stock">Position</Label>
-              <Input
-                id="position"
-                placeholder="Enter position of the plant inside the batch "
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="grid gap-2 sm:grid-cols-2 md:gap-4"
+            >
+              <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    {/* <FormLabel>{t('MEMBER.FIRST_NAME')}</FormLabel> */}
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Give the plant a name if you like"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div>
-              <Label htmlFor="new-size">Health</Label>
-              <ToggleGroup
-                type="single"
-                defaultValue="healthy"
-                variant="outline"
-              >
-                <ToggleGroupItem value="healthy">Healthy</ToggleGroupItem>
-                <ToggleGroupItem value="needs-nutrient-adjustment">
-                  Needs Nutrient Adjustment
-                </ToggleGroupItem>
-                <ToggleGroupItem value="in-danger">
-                  In Danger (Illness)
-                </ToggleGroupItem>
-              </ToggleGroup>
-            </div>
-          </div>
-        </GenericSheet>
+              <FormField
+                control={form.control}
+                name="position"
+                render={({ field }) => (
+                  <FormItem>
+                    {/* <FormLabel>{t('MEMBER.LAST_NAME')}</FormLabel> */}
+                    <FormLabel>Position</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter the position of the plant inside of the batch"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit">Save</Button>
+            </form>
+          </Form>
+        </GenericModal>
       </CardFooter>
     </Card>
   );
