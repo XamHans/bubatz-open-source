@@ -285,10 +285,7 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
                       </FormLabel>
                     </SelectItem>
                     <SelectItem value={ClubMemberStatus.PENDING}>
-                      <FormLabel>
-                        PENDING
-                        {t('MEMBER.STATUS_OPTIONS.PENDING')}
-                      </FormLabel>
+                      {t('MEMBER.STATUS_OPTIONS.PENDING')}
                     </SelectItem>
                     <SelectItem value={ClubMemberStatus.ACTIVE}>
                       <FormLabel>
