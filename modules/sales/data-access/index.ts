@@ -33,6 +33,7 @@ export const getSaleById = async (id: number): Promise<Sale | null> => {
 export const createSale = async (
   sale: CreateSaleInput,
 ): Promise<Sale | null> => {
+  console.log('sale!!', sale);
   return await db.transaction(async (tx) => {
     try {
       const newSale: Sale = (
@@ -42,7 +43,7 @@ export const createSale = async (
       return newSale;
     } catch (error) {
       tx.rollback();
-      console.error('Error creating sale', error);
+      console.log('Error creating sale', error);
       return null;
     }
   });

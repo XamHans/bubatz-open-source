@@ -43,7 +43,7 @@ export const salesItems = pgTable('sales_items', {
   quantity: real('quantity').notNull(),
   weightGrams: real('weight_grams').notNull(),
   price: real('price').notNull(),
-  plantId: integer('plant_id')
+  plantId: uuid('plant_id')
     .notNull()
     .references(() => plants.id),
   saleId: integer('sale_id')
@@ -92,10 +92,14 @@ export const createSaleInputSchema = createInsertSchema(sales, {
 export type CreateSaleInput = z.infer<typeof createSaleInputSchema>;
 
 export const createSaleItemInputSchema = createInsertSchema(salesItems, {
-  quantity: (schema) => schema.quantity.positive(),
-  weightGrams: (schema) => schema.weightGrams.positive(),
-  price: (schema) => schema.price.positive(),
-  plantId: (schema) => schema.plantId.positive().optional(),
+  weightGrams: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
+    message: 'Expected number, received a string',
+  }),
+  price: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
+    message: 'Expected number, received a string',
+  }),
+  plantId: (schema) => schema.plantId.uuid(),
+  quantity: (schema) => schema.quantity.positive().optional(),
   saleId: (schema) => schema.saleId.positive().optional(),
 });
 export type CreateSaleItemInput = z.infer<typeof createSaleItemInputSchema>;
@@ -103,5 +107,5 @@ export type CreateSaleItemInput = z.infer<typeof createSaleItemInputSchema>;
 export const getSaleSchema = createSelectSchema(sales);
 export type Sale = z.infer<typeof getSaleSchema>;
 
-const paymentMethodsSchema = z.enum(paymentMethods.enumValues);
-export type PaymentMethodsEnum = z.infer<typeof paymentMethodsSchema>;
+export const PaymentMethodsEnum = z.enum(paymentMethods.enumValues);
+export type PaymentMethodsType = z.infer<typeof PaymentMethodsEnum>;

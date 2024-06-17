@@ -13,8 +13,8 @@ export default async function NewSalePage() {
       <Container className="space-y-12">
         {/* <HydrationBoundary state={dehydrate(queryClient)}> */}
         <Hero
-          title="MEMBER.TITLE"
-          description="CLUB.INVITE_MEMBER.DESCRIPTION"
+          title="Create a new sale"
+          description="Fill in the details to create a new sale."
         />
         <SaleForm />
         {/* </HydrationBoundary> */}

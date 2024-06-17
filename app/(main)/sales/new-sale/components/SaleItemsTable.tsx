@@ -35,95 +35,97 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { EyeIcon } from 'lucide-react';
+import { EyeIcon, Trash } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { CreateSaleItemInput } from '@/modules/sales/data-access/schema';
 
 interface SaleItemsTableProps {
-  saleItems: SaleItem[];
-  deleteItem: (item: SaleItem) => void;
-}
-
-function getItemSalesTableColumns(
-  router: AppRouterInstance,
-  { deleteItem }: Omit<SaleItemsTableProps, 'saleItems'>,
-) {
-  return [
-    {
-      id: 'plantId',
-      header: 'Plant',
-      cell: ({ row }) => (
-        <div className="capitalize">{row.original.plantName}</div>
-      ),
-    },
-    {
-      id: 'weightGrams',
-      header: 'Grams',
-      cell: ({ row }) => (
-        <div className="capitalize">{row.original.weightGrams} grams</div>
-      ),
-    },
-    {
-      id: 'price',
-      header: 'Price',
-      cell: ({ row }) => (
-        <div className="capitalize">{row.original.price} €</div>
-      ),
-    },
-    {
-      id: 'totalPrice',
-      header: 'Total Price',
-      cell: ({ row }) => (
-        <div className="capitalize">
-          {row.original.price * row.original.weightGrams} €
-        </div>
-      ),
-    },
-    {
-      id: 'actions',
-      enableHiding: false,
-      header: 'Actions',
-      cell: ({ row }) => {
-        const item: SaleItem = row.original;
-        return (
-          <div className="flex justify-center ">
-            <Button
-              variant="ghost"
-              className="hover:bg-inherit"
-              onClick={() => {
-                deleteItem(item);
-              }}
-            >
-              <TooltipProvider>
-                <Tooltip delayDuration={0}>
-                  <TooltipTrigger>
-                    <EyeIcon className="h-6 w-6 cursor-pointer" />
-                  </TooltipTrigger>
-                  <TooltipContent align="end">
-                    <Badge> Delete item </Badge>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </Button>
-          </div>
-        );
-      },
-    },
-  ];
+  saleItems: CreateSaleItemInput[];
+  deleteItem: (item: CreateSaleItemInput) => void;
+  plants: { id: string; name: string; price: number }[];
 }
 
 export default function SaleItemsTable(props: SaleItemsTableProps) {
-  const { saleItems, deleteItem } = props;
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const { saleItems, deleteItem, plants } = props;
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const router = useRouter();
 
+  const getItemSalesTableColumns = (
+    router: AppRouterInstance,
+    { deleteItem, plants }: Omit<SaleItemsTableProps, 'saleItems'>,
+  ) => {
+    return [
+      {
+        id: 'plantId',
+        header: 'Plant',
+        cell: ({ row }) => (
+          <div className="capitalize">
+            {plants.find((plant) => plant.id === row.original.plantId)?.name}
+          </div>
+        ),
+      },
+      {
+        id: 'weightGrams',
+        header: 'Grams',
+        cell: ({ row }) => (
+          <div className="capitalize">{row.original.weightGrams} grams</div>
+        ),
+      },
+      {
+        id: 'price',
+        header: 'Current Price',
+        cell: ({ row }) => (
+          <div className="capitalize">{row.original.price} €</div>
+        ),
+      },
+      {
+        id: 'totalPrice',
+        header: 'Total Price',
+        cell: ({ row }) => (
+          <div className="capitalize">
+            {row.original.price * row.original.weightGrams} €
+          </div>
+        ),
+      },
+      {
+        id: 'actions',
+        enableHiding: false,
+        header: 'Actions',
+        cell: ({ row }) => {
+          const item: CreateSaleItemInput = row.original;
+          return (
+            <div className=" ">
+              <Button
+                variant="ghost"
+                className="hover:bg-inherit"
+                onClick={() => {
+                  deleteItem(item);
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger>
+                      <Trash className="h-6 w-6 cursor-pointer" />
+                    </TooltipTrigger>
+                    <TooltipContent align="end">
+                      <Badge> Delete item </Badge>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </Button>
+            </div>
+          );
+        },
+      },
+    ];
+  };
+
   const table = useReactTable({
     data: saleItems,
-    columns: getItemSalesTableColumns(router, {
-      deleteItem: deleteItem,
-    }),
+    columns: getItemSalesTableColumns(router, props),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),

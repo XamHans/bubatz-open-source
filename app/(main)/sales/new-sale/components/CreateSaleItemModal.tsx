@@ -12,43 +12,85 @@ import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-
-import { ClubMemberStatus } from '@/modules/club/types';
-import { useAction } from 'next-safe-action/hooks';
-import { GenericModal } from '@/components/generic/GenericModal';
+import { NewItemModal } from './NewItemModal';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  CreateSaleItemInput,
+  createSaleItemInputSchema,
+} from '@/modules/sales/data-access/schema';
 import { useState } from 'react';
-import { createSaleInputSchema } from '@/modules/sales/data-access/schema';
-import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import SaleItem from './types';
-import { Checkbox } from '@/components/ui/checkbox';
+import { UUID } from 'crypto';
+import { Button } from '@/components/ui/button';
+import { DialogClose } from '@/components/ui/dialog';
 
 interface CreateSaleItemModalProps {
-  plants: { name: string; price: number }[];
-  addItem: (item: SaleItem) => void;
+  plants: { id: UUID; name: string; price: number }[];
+  addItem: (item: CreateSaleItemInput) => void;
 }
 
 export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
-  const form = useForm<SaleItem>({
-    mode: 'onSubmit',
-    //resolver: zodResolver(createSaleInputSchema),
+  const { plants } = props;
+
+  const [isPlantSelected, setIsPlantSelected] = useState(false);
+  const [errors, setErrors] = useState<{ field: string; message: string }[]>(
+    [],
+  );
+
+  const form = useForm<CreateSaleItemInput>({
+    mode: 'onChange',
+    resolver: zodResolver(createSaleItemInputSchema),
   });
 
-  const handleSave = (data: SaleItem) => {
-    data = { ...data, totalPrice: data.price * data.weightGrams };
+  const handleSave = (data: CreateSaleItemInput) => {
     console.log('data', data);
+
+    setErrors([]);
+    let hasErrors = false;
+
+    if (!data.price) {
+      setErrors((prev) => [
+        ...prev,
+        { field: 'price', message: 'Price is required' },
+      ]);
+      hasErrors = true;
+    }
+
+    if (!data.plantId) {
+      setErrors((prev) => [
+        ...prev,
+        { field: 'plantId', message: 'Plant name is required' },
+      ]);
+      hasErrors = true;
+    }
+
+    if (!data.weightGrams) {
+      setErrors((prev) => [
+        ...prev,
+        {
+          field: 'weightGrams',
+          message: 'Weight in grams is required',
+        },
+      ]);
+      hasErrors = true;
+    }
+
+    if (hasErrors) return false;
+
+    data = { ...data };
     props.addItem(data);
+    form.reset();
+    setErrors([]);
+    return true;
   };
 
   const handleAbort = () => {
-    console.log('Abort action');
+    form.reset();
+    setErrors([]);
   };
 
   /**
@@ -56,95 +98,88 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
    * ! OR HOW TO FIX IT. BUT ITS WORKING FINE. :D
    */
   return (
-    <GenericModal
+    <NewItemModal
       headerTitle="Add an item"
       description="Fill in the details to add a new item to this sale."
-      onSave={() => handleSave(form.getValues())}
+      onSave={() => {
+        return handleSave(form.getValues());
+      }}
       onAbort={handleAbort}
+      hasError={errors.length > 0}
     >
       <Form {...form}>
-        <form className="grid gap-2 sm:grid-cols-2 md:gap-4">
+        <form
+          onSubmit={form.handleSubmit(handleSave)}
+          className="grid gap-2 sm:grid-cols-2 md:gap-4"
+        >
           <FormField
             control={form.control}
-            name="plantName"
+            name="plantId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Plant</FormLabel>
-                <Select
-                  onValueChange={(value) => {
-                    field.onChange(value);
-                    form.setValue(
-                      'price',
-                      props.plants.find((plant) => plant.name === value)
-                        ?.price as number,
-                    );
-                  }}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
+                <FormLabel>Select Plant</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-full">
+                      <span>{field.value || 'Select Plant'}</span>
                     </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {props.plants.map((plant) => (
-                      <SelectItem key={plant.name} value={plant.name}>
-                        {plant.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                    <SelectContent>
+                      {plants.map((plant, index) => (
+                        <SelectItem key={index} value={plant.id}>
+                          {plant.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
           <FormField
+            disabled={form.getValues('plantId') === undefined}
             control={form.control}
             name="price"
-            render={({ field }) => (
-              <FormItem>
-                {/* <FormLabel>{t('MEMBER.LAST_NAME')}</FormLabel> */}
-                <FormLabel>Price</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    onChange={(e) => {
-                      field.onChange(e.target.value);
-                      field.value = e.target.value as unknown as number;
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel>Price</FormLabel>
+                  <FormControl>
+                    <Input {...field} required placeholder="123,45" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
-          {/* <FormField
-            control={form.control}
-            name="enableCustomPrice"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Enable custom price?</FormLabel>
-                <FormControl>
-                  <Checkbox {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
-
           <FormField
             control={form.control}
             name="weightGrams"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Weight</FormLabel>
-                <FormControl>
-                  <Input placeholder="Weight" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel>Grams</FormLabel>
+                  <FormControl>
+                    <Input
+                      required
+                      type="number"
+                      placeholder="0,67"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
+          <DialogClose asChild>
+            <Button type="submit">Save</Button>
+          </DialogClose>
         </form>
       </Form>
-    </GenericModal>
+    </NewItemModal>
   );
 }

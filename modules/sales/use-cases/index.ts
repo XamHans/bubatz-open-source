@@ -43,11 +43,14 @@ export const fetchSaleUseCase = action(
 export const createSaleUseCase = action(
   createSaleInputSchema,
   async (newSaleData): Promise<{ success?: Sale; failure?: string }> => {
-    console.log('data', newSaleData);
     if (!newSaleData) {
       return { failure: 'No data provided, cant create new sale' };
     }
-    getLogger().debug('Creating new sale createSaleUseCase', newSaleData);
+    newSaleData = {
+      ...newSaleData,
+      id: 0,
+    };
+    // getLogger().debug('Creating new sale createSaleUseCase', newSaleData);
     const newSaleId: Sale | null = await createSale(newSaleData);
 
     return newSaleId
