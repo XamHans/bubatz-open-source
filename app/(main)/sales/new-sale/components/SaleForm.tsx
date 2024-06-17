@@ -123,7 +123,7 @@ export default function SaleForm() {
           <FormField
             control={form.control}
             name="userId"
-            render={() => (
+            render={({ field }) => (
               <FormItem>
                 <FormLabel>Member</FormLabel>
                 <Select
@@ -150,7 +150,7 @@ export default function SaleForm() {
           <FormField
             control={form.control}
             name="paidVia"
-            render={() => (
+            render={({ field }) => (
               <FormItem>
                 <FormLabel>Paid Via</FormLabel>
                 <Select
