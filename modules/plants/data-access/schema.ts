@@ -124,14 +124,21 @@ export const createBatchInputSchema = createInsertSchema(batches, {
   otherDetails: z.object({}).optional(),
 });
 
-export const updateBatchInputSchema = createInsertSchema(batches, {
-  name: z.string().min(1),
-  startDate: z.date(),
-  endDate: z.date().optional(),
-  currentGrowthStage: z.string().min(1),
-  pricePerGram: z.number().optional(),
-  otherDetails: z.object({}).optional(),
+// export const updateBatchInputSchema = createInsertSchema(batches, {
+//   id: z.string().optional(),
+//   name: z.string().min(1).optional(),
+//   startDate: z.date(),
+//   endDate: z.date().optional(),
+//   currentGrowthStage: z.string().min(1),
+//   pricePerGram: z.number().optional(),
+//   otherDetails: z.object({}).optional(),
+// });
+
+export const updateGrowthStageSchema = z.object({
+  id: z.string().min(1, 'Batch id is required'),
+  currentGrowthStage: z.string().min(1, 'Growth stage is required'),
 });
+export type UpdateGrowthStageInput = z.infer<typeof updateGrowthStageSchema>;
 
 export const createPlantInputSchema = createInsertSchema(plants, {
   name: z.string().min(1),
@@ -143,7 +150,6 @@ export const getBatchesSchema = createSelectSchema(batches);
 export const getPlantsSchema = createSelectSchema(plants);
 
 export type CreateBatchInput = z.infer<typeof createBatchInputSchema>;
-export type UpdateBatchInput = z.infer<typeof updateBatchInputSchema>;
 
 export type CreatePlantInput = z.infer<typeof createPlantInputSchema>;
 export type GetBatches = z.infer<typeof getBatchesSchema>;

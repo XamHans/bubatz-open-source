@@ -69,5 +69,6 @@ export const createPlant = async (input: CreatePlantInput) => {
 };
 
 export type BatchDetailsData = AsyncReturnType<typeof getBatchDetail>;
+export type PlantDetailsData = AsyncReturnType<typeof getPlantsByBatchId>;
 
 export { getBatchDetail, getBatches, getPlants };

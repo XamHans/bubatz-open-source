@@ -1,21 +1,24 @@
 'use server';
 
 import { logger } from '@/lib/logger';
+import { SuccessResponse } from '@/types';
 import dayjs from 'dayjs'; // Import dayjs
 import { createSafeActionClient } from 'next-safe-action';
 import { z } from 'zod';
 import {
+  PlantDetailsData,
   createBatch,
   createPlant,
   getBatchById,
   getBatches,
   getPlants,
   getPlantsByBatchId,
+  updateBatch,
 } from '../data-access';
 import {
   createBatchInputSchema,
   createPlantInputSchema,
-  updateBatchInputSchema,
+  updateGrowthStageSchema,
 } from '../data-access/schema';
 
 const action = createSafeActionClient();
@@ -53,15 +56,15 @@ export const fetchBatchDetailsUseCase = action(
     if (!batch) {
       return { failure: 'Batch not found' };
     }
-    console.log('foudn batch details ', batch);
 
     // const plants = await getPlantsByBatchId(id);
     return { success: { batch } };
   },
 );
 export const updateBatchUseCase = action(
-  updateBatchInputSchema,
+  updateGrowthStageSchema,
   async ({ id, ...data }) => {
+    console.log('inside update  batch use case', id, data);
     const existingBatch = await getBatchById(id);
     if (!existingBatch) {
       return { failure: "Batch not found, can't update batch" };
@@ -76,12 +79,16 @@ export const updateBatchUseCase = action(
     //   data.startDate = parsedDate.format('YYYY-MM-DD');
     // }
 
-    // await updateBatch(id, data);
+    const result = await updateBatch(id, data);
+    logger.info('Updated batch result ', result);
     return { success: 'Batch updated successfully' };
   },
 );
 
 //----------------- Plants
+export type FetchPlantsSuccess = SuccessResponse<{
+  plants: PlantDetailsData[];
+}>;
 export const fetchPlantsFromBatchUseCase = action(
   { batchId: z.string() },
   async ({ batchId }) => {
@@ -89,10 +96,9 @@ export const fetchPlantsFromBatchUseCase = action(
     if (!plants) {
       return { failure: 'plants not found' };
     }
-    console.log('foudn plants  ', plants);
 
     // const plants = await getPlantsByBatchId(id);
-    return { success: { plants } };
+    return { success: { plants } } as FetchPlantsSuccess;
   },
 );
 

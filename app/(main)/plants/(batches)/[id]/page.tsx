@@ -6,7 +6,7 @@ import { fetchBatchDetailsUseCase } from '@/modules/plants/use-cases';
 import { ChevronLeft } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import EditBatchForm from './components/EditBatchForm';
+import EditBatchContainer from './components/EditBatchContainer';
 
 export const metadata: Metadata = {
   title: 'Manage Batch Details',
@@ -72,16 +72,10 @@ const BatchDetailPage = async ({ params: { id } }: BatchDetailPageProps) => {
           <Badge variant="outline" className="ml-auto sm:ml-0">
             {data.success.batch.strain}
           </Badge>
-          <div className=" md:ml-auto md:flex">
-            <Link href="#">
-              {' '}
-              <Button size="sm">Save</Button>
-            </Link>
-          </div>
         </div>
 
         {/* Main area with two sides, each contain cards */}
-        <EditBatchForm batchId={id} />
+        <EditBatchContainer details={data.success?.batch} />
       </div>
     </Container>
   );

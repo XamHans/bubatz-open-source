@@ -14,7 +14,7 @@ import { PlusCircle } from 'lucide-react';
 import { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import Link from 'next/link';
-import PlantsTable from './components/PlantsTable';
+import BatchesTable from './components/BatchesTable';
 
 export const metadata: Metadata = {
   title: 'Manage Plants',
@@ -32,9 +32,9 @@ async function PlantListPage() {
   return (
     <SessionProvider session={session}>
       <Container className="space-y-4">
-        <Breadcrumbs items={breadcrumbs} />
+        <div className="flex justify-between">
+          <Breadcrumbs items={breadcrumbs} />
 
-        <div className="flex justify-end">
           <Link href={configuration.paths.plants.new}>
             <Button size="sm" className="h-8 gap-1">
               <PlusCircle className="h-3.5 w-3.5" />
@@ -50,7 +50,7 @@ async function PlantListPage() {
             <CardDescription>Manage your plants</CardDescription>
           </CardHeader>
           <CardContent>
-            <PlantsTable />
+            <BatchesTable />
           </CardContent>
         </Card>
       </Container>

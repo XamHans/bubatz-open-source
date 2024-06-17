@@ -1,7 +1,5 @@
 'use client';
 
-import configuration from '@/app/configuration';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -17,7 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { fetchBatchesUseCase } from '@/modules/plants/use-cases';
+import { fetchPlantsFromBatchUseCase } from '@/modules/plants/use-cases';
 import {
   ColumnFiltersState,
   SortingState,
@@ -32,11 +30,9 @@ import {
 import { t } from 'i18next';
 import { ArrowUpDown, EyeIcon } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-const getPlantTableColumns = (router: AppRouterInstance) => {
+const getPlantTableColumns = () => {
   return [
     {
       id: 'id',
@@ -47,7 +43,7 @@ const getPlantTableColumns = (router: AppRouterInstance) => {
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className="justify-start text-xs"
         >
-          Batch ID
+          ID
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
@@ -66,7 +62,7 @@ const getPlantTableColumns = (router: AppRouterInstance) => {
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className="justify-start text-xs"
         >
-          Batch Name
+          Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
@@ -74,63 +70,7 @@ const getPlantTableColumns = (router: AppRouterInstance) => {
         <div className="ml-4 text-left">{row.getValue('name')}</div>
       ),
     },
-    {
-      id: 'strain',
-      accessorKey: 'strain',
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="justify-start text-xs"
-        >
-          Strain
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      ),
-      cell: ({ row }) => (
-        <Badge className="ml-4" variant="outline">
-          {row.getValue('strain')}
-        </Badge>
-      ),
-    },
-    {
-      id: 'startDate',
-      accessorKey: 'startDate',
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="justify-start text-xs"
-        >
-          Start Date
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      ),
-      cell: ({ row }) => (
-        <div className="text-lef ml-4">
-          {new Date(row.getValue('startDate')).toLocaleDateString()}
-        </div>
-      ),
-    },
-    {
-      id: 'currentGrowthStage',
-      accessorKey: 'currentGrowthStage',
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="justify-start text-xs"
-        >
-          Current Growth Stage
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      ),
-      cell: ({ row }) => (
-        <div className="ml-4 text-left">
-          <Badge variant="outline">{row.getValue('currentGrowthStage')}</Badge>
-        </div>
-      ),
-    },
+
     {
       id: 'actions',
       enableHiding: false,
@@ -141,11 +81,7 @@ const getPlantTableColumns = (router: AppRouterInstance) => {
             <Button
               variant="ghost"
               className="hover:bg-inherit"
-              onClick={() => {
-                router.push(
-                  configuration.paths.plants.detail.replace(':id', plant.id),
-                );
-              }}
+              onClick={() => {}}
             >
               <TooltipProvider>
                 <Tooltip delayDuration={0}>
@@ -163,10 +99,15 @@ const getPlantTableColumns = (router: AppRouterInstance) => {
   ];
 };
 
-export default function PlantsTable() {
-  const { execute, status } = useAction(fetchBatchesUseCase, {
+interface PlantTableProps {
+  batchId: string;
+}
+
+const PlantsTable: React.FC<PlantTableProps> = ({ batchId }) => {
+  const { execute, status } = useAction(fetchPlantsFromBatchUseCase, {
     onSuccess: (data) => {
-      setPlants(data?.batches);
+      console.log('recieved data', data);
+      setPlants(data?.success?.plants);
     },
     onError: (error) => {
       console.log('Error fetching plants', error);
@@ -178,15 +119,14 @@ export default function PlantsTable() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const router = useRouter();
 
   useEffect(() => {
-    execute(undefined);
-  }, [execute]);
+    execute({ batchId });
+  }, []);
 
   const table = useReactTable({
     data: plants,
-    columns: getPlantTableColumns(router),
+    columns: getPlantTableColumns(),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -250,4 +190,6 @@ export default function PlantsTable() {
       </TableBody>
     </Table>
   );
-}
+};
+
+export { PlantsTable };
