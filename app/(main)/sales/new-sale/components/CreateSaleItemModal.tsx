@@ -27,6 +27,7 @@ import { useState } from 'react';
 import { UUID } from 'crypto';
 import { Button } from '@/components/ui/button';
 import { DialogClose } from '@/components/ui/dialog';
+import { GenericModal } from '@/components/generic/GenericModal';
 
 interface CreateSaleItemModalProps {
   plants: { id: UUID; name: string; price: number }[];
@@ -36,7 +37,7 @@ interface CreateSaleItemModalProps {
 export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
   const { plants } = props;
 
-  const [isPlantSelected, setIsPlantSelected] = useState(false);
+  const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState<{ field: string; message: string }[]>(
     [],
   );
@@ -47,44 +48,10 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
   });
 
   const handleSave = (data: CreateSaleItemInput) => {
-    console.log('data', data);
-
-    setErrors([]);
-    let hasErrors = false;
-
-    if (!data.price) {
-      setErrors((prev) => [
-        ...prev,
-        { field: 'price', message: 'Price is required' },
-      ]);
-      hasErrors = true;
-    }
-
-    if (!data.plantId) {
-      setErrors((prev) => [
-        ...prev,
-        { field: 'plantId', message: 'Plant name is required' },
-      ]);
-      hasErrors = true;
-    }
-
-    if (!data.weightGrams) {
-      setErrors((prev) => [
-        ...prev,
-        {
-          field: 'weightGrams',
-          message: 'Weight in grams is required',
-        },
-      ]);
-      hasErrors = true;
-    }
-
-    if (hasErrors) return false;
-
-    data = { ...data };
+    console.log(data);
     props.addItem(data);
+    setOpen(false);
     form.reset();
-    setErrors([]);
     return true;
   };
 
@@ -93,19 +60,26 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
     setErrors([]);
   };
 
+  const getPlantNameFromId = (id: string): string => {
+    const plant = plants.find((plant) => plant.id === id);
+    return plant?.name as UUID;
+  };
+
+  const getPlantPriceFromId = (id: string): string => {
+    const plant = plants.find((p) => p.id === id);
+    return plant?.price.toString() || '';
+  };
+
   /**
    * ! WHEN CHANGING THE VALUE FROM SELECT, ITS GIVES AN ERROR ON RELATED TO UNCONTROLLED INPUTS. I DONT KNOW WHAT IT IS,
    * ! OR HOW TO FIX IT. BUT ITS WORKING FINE. :D
    */
   return (
-    <NewItemModal
+    <GenericModal
       headerTitle="Add an item"
       description="Fill in the details to add a new item to this sale."
-      onSave={() => {
-        return handleSave(form.getValues());
-      }}
-      onAbort={handleAbort}
-      hasError={errors.length > 0}
+      open={open}
+      setOpen={setOpen}
     >
       <Form {...form}>
         <form
@@ -120,11 +94,16 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
                 <FormLabel>Select Plant</FormLabel>
                 <FormControl>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(v) => {
+                      field.onChange(v);
+                      form.setValue('price', getPlantPriceFromId(v as string));
+                    }}
                     defaultValue={field.value}
                   >
                     <SelectTrigger className="w-full">
-                      <span>{field.value || 'Select Plant'}</span>
+                      <span>
+                        {getPlantNameFromId(field.value) || 'Select Plant'}
+                      </span>
                     </SelectTrigger>
                     <SelectContent>
                       {plants.map((plant, index) => (
@@ -148,7 +127,7 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
                 <FormItem>
                   <FormLabel>Price</FormLabel>
                   <FormControl>
-                    <Input {...field} required placeholder="123,45" />
+                    <Input {...field} placeholder="123,45" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -163,23 +142,16 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
                 <FormItem>
                   <FormLabel>Grams</FormLabel>
                   <FormControl>
-                    <Input
-                      required
-                      type="number"
-                      placeholder="0,67"
-                      {...field}
-                    />
+                    <Input type="number" placeholder="0,67" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               );
             }}
           />
-          <DialogClose asChild>
-            <Button type="submit">Save</Button>
-          </DialogClose>
+          <Button type="submit">Save</Button>
         </form>
       </Form>
-    </NewItemModal>
+    </GenericModal>
   );
 }

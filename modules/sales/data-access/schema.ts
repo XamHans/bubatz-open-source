@@ -81,13 +81,21 @@ export const salesItemsRelations = relations(salesItems, ({ one }) => ({
  * * Input schemas
  */
 
+export const createSaleFormInputSchema = createInsertSchema(sales, {
+  totalPrice: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
+    message: 'Expected number, received a string',
+  }),
+  paidVia: (schema) => schema.paidVia,
+  userId: (schema) => schema.userId.uuid(),
+});
+
+export type CreateSaleFormInput = z.infer<typeof createSaleFormInputSchema>;
+
 export const createSaleInputSchema = createInsertSchema(sales, {
-  totalPrice: (schema) => schema.totalPrice.positive(),
+  totalPrice: (schema) => schema.totalPrice.positive().min(0),
   paidVia: (schema) => schema.paidVia,
   userId: (schema) => schema.userId.uuid(),
   salesById: (schema) => schema.salesById.uuid(),
-  createdAt: (schema) => schema.createdAt.optional(),
-  updatedAt: (schema) => schema.updatedAt.optional(),
 });
 export type CreateSaleInput = z.infer<typeof createSaleInputSchema>;
 

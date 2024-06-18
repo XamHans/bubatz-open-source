@@ -5,9 +5,11 @@ import SaleItem from './types';
 import SaleItemsTable from './SaleItemsTable';
 import CreateSaleItemModal from './CreateSaleItemModal';
 import {
+  CreateSaleFormInput,
   CreateSaleInput,
   CreateSaleItemInput,
   PaymentMethodsType,
+  createSaleFormInputSchema,
   createSaleInputSchema,
 } from '@/modules/sales/data-access/schema';
 import { PaymentMethodsEnum } from '@/modules/sales/data-access/schema';
@@ -20,6 +22,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -35,6 +38,7 @@ import { Button } from '@/components/ui/button';
 import { createSale } from '@/modules/sales/data-access';
 import { createSaleUseCase } from '@/modules/sales/use-cases';
 import { useAction } from 'next-safe-action/hooks';
+import { logger } from '@/logger';
 
 export default function SaleForm() {
   const session = useSession();
@@ -62,12 +66,6 @@ export default function SaleForm() {
   const [plants, setPlants] = useState<
     { id: UUID; name: string; price: number }[]
   >([]);
-  const [sale, setSale] = useState<CreateSaleInput>({
-    totalPrice: 0,
-    paidVia: 'CASH',
-    userId: '',
-    salesById: session.data?.user.id ?? '',
-  });
 
   const addItemToSale = (sale: CreateSaleItemInput) => {
     setSaleItems((prev) => [...prev, sale]);
@@ -77,19 +75,35 @@ export default function SaleForm() {
     setSaleItems((prev) => prev.filter((i) => i !== item));
   };
 
-  const createNewSale = (sale: CreateSaleInput) => {
-    execute(sale);
+  const createNewSale = (saleForm: CreateSaleFormInput) => {
+    console.log('Creating new sale', saleForm);
+    setS;
+    // execute(sale);
   };
 
-  // Calculate the total price of the sale, whenever the sale items change
   useEffect(() => {
     setSale((prev) => ({
       ...prev,
       totalPrice: saleItems.reduce(
-        (totalPrice, item) => totalPrice + item.price * item.weightGrams,
+        (totalPrice, item) =>
+          totalPrice + parseFloat(item.price) * parseFloat(item.weightGrams),
         0,
       ),
     }));
+  }, [saleItems]);
+
+  /*
+   * Calculate the total price of the sale, whenever the sale items change
+   * Whenever the total price of the sale changes, update the form value
+   */
+  useEffect(() => {
+    const totalPrice = saleItems.reduce(
+      (totalPrice, item) =>
+        totalPrice + parseFloat(item.price) * parseFloat(item.weightGrams),
+      0,
+    );
+
+    form.setValue('totalPrice', sale.totalPrice.toString());
   }, [saleItems]);
 
   useEffect(() => {
@@ -99,25 +113,19 @@ export default function SaleForm() {
     ]);
   }, []);
 
-  const form = useForm<CreateSaleInput>({
+  const form = useForm<CreateSaleFormInput>({
     mode: 'onChange',
-    resolver: zodResolver(createSaleInputSchema),
+    resolver: zodResolver(createSaleFormInputSchema),
   });
 
   return (
     <>
       <CreateSaleItemModal plants={plants} addItem={addItemToSale} />
-      {saleItems.length > 0 ? (
-        <>
-          <SaleItemsTable
-            saleItems={saleItems}
-            deleteItem={deleteItemFromSale}
-            plants={plants}
-          />
-        </>
-      ) : (
-        <div>There are no items in the sale. Start by adding an item.</div>
-      )}
+      <SaleItemsTable
+        saleItems={saleItems}
+        deleteItem={deleteItemFromSale}
+        plants={plants}
+      />
       <Form {...form}>
         <form className="grid gap-2 sm:grid-cols-2 md:gap-4">
           <FormField
@@ -126,11 +134,7 @@ export default function SaleForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Member</FormLabel>
-                <Select
-                  onValueChange={(value) => {
-                    form.setValue('userId', value);
-                  }}
-                >
+                <Select onValueChange={field.onChange}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select member" />
@@ -153,11 +157,7 @@ export default function SaleForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Paid Via</FormLabel>
-                <Select
-                  onValueChange={(value: PaymentMethodsType) => {
-                    form.setValue('paidVia', value);
-                  }}
-                >
+                <Select onValueChange={field.onChange}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select payment method" />
@@ -175,34 +175,21 @@ export default function SaleForm() {
             )}
           />
           <FormField
-            disabled={true}
             control={form.control}
             name="totalPrice"
             render={({ field }) => {
               return (
-                <>
-                  <FormItem>
-                    <FormLabel>Price</FormLabel>
-                    <FormControl>
-                      <Input {...field} value={sale.totalPrice} />
-                    </FormControl>
-                  </FormItem>
-                </>
+                <FormItem>
+                  <FormLabel>Price</FormLabel>
+                  <FormControl>
+                    <Input disabled {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               );
             }}
           />
-          <Button
-            type="button"
-            onClick={() => {
-              setSale((prev) => ({
-                ...prev,
-                userId: form.getValues().userId,
-                paidVia: form.getValues().paidVia,
-              }));
-              console.log('sale', sale);
-              createNewSale(sale);
-            }}
-          >
+          <Button type="button" onClick={() => createNewSale(form.getValues())}>
             Create sale
           </Button>
           <Button type="button">Abort</Button>

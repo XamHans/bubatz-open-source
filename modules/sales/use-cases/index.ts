@@ -6,7 +6,7 @@ import {
   createSaleInputSchema,
   getSaleSchema,
 } from '../data-access/schema';
-import getLogger from '@/lib/logger';
+import { logger } from '@/lib/logger';
 import { createSale, getSaleById, getSales } from '../data-access';
 
 const action = createSafeActionClient();
@@ -29,7 +29,7 @@ export async function fetchSalesUseCase(): Promise<Sale[]> {
 export const fetchSaleUseCase = action(
   getSaleSchema,
   async (id: { id: number }): Promise<{ sale?: Sale | null }> => {
-    getLogger().debug('Fetching sale from DB.');
+    logger.debug('Fetching sale from DB.');
     const sale = await getSaleById(id.id);
     return { sale: sale };
   },
