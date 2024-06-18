@@ -36,8 +36,7 @@ import {
 import { t } from 'i18next';
 import {
   ArrowUpDown,
-  Trash2,
-  Pencil,
+  EyeIcon,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -165,7 +164,7 @@ export default function MemberTable() {
             <div className="flex justify-center ">
               <Button
                 variant="ghost"
-                className="transition-transform duration-200 hover:scale-110 hover:bg-inherit hover:text-green-400"
+                className="transition-transform duration-200 hover:bg-inherit"
                 onClick={() => {
                   // router.push(configuration.paths.MEMBER_DETAIL.replace(":id", member:id!))
                   router.push(
@@ -179,7 +178,7 @@ export default function MemberTable() {
                 <TooltipProvider>
                   <Tooltip delayDuration={0}>
                     <TooltipTrigger>
-                      <Pencil className="h-6 w-6 cursor-pointer" />
+                      <EyeIcon className="h-6 w-6 cursor-pointer" />
                     </TooltipTrigger>
                     <TooltipContent align="end">
                       <Badge className="bg-inherit text-black hover:bg-inherit">
@@ -193,7 +192,7 @@ export default function MemberTable() {
               <Button
                 type="button"
                 variant="ghost"
-                className="transition-transform duration-200 hover:scale-110 hover:bg-inherit hover:text-red-400"
+                className="transition-transform duration-200 hover:bg-inherit"
               >
                 <TooltipProvider>
                   <Tooltip delayDuration={0}>
