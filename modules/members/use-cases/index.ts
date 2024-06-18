@@ -7,7 +7,7 @@ import {
   updateMember,
 } from '../data-access';
 
-import getLogger from '@/lib/logger';
+import getLogger from '../../../lib/logger';
 import { createSafeActionClient } from 'next-safe-action';
 import {
   UserSchema,
@@ -29,7 +29,7 @@ export const addMemberUseCase = action(
       return { failure: 'No data provided, cant create new member' };
     }
     // getLogger().debug('Creating new member addMemberUseCase', data);
-    const newMemberId = await createMember({
+    const newMemberId: UserSchema = await createMember({
       ...data,
       id: crypto.randomUUID(),
     });

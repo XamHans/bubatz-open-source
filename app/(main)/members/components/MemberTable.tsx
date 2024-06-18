@@ -1,12 +1,16 @@
 'use client';
 
-import configuration from '@/app/configuration';
+import configuration from '../../../../app/configuration';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '../../../../components/ui/avatar';
+import { Badge } from '../../../../components/ui/badge';
+import { Button } from '../../../../components/ui/button';
+import { Checkbox } from '../../../../components/ui/checkbox';
+import { Input } from '../../../../components/ui/input';
 import {
   Table,
   TableBody,
@@ -14,15 +18,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '../../../../components/ui/table';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { MemberProps, colorForClubMemberStatus } from '@/modules/members/types';
-import { fetchMembersUseCase } from '@/modules/members/use-cases';
+} from '../../../../components/ui/tooltip';
+import {
+  MemberProps,
+  colorForClubMemberStatus,
+} from '../../../../modules/members/types';
+import { fetchMembersUseCase } from '../../../../modules/members/use-cases';
 import {
   ColumnFiltersState,
   SortingState,
@@ -35,19 +42,13 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { t } from 'i18next';
-import {
-  ArrowUpDown,
-  EyeIcon,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
+import { ArrowUpDown, EyeIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { AddMemberModal } from './AddMemberModal';
 import { DeleteMemberModal } from './DeleteMemberModal';
-import { fetchMembersUseCase } from '@/modules/members/use-cases';
 import { useAction } from 'next-safe-action/hooks';
 // import {
 //   selectUser,
@@ -55,12 +56,14 @@ import { useAction } from 'next-safe-action/hooks';
 // } from '@/modules/members/data-access/schema';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { deleteMember, getMembers } from '@/modules/members/data-access';
+import {
+  deleteMember,
+  getMembers,
+} from '../../../../modules/members/data-access';
 import { Schema } from 'zod';
-import { UserSchema } from '@/modules/members/data-access/schema';
+import { UserSchema } from '../../../../modules/members/data-access/schema';
 
 export default function MemberTable() {
-
   const getUserTableColumns = (router: AppRouterInstance) => {
     // const handleDelete = async (id: string) => {
     //   const result = await deleteMember(id);
@@ -242,11 +245,11 @@ export default function MemberTable() {
 
   const { execute, status } = useAction(fetchMembersUseCase, {
     onSuccess: (data) => {
-      console.log('Member added successfully');
+      console.log('Members fetched successfully');
       setMembers(data.members);
     },
     onError: (error) => {
-      console.log('Error adding member', error);
+      console.log('Error fetching member', error);
     },
   });
 
@@ -258,11 +261,10 @@ export default function MemberTable() {
   const router = useRouter();
 
   useEffect(() => {
-    const data = getMembers();
-    if (data) {
+    const data = getMembers().then((data) => {
       console.log('MEMBERS TABLE MEMBER RESULT: ', data);
       execute(data);
-    }
+    });
   }, [execute]);
 
   const table = useReactTable({
@@ -297,7 +299,7 @@ export default function MemberTable() {
           }
           className="max-w-sm"
         />
-        <AddMemberModal />
+        <AddMemberModal setMembers={setMembers} />
       </div>
       <div className="rounded-md border">
         <Table className="rounded-md bg-white">

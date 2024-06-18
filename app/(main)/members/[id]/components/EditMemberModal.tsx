@@ -1,45 +1,42 @@
 'use client';
 
-import { GenericModal } from '@/components/generic/GenericModal';
+import { GenericModal } from '../../../../../components/generic/GenericModal';
 import {
   GetMemberDetailQueryData,
   updateMember,
-} from '@/modules/members/data-access/index';
-import { ClubMemberStatus } from '@/modules/members/types';
+} from '../../../../../modules/members/data-access/index';
+import { ClubMemberStatus } from '../../../../../modules/members/types';
 import {
   UpdateMemberInput,
   UserSchema,
-} from '@/modules/members/data-access/schema';
-import { Button } from '@/components/ui/button';
-import { DialogClose, DialogFooter } from '@/components/ui/dialog';
+} from '../../../../../modules/members/data-access/schema';
+import { Button } from '../../../../../components/ui/button';
+import { DialogClose, DialogFooter } from '../../../../../components/ui/dialog';
 import {
   Form,
-  FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+  FormControl,
+} from '../../../../../components/ui/form';
+import { Input } from '../../../../../components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '../../../../../components/ui/select';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { t } from 'i18next';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-export interface EditMemberModalProps {
-  member: GetMemberDetailQueryData;
-}
 
 import { z } from 'zod';
 import { useState } from 'react';
 import { useAction } from 'next-safe-action/hooks';
-import { updateMemberUseCase } from '@/modules/members/use-cases';
+import { updateMemberUseCase } from '../../../../../modules/members/use-cases';
 import { useParams } from 'next/navigation';
 import { UUID } from 'crypto';
 import React from 'react';
@@ -49,7 +46,12 @@ export const memberProfileSchema = z.object({
   lastName: z.string().min(3, { message: 'Last name is required' }),
 });
 
-const EditMemberModal = ({ member }: EditMemberModalProps) => {
+export interface EditMemberModalProps {
+  member: GetMemberDetailQueryData;
+  setMember: React.Dispatch<React.SetStateAction<GetMemberDetailQueryData>>;
+}
+
+const EditMemberModal = ({ member, setMember }: EditMemberModalProps) => {
   // member could be passed from context or parent component, if not available, do not render
   // const { showSuccessToast } = useToast()
 
@@ -88,9 +90,7 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
     },
   });
 
-  const [members, setMembers] = React.useState<UserSchema[]>([]);
-  const [buttonDisabled, setButtonDisabled] = useState(false);
-
+  const [open, setOpen] = useState(false);
   const params = useParams<{ id: UUID }>();
 
   const handleSave = async (data: UpdateMemberInput) => {
@@ -98,30 +98,19 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
     try {
       const result = await execute({ ...data, id: params.id });
       console.log('Member updated successfully', result);
+      setMember((prev) => ({ ...prev, ...data }));
+      setOpen(false);
     } catch (error) {
       console.log('Error updating member', error);
     }
   };
 
-  const handleAbort = () => {
-    console.log('Abort action');
-  };
-
-  // const handleChange = (selectedDate: string) => {
-  //   if (!selectedDate) return;
-  //   form.setValue('birthday', new Date(selectedDate), {
-  //     shouldValidate: true,
-  //     shouldDirty: true,
-  //   });
-  // };
-
   return (
     <GenericModal
       headerTitle="Edit Member"
       description="Here you can change the information of a member."
-      onSave={() => handleSave(form.getValues())}
-      onAbort={handleAbort}
-      disabled={buttonDisabled}
+      open={open}
+      setOpen={setOpen}
     >
       <Form {...form}>
         <form
@@ -313,6 +302,7 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
               </FormItem>
             )}
           />
+          <Button type="submit">Save</Button>
 
           {/* <DialogFooter className="col-span-2">
             <DialogClose asChild>

@@ -1,20 +1,15 @@
 'use client';
 
-import {
-  ClubMemberStatus,
-  colorForClubMemberStatus,
-} from '@/modules/members/types';
-import {
-  GetMemberDetailQueryData,
-  getMemberDetail,
-} from '@/modules/members/data-access/index';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { ClubMemberStatus, colorForClubMemberStatus } from '../../../../../modules/members/types';
+import { GetMemberDetailQueryData, getMemberDetail } from '../../../../../modules/members/data-access/index';
+import {Avatar, AvatarFallback} from '../../../../../components/ui/avatar';
+import { Badge } from '../../../../../components/ui/badge';
+import { Card, CardContent, CardHeader } from '../../../../../components/ui/card';
 import { t } from 'i18next';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { EditMemberModal } from './EditMemberModal';
+import React from 'react';
 
 const MemberGeneralInfo = () => {
   const params = useParams<{ id: string }>();
@@ -38,7 +33,7 @@ const MemberGeneralInfo = () => {
     <>
       <Card className="max-w-2xl">
         <CardHeader className="text-end">
-          <EditMemberModal member={member} />
+          <EditMemberModal member={member} setMember={setMember} />
         </CardHeader>
 
         <CardContent>
@@ -63,9 +58,7 @@ const MemberGeneralInfo = () => {
                   <div className="space-y-1">
                     <Badge
                       variant="default"
-                      className={`${colorForClubMemberStatus.get(
-                        member.status as ClubMemberStatus,
-                      )}`}
+                      className='bg-zinc-700 text-white'
                     >
                       {/* {t(`MEMBER.STATUS_OPTIONS.${member.status}`)} */}
                       {member.status}

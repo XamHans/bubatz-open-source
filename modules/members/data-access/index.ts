@@ -1,9 +1,9 @@
 'use server';
 
-import { db } from '@/lib/db/db';
-import getLogger from '@/lib/logger';
+import { db } from '../../../lib/db/db';
+import getLogger from '../../../lib/logger';
 import { AddMemberInput, members } from './schema';
-import { AsyncReturnType } from '@/lib/types';
+import { AsyncReturnType } from '../../../lib/types';
 import { UpdateMemberInput } from './schema';
 import { eq } from 'drizzle-orm/sql/expressions/conditions';
 // const logger = getLogger();
@@ -25,7 +25,7 @@ export const createMember = async (input: AddMemberInput) => {
     .values({
       ...input,
     })
-    .returning({ insertedId: members.id });
+    .returning();
   return newMemberId;
 };
 

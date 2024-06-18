@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { DialogClose, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '../../../../components/ui/button';
+import { DialogClose, DialogFooter } from '../../../../components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -9,38 +9,47 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '../../../../components/ui/form';
+import { Input } from '../../../../components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '../../../../components/ui/select';
 import {
   AddMemberInput,
   UserSchema,
   addMemberInputSchema,
-} from '@/modules/members/data-access/schema';
+} from '../../../../modules/members/data-access/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { t } from 'i18next';
 import { useForm } from 'react-hook-form';
 
-import { ClubMemberStatus } from '@/modules/club/types';
-import { addMemberUseCase } from '@/modules/members/use-cases';
+import { ClubMemberStatus } from '../../../../modules/members/types';
+import { addMemberUseCase } from '../../../../modules/members/use-cases';
 import { useAction } from 'next-safe-action/hooks';
-import { GenericModal } from '@/components/generic/GenericModal';
+import { GenericModal } from '../../../../components/generic/GenericModal';
 import DatePicker from 'react-datepicker';
 import { useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt } from 'react-icons/fa';
 import React from 'react';
+import { set } from 'date-fns';
 
-const AddMemberModal = () => {
-  const { execute, status } = useAction(addMemberUseCase, {
-    onSuccess: () => {
-      console.log('Member added successfully');
+interface AddMemberModalProps {
+  setMembers: React.Dispatch<React.SetStateAction<UserSchema[]>>;
+}
+
+const AddMemberModal: React.FC<AddMemberModalProps> = ({
+  setMembers,
+}) => {
+  const { execute } = useAction(addMemberUseCase, {
+    onSuccess: (result) => {
+      console.log('Member added successfully', result);
+      const newMember: UserSchema = result.success;
+      setMembers((prev) => [...prev, result.success]);
     },
     onError: (error) => {
       console.log('Error adding member', error);
@@ -52,43 +61,25 @@ const AddMemberModal = () => {
     resolver: zodResolver(addMemberInputSchema),
   });
 
-  const handleSave = async (data: AddMemberInput) => {
+  const [open, setOpen] = useState(false);
+
+  const handleSave = (data: AddMemberInput) => {
     console.log('Data:', data);
     try {
-      const result = await execute(data);
+      const result = execute(data);
       console.log('Member added successfully', result);
+      setOpen(false);
     } catch (error) {
       console.log('Error added member', error);
     }
   };
 
-  const handleAbort = () => {
-    console.log('Abort action');
-  };
-
-  const [buttonDisabled, setButtonDisabled] = useState(true);
-
-  // const customInput = ({ value, onClick }) => {
-  //   return (
-  //     <div className="flex items-center">
-  //       <Input
-  //         value={value}
-  //         onClick={onClick}
-  //         placeholder="Enter date of birth"
-  //         readOnly
-  //       />
-  //       <FaCalendarAlt />
-  //     </div>
-  //   );
-  // };
-
   return (
     <GenericModal
       headerTitle="Add Member"
       description="Fill in the details to add a new member."
-      onSave={() => handleSave(form.getValues())}
-      onAbort={handleAbort}
-      disabled={buttonDisabled}
+      open={open}
+      setOpen={setOpen}
     >
       <Form {...form}>
         <form
@@ -246,15 +237,9 @@ const AddMemberModal = () => {
             )}
           />
 
-          {/* <DialogFooter className="col-span-2">
-            <DialogClose asChild>
-              <Button type="submit" disabled={!form?.formState?.isValid}>
-                {' '}
-                {t('GENERAL.ACTIONS.SAVE')}
-                Create Member
-              </Button>
-            </DialogClose>
-          </DialogFooter> */}
+          <Button type="submit" disabled={!form?.formState?.isValid}>
+            Save
+          </Button>
         </form>
       </Form>
     </GenericModal>

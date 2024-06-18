@@ -1,22 +1,14 @@
-import { deleteMember } from '@/modules/members/data-access';
-import {
-  UserSchema,
-  deleteMemberInput,
-} from '@/modules/members/data-access/schema';
-import { deleteMemberUseCase } from '@/modules/members/use-cases';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogClose,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { deleteMember } from '../../../../modules/members/data-access';
+import {UserSchema, deleteMemberInput} from '../../../../modules/members/data-access/schema';
+import {deleteMemberUseCase} from '../../../../modules/members/use-cases';
+import {Dialog, DialogContent, DialogDescription, DialogClose, DialogTrigger} from '../../../../components/ui/dialog';
 import { UUID } from 'crypto';
 import { useAction } from 'next-safe-action/hooks';
 import { useParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import {Button} from '../../../../components/ui/button';
 import { useRouter } from 'next/router';
 import { Trash2 } from 'lucide-react';
+import React from 'react';
 
 interface DeleteMemberModalProps {
   member: UserSchema;
