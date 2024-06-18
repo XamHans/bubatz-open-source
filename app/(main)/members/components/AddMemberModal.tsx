@@ -42,14 +42,12 @@ interface AddMemberModalProps {
   setMembers: React.Dispatch<React.SetStateAction<UserSchema[]>>;
 }
 
-const AddMemberModal: React.FC<AddMemberModalProps> = ({
-  setMembers,
-}) => {
+const AddMemberModal: React.FC<AddMemberModalProps> = ({ setMembers }) => {
   const { execute } = useAction(addMemberUseCase, {
     onSuccess: (result) => {
       console.log('Member added successfully', result);
-      const newMember: UserSchema = result.success;
-      setMembers((prev) => [...prev, result.success]);
+      const newMember: UserSchema[] | undefined = result.success;
+      if (newMember) setMembers((prev) => prev.concat(newMember));
     },
     onError: (error) => {
       console.log('Error adding member', error);
@@ -67,7 +65,6 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
     console.log('Data:', data);
     try {
       const result = execute(data);
-      console.log('Member added successfully', result);
       setOpen(false);
     } catch (error) {
       console.log('Error added member', error);

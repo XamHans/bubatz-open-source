@@ -261,11 +261,8 @@ export default function MemberTable() {
   const router = useRouter();
 
   useEffect(() => {
-    const data = getMembers().then((data) => {
-      console.log('MEMBERS TABLE MEMBER RESULT: ', data);
-      execute(data);
-    });
-  }, [execute]);
+    execute({});
+  }, []);
 
   const table = useReactTable({
     data: members,

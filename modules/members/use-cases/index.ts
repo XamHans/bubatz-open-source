@@ -24,12 +24,11 @@ const action = createSafeActionClient();
 export const addMemberUseCase = action(
   addMemberInputSchema,
   async ({ ...data }) => {
-    console.log('data', data);
     if (!data) {
       return { failure: 'No data provided, cant create new member' };
     }
     // getLogger().debug('Creating new member addMemberUseCase', data);
-    const newMemberId: UserSchema = await createMember({
+    const newMemberId: UserSchema[] = await createMember({
       ...data,
       id: crypto.randomUUID(),
     });

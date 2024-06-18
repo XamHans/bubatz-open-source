@@ -20,12 +20,7 @@ const getMembers = async () => {
 
 export const createMember = async (input: AddMemberInput) => {
   // logger.debug('Creating new member', input);
-  const newMemberId = await db
-    .insert(members)
-    .values({
-      ...input,
-    })
-    .returning();
+  const newMemberId = await db.insert(members).values(input).returning();
   return newMemberId;
 };
 
