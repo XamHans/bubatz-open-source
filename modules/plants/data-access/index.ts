@@ -6,7 +6,9 @@ import { eq } from 'drizzle-orm/sql';
 import {
   CreateBatchInput,
   CreatePlantInput,
+  DeletePlantInput,
   UpdateBatchInput,
+  UpdatePlantInput,
   batches,
   plants,
 } from './schema';
@@ -66,6 +68,14 @@ export const getPlantsByBatchId = async (batchId: string) => {
 
 export const createPlant = async (input: CreatePlantInput) => {
   return await db.insert(plants).values(input);
+};
+
+export const deletePlant = async (input: DeletePlantInput) => {
+  return await db.delete(plants).where(eq(plants.id, input.id));
+};
+
+export const updatePlant = async (id: number, data: UpdatePlantInput) => {
+  return await db.update(plants).set(data).where(eq(plants.id, id));
 };
 
 export type BatchDetailsData = AsyncReturnType<typeof getBatchDetail>;

@@ -9,19 +9,28 @@ import {
   PlantDetailsData,
   createBatch,
   createPlant,
+  deletePlant,
   getBatchById,
   getBatches,
   getPlants,
   getPlantsByBatchId,
   updateBatch,
+  updatePlant,
 } from '../data-access';
 import {
   createBatchInputSchema,
   createPlantInputSchema,
-  updateGrowthStageSchema,
+  deletePlantInputSchema,
+  updateBatchInputSchema,
+  updatePlantInputSchema,
 } from '../data-access/schema';
 
-const action = createSafeActionClient();
+const action = createSafeActionClient({
+  middleware(parsedInput, data) {
+    logger.info('Parsed input:', parsedInput);
+    logger.info('Data:', data);
+  },
+});
 
 // -------------- Batches
 export const addBatchUseCase = action(
@@ -62,7 +71,7 @@ export const fetchBatchDetailsUseCase = action(
   },
 );
 export const updateBatchUseCase = action(
-  updateGrowthStageSchema,
+  updateBatchInputSchema,
   async ({ id, ...data }) => {
     console.log('inside update  batch use case', id, data);
     const existingBatch = await getBatchById(id);
@@ -96,7 +105,7 @@ export const fetchPlantsFromBatchUseCase = action(
     if (!plants) {
       return { failure: 'plants not found' };
     }
-
+    console.log('fetchPlantsFromBatchUseCase ', plants);
     // const plants = await getPlantsByBatchId(id);
     return { success: { plants } } as FetchPlantsSuccess;
   },
@@ -118,5 +127,25 @@ export const createPlantUseCase = action(
       return { failure: 'Failed to create plant' };
     }
     return { success: newPlantId };
+  },
+);
+
+export const deletePlantUseCase = action(
+  deletePlantInputSchema,
+  async ({ id, batchId }) => {
+    logger.info('Deleting plant with id:', id);
+    await deletePlant({ id, batchId });
+
+    return { success: 'Plant deleted successfully' };
+  },
+);
+
+export const updatePlantUseCase = action(
+  updatePlantInputSchema,
+  async (data) => {
+    logger.info('Updating plant with:', data);
+    await updatePlant(data.id!, data);
+
+    return { success: 'Plant updated successfully' };
   },
 );

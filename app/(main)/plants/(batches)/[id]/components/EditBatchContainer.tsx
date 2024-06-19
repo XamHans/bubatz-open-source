@@ -1,14 +1,23 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
+import { Button } from '@/components/ui/button';
+import { BatchProps } from '@/modules/plants/data-access/schema';
+import { BatchProvider } from './BatchContext';
 import { CurrentPhaseForm } from './Forms/CurrentPhaseForm';
 import { GrowthPhasesForm } from './Forms/GrowthPhasesForm';
 import { LogTracker } from './LogTracker';
 import { PlantsContainer } from './Plants/PlantsContainer';
 
 interface EditBatchContainerProps {
-  details: any;
+  details: BatchProps;
 }
 const initialData = {
   germination: {
@@ -75,79 +84,51 @@ const initialData = {
 
 const EditBatchContainer: React.FC<EditBatchContainerProps> = ({ details }) => {
   return (
-    <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
-      {/* Card on Left side */}
-      <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
-        {/* Plants & Add Plant Card */}
-        <PlantsContainer batchId={details.id} />
+    <BatchProvider details={details}>
+      <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
+        {/* Card on Left side */}
+        <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
+          {/* Plants & Add Plant Card */}
+          <PlantsContainer />
 
-        {/* Logbook Section */}
-        <LogTracker />
-      </div>
+          {/* Logbook Section */}
+          <LogTracker />
+        </div>
 
-      {/* Cards on Right Side */}
-      <div className="grid auto-rows-max items-start gap-2 lg:gap-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Grow Phases</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Current Grow Phase */}
-            <div>
-              <CurrentPhaseForm
-                batchId={details.id}
-                currentGrowthStage={details?.currentGrowthStage ?? ''}
-              />
-            </div>
-            <div>
-              <GrowthPhasesForm data={initialData} />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card x-chunk="dashboard-07-chunk-5">
-          <CardHeader>
-            <CardTitle>Grow Start & End</CardTitle>
-          </CardHeader>
-          {/* <CardContent className="grid gap-8">
-            <CardContent className="grid gap-6">
-              <FormField
-                control={form.control}
-                name="startDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Start Date</FormLabel>
-                    <FormControl>
-                      <CustomDatePicker
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="endDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>End Date</FormLabel>
-                    <FormControl>
-                      <CustomDatePicker
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        {/* Cards on Right Side */}
+        <div className="grid auto-rows-max items-start gap-2 lg:gap-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Grow Phases</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Current Grow Phase */}
+              <div>
+                <CurrentPhaseForm />
+              </div>
+              <div>
+                <GrowthPhasesForm data={details.otherDetails} />
+              </div>
             </CardContent>
-          </CardContent> */}
-        </Card>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Archive Batch</CardTitle>
+              <CardDescription>
+                When you're done with the batch, you can archive it here.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div></div>
+              <Button size="sm" variant="secondary">
+                Archive Batch
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div>
+    </BatchProvider>
   );
 };
 

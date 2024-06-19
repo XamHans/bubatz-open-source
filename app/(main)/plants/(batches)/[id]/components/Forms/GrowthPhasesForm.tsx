@@ -1,5 +1,6 @@
 'use client';
 
+import AutoForm from '@/components/generic/auto-form';
 import {
   Accordion,
   AccordionContent,
@@ -16,10 +17,20 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
-import { GrowPhases } from '@/modules/plants/data-access/grow-phases-schema';
+import { formatToGermanDate } from '@/lib/utils';
+import {
+  GrowPhases,
+  destroyedSchema,
+  harvestSchema,
+  phaseSchema,
+  processingSchema,
+} from '@/modules/plants/data-access/grow-phases-schema';
+import { updateBatchUseCase } from '@/modules/plants/use-cases';
 import { FilePenIcon } from 'lucide-react';
-import React from 'react';
+import { useAction } from 'next-safe-action/hooks';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useBatch } from '../BatchContext';
 
 interface GrowthPhaseFormProps {
   data: GrowPhases;
@@ -38,7 +49,7 @@ const GrowthPhasesForm: React.FC<GrowthPhaseFormProps> = ({ data }) => {
             {phase.charAt(0).toUpperCase() + phase.slice(1)}
           </AccordionTrigger>
           <AccordionContent>
-            <PhaseDetailCard phase={phase} data={data[phase]} />
+            <PhaseDetailCard phase={phase} data={data} />
           </AccordionContent>
         </AccordionItem>
       ))}
@@ -52,6 +63,8 @@ const PhaseDetailCard: React.FC<{ phase: string; data: any }> = ({
   phase,
   data,
 }) => {
+  const phaseData = data[phase];
+  console.log('phase data ', phaseData);
   return (
     <Card className="overflow-hidden border-0 bg-white">
       <CardHeader className="flex flex-row items-start bg-muted/50">
@@ -63,45 +76,55 @@ const PhaseDetailCard: React.FC<{ phase: string; data: any }> = ({
         </div>
       </CardHeader>
       <CardContent className="p-6 text-sm">
-        {data.date_germinated && (
+        {phaseData.date_germinated && (
           <>
             <div className="grid gap-3">
               <div className="font-semibold">Date Information</div>
               <dl className="grid gap-3">
                 <div className="flex items-center justify-between gap-4">
                   <dt className="text-muted-foreground">Date Germinated</dt>
-                  <dd className="font-medium">{data.date_germinated}</dd>
+                  <dd className="font-medium">
+                    {formatToGermanDate(phaseData.date_germinated)}
+                  </dd>
                 </div>
               </dl>
             </div>
             <Separator className="my-4" />
           </>
         )}
-        {data.start_date && (
+        {phaseData.start_date && (
           <>
             <div className="grid gap-3">
               <div className="font-semibold">Date Information</div>
               <dl className="grid gap-3">
                 <div className="flex items-center justify-between gap-4">
                   <dt className="text-muted-foreground">Start Date</dt>
-                  <dd className="font-medium">{data.start_date}</dd>
+                  <dd className="font-medium">
+                    {formatToGermanDate(phaseData.start_date)}
+                  </dd>
                 </div>
                 <div className="flex items-center justify-between gap-4">
                   <dt className="text-muted-foreground">End Date</dt>
-                  <dd className="font-medium">{data.end_date}</dd>
+                  <dd className="font-medium">
+                    {formatToGermanDate(phaseData.end_date)}
+                  </dd>
                 </div>
-                {data.estimated_end_date && (
+                {phaseData.estimated_end_date && (
                   <div className="flex items-center justify-between gap-4">
                     <dt className="text-muted-foreground">
                       Estimated End Date
                     </dt>
-                    <dd className="font-medium">{data.estimated_end_date}</dd>
+                    <dd className="font-medium">
+                      {formatToGermanDate(phaseData.estimated_end_date)}
+                    </dd>
                   </div>
                 )}
-                {data.actual_date && (
+                {phaseData.actual_date && (
                   <div className="flex items-center justify-between gap-4">
                     <dt className="text-muted-foreground">Actual Date</dt>
-                    <dd className="font-medium">{data.actual_date}</dd>
+                    <dd className="font-medium">
+                      {formatToGermanDate(phaseData.actual_date)}
+                    </dd>
                   </div>
                 )}
               </dl>
@@ -109,7 +132,7 @@ const PhaseDetailCard: React.FC<{ phase: string; data: any }> = ({
             <Separator className="my-4" />
           </>
         )}
-        {data.yield_estimate_grams !== undefined && (
+        {phaseData.yield_estimate_grams !== undefined && (
           <>
             <div className="grid gap-3">
               <div className="font-semibold">Yield Information</div>
@@ -118,14 +141,18 @@ const PhaseDetailCard: React.FC<{ phase: string; data: any }> = ({
                   <dt className="text-muted-foreground">
                     Yield Estimate (grams)
                   </dt>
-                  <dd className="font-medium">{data.yield_estimate_grams}</dd>
+                  <dd className="font-medium">
+                    {phaseData.yield_estimate_grams}
+                  </dd>
                 </div>
-                {data.yield_actual_grams !== null && (
+                {phaseData.yield_actual_grams !== null && (
                   <div className="flex items-center justify-between">
                     <dt className="text-muted-foreground">
                       Yield Actual (grams)
                     </dt>
-                    <dd className="font-medium">{data.yield_actual_grams}</dd>
+                    <dd className="font-medium">
+                      {phaseData.yield_actual_grams}
+                    </dd>
                   </div>
                 )}
               </dl>
@@ -133,51 +160,61 @@ const PhaseDetailCard: React.FC<{ phase: string; data: any }> = ({
             <Separator className="my-4" />
           </>
         )}
-        {data.conditions && (
+        {phaseData.conditions && (
           <>
             <div className="grid gap-3">
               <div className="font-semibold">Conditions</div>
               <dl className="grid gap-3">
                 <div className="flex items-center justify-between">
                   <dt className="text-muted-foreground">Temperature</dt>
-                  <dd className="font-medium">{data.conditions.temperature}</dd>
+                  <dd className="font-medium">
+                    {phaseData.conditions.temperature}
+                  </dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-muted-foreground">Humidity</dt>
-                  <dd className="font-medium">{data.conditions.humidity}</dd>
+                  <dd className="font-medium">
+                    {phaseData.conditions.humidity}
+                  </dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-muted-foreground">Light Hours</dt>
-                  <dd className="font-medium">{data.conditions.light_hours}</dd>
+                  <dd className="font-medium">
+                    {phaseData.conditions.light_hours}
+                  </dd>
                 </div>
               </dl>
             </div>
             <Separator className="my-4" />
           </>
         )}
-        {data.nutrients && (
+        {phaseData.nutrients && (
           <>
             <div className="grid gap-3">
               <div className="font-semibold">Nutrients</div>
               <dl className="grid gap-3">
                 <div className="flex items-center justify-between">
                   <dt className="text-muted-foreground">Type</dt>
-                  <dd className="font-medium">{data.nutrients.type}</dd>
+                  <dd className="font-medium">{phaseData.nutrients.type}</dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-muted-foreground">Schedule</dt>
-                  <dd className="font-medium">{data.nutrients.schedule}</dd>
+                  <dd className="font-medium">
+                    {phaseData.nutrients.schedule}
+                  </dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-muted-foreground">pH Level</dt>
-                  <dd className="font-medium">{data.nutrients.ph_level}</dd>
+                  <dd className="font-medium">
+                    {phaseData.nutrients.ph_level}
+                  </dd>
                 </div>
               </dl>
             </div>
             <Separator className="my-4" />
           </>
         )}
-        {data.drying_conditions && (
+        {phaseData.drying_conditions && (
           <>
             <div className="grid gap-3">
               <div className="font-semibold">Drying Conditions</div>
@@ -185,13 +222,13 @@ const PhaseDetailCard: React.FC<{ phase: string; data: any }> = ({
                 <div className="flex items-center justify-between">
                   <dt className="text-muted-foreground">Temperature</dt>
                   <dd className="font-medium">
-                    {data.drying_conditions.temperature}
+                    {phaseData.drying_conditions.temperature}
                   </dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-muted-foreground">Humidity</dt>
                   <dd className="font-medium">
-                    {data.drying_conditions.humidity}
+                    {phaseData.drying_conditions.humidity}
                   </dd>
                 </div>
               </dl>
@@ -207,6 +244,49 @@ const PhaseEditCard: React.FC<{ phase: string; data: any }> = ({
   phase,
   data,
 }) => {
+  const phaseComponentsConfig = {
+    germination: {
+      schema: phaseSchema,
+    },
+    vegetative: {
+      schema: phaseSchema,
+    },
+    flowering: {
+      schema: phaseSchema,
+    },
+    harvest: {
+      schema: harvestSchema,
+    },
+    processing: {
+      schema: processingSchema,
+    },
+    destroyed: {
+      schema: destroyedSchema,
+    },
+  };
+  const { id: batchId } = useBatch();
+  // Get the appropriate component and schema based on the phase
+  const { schema } = phaseComponentsConfig[phase] || {};
+  const [values, setValues] = useState<Partial<z.infer<typeof schema>>>(data);
+  const { execute, status } = useAction(updateBatchUseCase, {
+    onSuccess: (data) => {
+      console.log('Batch updated successfully', data);
+    },
+    onError: (error) => {
+      console.log('Error updating batch', error);
+    },
+  });
+
+  console.log('values ', values);
+  const onSubmit = (data: any) => {
+    const newPhaseValues = { [phase]: data };
+    const newValues = { ...values, ...newPhaseValues };
+    execute({ id: batchId, otherDetails: newValues });
+  };
+
+  if (!schema) {
+    return <p>Invalid schema, cant proceed</p>;
+  }
   return (
     <Dialog>
       <DialogTrigger>
@@ -219,8 +299,12 @@ const PhaseEditCard: React.FC<{ phase: string; data: any }> = ({
         <DialogHeader>
           <DialogTitle>{phase}</DialogTitle>
         </DialogHeader>
-        <h2>TEST</h2>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
+
+        <AutoForm
+          values={values[phase]}
+          onParsedValuesChange={onSubmit}
+          formSchema={schema}
+        />
       </DialogContent>
     </Dialog>
   );

@@ -23,17 +23,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useAction } from 'next-safe-action/hooks';
 import React, { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useBatch } from '../BatchContext';
 
-interface CurrentPhaseFormProps {
-  batchId: string;
-  currentGrowthStage: string;
-}
-
-const CurrentPhaseForm: React.FC<CurrentPhaseFormProps> = ({
-  batchId,
-  currentGrowthStage,
-}) => {
+const CurrentPhaseForm: React.FC = () => {
   const { toast } = useToast();
+  const { id: batchId, currentGrowthStage } = useBatch();
 
   const { execute, status } = useAction(updateBatchUseCase, {
     onSuccess: (data) => {
@@ -74,38 +68,49 @@ const CurrentPhaseForm: React.FC<CurrentPhaseFormProps> = ({
     }
   }, [currentGrowthStageValue]);
 
+  // const {  startDate, endDate } = details;
+  // const start = parseISO(startDate);
+  // const end = endDate ? parseISO(endDate) : addDays(start, 30);
+  // const now = new Date();
+  // const totalDays = differenceInDays(end, start);
+  // const elapsedDays = differenceInDays(now, start);
+  // const progress = Math.min((elapsedDays / totalDays) * 100, 100);
+
   return (
-    <Form {...form}>
-      <form className="grid gap-4">
-        <FormField
-          control={form.control}
-          name="currentGrowthStage"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Select Grow Phase</FormLabel>
-              <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <SelectTrigger className="w-full">
-                    <span>{field.value || 'Select Grow Phase'}</span>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.values(GrowPhase).map((phase) => (
-                      <SelectItem key={phase} value={phase}>
-                        {phase}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </form>
-    </Form>
+    <>
+      {/* <Progress value={progress} className=" mb-2 w-full" /> */}
+      <Form {...form}>
+        <form className="grid gap-4">
+          <FormField
+            control={form.control}
+            name="currentGrowthStage"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Select Grow Phase</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-full">
+                      <span>{field.value || 'Select Grow Phase'}</span>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.values(GrowPhase).map((phase) => (
+                        <SelectItem key={phase} value={phase}>
+                          {phase}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
+    </>
   );
 };
 

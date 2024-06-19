@@ -2,6 +2,7 @@ import Breadcrumbs from '@/components/generic/BreadCrumbs';
 import { Container } from '@/components/generic/Container';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { BatchProps } from '@/modules/plants/data-access/schema';
 import { fetchBatchDetailsUseCase } from '@/modules/plants/use-cases';
 import { ChevronLeft } from 'lucide-react';
 import { Metadata } from 'next';
@@ -25,6 +26,8 @@ const BatchDetailPage = async ({ params: { id } }: BatchDetailPageProps) => {
     { label: `${id}` },
   ];
   const { data } = await fetchBatchDetailsUseCase({ batchId: id });
+
+  const { name, strain } = data.success.batch;
 
   if (!data ?? !data.success?.batch) {
     return (
@@ -66,16 +69,17 @@ const BatchDetailPage = async ({ params: { id } }: BatchDetailPageProps) => {
             </Button>
           </Link>
 
-          <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-            {data.success.batch.name}
+          <h1 className="shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
+            {name}
           </h1>
           <Badge variant="outline" className="ml-auto sm:ml-0">
-            {data.success.batch.strain}
+            {strain}
           </Badge>
         </div>
-
         {/* Main area with two sides, each contain cards */}
-        <EditBatchContainer details={data.success?.batch} />
+        <EditBatchContainer
+          details={(data as any).success?.batch as BatchProps}
+        />
       </div>
     </Container>
   );

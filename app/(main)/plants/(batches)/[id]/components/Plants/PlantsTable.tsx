@@ -1,5 +1,6 @@
 'use client';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -15,7 +16,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { fetchPlantsFromBatchUseCase } from '@/modules/plants/use-cases';
+import { useToast } from '@/components/ui/use-toast';
+import {
+  deletePlantUseCase,
+  fetchPlantsFromBatchUseCase,
+} from '@/modules/plants/use-cases';
 import {
   ColumnFiltersState,
   SortingState,
@@ -27,83 +32,16 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { t } from 'i18next';
-import { ArrowUpDown, EyeIcon } from 'lucide-react';
+import { ArrowUpDown, Trash2 } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import { useEffect, useState } from 'react';
+import { useBatch } from '../BatchContext';
+import { UpdatePlantForm } from './UpdatePlant';
 
-const getPlantTableColumns = () => {
-  return [
-    {
-      id: 'id',
-      accessorKey: 'id',
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="justify-start text-xs"
-        >
-          ID
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      ),
-      cell: ({ row }) => (
-        <div className="ml-4 text-left">
-          {String(row.getValue('id')).slice(-6)}
-        </div>
-      ),
-    },
-    {
-      id: 'name',
-      accessorKey: 'name',
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="justify-start text-xs"
-        >
-          Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      ),
-      cell: ({ row }) => (
-        <div className="ml-4 text-left">{row.getValue('name')}</div>
-      ),
-    },
+const PlantsTable: React.FC = () => {
+  const { toast } = useToast();
+  const { id: batchId } = useBatch();
 
-    {
-      id: 'actions',
-      enableHiding: false,
-      cell: ({ row }) => {
-        const plant = row.original;
-        return (
-          <div className="flex justify-start">
-            <Button
-              variant="ghost"
-              className="hover:bg-inherit"
-              onClick={() => {}}
-            >
-              <TooltipProvider>
-                <Tooltip delayDuration={0}>
-                  <TooltipTrigger>
-                    <EyeIcon className="h-6 w-6 cursor-pointer" />
-                  </TooltipTrigger>
-                  <TooltipContent align="end">Zur Detail Seite</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </Button>
-          </div>
-        );
-      },
-    },
-  ];
-};
-
-interface PlantTableProps {
-  batchId: string;
-}
-
-const PlantsTable: React.FC<PlantTableProps> = ({ batchId }) => {
   const { execute, status } = useAction(fetchPlantsFromBatchUseCase, {
     onSuccess: (data) => {
       console.log('recieved data', data);
@@ -113,6 +51,145 @@ const PlantsTable: React.FC<PlantTableProps> = ({ batchId }) => {
       console.log('Error fetching plants', error);
     },
   });
+
+  const { execute: delExecute, status: delStatus } = useAction(
+    deletePlantUseCase,
+    {
+      onSuccess: (data) => {
+        console.log('succyy deleted plant ', data);
+      },
+      onError: (error) => console.log('Error deleting plant', error),
+    },
+  );
+
+  const getPlantTableColumns = () => {
+    const columns = [
+      {
+        id: 'id',
+        accessorKey: 'id',
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            className="justify-start text-xs"
+          >
+            ID
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        ),
+        cell: ({ row }) => (
+          <div className="ml-4 w-4 p-0 text-left">
+            {String(row.getValue('id')).slice(-6)}
+          </div>
+        ),
+      },
+      {
+        id: 'name',
+        accessorKey: 'name',
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            className="justify-start text-xs"
+          >
+            Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        ),
+        cell: ({ row }) => (
+          <div className="ml-4 text-left">{row.getValue('name')}</div>
+        ),
+      },
+      {
+        id: 'health',
+        accessorKey: 'health',
+        header: ({ column }) => (
+          <Button variant="ghost" className="justify-start text-xs">
+            Health
+          </Button>
+        ),
+        cell: ({ row }) => (
+          <div className="ml-4 text-left">
+            <Badge variant="outline">{row.getValue('health')}</Badge>
+          </div>
+        ),
+      },
+      {
+        id: 'yield',
+        accessorKey: 'yield',
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            className="justify-start text-xs"
+          >
+            Yield
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        ),
+        cell: ({ row }) => (
+          <div className="ml-4 w-4 p-0 text-left">
+            {String(row.getValue('yield'))}g
+          </div>
+        ),
+      },
+      {
+        id: 'actions',
+        enableHiding: false,
+        header: () => (
+          <Button variant="ghost" className="justify-start text-xs">
+            Actions
+          </Button>
+        ),
+        cell: ({ row }) => {
+          const plant = row.original;
+          return (
+            <div className="flex justify-start">
+              <Button
+                variant="ghost"
+                className="hover:bg-inherit"
+                onClick={() => {}}
+              >
+                <TooltipProvider>
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger>
+                      <UpdatePlantForm plant={plant} />
+                    </TooltipTrigger>
+                    <TooltipContent align="end">Edit Plant</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </Button>
+
+              <Button
+                variant="ghost"
+                className="hover:bg-inherit"
+                onClick={() => {
+                  delExecute({ id: plant.id });
+
+                  toast({
+                    title: 'Success',
+                    description: `Plant ${plant.name} has been deleted`,
+                  });
+                  execute({ batchId }); //re-fetch plants
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger>
+                      <Trash2 className="h-4 w-4 cursor-pointer" />
+                    </TooltipTrigger>
+                    <TooltipContent align="end">Delete Plant</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </Button>
+            </div>
+          );
+        },
+      },
+    ];
+
+    return columns;
+  };
 
   const [plants, setPlants] = useState([]);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -143,6 +220,10 @@ const PlantsTable: React.FC<PlantTableProps> = ({ batchId }) => {
     },
   });
 
+  if (status === 'executing') {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Table className="rounded-md bg-white">
       <TableHeader>
@@ -165,27 +246,32 @@ const PlantsTable: React.FC<PlantTableProps> = ({ batchId }) => {
         ))}
       </TableHeader>
       <TableBody>
-        {table.getRowModel().rows?.length ? (
-          table.getRowModel().rows.map((row) => (
-            <TableRow
-              key={row.id}
-              data-state={row.getIsSelected() && 'selected'}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <TableCell className="text-left" key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        {status === 'hasSucceeded' && (
+          <>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell className="text-left" key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell className="col-span-3 h-24 text-center">
+                  No plants found in this batch.
                 </TableCell>
-              ))}
-            </TableRow>
-          ))
-        ) : (
-          <TableRow>
-            <TableCell className="h-24 text-center">
-              {t('GENERAL.DATA_TABLE.NO_RESULTS', {
-                entity: t('plants:TITLE'),
-              })}
-            </TableCell>
-          </TableRow>
+              </TableRow>
+            )}
+          </>
         )}
       </TableBody>
     </Table>

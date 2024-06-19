@@ -2,20 +2,20 @@ import { z } from 'zod';
 
 // Zod schemas
 const conditionsSchema = z.object({
-  temperature: z.string(),
-  humidity: z.string(),
-  light_hours: z.number(),
+  temperature: z.string().optional(),
+  humidity: z.string().optional(),
+  light_hours: z.number().optional(),
 });
 
 const nutrientsSchema = z.object({
-  type: z.string(),
-  schedule: z.string(),
-  ph_level: z.number(),
+  type: z.string().optional(),
+  schedule: z.string().optional(),
+  ph_level: z.number().optional(),
 });
 
 const dryingConditionsSchema = z.object({
-  temperature: z.string(),
-  humidity: z.string(),
+  temperature: z.string().optional(),
+  humidity: z.string().optional(),
 });
 
 const yieldSchema = z.object({
@@ -24,22 +24,20 @@ const yieldSchema = z.object({
 });
 
 const phaseSchema = z.object({
-  date_germinated: z.string().optional(),
-  start_date: z.string().optional(),
-  end_date: z.string().optional(),
-  estimated_end_date: z.string().optional(),
-  actual_date: z.string().nullable().optional(),
+  start_date: z.coerce.date().optional(),
+  end_date: z.coerce.date().optional(),
+  estimated_end_date: z.coerce.date().optional(),
   conditions: conditionsSchema.optional(),
   nutrients: nutrientsSchema.optional(),
 });
 
 const processingSchema = z.object({
-  drying_start_date: z.string().nullable().optional(),
-  drying_end_date: z.string().nullable().optional(),
-  curing_start_date: z.string().nullable().optional(),
-  curing_end_date: z.string().nullable().optional(),
-  trim_date: z.string().nullable().optional(),
-  packaging_date: z.string().nullable().optional(),
+  drying_start_date: z.coerce.date().nullable().optional(),
+  drying_end_date: z.coerce.date().nullable().optional(),
+  curing_start_date: z.coerce.date().nullable().optional(),
+  curing_end_date: z.coerce.date().nullable().optional(),
+  trim_date: z.coerce.date().nullable().optional(),
+  packaging_date: z.coerce.date().nullable().optional(),
   final_weight_grams: z.number().nullable().optional(),
 });
 
@@ -49,11 +47,19 @@ const destroyedSchema = z.object({
   reason: z.string().nullable().optional(),
 });
 
+const germinationSchema = z.object({
+  date_germinated: z.string().optional(),
+  seed_type: z.string().optional(),
+  medium: z.string().optional(),
+});
+
+const harvestSchema = phaseSchema.merge(yieldSchema);
+
 const growPhasesSchema = z.object({
-  germination: phaseSchema,
+  germination: phaseSchema.merge(germinationSchema),
   vegetative: phaseSchema,
   flowering: phaseSchema,
-  harvest: phaseSchema.merge(yieldSchema), // Merging yieldSchema with phaseSchema
+  harvest: harvestSchema,
   processing: processingSchema.merge(dryingConditionsSchema), // Merging dryingConditionsSchema with processingSchema
   destroyed: destroyedSchema,
 });
@@ -66,6 +72,7 @@ export {
   destroyedSchema,
   dryingConditionsSchema,
   growPhasesSchema,
+  harvestSchema,
   nutrientsSchema,
   phaseSchema,
   processingSchema,

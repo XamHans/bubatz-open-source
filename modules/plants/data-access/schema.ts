@@ -3,6 +3,7 @@ import { sql } from 'drizzle-orm';
 import {
   date,
   jsonb,
+  numeric,
   pgTable,
   real,
   serial,
@@ -12,6 +13,7 @@ import {
 import { relations } from 'drizzle-orm/relations';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
+import { growPhasesSchema } from './grow-phases-schema';
 
 const defaultSeedToSale = {
   seed: {
@@ -104,6 +106,7 @@ export const plants = pgTable('plants', {
     .references(() => batches.id, { onDelete: 'cascade' }),
   position: text('position').notNull(),
   health: text('health').default('healthy'),
+  yield: numeric('yield').default('0'),
   seedToSale: jsonb('seed_to_sale').notNull().default(defaultSeedToSale),
 });
 
@@ -134,11 +137,12 @@ export const createBatchInputSchema = createInsertSchema(batches, {
 //   otherDetails: z.object({}).optional(),
 // });
 
-export const updateGrowthStageSchema = z.object({
+export const updateBatchInputSchema = z.object({
   id: z.string().min(1, 'Batch id is required'),
-  currentGrowthStage: z.string().min(1, 'Growth stage is required'),
+  currentGrowthStage: z.string().min(1, 'Growth stage is required').optional(),
+  otherDetails: growPhasesSchema.optional(),
 });
-export type UpdateGrowthStageInput = z.infer<typeof updateGrowthStageSchema>;
+export type UpdateBatchInput = z.infer<typeof updateBatchInputSchema>;
 
 export const createPlantInputSchema = createInsertSchema(plants, {
   name: z.string().min(1),
@@ -146,11 +150,29 @@ export const createPlantInputSchema = createInsertSchema(plants, {
   position: z.string().min(1),
 });
 
+export const updatePlantInputSchema = createInsertSchema(plants, {
+  batchId: z.string().optional(),
+  name: z.string().min(1),
+  position: z.string().min(1),
+  health: z.string().min(1),
+  yield: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
+    message: 'Expected number, received a string',
+  }),
+});
+
+export const deletePlantInputSchema = createPlantInputSchema.pick({
+  id: true,
+  batchId: true,
+});
+
 export const getBatchesSchema = createSelectSchema(batches);
 export const getPlantsSchema = createSelectSchema(plants);
 
 export type CreateBatchInput = z.infer<typeof createBatchInputSchema>;
+export type BatchProps = z.infer<typeof getBatchesSchema>;
 
-export type CreatePlantInput = z.infer<typeof createPlantInputSchema>;
-export type GetBatches = z.infer<typeof getBatchesSchema>;
 export type GetPlants = z.infer<typeof getPlantsSchema>;
+export type CreatePlantInput = z.infer<typeof createPlantInputSchema>;
+export type UpdatePlantInput = z.infer<typeof updatePlantInputSchema>;
+
+export type DeletePlantInput = z.infer<typeof deletePlantInputSchema>;

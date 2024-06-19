@@ -25,6 +25,7 @@ import {
   createPlantInputSchema,
 } from '@/modules/plants/data-access/schema';
 
+import { useToast } from '@/components/ui/use-toast';
 import {
   createPlantUseCase,
   fetchPlantsFromBatchUseCase,
@@ -33,28 +34,41 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useAction } from 'next-safe-action/hooks';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useBatch } from '../BatchContext';
 import { PlantsTable } from './PlantsTable';
 
-export interface PlantFormProps {
-  batchId: string;
-}
+const PlantsContainer: React.FC = () => {
+  const { id: batchId, currentGrowthStage } = useBatch();
 
-const PlantsContainer: React.FC<PlantFormProps> = ({ batchId }) => {
   const [open, setOpen] = useState(false);
   const [plants, setPlants] = useState<PlantDetailsData[]>([]);
+  const { toast } = useToast();
 
   const { execute, status } = useAction(fetchPlantsFromBatchUseCase, {
     onSuccess: (data) => {
-      console.log('recieved data', data);
       const { plants } = data?.success as any;
       setPlants(plants);
     },
-    onError: (error) => console.log('Error fetching plants by batch', error),
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: `Plants could not be fetched: ${error}`,
+        duration: 5000,
+      });
+    },
   });
 
   const { execute: createPlantExecute } = useAction(createPlantUseCase, {
-    onSuccess: (data) => console.log('Plants ', data),
-    onError: (error) => console.log('Error fetching plants by batch', error),
+    onSuccess: (data) => {
+      execute({ batchId }); //re-fetch plants
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        duration: 5000,
+        description: `Plant could not be created: ${error}`,
+      });
+    },
   });
 
   const form = useForm<CreatePlantInput>({
@@ -65,12 +79,11 @@ const PlantsContainer: React.FC<PlantFormProps> = ({ batchId }) => {
     console.log('Create Plant ', data);
     createPlantExecute({ ...data, batchId, health: 'healthy' });
     setOpen(false);
-    execute({ batchId }); //re-fetch plants
   };
 
   useEffect(() => {
     execute({ batchId });
-  }, [batchId, execute]);
+  }, []);
 
   return (
     <Card>
@@ -79,7 +92,7 @@ const PlantsContainer: React.FC<PlantFormProps> = ({ batchId }) => {
         <CardDescription>Manage plants in this batch</CardDescription>
       </CardHeader>
       <CardContent>
-        <PlantsTable batchId={batchId} />
+        <PlantsTable />
       </CardContent>
       <CardFooter className="justify-center border-t p-4">
         <GenericModal
@@ -93,7 +106,6 @@ const PlantsContainer: React.FC<PlantFormProps> = ({ batchId }) => {
               onSubmit={form.handleSubmit(onSubmit)}
               className="grid gap-2 sm:grid-cols-2 md:gap-4"
             >
-              <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
               <FormField
                 control={form.control}
                 name="name"
