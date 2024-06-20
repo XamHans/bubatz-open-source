@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '../../../lib/db/db';
-import getLogger from '../../../lib/logger';
+// import getLogger from '../../../lib/logger';
 import { AddMemberInput, members } from './schema';
 import { AsyncReturnType } from '../../../lib/types';
 import { UpdateMemberInput } from './schema';
@@ -37,6 +37,7 @@ export type GetMemberDetailQueryData = AsyncReturnType<typeof getMemberDetail>;
 
 const updateMember = async (data: UpdateMemberInput) => {
   try {
+    console.log('data', data);
     const updatedMemberResult = await db
       .update(members)
       .set({ ...data, birthday: data.birthday?.toString() }) // Added nullish coalescing operator

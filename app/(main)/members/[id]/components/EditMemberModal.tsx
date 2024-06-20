@@ -32,7 +32,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { t } from 'i18next';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-
 import { z } from 'zod';
 import { useState } from 'react';
 import { useAction } from 'next-safe-action/hooks';
@@ -67,7 +66,7 @@ const EditMemberModal = ({ member, setMember }: EditMemberModalProps) => {
       street: member.street ?? '',
       zip: member.zip ?? '',
     },
-    mode: 'onBlur',
+    mode: 'onSubmit',
     resolver: zodResolver(memberProfileSchema),
   });
 
@@ -94,10 +93,9 @@ const EditMemberModal = ({ member, setMember }: EditMemberModalProps) => {
   const params = useParams<{ id: UUID }>();
 
   const handleSave = async (data: UpdateMemberInput) => {
-    console.log('Data:', data);
     try {
       const result = await execute({ ...data, id: params.id });
-      console.log('Member updated successfully', result);
+      console.log('result', result);
       setMember((prev) => ({ ...prev, ...data }));
       setOpen(false);
     } catch (error) {
@@ -302,7 +300,14 @@ const EditMemberModal = ({ member, setMember }: EditMemberModalProps) => {
               </FormItem>
             )}
           />
-          <Button type="submit">Save</Button>
+          <Button
+            type="button"
+            onClick={() => {
+              handleSave(form.getValues());
+            }}
+          >
+            Save
+          </Button>
 
           {/* <DialogFooter className="col-span-2">
             <DialogClose asChild>

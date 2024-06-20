@@ -7,7 +7,7 @@ import {
   updateMember,
 } from '../data-access';
 
-import getLogger from '../../../lib/logger';
+// import getLogger from '../../../lib/logger';
 import { createSafeActionClient } from 'next-safe-action';
 import {
   UserSchema,
