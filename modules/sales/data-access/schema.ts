@@ -13,7 +13,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm/relations';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import { z } from 'zod';
+import { number, z } from 'zod';
 
 export const paymentMethods = pgEnum('paymentMethods', [
   'CASH',
@@ -31,15 +31,15 @@ export const sales = pgTable('sales', {
   salesById: uuid('sales_by_id')
     .notNull()
     .references(() => members.id),
-  createdAt: timestamp('created_at').notNull().defaultNow(), // Not yet updated on the db
-  updatedAt: timestamp('updated_at').notNull().defaultNow(), // Not yet updated on the db
+  createdAt: time('created_at').notNull().defaultNow(), // Not yet updated on the db
+  updatedAt: time('updated_at', { withTimezone: true }).notNull().defaultNow(), // Not yet updated on the db
 });
 
 export const salesItems = pgTable('sales_items', {
   id: serial('id').primaryKey(),
   weightGrams: real('weight_grams').notNull(),
   price: real('price').notNull(),
-  plantId: uuid('plant_id')
+  plantId: integer('plant_id')
     .notNull()
     .references(() => plants.id),
   saleId: integer('sale_id')
@@ -81,17 +81,15 @@ export const salesItemsRelations = relations(salesItems, ({ one }) => ({
  * * Sale Items
  */
 export const SaleItemInsertSchema = createInsertSchema(salesItems, {
-  weightGrams: (schema) => schema.weightGrams.positive().min(0),
-  price: (schema) => schema.price.positive().min(0),
-  plantId: (schema) => schema.plantId.uuid(),
-  saleId: (schema) => schema.saleId.positive(),
+  weightGrams: z.coerce.number().positive().min(0),
+  price: z.coerce.number().positive().min(0),
+  plantId: z.coerce.number().positive().min(0),
+  saleId: (schema) => schema.saleId.optional(),
 });
-// export const SaleItemInsertSchemaArray = z.array(SaleItemInsertSchema);
+
 export type SaleItemInsertSchema = z.infer<typeof SaleItemInsertSchema>;
 
-export const SaleItemFormInputSchema = SaleItemInsertSchema.omit({
-  saleId: true,
-});
+export const SaleItemFormInputSchema = SaleItemInsertSchema.omit({});
 
 export type SaleItem = z.infer<typeof SaleItemFormInputSchema>;
 
@@ -102,7 +100,7 @@ export const createSaleInputSchema = createInsertSchema(sales, {
   totalPrice: (schema) => schema.totalPrice.positive().min(0),
   paidVia: (schema) => schema.paidVia,
   userId: (schema) => schema.userId.uuid(),
-  salesById: (schema) => schema.salesById.uuid(),
+  salesById: (schema) => schema.salesById,
 });
 export type CreateSaleInput = z.infer<typeof createSaleInputSchema>;
 
@@ -115,6 +113,18 @@ export const createSaleFormInputSchema = createInsertSchema(sales, {
 });
 
 export type CreateSaleFormInput = z.infer<typeof createSaleFormInputSchema>;
+
+export const SaleWithItems = z.object({
+  sale: z.object({
+    totalPrice: z.number().positive().min(0),
+    paidVia: z.enum(paymentMethods.enumValues),
+    userId: z.string().uuid(),
+    salesById: z.string().uuid(),
+  }),
+  items: z.array(SaleItemInsertSchema),
+});
+
+export type TSaleWithItems = z.infer<typeof SaleWithItems>;
 
 export const getSaleSchema = createSelectSchema(sales);
 export type Sale = z.infer<typeof getSaleSchema>;
