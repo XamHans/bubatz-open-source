@@ -96,6 +96,7 @@ export type SaleItem = z.infer<typeof SaleItemFormInputSchema>;
 /**
  * * Sales
  */
+
 export const createSaleInputSchema = createInsertSchema(sales, {
   totalPrice: (schema) => schema.totalPrice.positive().min(0),
   paidVia: (schema) => schema.paidVia,
