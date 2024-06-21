@@ -3,11 +3,13 @@
 import { db } from '@/lib/db/db';
 import {
   CreateSaleInput,
-  Sale,
+  SaleWithoutItems,
   SaleItemInsertSchema,
   TSaleWithItems,
   sales,
   salesItems,
+  Sale,
+  SaleItem,
 } from './schema';
 import { eq } from 'drizzle-orm';
 import { AsyncReturnType } from '@/lib/types';
@@ -17,7 +19,7 @@ import { AsyncReturnType } from '@/lib/types';
  * @returns Array of all sales.
  */
 export const getSales = async () => {
-  const allSales: Sale[] = await db.select().from(sales);
+  const allSales: SaleWithoutItems[] = await db.select().from(sales);
   console.log('allsales', allSales);
   return allSales;
 };
@@ -27,12 +29,44 @@ export const getSales = async () => {
  * @param id Id of the sale to be retrieved.
  * @returns Sale with the given id. If no sale is found, return null.
  */
-export const getSaleById = async (id: number): Promise<Sale | null> => {
-  const sale: Sale[] = await db.select().from(sales).where(eq(sales.id, id));
+export const getSaleWithoutItemsById = async (
+  id: number,
+): Promise<SaleWithoutItems | null> => {
+  const sale: SaleWithoutItems[] = await db
+    .select()
+    .from(sales)
+    .where(eq(sales.id, id));
   console.log('sale', sale);
   return sale[0] ?? null;
 };
-export type GetSaleDetailQueryData = AsyncReturnType<typeof getSaleById>;
+export type GetSaleWithoutItemsQueryData = AsyncReturnType<
+  typeof getSaleWithoutItemsById
+>;
+
+export const getSaleById = async (
+  id: number,
+): Promise<Sale> => {
+  const sale: SaleWithoutItems[] = await db
+    .select()
+    .from(sales)
+    .where(eq(sales.id, id));
+  console.log('sale', sale);
+  const items = await getSaleItemsBySaleId(id);
+  return {sale: sale[0], items: items};
+};
+
+export type GetSaleDetailQueryData = AsyncReturnType<
+  typeof getSaleWithoutItemsById
+>;
+
+export const getSaleItemsBySaleId = async (id: number): Promise<SaleItem[]> => {
+  const items: SaleItem[] = await db
+    .select()
+    .from(salesItems)
+    .where(eq(salesItems.saleId, id));
+  console.log('sale', items);
+  return items;
+};
 
 export const createSaleItem = async (
   saleItem: SaleItemInsertSchema,

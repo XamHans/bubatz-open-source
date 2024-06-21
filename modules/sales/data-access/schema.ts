@@ -128,7 +128,14 @@ export const SaleWithItems = z.object({
 export type TSaleWithItems = z.infer<typeof SaleWithItems>;
 
 export const getSaleSchema = createSelectSchema(sales);
-export type Sale = z.infer<typeof getSaleSchema>;
+export type SaleWithoutItems = z.infer<typeof getSaleSchema>;
+
+export const Sale = z.object({
+  sale: createSaleInputSchema,
+  items: z.array(SaleItemInsertSchema),
+});
+
+export type Sale = z.infer<typeof Sale>;
 
 // * Payment methods
 export const PaymentMethodsEnum = z.enum(paymentMethods.enumValues);

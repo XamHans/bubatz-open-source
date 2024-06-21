@@ -9,13 +9,18 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import {
-  GetSaleDetailQueryData,
+  GetSaleWithoutItemsQueryData,
   getSaleById,
+  getSaleWithoutItemsById,
 } from '@/modules/sales/data-access';
 import { t } from 'i18next';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { CreateSaleInput, SaleItem } from '@/modules/sales/data-access/schema';
+import {
+  CreateSaleInput,
+  Sale,
+  SaleItem,
+} from '@/modules/sales/data-access/schema';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { plants } from '@/modules/plants/data-access/schema';
 import {
@@ -31,17 +36,16 @@ import {
 import { useRouter } from 'next/navigation';
 
 interface SaleItemsTableProps {
-  saleItems: SaleItem;
-  deleteItem: (item: CreateSaleInput) => void;
+  saleItems: Sale;
   plants: { id: string; name: string; price: number }[];
 }
 
 const SaleGeneralInfo = (props: SaleItemsTableProps) => {
   const params = useParams<{ id: string }>();
-  const [sale, setSale] = useState<GetSaleDetailQueryData | undefined>(
+  const [sale, setSale] = useState<Sale | undefined>(
     undefined,
   );
-  const { saleItems, deleteItem, plants } = props;
+  const { saleItems } = props;
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -50,7 +54,7 @@ const SaleGeneralInfo = (props: SaleItemsTableProps) => {
 
   const getItemSalesTableColumns = (
     router: AppRouterInstance,
-    { deleteItem, plants }: Omit<SaleItemsTableProps, 'saleItems'>,
+    { plants }: Omit<SaleItemsTableProps, 'saleItems'>,
   ) => {
     return [
       {
@@ -92,16 +96,19 @@ const SaleGeneralInfo = (props: SaleItemsTableProps) => {
     const fetchSale = async () => {
       console.log('fetch member with id ', params.id);
       const sale = await getSaleById(Number(params.id));
-      setSale(sale);
+      return sale;
     };
 
-    fetchSale();
+    fetchSale().then((result) => {
+      setSale(result);
+      console.log('sale', result);
+    });
   }, []);
 
   if (!sale) return null;
 
   const table = useReactTable({
-    data: saleItems,
+    data: saleItems.items,
     columns: getItemSalesTableColumns(router, props),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

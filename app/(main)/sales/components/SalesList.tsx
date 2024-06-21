@@ -11,11 +11,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip';
 import { getMemberDetail } from '@/modules/members/data-access';
 import { UserSchema } from '@/modules/members/data-access/schema';
 import { MemberProps } from '@/modules/members/types';
-import { Sale } from '@/modules/sales/data-access/schema';
+import { SaleWithoutItems } from '@/modules/sales/data-access/schema';
 import { fetchSalesUseCase } from '@/modules/sales/use-cases';
 import {
   ColumnFiltersState,
@@ -149,7 +154,7 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
               className="transition-transform duration-200 hover:bg-inherit"
               onClick={() => {
                 router.push(
-                  configuration.paths.sales.detail.replace(':id', sale.id! ),
+                  configuration.paths.sales.detail.replace(':id', sale.id!),
                 );
               }}
             >
@@ -183,7 +188,7 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
 };
 
 export default function MemberTable() {
-  const [sales, setSales] = React.useState<Sale[]>([]);
+  const [sales, setSales] = React.useState<SaleWithoutItems[]>([]);
   const [users, setUsers] = React.useState<UserSchema[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);

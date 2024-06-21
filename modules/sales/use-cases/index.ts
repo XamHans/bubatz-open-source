@@ -2,7 +2,7 @@
 
 import { DEFAULT_SERVER_ERROR, createSafeActionClient } from 'next-safe-action';
 import {
-  Sale,
+  SaleWithoutItems,
   SaleItemInsertSchema,
   SaleWithItems,
   createSaleInputSchema,
@@ -12,7 +12,7 @@ import { logger } from '@/lib/logger';
 import {
   createSale,
   createSaleItem,
-  getSaleById,
+  getSaleWithoutItemsById,
   getSales,
 } from '../data-access';
 
@@ -39,9 +39,9 @@ export const fetchSalesUseCase = action({}, async () => {
  */
 export const fetchSaleUseCase = action(
   getSaleSchema,
-  async (id: { id: number }): Promise<{ sale?: Sale | null }> => {
+  async (id: { id: number }): Promise<{ sale?: SaleWithoutItems | null }> => {
     logger.debug('Fetching sale from DB.');
-    const sale = await getSaleById(id.id);
+    const sale = await getSaleWithoutItemsById(id.id);
     return { sale: sale };
   },
 );
