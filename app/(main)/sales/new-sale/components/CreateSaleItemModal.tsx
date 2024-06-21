@@ -28,7 +28,7 @@ import { Button } from '@/components/ui/button';
 import { GenericModal } from '@/components/generic/GenericModal';
 
 interface CreateSaleItemModalProps {
-  plants: { id: UUID; name: string; price: number }[];
+  plants: { id: number; name: string; price: number }[];
   addItem: (item: SaleItem) => void;
 }
 
@@ -58,12 +58,12 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
     setErrors([]);
   };
 
-  const getPlantNameFromId = (id: string): string => {
+  const getPlantNameFromId = (id: number): string => {
     const plant = plants.find((plant) => plant.id === id);
     return plant?.name as UUID;
   };
 
-  const getPlantPriceFromId = (id: string): number => {
+  const getPlantPriceFromId = (id: number): number => {
     const plant = plants.find((p) => p.id === id);
     return plant?.price || -1;
   };
@@ -93,10 +93,10 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
                 <FormControl>
                   <Select
                     onValueChange={(v) => {
-                      field.onChange(v);
-                      form.setValue('price', getPlantPriceFromId(v));
+                      field.onChange(parseInt(v));
+                      form.setValue('price', getPlantPriceFromId(parseInt(v)));
                     }}
-                    defaultValue={field.value}
+                    // defaultValue={field.value}
                   >
                     <SelectTrigger className="w-full">
                       <span>
@@ -152,9 +152,7 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
               );
             }}
           />
-          <Button type="button" onClick={() => handleSave(form.getValues())}>
-            Save
-          </Button>
+          <Button type="submit">Save</Button>
         </form>
       </Form>
     </GenericModal>

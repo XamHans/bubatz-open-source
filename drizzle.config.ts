@@ -13,7 +13,7 @@ export default defineConfig({
   dialect: 'postgresql', // "mysql" | "sqlite" | "postgresql"
   schema: [
     './lib/db/schema.ts',
-    './modules/plants/data-access/schema.ts',
+    //'./modules/plants/data-access/schema.ts',
     './modules/members/data-access/schema.ts',
     './modules/sales/data-access/schema.ts',
   ],

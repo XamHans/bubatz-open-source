@@ -6,10 +6,11 @@ import CreateSaleItemModal from './CreateSaleItemModal';
 import {
   CreateSaleFormInput,
   CreateSaleInput,
-  SaleItemInsertSchema,
   PaymentMethodsType,
   createSaleFormInputSchema,
   SaleItem,
+  createSaleInputSchema,
+  SaleWithItems,
 } from '@/modules/sales/data-access/schema';
 import { PaymentMethodsEnum } from '@/modules/sales/data-access/schema';
 import { useSession } from 'next-auth/react';
@@ -33,14 +34,11 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { createSale } from '@/modules/sales/data-access';
-import {
-  createSaleItemUseCase,
-  createSaleUseCase,
-} from '@/modules/sales/use-cases';
+import { createSaleUseCase } from '@/modules/sales/use-cases';
 import { useAction } from 'next-safe-action/hooks';
-import { logger } from '@/logger';
-import { z } from 'zod';
+import { redirect } from 'next/navigation';
+import configuration from '@/app/configuration';
+import { backToSalesPage } from '@/actions/sales';
 
 export default function SaleForm() {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethodsType[]>([
@@ -57,8 +55,11 @@ export default function SaleForm() {
 
   const [saleItems, setSaleItems] = useState<SaleItem[]>([]);
   const [plants, setPlants] = useState<
-    { id: UUID; name: string; price: number }[]
-  >([]);
+    { id: number; name: string; price: number }[]
+  >([
+    { id: 8, name: 'Ganza', price: 14 },
+    { id: 9, name: 'Placa', price: 22 },
+  ]);
   const session = useSession();
 
   const createSaleAction = useAction(createSaleUseCase, {
@@ -66,22 +67,10 @@ export default function SaleForm() {
       if (result.failure) return console.error('error', result.failure);
     },
     onError: (error) => {
-      console.error('error', error);
+      console.error('error aqui?', error);
     },
     onExecute: (input) => {
       console.log('Executing with data: ', input);
-    },
-  });
-
-  const createSaleItemAction = useAction(createSaleItemUseCase, {
-    onSuccess: (result) => {
-      console.log('Create sale item:', result);
-    },
-    onError: (error) => {
-      console.error('error', error);
-    },
-    onExecute: (input) => {
-      console.log('Executing with sale item data: ', input);
     },
   });
 
@@ -94,27 +83,24 @@ export default function SaleForm() {
   };
 
   const createNewSale = (saleForm: CreateSaleFormInput) => {
+    console.log('Creating new sale with form: ', saleForm);
     const parsedForm: CreateSaleInput = {
       ...saleForm,
       totalPrice: parseFloat(saleForm.totalPrice),
       salesById: 'a5ebbad9-43e5-4cc8-ac94-fcd563c5aa51', // ! CHANGE TO FETCH THE CURREND USER LOGGED IN!!!!!!!!
     };
-    createSaleAction.execute(parsedForm);
-  };
 
-  /**
-   * ! Get create sale action state and when it is successful, create the sale items calling this method and passing the sale id
-   */
-  const createNewSaleItems = (saleId: number) => {
-    console.log('Create sale items: ', saleItems);
-    saleItems.forEach((item) => {
-      const parsedItem: SaleItemInsertSchema = {
-        ...item,
-        saleId: saleId,
-      };
-      console.log('parsedItem', parsedItem);
-      createSaleItemAction.execute(parsedItem);
-    });
+    const parse = createSaleInputSchema.safeParse(parsedForm);
+    if (!parse.success) console.log('Error parsing form: ', parse.error.errors);
+
+    // const parsedItems = saleItems.map((item) => ({...item, weightGrams: parseFloat(item.weightGrams)}));
+    const saleWithItems = { sale: parsedForm, items: saleItems };
+    const saleParse = SaleWithItems.safeParse(saleWithItems);
+    if (!saleParse.success)
+      console.log('Error parsing sale: ', saleParse.error.errors);
+    createSaleAction.execute({ sale: parsedForm, items: saleItems });
+
+    backToSalesPage();
   };
 
   /*
@@ -130,13 +116,6 @@ export default function SaleForm() {
     form.setValue('totalPrice', totalPrice.toString());
     console.log('Sale Items: ', saleItems);
   }, [saleItems]);
-
-  useEffect(() => {
-    setPlants([
-      { id: crypto.randomUUID() as UUID, name: 'Ganza', price: 14 },
-      { id: crypto.randomUUID() as UUID, name: 'Placa', price: 22 },
-    ]);
-  }, []);
 
   const form = useForm<CreateSaleFormInput>({
     mode: 'onChange',

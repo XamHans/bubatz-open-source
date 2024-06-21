@@ -27,7 +27,6 @@ import { useState } from 'react';
 //   selectUser,
 //   selectUserSchema,
 // } from '@/modules/members/data-access/schema';
-import SaleItem from './types';
 import { Button } from '@/components/ui/button';
 import {
   Tooltip,
@@ -37,12 +36,12 @@ import {
 } from '@/components/ui/tooltip';
 import { EyeIcon, Trash } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { CreateSaleItemInput } from '@/modules/sales/data-access/schema';
+import { SaleItem } from '@/modules/sales/data-access/schema';
 
 interface SaleItemsTableProps {
-  saleItems: CreateSaleItemInput[];
-  deleteItem: (item: CreateSaleItemInput) => void;
-  plants: { id: string; name: string; price: number }[];
+  saleItems: SaleItem[];
+  deleteItem: (item: SaleItem) => void;
+  plants: { id: number; name: string; price: number }[];
 }
 
 export default function SaleItemsTable(props: SaleItemsTableProps) {
@@ -95,7 +94,7 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
         enableHiding: false,
         header: 'Actions',
         cell: ({ row }) => {
-          const item: CreateSaleItemInput = row.original;
+          const item: SaleItem = row.original;
           return (
             <div className=" ">
               <Button

@@ -4,6 +4,7 @@ import { DEFAULT_SERVER_ERROR, createSafeActionClient } from 'next-safe-action';
 import {
   Sale,
   SaleItemInsertSchema,
+  SaleWithItems,
   createSaleInputSchema,
   getSaleSchema,
 } from '../data-access/schema';
@@ -50,18 +51,15 @@ export const fetchSaleUseCase = action(
  * @param newSaleData Data of the new sale to be created.
  * @returns Object with sale in case of success, or failure otherwise.
  */
-export const createSaleUseCase = action(
-  createSaleInputSchema,
-  async (newSaleData) => {
-    if (!newSaleData) {
-      return { failure: 'No data provided, cant create new sale' };
-    }
+export const createSaleUseCase = action(SaleWithItems, async (newSaleData) => {
+  if (!newSaleData) {
+    return { failure: 'No data provided, cant create new sale' };
+  }
+  console.log('newSaleData', newSaleData);
+  const result = await createSale(newSaleData);
 
-    const newSaleId: Sale = await createSale(newSaleData);
-
-    return { success: newSaleId };
-  },
-);
+  return { success: result };
+});
 
 export const createSaleItemUseCase = action(
   SaleItemInsertSchema,

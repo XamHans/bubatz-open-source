@@ -5,6 +5,7 @@ import {
   CreateSaleInput,
   Sale,
   SaleItemInsertSchema,
+  TSaleWithItems,
   sales,
   salesItems,
 } from './schema';
@@ -44,12 +45,33 @@ export const createSaleItem = async (
 };
 
 /**
- *
  * @param sale Sale to be created.
  * @returns Created sale. If an error occurs, return null.
  */
-export const createSale = async (sale: CreateSaleInput): Promise<Sale> => {
+export const createSale = async (
+  sale: TSaleWithItems,
+): Promise<TSaleWithItems | null> => {
   console.log('Inserting in DB: ', sale);
-  const newSale: Sale[] = await db.insert(sales).values(sale).returning();
-  return newSale[0];
+
+  return db.transaction(async (trx) => {
+    try {
+      const newSale = await trx.insert(sales).values(sale.sale).returning();
+
+      const mappedSaleItems = sale.items.map((item) => ({
+        ...item,
+        saleId: newSale[0].id,
+      }));
+
+      const saleItems = await trx
+        .insert(salesItems)
+        .values(mappedSaleItems)
+        .returning();
+
+      return { sale: newSale[0], items: saleItems };
+    } catch (error) {
+      console.error('Error creating sale: ', error);
+      trx.rollback();
+      return null;
+    }
+  });
 };
