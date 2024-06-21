@@ -10,6 +10,7 @@ import {
   salesItems,
 } from './schema';
 import { eq } from 'drizzle-orm';
+import { AsyncReturnType } from '@/lib/types';
 
 /**
  * Get all sales.
@@ -31,6 +32,7 @@ export const getSaleById = async (id: number): Promise<Sale | null> => {
   console.log('sale', sale);
   return sale[0] ?? null;
 };
+export type GetSaleDetailQueryData = AsyncReturnType<typeof getSaleById>;
 
 export const createSaleItem = async (
   saleItem: SaleItemInsertSchema,

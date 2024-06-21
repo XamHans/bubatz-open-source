@@ -1,5 +1,7 @@
 'use client';
 
+import configuration from '@/app/configuration';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -9,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { getMemberDetail } from '@/modules/members/data-access';
 import { UserSchema } from '@/modules/members/data-access/schema';
 import { MemberProps } from '@/modules/members/types';
@@ -26,7 +29,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { t } from 'i18next';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, EyeIcon } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
@@ -95,9 +98,9 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
       },
     },
     {
-      accessorKey: 'Customer',
+      accessorKey: 'name',
       accessorFn: (row) => {
-        return 'Adenildo';
+        return row.firstName + ' ' + row.lastName;
       },
       header: ({ column }) => {
         return (
@@ -111,7 +114,7 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
         );
       },
       cell: ({ row }) => {
-        return <div className="capitalize">{'Adenildo'}</div>;
+        return <div className="capitalize">{row.getValue('name')}</div>;
       },
     },
     {
@@ -132,6 +135,48 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
       },
       cell: ({ row }) => {
         return <div className="capitalize">{row.getValue('createdAt')}</div>;
+      },
+    },
+    {
+      id: 'actions',
+      enableHiding: false,
+      cell: ({ row }) => {
+        const sale = row.original;
+        return (
+          <div className="flex justify-center ">
+            <Button
+              variant="ghost"
+              className="transition-transform duration-200 hover:bg-inherit"
+              onClick={() => {
+                router.push(
+                  configuration.paths.sales.detail.replace(':id', sale.id! ),
+                );
+              }}
+            >
+              <TooltipProvider>
+                <Tooltip delayDuration={0}>
+                  <TooltipTrigger>
+                    <EyeIcon className="h-6 w-6 cursor-pointer" />
+                  </TooltipTrigger>
+                  <TooltipContent align="end">
+                    <Badge className="bg-inherit text-black hover:bg-inherit">
+                      {' '}
+                      {t('member:ACTIONS.DETAIL')} Edit
+                    </Badge>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </Button>
+
+            {/* <EditMemberModal member={member} />
+            <DeleteModal<MemberProps>
+              entity={member}
+              onDelete={handleDelete}
+              deleteConfirmationHeader={t("member:ACTIONS.DELETE")}
+              deleteConfirmationText={t("member:ACTIONS.DELETE_TEXT")}
+            />{" "} */}
+          </div>
+        );
       },
     },
   ];
