@@ -7,7 +7,12 @@ const SaleDetailPage = () => {
     <Container>
       <div className="h-full w-full flex-1 flex-col space-y-12 md:flex ">
         <section>
-          <SaleGeneralInfo />
+          <SaleGeneralInfo
+            plants={[
+              { id: 8, name: 'Ganza', price: 14 },
+              { id: 9, name: 'Placa', price: 22 },
+            ]}
+          />
         </section>
       </div>
     </Container>
