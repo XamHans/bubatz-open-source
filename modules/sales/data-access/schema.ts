@@ -8,6 +8,7 @@ import {
   real,
   serial,
   time,
+  timestamp,
   uuid,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm/relations';
@@ -30,17 +31,12 @@ export const sales = pgTable('sales', {
   salesById: uuid('sales_by_id')
     .notNull()
     .references(() => members.id),
-  createdAt: time('created_at')
-    .notNull()
-    .default(sql`now()`),
-  updatedAt: time('updated_at', { withTimezone: true })
-    .notNull()
-    .default(sql`now()`),
+  createdAt: timestamp('created_at').notNull().defaultNow(), // Not yet updated on the db
+  updatedAt: timestamp('updated_at').notNull().defaultNow(), // Not yet updated on the db
 });
 
 export const salesItems = pgTable('sales_items', {
   id: serial('id').primaryKey(),
-  quantity: real('quantity').notNull(),
   weightGrams: real('weight_grams').notNull(),
   price: real('price').notNull(),
   plantId: uuid('plant_id')
@@ -81,6 +77,35 @@ export const salesItemsRelations = relations(salesItems, ({ one }) => ({
  * * Input schemas
  */
 
+/**
+ * * Sale Items
+ */
+export const SaleItemInsertSchema = createInsertSchema(salesItems, {
+  weightGrams: (schema) => schema.weightGrams.positive().min(0),
+  price: (schema) => schema.price.positive().min(0),
+  plantId: (schema) => schema.plantId.uuid(),
+  saleId: (schema) => schema.saleId.positive(),
+});
+// export const SaleItemInsertSchemaArray = z.array(SaleItemInsertSchema);
+export type SaleItemInsertSchema = z.infer<typeof SaleItemInsertSchema>;
+
+export const SaleItemFormInputSchema = SaleItemInsertSchema.omit({
+  saleId: true,
+});
+
+export type SaleItem = z.infer<typeof SaleItemFormInputSchema>;
+
+/**
+ * * Sales
+ */
+export const createSaleInputSchema = createInsertSchema(sales, {
+  totalPrice: (schema) => schema.totalPrice.positive().min(0),
+  paidVia: (schema) => schema.paidVia,
+  userId: (schema) => schema.userId.uuid(),
+  salesById: (schema) => schema.salesById.uuid(),
+});
+export type CreateSaleInput = z.infer<typeof createSaleInputSchema>;
+
 export const createSaleFormInputSchema = createInsertSchema(sales, {
   totalPrice: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
     message: 'Expected number, received a string',
@@ -91,29 +116,9 @@ export const createSaleFormInputSchema = createInsertSchema(sales, {
 
 export type CreateSaleFormInput = z.infer<typeof createSaleFormInputSchema>;
 
-export const createSaleInputSchema = createInsertSchema(sales, {
-  totalPrice: (schema) => schema.totalPrice.positive().min(0),
-  paidVia: (schema) => schema.paidVia,
-  userId: (schema) => schema.userId.uuid(),
-  salesById: (schema) => schema.salesById.uuid(),
-});
-export type CreateSaleInput = z.infer<typeof createSaleInputSchema>;
-
-export const createSaleItemInputSchema = createInsertSchema(salesItems, {
-  weightGrams: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
-    message: 'Expected number, received a string',
-  }),
-  price: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
-    message: 'Expected number, received a string',
-  }),
-  plantId: (schema) => schema.plantId.uuid(),
-  quantity: (schema) => schema.quantity.positive().optional(),
-  saleId: (schema) => schema.saleId.positive().optional(),
-});
-export type CreateSaleItemInput = z.infer<typeof createSaleItemInputSchema>;
-
 export const getSaleSchema = createSelectSchema(sales);
 export type Sale = z.infer<typeof getSaleSchema>;
 
+// * Payment methods
 export const PaymentMethodsEnum = z.enum(paymentMethods.enumValues);
 export type PaymentMethodsType = z.infer<typeof PaymentMethodsEnum>;

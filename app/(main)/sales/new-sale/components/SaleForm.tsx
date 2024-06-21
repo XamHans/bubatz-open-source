@@ -1,21 +1,19 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import SaleItem from './types';
 import SaleItemsTable from './SaleItemsTable';
 import CreateSaleItemModal from './CreateSaleItemModal';
 import {
   CreateSaleFormInput,
   CreateSaleInput,
-  CreateSaleItemInput,
+  SaleItemInsertSchema,
   PaymentMethodsType,
   createSaleFormInputSchema,
-  createSaleInputSchema,
+  SaleItem,
 } from '@/modules/sales/data-access/schema';
 import { PaymentMethodsEnum } from '@/modules/sales/data-access/schema';
 import { useSession } from 'next-auth/react';
 import { UUID } from 'crypto';
-import GenericSelect from '@/components/generic/GenericSelect';
 import {
   Form,
   FormControl,
@@ -36,61 +34,88 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { createSale } from '@/modules/sales/data-access';
-import { createSaleUseCase } from '@/modules/sales/use-cases';
+import {
+  createSaleItemUseCase,
+  createSaleUseCase,
+} from '@/modules/sales/use-cases';
 import { useAction } from 'next-safe-action/hooks';
 import { logger } from '@/logger';
+import { z } from 'zod';
 
 export default function SaleForm() {
-  const session = useSession();
-
-  const { execute } = useAction(createSaleUseCase, {
-    onSuccess: (result) => {
-      console.log('result', result);
-    },
-    onError: (error) => {
-      console.log('error', error);
-    },
-  });
-
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethodsType[]>([
     PaymentMethodsEnum.enum.CASH,
     PaymentMethodsEnum.enum.CARD,
     PaymentMethodsEnum.enum.WALLET,
   ]);
+
   const [members, setMembers] = useState<{ id: UUID; name: string }[]>([
-    { id: crypto.randomUUID() as UUID, name: 'goncalo' },
-    { id: crypto.randomUUID() as UUID, name: 'andre' },
-    { id: crypto.randomUUID() as UUID, name: 'johannes' },
+    { id: '0d40439d-224d-42d3-96fb-b07e66c6ac78' as UUID, name: 'goncalo' },
+    { id: '196eeab1-3369-4563-b8df-2a88cc720e03' as UUID, name: 'andre' },
+    { id: '20eaf542-cb38-4ce3-9907-1e9fffee4ec5' as UUID, name: 'johannes' },
   ]); // TODO: Fetch members
-  const [saleItems, setSaleItems] = useState<CreateSaleItemInput[]>([]);
+
+  const [saleItems, setSaleItems] = useState<SaleItem[]>([]);
   const [plants, setPlants] = useState<
     { id: UUID; name: string; price: number }[]
   >([]);
+  const session = useSession();
 
-  const addItemToSale = (sale: CreateSaleItemInput) => {
+  const createSaleAction = useAction(createSaleUseCase, {
+    onSuccess: (result) => {
+      if (result.failure) return console.error('error', result.failure);
+    },
+    onError: (error) => {
+      console.error('error', error);
+    },
+    onExecute: (input) => {
+      console.log('Executing with data: ', input);
+    },
+  });
+
+  const createSaleItemAction = useAction(createSaleItemUseCase, {
+    onSuccess: (result) => {
+      console.log('Create sale item:', result);
+    },
+    onError: (error) => {
+      console.error('error', error);
+    },
+    onExecute: (input) => {
+      console.log('Executing with sale item data: ', input);
+    },
+  });
+
+  const addItemToSale = (sale: SaleItem) => {
     setSaleItems((prev) => [...prev, sale]);
   };
 
-  const deleteItemFromSale = (item: CreateSaleItemInput) => {
+  const deleteItemFromSale = (item: SaleItem) => {
     setSaleItems((prev) => prev.filter((i) => i !== item));
   };
 
   const createNewSale = (saleForm: CreateSaleFormInput) => {
-    console.log('Creating new sale', saleForm);
-    setS;
-    // execute(sale);
+    const parsedForm: CreateSaleInput = {
+      ...saleForm,
+      totalPrice: parseFloat(saleForm.totalPrice),
+      salesById: 'a5ebbad9-43e5-4cc8-ac94-fcd563c5aa51', // ! CHANGE TO FETCH THE CURREND USER LOGGED IN!!!!!!!!
+    };
+    createSaleAction.execute(parsedForm);
   };
 
-  useEffect(() => {
-    setSale((prev) => ({
-      ...prev,
-      totalPrice: saleItems.reduce(
-        (totalPrice, item) =>
-          totalPrice + parseFloat(item.price) * parseFloat(item.weightGrams),
-        0,
-      ),
-    }));
-  }, [saleItems]);
+  /**
+   * ! Get create sale action state and when it is successful, create the sale items calling this method and passing the sale id
+   */
+  const createNewSaleItems = (saleId: number) => {
+    console.log('Create sale items: ', saleItems);
+    saleItems.forEach((item) => {
+      const parsedItem: SaleItemInsertSchema = {
+        ...item,
+        saleId: saleId,
+      };
+      console.log('parsedItem', parsedItem);
+      createSaleItemAction.execute(parsedItem);
+    });
+  };
 
   /*
    * Calculate the total price of the sale, whenever the sale items change
@@ -98,12 +123,12 @@ export default function SaleForm() {
    */
   useEffect(() => {
     const totalPrice = saleItems.reduce(
-      (totalPrice, item) =>
-        totalPrice + parseFloat(item.price) * parseFloat(item.weightGrams),
+      (totalPrice, item) => totalPrice + item.price * item.weightGrams,
       0,
     );
 
-    form.setValue('totalPrice', sale.totalPrice.toString());
+    form.setValue('totalPrice', totalPrice.toString());
+    console.log('Sale Items: ', saleItems);
   }, [saleItems]);
 
   useEffect(() => {

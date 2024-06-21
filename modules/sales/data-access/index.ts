@@ -1,7 +1,13 @@
 'use server';
 
 import { db } from '@/lib/db/db';
-import { CreateSaleInput, Sale, sales } from './schema';
+import {
+  CreateSaleInput,
+  Sale,
+  SaleItemInsertSchema,
+  sales,
+  salesItems,
+} from './schema';
 import { eq } from 'drizzle-orm';
 
 /**
@@ -11,7 +17,7 @@ import { eq } from 'drizzle-orm';
 export const getSales = async () => {
   const allSales: Sale[] = await db.select().from(sales);
   console.log('allsales', allSales);
-  return { sales: allSales };
+  return allSales;
 };
 
 /**
@@ -25,26 +31,25 @@ export const getSaleById = async (id: number): Promise<Sale | null> => {
   return sale[0] ?? null;
 };
 
+export const createSaleItem = async (
+  saleItem: SaleItemInsertSchema,
+): Promise<SaleItemInsertSchema> => {
+  console.log('Inserting in DB: ', saleItem);
+  const newSaleItems: SaleItemInsertSchema[] = await db
+    .insert(salesItems)
+    .values(saleItem)
+    .returning();
+
+  return newSaleItems[0];
+};
+
 /**
  *
  * @param sale Sale to be created.
  * @returns Created sale. If an error occurs, return null.
  */
-export const createSale = async (
-  sale: CreateSaleInput,
-): Promise<Sale | null> => {
-  console.log('sale!!', sale);
-  return await db.transaction(async (tx) => {
-    try {
-      const newSale: Sale = (
-        await tx.insert(sales).values(sale).returning()
-      )[0];
-      console.log('newSale', newSale);
-      return newSale;
-    } catch (error) {
-      tx.rollback();
-      console.log('Error creating sale', error);
-      return null;
-    }
-  });
+export const createSale = async (sale: CreateSaleInput): Promise<Sale> => {
+  console.log('Inserting in DB: ', sale);
+  const newSale: Sale[] = await db.insert(sales).values(sale).returning();
+  return newSale[0];
 };

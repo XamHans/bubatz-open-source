@@ -1,25 +1,35 @@
 'use server';
 
-import { createSafeActionClient } from 'next-safe-action';
+import { DEFAULT_SERVER_ERROR, createSafeActionClient } from 'next-safe-action';
 import {
   Sale,
+  SaleItemInsertSchema,
   createSaleInputSchema,
   getSaleSchema,
 } from '../data-access/schema';
 import { logger } from '@/lib/logger';
-import { createSale, getSaleById, getSales } from '../data-access';
+import {
+  createSale,
+  createSaleItem,
+  getSaleById,
+  getSales,
+} from '../data-access';
 
-const action = createSafeActionClient();
+const action = createSafeActionClient({
+  handleReturnedServerError: (error) => {
+    console.error('Error returned from server:', error.message);
+    return DEFAULT_SERVER_ERROR;
+  },
+});
 
 /**
  * Get all sales.
  * @returns Array of all sales.
  */
-export async function fetchSalesUseCase(): Promise<Sale[]> {
-  console.info('Fetching sales from DB.');
-  const { sales }: { sales: Sale[] } = await getSales();
-  return sales;
-}
+export const fetchSalesUseCase = action({}, async () => {
+  const sales = await getSales();
+  return { sales: sales };
+});
 
 /**
  * Get a sale by its id.
@@ -42,19 +52,23 @@ export const fetchSaleUseCase = action(
  */
 export const createSaleUseCase = action(
   createSaleInputSchema,
-  async (newSaleData): Promise<{ success?: Sale; failure?: string }> => {
+  async (newSaleData) => {
     if (!newSaleData) {
       return { failure: 'No data provided, cant create new sale' };
     }
-    newSaleData = {
-      ...newSaleData,
-      id: 0,
-    };
-    // getLogger().debug('Creating new sale createSaleUseCase', newSaleData);
-    const newSaleId: Sale | null = await createSale(newSaleData);
 
-    return newSaleId
-      ? { success: newSaleId }
-      : { failure: 'Error creating sale' };
+    const newSaleId: Sale = await createSale(newSaleData);
+
+    return { success: newSaleId };
+  },
+);
+
+export const createSaleItemUseCase = action(
+  SaleItemInsertSchema,
+  async (item) => {
+    if (!item) return { failure: 'No data provided, cant create new item' };
+
+    const newItem = await createSaleItem(item);
+    return { success: newItem };
   },
 );

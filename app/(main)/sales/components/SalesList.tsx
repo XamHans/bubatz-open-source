@@ -9,6 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { getMemberDetail } from '@/modules/members/data-access';
+import { UserSchema } from '@/modules/members/data-access/schema';
 import { MemberProps } from '@/modules/members/types';
 import { Sale } from '@/modules/sales/data-access/schema';
 import { fetchSalesUseCase } from '@/modules/sales/use-cases';
@@ -25,18 +27,13 @@ import {
 } from '@tanstack/react-table';
 import { t } from 'i18next';
 import { ArrowUpDown } from 'lucide-react';
+import { useAction } from 'next-safe-action/hooks';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useState } from 'react';
 
 const getSaleTableColumns = (router: AppRouterInstance) => {
-  const handleDelete = async (confirmed: boolean, member: MemberProps) => {
-    if (confirmed) {
-      if (!member.id) throw Error('No member id available');
-    }
-  };
-
   return [
     {
       accessorKey: 'id',
@@ -97,11 +94,52 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
         return <div className="capitalize">{row.getValue('paidVia')}</div>;
       },
     },
+    {
+      accessorKey: 'Customer',
+      accessorFn: (row) => {
+        return 'Adenildo';
+      },
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Customer
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return <div className="capitalize">{'Adenildo'}</div>;
+      },
+    },
+    {
+      accessorKey: 'createdAt',
+      accessorFn: (row) => {
+        return row.createdAt;
+      },
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Date
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return <div className="capitalize">{row.getValue('createdAt')}</div>;
+      },
+    },
   ];
 };
 
 export default function MemberTable() {
   const [sales, setSales] = React.useState<Sale[]>([]);
+  const [users, setUsers] = React.useState<UserSchema[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -127,10 +165,14 @@ export default function MemberTable() {
     },
   });
 
+  const fetchSales = useAction(fetchSalesUseCase, {
+    onSuccess: (data) => {
+      setSales(data.sales);
+    },
+  });
+
   React.useEffect(() => {
-    fetchSalesUseCase().then((sales) => {
-      setSales(sales);
-    });
+    fetchSales.execute({});
   }, []);
 
   //  const {t} = await initializeI18nClient('en')

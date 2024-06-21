@@ -19,10 +19,11 @@ import {
   type GetUserByIdInput,
   type GetUserByResetPasswordTokenInput,
 } from '@/validations/user';
+import { UserSchema } from '@/modules/members/data-access/schema';
 
 export async function getUserById(
   rawInput: GetUserByIdInput,
-): Promise<User | null> {
+): Promise<UserSchema | null> {
   try {
     const validatedInput = getUserByIdSchema.safeParse(rawInput);
     if (!validatedInput.success) return null;
@@ -40,7 +41,7 @@ export async function getUserById(
 
 export async function getUserByEmail(
   rawInput: GetUserByEmailInput,
-): Promise<User | null> {
+): Promise<UserSchema | null> {
   try {
     const validatedInput = getUserByEmailSchema.safeParse(rawInput);
     if (!validatedInput.success) return null;
@@ -58,7 +59,7 @@ export async function getUserByEmail(
 
 export async function getUserByResetPasswordToken(
   rawInput: GetUserByResetPasswordTokenInput,
-): Promise<User | null> {
+): Promise<UserSchema | null> {
   try {
     const validatedInput =
       getUserByResetPasswordTokenSchema.safeParse(rawInput);
@@ -77,7 +78,7 @@ export async function getUserByResetPasswordToken(
 
 export async function getUserByEmailVerificationToken(
   rawInput: GetUserByEmailVerificationTokenInput,
-): Promise<User | null> {
+): Promise<UserSchema | null> {
   try {
     const validatedInput =
       getUserByEmailVerificationTokenSchema.safeParse(rawInput);

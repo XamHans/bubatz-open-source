@@ -14,24 +14,22 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from '@/components/ui/select';
 import { useForm } from 'react-hook-form';
-import { NewItemModal } from './NewItemModal';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  CreateSaleItemInput,
-  createSaleItemInputSchema,
+  SaleItem,
+  SaleItemFormInputSchema,
+  SaleItemInsertSchema,
 } from '@/modules/sales/data-access/schema';
 import { useState } from 'react';
 import { UUID } from 'crypto';
 import { Button } from '@/components/ui/button';
-import { DialogClose } from '@/components/ui/dialog';
 import { GenericModal } from '@/components/generic/GenericModal';
 
 interface CreateSaleItemModalProps {
   plants: { id: UUID; name: string; price: number }[];
-  addItem: (item: CreateSaleItemInput) => void;
+  addItem: (item: SaleItem) => void;
 }
 
 export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
@@ -42,12 +40,12 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
     [],
   );
 
-  const form = useForm<CreateSaleItemInput>({
-    mode: 'onChange',
-    resolver: zodResolver(createSaleItemInputSchema),
+  const form = useForm<SaleItem>({
+    mode: 'onSubmit',
+    resolver: zodResolver(SaleItemFormInputSchema),
   });
 
-  const handleSave = (data: CreateSaleItemInput) => {
+  const handleSave = (data: SaleItem) => {
     console.log(data);
     props.addItem(data);
     setOpen(false);
@@ -65,9 +63,9 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
     return plant?.name as UUID;
   };
 
-  const getPlantPriceFromId = (id: string): string => {
+  const getPlantPriceFromId = (id: string): number => {
     const plant = plants.find((p) => p.id === id);
-    return plant?.price.toString() || '';
+    return plant?.price || -1;
   };
 
   /**
@@ -96,7 +94,7 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
                   <Select
                     onValueChange={(v) => {
                       field.onChange(v);
-                      form.setValue('price', getPlantPriceFromId(v as string));
+                      form.setValue('price', getPlantPriceFromId(v));
                     }}
                     defaultValue={field.value}
                   >
@@ -119,7 +117,6 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
             )}
           />
           <FormField
-            disabled={form.getValues('plantId') === undefined}
             control={form.control}
             name="price"
             render={({ field }) => {
@@ -127,7 +124,13 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
                 <FormItem>
                   <FormLabel>Price</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="123,45" />
+                    <Input
+                      disabled={form.getValues('plantId') === undefined}
+                      type="number"
+                      {...field}
+                      value={field.value}
+                      placeholder="123.45"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -142,14 +145,16 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
                 <FormItem>
                   <FormLabel>Grams</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="0,67" {...field} />
+                    <Input type="number" placeholder="0.67" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               );
             }}
           />
-          <Button type="submit">Save</Button>
+          <Button type="button" onClick={() => handleSave(form.getValues())}>
+            Save
+          </Button>
         </form>
       </Form>
     </GenericModal>

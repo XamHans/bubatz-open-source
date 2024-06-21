@@ -1,12 +1,12 @@
 'use server';
 
 import { db } from '@/lib/db/db';
-import getLogger from '@/lib/logger';
+// import getLogger from '@/lib/logger';
 import { AddMemberInput, members } from './schema';
 import { AsyncReturnType } from '@/lib/types';
 import { UpdateMemberInput } from '../types';
 import { eq } from 'drizzle-orm/sql/expressions/conditions';
-const logger = getLogger();
+// const logger = getLogger();
 /**
  * Here is an example CRUD methods for the members table.
  * If you plan to keep your code base "clean", we recommend
@@ -19,7 +19,7 @@ const getMembers = async () => {
 };
 
 export const createMember = async (input: AddMemberInput) => {
-  logger.debug('Creating new member', input);
+  // logger.debug('Creating new member', input);
   const newMemberId = await db
     .insert(members)
     .values({
