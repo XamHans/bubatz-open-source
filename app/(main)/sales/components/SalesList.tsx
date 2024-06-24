@@ -34,7 +34,14 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { t } from 'i18next';
-import { ArrowUpDown, EyeIcon } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowLeftIcon,
+  ArrowRight,
+  ArrowRightIcon,
+  ArrowUpDown,
+  EyeIcon,
+} from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
@@ -53,6 +60,7 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            className="text-s justify-start font-semibold"
           >
             ID
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -72,6 +80,7 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            className="text-s justify-start font-semibold"
           >
             Total price
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -92,6 +101,7 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            className="text-s justify-start font-semibold"
           >
             Paid via
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -112,6 +122,7 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            className="text-s justify-start font-semibold"
           >
             Customer
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -132,6 +143,7 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            className="text-s justify-start font-semibold"
           >
             Date
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -148,7 +160,7 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
       cell: ({ row }) => {
         const sale = row.original;
         return (
-          <div className="flex justify-center ">
+          <div className="flex justify-center font-semibold">
             <Button
               variant="ghost"
               className="transition-transform duration-200 hover:bg-inherit"
@@ -239,55 +251,53 @@ export default function MemberTable() {
           className="max-w-sm"
         />
       </div> */}
-      <div className="rounded-md border">
-        <Table className="rounded-md bg-white">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
+      <Table className="rounded-md bg-white">
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead
+                    key={header.id}
+                    className="text-s text-left sm:table-cell"
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && 'selected'}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell className="text-left " key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell className="h-24 text-center">
+                {t('GENERAL.DATA_TABLE.NO_RESULTS', {
+                  entity: t('member:TITLE'),
                 })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell className="mx-auto" key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell className="h-24 text-center">
-                  {t('GENERAL.DATA_TABLE.NO_RESULTS', {
-                    entity: t('member:TITLE'),
-                  })}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
       <div className="flex items-center justify-end space-x-2 py-4">
         {/* <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
@@ -300,7 +310,7 @@ export default function MemberTable() {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            {t('GENERAL.PAGINATION.PREVIOUS')}
+            {t('GENERAL.PAGINATION.PREVIOUS')} <ArrowLeftIcon />
           </Button>
           <Button
             variant="default"
@@ -308,7 +318,7 @@ export default function MemberTable() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            {t('GENERAL.PAGINATION.NEXT')}
+            {t('GENERAL.PAGINATION.NEXT')} <ArrowRightIcon />
           </Button>
         </div>
       </div>

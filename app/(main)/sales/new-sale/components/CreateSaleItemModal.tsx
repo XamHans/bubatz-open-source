@@ -152,7 +152,9 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
               );
             }}
           />
-          <Button type="submit">Save</Button>
+          <Button type="submit" className="col-span-2">
+            Save
+          </Button>
         </form>
       </Form>
     </GenericModal>

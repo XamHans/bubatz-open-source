@@ -53,6 +53,7 @@ const configuration = {
     sales: {
       all: '/sales',
       detail: '/sales/:id',
+      new: '/sales/new-sale',
     },
     plants: {
       all: 'plants/',

@@ -39,6 +39,7 @@ import { useAction } from 'next-safe-action/hooks';
 import { redirect } from 'next/navigation';
 import configuration from '@/app/configuration';
 import { backToSalesPage } from '@/actions/sales';
+import { Ban, PackageCheck, Trash2 } from 'lucide-react';
 
 export default function SaleForm() {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethodsType[]>([
@@ -103,6 +104,10 @@ export default function SaleForm() {
     backToSalesPage();
   };
 
+  const handleAbort = () => {
+    backToSalesPage();
+  };
+
   /*
    * Calculate the total price of the sale, whenever the sale items change
    * Whenever the total price of the sale changes, update the form value
@@ -124,12 +129,14 @@ export default function SaleForm() {
 
   return (
     <>
-      <CreateSaleItemModal plants={plants} addItem={addItemToSale} />
       <SaleItemsTable
         saleItems={saleItems}
         deleteItem={deleteItemFromSale}
         plants={plants}
       />
+      <div className="mb-2 flex justify-center">
+        <CreateSaleItemModal plants={plants} addItem={addItemToSale} />
+      </div>
       <Form {...form}>
         <form className="grid gap-2 sm:grid-cols-2 md:gap-4">
           <FormField
@@ -193,10 +200,13 @@ export default function SaleForm() {
               );
             }}
           />
+          <div></div>
           <Button type="button" onClick={() => createNewSale(form.getValues())}>
-            Create sale
+            <PackageCheck /> &nbsp; Create sale
           </Button>
-          <Button type="button">Abort</Button>
+          <Button type="button" onClick={handleAbort}>
+            <Ban /> &nbsp; Abort
+          </Button>
         </form>
       </Form>
     </>
