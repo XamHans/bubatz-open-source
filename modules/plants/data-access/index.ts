@@ -11,6 +11,7 @@ import {
   UpdatePlantInput,
   batches,
   plants,
+  strains,
 } from './schema';
 /**
  * Here is an example CRUD methods for the plants table.
@@ -45,6 +46,7 @@ const getBatchDetail = async (id: string) => {
     .from(batches)
     .where(eq(batches.id, id))
     .limit(1);
+  console.log(' foundBatches[0];', foundBatches[0]);
   return foundBatches[0];
 };
 
@@ -52,8 +54,10 @@ export const getBatchById = async (id: string) => {
   const result = await db
     .select()
     .from(batches)
+    .leftJoin(strains, eq(batches.strainId, strains.id))
     .where(eq(batches.id, id))
     .limit(1);
+  console.log('result[0]', result[0]);
   return result[0];
 };
 

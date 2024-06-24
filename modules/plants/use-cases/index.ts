@@ -18,6 +18,8 @@ import {
   updatePlant,
 } from '../data-access';
 import {
+  BatchProps,
+  StrainProps,
   createBatchInputSchema,
   createPlantInputSchema,
   deletePlantInputSchema,
@@ -25,12 +27,7 @@ import {
   updatePlantInputSchema,
 } from '../data-access/schema';
 
-const action = createSafeActionClient({
-  middleware(parsedInput, data) {
-    logger.info('Parsed input:', parsedInput);
-    logger.info('Data:', data);
-  },
-});
+const action = createSafeActionClient({});
 
 // -------------- Batches
 export const addBatchUseCase = action(
@@ -57,17 +54,32 @@ export const fetchBatchesUseCase = action({}, async () => {
   return { batches };
 });
 
+type FetchBatchDetailsSuccess = {
+  success: {
+    batch: BatchProps;
+    strain: StrainProps;
+  };
+};
+
+type FetchBatchDetailsFailure = {
+  failure: string;
+};
+
+type FetchBatchDetailsResult =
+  | FetchBatchDetailsSuccess
+  | FetchBatchDetailsFailure;
+
 export const fetchBatchDetailsUseCase = action(
   { batchId: z.string() },
-  async ({ batchId }) => {
+  async ({ batchId }: Promise<FetchBatchDetailsResult>) => {
     logger.info('fetching batch details for id:', batchId);
-    const batch = await getBatchById(batchId);
-    if (!batch) {
+    const res = await getBatchById(batchId);
+    if (!res) {
       return { failure: 'Batch not found' };
     }
 
     // const plants = await getPlantsByBatchId(id);
-    return { success: { batch } };
+    return { success: { batch: res.batches, strain: res.strains } };
   },
 );
 export const updateBatchUseCase = action(
@@ -105,7 +117,6 @@ export const fetchPlantsFromBatchUseCase = action(
     if (!plants) {
       return { failure: 'plants not found' };
     }
-    console.log('fetchPlantsFromBatchUseCase ', plants);
     // const plants = await getPlantsByBatchId(id);
     return { success: { plants } } as FetchPlantsSuccess;
   },
@@ -134,7 +145,12 @@ export const deletePlantUseCase = action(
   deletePlantInputSchema,
   async ({ id, batchId }) => {
     logger.info('Deleting plant with id:', id);
-    await deletePlant({ id, batchId });
+    try {
+      const delResult = await deletePlant({ id, batchId });
+    } catch (error) {
+      logger.error('Error deleting plant', error);
+      return { failure: 'Failed to delete plant' };
+    }
 
     return { success: 'Plant deleted successfully' };
   },

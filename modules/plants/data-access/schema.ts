@@ -2,6 +2,7 @@ import { transactions } from '@/modules/sales/data-access/schema';
 import { sql } from 'drizzle-orm';
 import {
   date,
+  integer,
   jsonb,
   numeric,
   pgTable,
@@ -88,7 +89,7 @@ export const batches = pgTable('batches', {
     .primaryKey()
     .default(sql`gen_random_uuid()`),
   name: text('name').notNull(),
-  strain: text('strain').notNull(),
+  strainId: integer('strain_id').references(() => strains.id),
   startDate: date('start_date')
     .notNull()
     .default(sql`now()`),
@@ -109,6 +110,21 @@ export const plants = pgTable('plants', {
   yield: numeric('yield').default('0'),
   seedToSale: jsonb('seed_to_sale').notNull().default(defaultSeedToSale),
 });
+
+export const strains = pgTable('strains', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  description: text('description'),
+  thc: numeric('thc').notNull(),
+  cbd: numeric('cbd').notNull(),
+});
+
+export const strainsRelation = relations(batches, ({ one }) => ({
+  strain: one(strains, {
+    fields: [batches.strainId],
+    references: [strains.id],
+  }),
+}));
 
 export const batchesRelations = relations(batches, ({ many }) => ({
   plants: many(plants),
@@ -167,9 +183,11 @@ export const deletePlantInputSchema = createPlantInputSchema.pick({
 
 export const getBatchesSchema = createSelectSchema(batches);
 export const getPlantsSchema = createSelectSchema(plants);
+export const getStrainsSchema = createSelectSchema(strains);
 
 export type CreateBatchInput = z.infer<typeof createBatchInputSchema>;
 export type BatchProps = z.infer<typeof getBatchesSchema>;
+export type StrainProps = z.infer<typeof getStrainsSchema>;
 
 export type GetPlants = z.infer<typeof getPlantsSchema>;
 export type CreatePlantInput = z.infer<typeof createPlantInputSchema>;

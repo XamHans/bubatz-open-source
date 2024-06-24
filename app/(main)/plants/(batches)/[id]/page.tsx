@@ -26,10 +26,10 @@ const BatchDetailPage = async ({ params: { id } }: BatchDetailPageProps) => {
     { label: `${id}` },
   ];
   const { data } = await fetchBatchDetailsUseCase({ batchId: id });
+  console.log('data', data);
+  const { batch, strain } = data!.success;
 
-  const { name, strain } = data.success.batch;
-
-  if (!data ?? !data.success?.batch) {
+  if (!batch) {
     return (
       <Container className="space-y-4">
         <Breadcrumbs items={breadcrumbs} />
@@ -70,16 +70,14 @@ const BatchDetailPage = async ({ params: { id } }: BatchDetailPageProps) => {
           </Link>
 
           <h1 className="shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-            {name}
+            {batch?.name}
           </h1>
           <Badge variant="outline" className="ml-auto sm:ml-0">
-            {strain}
+            {strain?.name}
           </Badge>
         </div>
         {/* Main area with two sides, each contain cards */}
-        <EditBatchContainer
-          details={(data as any).success?.batch as BatchProps}
-        />
+        <EditBatchContainer details={batch as BatchProps} />
       </div>
     </Container>
   );

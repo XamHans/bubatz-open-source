@@ -41,7 +41,6 @@ interface UpdatePlantFormProps {
 const UpdatePlantForm: React.FC<UpdatePlantFormProps> = ({ plant }) => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
-  console.log('plant info ', plant);
   const { execute, status } = useAction(updatePlantUseCase, {
     onSuccess: (data) => {
       console.log('plant updated successfully', data);

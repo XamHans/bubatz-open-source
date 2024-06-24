@@ -44,7 +44,6 @@ const PlantsTable: React.FC = () => {
 
   const { execute, status } = useAction(fetchPlantsFromBatchUseCase, {
     onSuccess: (data) => {
-      console.log('recieved data', data);
       setPlants(data?.success?.plants);
     },
     onError: (error) => {
@@ -56,9 +55,18 @@ const PlantsTable: React.FC = () => {
     deletePlantUseCase,
     {
       onSuccess: (data) => {
-        console.log('succyy deleted plant ', data);
+        toast({
+          title: 'Success',
+          description: `Plant deleted successfully.`,
+        });
+        execute({ batchId }); //re-fetch plants
       },
-      onError: (error) => console.log('Error deleting plant', error),
+      onError: (error) => {
+        toast({
+          title: 'Error',
+          description: `Plant  could not be deleted due to an error. ${error}`,
+        });
+      },
     },
   );
 
@@ -165,12 +173,6 @@ const PlantsTable: React.FC = () => {
                 className="hover:bg-inherit"
                 onClick={() => {
                   delExecute({ id: plant.id });
-
-                  toast({
-                    title: 'Success',
-                    description: `Plant ${plant.name} has been deleted`,
-                  });
-                  execute({ batchId }); //re-fetch plants
                 }}
               >
                 <TooltipProvider>
