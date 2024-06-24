@@ -30,7 +30,7 @@ import { useForm } from 'react-hook-form';
 import { ClubMemberStatus } from '../../../../modules/members/types';
 import { addMemberUseCase } from '../../../../modules/members/use-cases';
 import { useAction } from 'next-safe-action/hooks';
-import { GenericModal } from '../../../../components/generic/GenericModal';
+import { GenericAddModal } from '../../members/components/GenericAddModal';
 import DatePicker from 'react-datepicker';
 import { useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -40,6 +40,7 @@ import { set } from 'date-fns';
 
 interface AddMemberModalProps {
   setMembers: React.Dispatch<React.SetStateAction<UserSchema[]>>;
+  className?: string;
 }
 
 const AddMemberModal: React.FC<AddMemberModalProps> = ({ setMembers }) => {
@@ -72,7 +73,7 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({ setMembers }) => {
   };
 
   return (
-    <GenericModal
+    <GenericAddModal
       headerTitle="Add Member"
       description="Fill in the details to add a new member."
       open={open}
@@ -239,7 +240,7 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({ setMembers }) => {
           </Button>
         </form>
       </Form>
-    </GenericModal>
+    </GenericAddModal>
   );
 };
 

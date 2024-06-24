@@ -72,36 +72,15 @@ export default function MemberTable() {
 
     return [
       {
-        id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            checked={table.getIsAllPageRowsSelected()}
-            onCheckedChange={(value) =>
-              table.toggleAllPageRowsSelected(!!value)
-            }
-            aria-label="Select all"
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label="Select row"
-          />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-      },
-      {
         id: 'avatar',
-        header: 'Image',
+        header: 'IMAGE',
         cell: ({ row }) => (
           // <Checkbox
           //   checked={row.getIsSelected()}
           //   onCheckedChange={(value) => row.toggleSelected(!!value)}
           //   aria-label="Select row"
           // />
-          <Avatar className="h-12 w-12 ">
+          <Avatar className="h-12 w-12" >
             <AvatarImage src={``} />
             <AvatarFallback>
               {' '}
@@ -125,6 +104,7 @@ export default function MemberTable() {
               onClick={() =>
                 column.toggleSorting(column.getIsSorted() === 'asc')
               }
+              className="justify-start text-xs"
             >
               Name
               <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -132,7 +112,7 @@ export default function MemberTable() {
           );
         },
         cell: ({ row }) => (
-          <div className="capitalize">{row.getValue('name')}</div>
+          <div className="ml-4 text-left">{row.getValue('name')}</div>
         ),
       },
       {
@@ -144,6 +124,7 @@ export default function MemberTable() {
               onClick={() =>
                 column.toggleSorting(column.getIsSorted() === 'asc')
               }
+              className="justify-start text-xs"
             >
               Status
               <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -162,10 +143,20 @@ export default function MemberTable() {
       {
         id: 'actions',
         enableHiding: false,
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              className="justify-center text-xs"
+            >
+              Actions
+            </Button>
+          );
+        },
         cell: ({ row }) => {
           const member = row.original;
           return (
-            <div className="flex justify-center ">
+            <div className="flex justify-start ">
               <Button
                 variant="ghost"
                 className="transition-transform duration-200 hover:bg-inherit"
@@ -287,25 +278,30 @@ export default function MemberTable() {
 
   return (
     <div className="space-y-4 ">
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center justify-between space-x-2">
         <Input
-          placeholder={t('member:ACTIONS.SEARCH') ?? ''}
+          placeholder={t('member:ACTIONS.SEARCH') ?? 'Search members'}
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
             table.getColumn('name')?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
-        <AddMemberModal setMembers={setMembers} />
+        <AddMemberModal
+          setMembers={setMembers}
+        />
       </div>
-      <div className="rounded-md border">
+      <div >
         <Table className="rounded-md bg-white">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      className="text-left text-xs sm:table-cell"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -326,7 +322,7 @@ export default function MemberTable() {
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell className="mx-auto" key={cell.id}>
+                    <TableCell className="text-left" key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),

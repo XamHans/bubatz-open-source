@@ -111,10 +111,6 @@ export const batchesRelations = relations(batches, ({ many }) => ({
   plants: many(plants),
 }));
 
-export const batchesRelations = relations(batches, ({ many }) => ({
-  plants: many(plants),
-}));
-
 export const plantsRelations = relations(plants, ({ many }) => ({
   transactions: many(transactions),
 }));
