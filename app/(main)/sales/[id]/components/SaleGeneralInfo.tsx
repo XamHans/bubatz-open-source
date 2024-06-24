@@ -36,14 +36,12 @@ import {
 import { useRouter } from 'next/navigation';
 
 interface SaleItemsTableProps {
-  saleItems: Sale;
-  plants: { id: string; name: string; price: number }[];
+  plants: { id: number; name: string; price: number }[];
+  sale: Sale;
 }
 
 const SaleGeneralInfo = (props: SaleItemsTableProps) => {
-  const params = useParams<{ id: string }>();
-  const [sale, setSale] = useState<Sale | undefined>(undefined);
-  const { saleItems } = props;
+  const { sale } = props;
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -107,19 +105,6 @@ const SaleGeneralInfo = (props: SaleItemsTableProps) => {
       rowSelection,
     },
   });
-
-  useEffect(() => {
-    const fetchSale = async () => {
-      console.log('fetch member with id ', params.id);
-      const sale = await getSaleById(Number(params.id));
-      return sale;
-    };
-
-    fetchSale().then((result) => {
-      setSale(result);
-      console.log('sale', result);
-    });
-  }, []);
 
   if (!sale) return null;
 
