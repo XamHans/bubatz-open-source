@@ -31,23 +31,35 @@ async function PlantListPage() {
   ];
   return (
     <SessionProvider session={session}>
-      <Container className="space-y-4">
-        <div className="flex justify-between">
-          <Breadcrumbs items={breadcrumbs} />
+      <Breadcrumbs items={breadcrumbs} />
 
-          <Link href={configuration.paths.plants.new}>
-            <Button size="sm" className="h-8 gap-1">
-              <PlusCircle className="h-3.5 w-3.5" />
-              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Add Plants
-              </span>
-            </Button>
-          </Link>
-        </div>
+      <Container className="space-y-4">
         <Card>
           <CardHeader className="px-7">
-            <CardTitle>Plants</CardTitle>
-            <CardDescription>Manage your plants</CardDescription>
+            <div className="grid grid-cols-2">
+              <div>
+                <CardTitle>
+                  {metadata.title
+                    ? metadata.title.toString()
+                    : 'Error getting title'}
+                </CardTitle>
+                <CardDescription>
+                  {metadata.description
+                    ? metadata.description.toString()
+                    : 'Error getting description'}
+                </CardDescription>
+              </div>
+              <div className="flex justify-end">
+                <Link href={configuration.paths.plants.new}>
+                  <Button size="sm" className="h-8 w-32 gap-1">
+                    <PlusCircle className="h-3.5 w-3.5" />
+                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                      Add Batch
+                    </span>
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             <BatchesTable />
