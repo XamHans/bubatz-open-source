@@ -55,32 +55,40 @@ const SaleGeneralInfo = (props: SaleItemsTableProps) => {
     return [
       {
         id: 'plantId',
-        header: 'Plant',
+        header: <div className="text-s justify-start font-semibold">PLANT</div>,
         cell: ({ row }) => (
-          <div className="capitalize">
+          <div className="text-s justify-start">
             {plants?.find((plant) => plant.id === row.original.plantId)?.name}
           </div>
         ),
       },
       {
         id: 'weightGrams',
-        header: 'Grams',
+        header: (
+          <div className="text-s justify-start font-semibold">WEIGHT</div>
+        ),
         cell: ({ row }) => (
-          <div className="capitalize">{row.original.weightGrams} grams</div>
+          <div className="text-s justify-start">
+            {row.original.weightGrams} grams
+          </div>
         ),
       },
       {
         id: 'price',
-        header: 'Current Price',
+        header: (
+          <div className="text-s justify-start font-semibold">PLANT PRICE</div>
+        ),
         cell: ({ row }) => (
-          <div className="capitalize">{row.original.price} €</div>
+          <div className="text-s justify-start">{row.original.price} €</div>
         ),
       },
       {
         id: 'totalPrice',
-        header: 'Total Price',
+        header: (
+          <div className="text-s justify-start font-semibold">TOTAL PRICE</div>
+        ),
         cell: ({ row }) => (
-          <div className="capitalize">
+          <div className="text-s justify-start">
             {row.original.price * row.original.weightGrams} €
           </div>
         ),
@@ -117,7 +125,10 @@ const SaleGeneralInfo = (props: SaleItemsTableProps) => {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      className="text-s text-left sm:table-cell"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -138,7 +149,7 @@ const SaleGeneralInfo = (props: SaleItemsTableProps) => {
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell className="mx-auto" key={cell.id}>
+                    <TableCell className="text-left" key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),

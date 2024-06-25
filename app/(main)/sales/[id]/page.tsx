@@ -20,9 +20,22 @@ import { UUID } from 'crypto';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Breadcrumbs from '@/components/generic/BreadCrumbs';
+import { Metadata } from 'next';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 const SaleDetailPage = () => {
   const params = useParams<{ id: string }>();
+
+  const metadata: Metadata = {
+    title: 'Sale #' + params.id,
+    description: 'Details of the sale.',
+  };
 
   const [members, setMembers] = useState<{ id: UUID; name: string }[]>([
     { id: '0d40439d-224d-42d3-96fb-b07e66c6ac78' as UUID, name: 'goncalo' },
@@ -74,25 +87,39 @@ const SaleDetailPage = () => {
     <>
       <Breadcrumbs items={breadcrumbs} />
       <Container>
-        <div className="h-full w-full flex-1 flex-col space-y-12 md:flex ">
-          <SaleGeneralInfo plants={plants} sale={sale} />
-          <Select disabled>
-            <SelectTrigger>
-              <SelectValue
-                placeholder={getMemberById(sale.sale.userId as UUID)}
-              />
-            </SelectTrigger>
-            <SelectContent></SelectContent>
-          </Select>
-          <Select disabled>
-            <SelectTrigger>
-              <SelectValue placeholder={sale.sale.paidVia} />
-            </SelectTrigger>
-            <SelectContent></SelectContent>
-          </Select>
-          <Label>Price</Label>
-          <Input disabled value={sale.sale.totalPrice} />
-        </div>
+        <Card>
+          <CardHeader className="px-7">
+            <CardTitle>
+              {metadata.title
+                ? metadata.title.toString()
+                : 'Error getting title'}
+            </CardTitle>
+            <CardDescription>
+              {metadata.description
+                ? metadata.description.toString()
+                : 'Error getting description'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SaleGeneralInfo plants={plants} sale={sale} />
+            <Select disabled>
+              <SelectTrigger>
+                <SelectValue
+                  placeholder={getMemberById(sale.sale.userId as UUID)}
+                />
+              </SelectTrigger>
+              <SelectContent></SelectContent>
+            </Select>
+            <Select disabled>
+              <SelectTrigger>
+                <SelectValue placeholder={sale.sale.paidVia} />
+              </SelectTrigger>
+              <SelectContent></SelectContent>
+            </Select>
+            <Label>Price</Label>
+            <Input disabled value={sale.sale.totalPrice} />
+          </CardContent>
+        </Card>
       </Container>
     </>
   );
