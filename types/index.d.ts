@@ -1,6 +1,14 @@
 import type { Account, Profile, Session, User } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
 
+export interface SuccessResponse<T> {
+  success: T;
+}
+
+export interface FailureResponse {
+  failure: string;
+}
+
 export interface NavItem {
   title: string;
   href: string;

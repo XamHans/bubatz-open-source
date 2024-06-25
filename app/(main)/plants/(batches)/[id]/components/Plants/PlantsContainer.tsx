@@ -19,21 +19,13 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { PlantDetailsData } from '@/modules/plants/data-access';
 import {
   CreatePlantInput,
   createPlantInputSchema,
 } from '@/modules/plants/data-access/schema';
 
+import { useToast } from '@/components/ui/use-toast';
 import {
   createPlantUseCase,
   fetchPlantsFromBatchUseCase,
@@ -42,22 +34,41 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useAction } from 'next-safe-action/hooks';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useBatch } from '../BatchContext';
+import { PlantsTable } from './PlantsTable';
 
-export interface PlantFormProps {
-  batchId: string;
-}
+const PlantsContainer: React.FC = () => {
+  const { id: batchId, currentGrowthStage } = useBatch();
 
-const PlantsForm: React.FC<PlantFormProps> = ({ batchId }) => {
   const [open, setOpen] = useState(false);
+  const [plants, setPlants] = useState<PlantDetailsData[]>([]);
+  const { toast } = useToast();
 
-  const { execute } = useAction(fetchPlantsFromBatchUseCase, {
-    onSuccess: (data) => console.log('Plants ', data),
-    onError: (error) => console.log('Error fetching plants by batch', error),
+  const { execute, status } = useAction(fetchPlantsFromBatchUseCase, {
+    onSuccess: (data) => {
+      const { plants } = data?.success as any;
+      setPlants(plants);
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: `Plants could not be fetched: ${error}`,
+        duration: 5000,
+      });
+    },
   });
 
   const { execute: createPlantExecute } = useAction(createPlantUseCase, {
-    onSuccess: (data) => console.log('Plants ', data),
-    onError: (error) => console.log('Error fetching plants by batch', error),
+    onSuccess: (data) => {
+      execute({ batchId }); //re-fetch plants
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        duration: 5000,
+        description: `Plant could not be created: ${error}`,
+      });
+    },
   });
 
   const form = useForm<CreatePlantInput>({
@@ -72,7 +83,7 @@ const PlantsForm: React.FC<PlantFormProps> = ({ batchId }) => {
 
   useEffect(() => {
     execute({ batchId });
-  }, [batchId, execute]);
+  }, []);
 
   return (
     <Card>
@@ -81,40 +92,7 @@ const PlantsForm: React.FC<PlantFormProps> = ({ batchId }) => {
         <CardDescription>Manage plants in this batch</CardDescription>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">ID</TableHead>
-              <TableHead>Position</TableHead>
-              <TableHead>Yield</TableHead>
-              <TableHead className="w-[100px]">Health</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell className="font-semibold">GGPC-001</TableCell>
-              <TableCell>
-                <Label htmlFor="stock-1" className="sr-only">
-                  Stock
-                </Label>
-                <Input id="stock-1" type="number" defaultValue="100" />
-              </TableCell>
-              <TableCell>
-                <Label htmlFor="price-1" className="sr-only">
-                  Price
-                </Label>
-                <Input id="price-1" type="number" defaultValue="99.99" />
-              </TableCell>
-              <TableCell>
-                <ToggleGroup type="single" defaultValue="s" variant="outline">
-                  <ToggleGroupItem value="s">S</ToggleGroupItem>
-                  <ToggleGroupItem value="m">M</ToggleGroupItem>
-                  <ToggleGroupItem value="l">L</ToggleGroupItem>
-                </ToggleGroup>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+        <PlantsTable />
       </CardContent>
       <CardFooter className="justify-center border-t p-4">
         <GenericModal
@@ -128,7 +106,6 @@ const PlantsForm: React.FC<PlantFormProps> = ({ batchId }) => {
               onSubmit={form.handleSubmit(onSubmit)}
               className="grid gap-2 sm:grid-cols-2 md:gap-4"
             >
-              <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
               <FormField
                 control={form.control}
                 name="name"
@@ -173,4 +150,4 @@ const PlantsForm: React.FC<PlantFormProps> = ({ batchId }) => {
   );
 };
 
-export { PlantsForm };
+export { PlantsContainer };

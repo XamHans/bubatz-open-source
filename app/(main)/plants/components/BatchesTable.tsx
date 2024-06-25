@@ -36,7 +36,7 @@ import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.share
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-const getPlantTableColumns = (router: AppRouterInstance) => {
+const getBatchtesTableColumns = (router: AppRouterInstance) => {
   return [
     {
       id: 'id',
@@ -163,7 +163,7 @@ const getPlantTableColumns = (router: AppRouterInstance) => {
   ];
 };
 
-export default function PlantsTable() {
+export default function BatchesTable() {
   const { execute, status } = useAction(fetchBatchesUseCase, {
     onSuccess: (data) => {
       setPlants(data?.batches);
@@ -186,7 +186,7 @@ export default function PlantsTable() {
 
   const table = useReactTable({
     data: plants,
-    columns: getPlantTableColumns(router),
+    columns: getBatchtesTableColumns(router),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),

@@ -1,11 +1,6 @@
 'use client';
 
 import { GenericModal } from '@/components/generic/GenericModal';
-import {
-  GetMemberDetailQueryData,
-  updateMember,
-} from '@/modules/members/data-access/index';
-import { ClubMemberStatus, UpdateMemberInput } from '@/modules/members/types';
 import { Button } from '@/components/ui/button';
 import { DialogClose, DialogFooter } from '@/components/ui/dialog';
 import {
@@ -24,6 +19,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  GetMemberDetailQueryData,
+  updateMember,
+} from '@/modules/members/data-access/index';
+import { ClubMemberStatus, UpdateMemberInput } from '@/modules/members/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { t } from 'i18next';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -91,8 +91,8 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
     <GenericModal
       headerTitle="Edit Member"
       description="Here you can change the information of a member."
-      onSave={handleSave}
-      onAbort={handleAbort}
+      open={open}
+      setOpen={setOpen}
     >
       <Form {...form}>
         <form
