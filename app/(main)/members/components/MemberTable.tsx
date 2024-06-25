@@ -1,28 +1,7 @@
 'use client';
 
-import configuration from '@/app/configuration';
+import configuration from '../../../../app/configuration';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { MemberProps, colorForClubMemberStatus } from '@/modules/members/types';
-import { fetchMembersUseCase } from '@/modules/members/use-cases';
 import {
   ColumnFiltersState,
   SortingState,
@@ -35,162 +14,228 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { t } from 'i18next';
-import { ArrowUpDown, EyeIcon } from 'lucide-react';
+import { ArrowUpDown, ChevronLeft, ChevronRight, EyeIcon } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '../../../../components/ui/avatar';
+import { Badge } from '../../../../components/ui/badge';
+import { Button } from '../../../../components/ui/button';
+import { Input } from '../../../../components/ui/input';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../../../../components/ui/table';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../../components/ui/tooltip';
+import {
+  colorForClubMemberStatus
+} from '../../../../modules/members/types';
+import { fetchMembersUseCase } from '../../../../modules/members/use-cases';
 import { AddMemberModal } from './AddMemberModal';
+import { DeleteMemberModal } from './DeleteMemberModal';
 // import {
 //   selectUser,
 //   selectUserSchema,
 // } from '@/modules/members/data-access/schema';
+import { UserSchema } from '../../../../modules/members/data-access/schema';
 
-const getUserTableColumns = (router: AppRouterInstance) => {
-  const handleDelete = async (confirmed: boolean, member: MemberProps) => {
-    if (confirmed) {
-      if (!member.id) throw Error('No member id available');
-    }
-  };
+export default function MemberTable() {
+  const getUserTableColumns = (router: AppRouterInstance) => {
+    // const handleDelete = async (id: string) => {
+    //   const result = await deleteMember(id);
+    //   console.log('deleted member', result);
+    // };
 
-  return [
-    {
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected()}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      id: 'avatar',
-      header: 'Image',
-      cell: ({ row }) => (
-        // <Checkbox
-        //   checked={row.getIsSelected()}
-        //   onCheckedChange={(value) => row.toggleSelected(!!value)}
-        //   aria-label="Select row"
-        // />
-        <Avatar className="h-12 w-12 ">
-          <AvatarImage src={``} />
-          <AvatarFallback>
-            {' '}
-            {(row.getValue('name') as string).charAt(0)}
-          </AvatarFallback>
-        </Avatar>
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
+    return [
+      {
+        id: 'avatar',
+        header: 'IMAGE',
+        cell: ({ row }) => (
+          // <Checkbox
+          //   checked={row.getIsSelected()}
+          //   onCheckedChange={(value) => row.toggleSelected(!!value)}
+          //   aria-label="Select row"
+          // />
+          <Avatar className="h-12 w-12" >
+            <AvatarImage src={``} />
+            <AvatarFallback>
+              {' '}
+              {(row.getValue('name') as string).charAt(0)}
+            </AvatarFallback>
+          </Avatar>
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
 
-    {
-      accessorKey: 'name',
-      accessorFn: (row) => {
-        return row.firstName + ' ' + row.lastName;
-      },
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <div className="capitalize">{row.getValue('name')}</div>
-      ),
-    },
-    {
-      accessorKey: 'status',
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Status
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <Badge
-          variant="outline"
-          className={`${colorForClubMemberStatus.get(row.getValue('status'))}`}
-        >
-          ${row.getValue('status')}
-        </Badge>
-      ),
-    },
-    {
-      id: 'actions',
-      enableHiding: false,
-      cell: ({ row }) => {
-        const member = row.original;
-        return (
-          <div className="flex justify-center ">
+      {
+        accessorKey: 'name',
+        accessorFn: (row) => {
+          return row.firstName + ' ' + row.lastName;
+        },
+        header: ({ column }) => {
+          return (
             <Button
               variant="ghost"
-              className="hover:bg-inherit"
-              onClick={() => {
-                // router.push(configuration.paths.MEMBER_DETAIL.replace(":id", member:id!))
-                router.push(
-                  configuration.paths.members.detail.replace(':id', member.id!),
-                );
-              }}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === 'asc')
+              }
+              className="justify-start text-xs"
             >
-              <TooltipProvider>
-                <Tooltip delayDuration={0}>
-                  <TooltipTrigger>
-                    <EyeIcon className="h-6 w-6 cursor-pointer" />
-                  </TooltipTrigger>
-                  <TooltipContent align="end">
-                    <Badge> {t('member:ACTIONS.DETAIL')}</Badge>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              Name
+              <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
-            {/* <EditMemberModal member={member} />
+          );
+        },
+        cell: ({ row }) => (
+          <div className="ml-4 text-left">{row.getValue('name')}</div>
+        ),
+      },
+      {
+        accessorKey: 'status',
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === 'asc')
+              }
+              className="justify-start text-xs"
+            >
+              Status
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => (
+          <Badge
+            variant="outline"
+            className={`${colorForClubMemberStatus.get(row.getValue('status'))}`}
+          >
+            ${row.getValue('status')}
+          </Badge>
+        ),
+      },
+      {
+        id: 'actions',
+        enableHiding: false,
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              className="justify-center text-xs"
+            >
+              Actions
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const member = row.original;
+          return (
+            <div className="flex justify-start ">
+              <Button
+                variant="ghost"
+                className="transition-transform duration-200 hover:bg-inherit"
+                onClick={() => {
+                  // router.push(configuration.paths.MEMBER_DETAIL.replace(":id", member:id!))
+                  router.push(
+                    configuration.paths.members.detail.replace(
+                      ':id',
+                      member.id!,
+                    ),
+                  );
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger>
+                      <EyeIcon className="h-6 w-6 cursor-pointer" />
+                    </TooltipTrigger>
+                    <TooltipContent align="end">
+                      <Badge className="bg-inherit text-black hover:bg-inherit">
+                        {' '}
+                        {t('member:ACTIONS.DETAIL')} Edit
+                      </Badge>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                className="transition-transform duration-200 hover:bg-inherit"
+              >
+                <TooltipProvider>
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger>
+                      <DeleteMemberModal
+                        member={member}
+                        setMembers={setMembers}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent align="end">
+                      <Badge className="bg-inherit text-black hover:bg-inherit">
+                        {' '}
+                        {t('member:ACTIONS.DETAIL')} Delete
+                      </Badge>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </Button>
+
+              {/* <EditMemberModal member={member} />
             <DeleteModal<MemberProps>
               entity={member}
               onDelete={handleDelete}
               deleteConfirmationHeader={t("member:ACTIONS.DELETE")}
               deleteConfirmationText={t("member:ACTIONS.DELETE_TEXT")}
             />{" "} */}
-          </div>
-        );
+            </div>
+          );
+        },
       },
-    },
-  ];
-};
+    ];
+  };
 
-export default function MemberTable() {
+  /**
+   * TODO: REPLACE FOR GET USE CASE WITH NEXT ACTION
+   */
+
+  // const {
+  //     data,
+  //     error: getMemberError,
+  //     fetchStatus,
+  // } = useQuery({
+  //     queryFn: async () => getMembers(),
+  //     queryKey: ['members'],
+  // })
+
   const { execute, status } = useAction(fetchMembersUseCase, {
     onSuccess: (data) => {
-      console.log('Member added successfully');
+      console.log('Members fetched successfully');
       setMembers(data.members);
     },
     onError: (error) => {
-      console.log('Error adding member', error);
+      console.log('Error fetching member', error);
     },
   });
 
-  const [members, setMembers] = React.useState<MemberProps[]>([]);
+  const [members, setMembers] = React.useState<UserSchema[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -199,7 +244,7 @@ export default function MemberTable() {
 
   useEffect(() => {
     execute({});
-  }, [execute]);
+  }, []);
 
   const table = useReactTable({
     data: members,
@@ -224,25 +269,30 @@ export default function MemberTable() {
 
   return (
     <div className="space-y-4 ">
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center justify-between space-x-2">
         <Input
-          placeholder={t('member:ACTIONS.SEARCH') ?? ''}
+          placeholder={t('member:ACTIONS.SEARCH') ?? 'Search members'}
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
             table.getColumn('name')?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
-        <AddMemberModal />
+        <AddMemberModal
+          setMembers={setMembers}
+        />
       </div>
-      <div className="rounded-md border">
+      <div >
         <Table className="rounded-md bg-white">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      className="text-left text-xs sm:table-cell"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -263,7 +313,7 @@ export default function MemberTable() {
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell className="mx-auto" key={cell.id}>
+                    <TableCell className="text-left" key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
@@ -296,7 +346,8 @@ export default function MemberTable() {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            {t('GENERAL.PAGINATION.PREVIOUS')}
+            {/* {t('GENERAL.PAGINATION.PREVIOUS')} */}
+            <ChevronLeft />
           </Button>
           <Button
             variant="default"
@@ -304,7 +355,8 @@ export default function MemberTable() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            {t('GENERAL.PAGINATION.NEXT')}
+            {/* {t('GENERAL.PAGINATION.NEXT')} */}
+            <ChevronRight />
           </Button>
         </div>
       </div>

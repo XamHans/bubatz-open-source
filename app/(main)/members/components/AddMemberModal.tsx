@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { DialogClose, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '../../../../components/ui/button';
+import { DialogClose, DialogFooter } from '../../../../components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -9,36 +9,46 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '../../../../components/ui/form';
+import { Input } from '../../../../components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '../../../../components/ui/select';
 import {
   AddMemberInput,
+  UserSchema,
   addMemberInputSchema,
-} from '@/modules/members/data-access/schema';
+} from '../../../../modules/members/data-access/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { t } from 'i18next';
 import { useForm } from 'react-hook-form';
 
-import { ClubMemberStatus } from '@/modules/club/types';
-import { addMemberUseCase } from '@/modules/members/use-cases';
+import { ClubMemberStatus } from '../../../../modules/members/types';
+import { addMemberUseCase } from '../../../../modules/members/use-cases';
 import { useAction } from 'next-safe-action/hooks';
-import { GenericModal } from '@/components/generic/GenericModal';
+import { GenericAddModal } from '../../members/components/GenericAddModal';
 import DatePicker from 'react-datepicker';
 import { useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt } from 'react-icons/fa';
+import React from 'react';
+import { set } from 'date-fns';
 
-const AddMemberModal = () => {
-  const { execute, status } = useAction(addMemberUseCase, {
-    onSuccess: () => {
-      console.log('Member added successfully');
+interface AddMemberModalProps {
+  setMembers: React.Dispatch<React.SetStateAction<UserSchema[]>>;
+  className?: string;
+}
+
+const AddMemberModal: React.FC<AddMemberModalProps> = ({ setMembers }) => {
+  const { execute } = useAction(addMemberUseCase, {
+    onSuccess: (result) => {
+      console.log('Member added successfully', result);
+      const newMember: UserSchema[] | undefined = result.success;
+      if (newMember) setMembers((prev) => prev.concat(newMember));
     },
     onError: (error) => {
       console.log('Error adding member', error);
@@ -50,47 +60,28 @@ const AddMemberModal = () => {
     resolver: zodResolver(addMemberInputSchema),
   });
 
-  const onSubmit = async (data: AddMemberInput) => {
-    console.log('ADD MEMBER FORM ', data);
-    // execute(data);
-  };
+  const [open, setOpen] = useState(false);
 
-  const handleSave = form.handleSubmit((data: AddMemberInput) => {
-    console.log('Save action');
-    console.log('Data', data);
-    execute(data);
-  });
-
-  const handleAbort = () => {
-    console.log('Abort action');
-  };
-
-  const [startDate, setStartDate] = useState(new Date());
-
-  const customInput = ({ value, onClick }) => {
-    return (
-      <div className="flex items-center">
-        <Input
-          value={value}
-          onClick={onClick}
-          placeholder="Enter date of birth"
-          readOnly
-        />
-        <FaCalendarAlt />
-      </div>
-    );
+  const handleSave = (data: AddMemberInput) => {
+    console.log('Data:', data);
+    try {
+      const result = execute(data);
+      setOpen(false);
+    } catch (error) {
+      console.log('Error added member', error);
+    }
   };
 
   return (
-    <GenericModal
+    <GenericAddModal
       headerTitle="Add Member"
       description="Fill in the details to add a new member."
-      onSave={handleSave}
-      onAbort={handleAbort}
+      open={open}
+      setOpen={setOpen}
     >
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(handleSave)}
           className="grid gap-2 sm:grid-cols-2 md:gap-4"
         >
           <FormField
@@ -160,15 +151,7 @@ const AddMemberModal = () => {
                 {/* <FormLabel>{t('MEMBER.BIRTHDAY')}</FormLabel> */}
                 <FormLabel>Date of Birth</FormLabel>
                 <FormControl>
-                  {/* <DatePicker
-                    initialVale={field.value}
-                    onSelect={handleChange}
-                    {...field}
-                  /> */}
-                  <DatePicker
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date || new Date())}
-                  />
+                  <Input placeholder="dd/mm/yyyy" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -252,18 +235,12 @@ const AddMemberModal = () => {
             )}
           />
 
-          {/* <DialogFooter className="col-span-2">
-            <DialogClose asChild>
-              <Button type="submit" disabled={!form?.formState?.isValid}>
-                {' '}
-                {t('GENERAL.ACTIONS.SAVE')}
-                Create Member
-              </Button>
-            </DialogClose>
-          </DialogFooter> */}
+          <Button type="submit" disabled={!form?.formState?.isValid}>
+            Save
+          </Button>
         </form>
       </Form>
-    </GenericModal>
+    </GenericAddModal>
   );
 };
 
