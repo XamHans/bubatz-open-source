@@ -19,6 +19,7 @@ import GenericSelect from '@/components/generic/GenericSelect';
 import { UUID } from 'crypto';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import Breadcrumbs from '@/components/generic/BreadCrumbs';
 
 const SaleDetailPage = () => {
   const params = useParams<{ id: string }>();
@@ -28,6 +29,19 @@ const SaleDetailPage = () => {
     { id: '196eeab1-3369-4563-b8df-2a88cc720e03' as UUID, name: 'andre' },
     { id: '20eaf542-cb38-4ce3-9907-1e9fffee4ec5' as UUID, name: 'johannes' },
   ]); // TODO: Fetch specific member of the sale
+
+  const [plants, setPlants] = useState<
+    { id: number; name: string; price: number }[]
+  >([
+    { id: 8, name: 'Ganza', price: 14 },
+    { id: 9, name: 'Placa', price: 22 },
+  ]);
+
+  const breadcrumbs = [
+    { label: 'Dashboard', href: '/dashboard' },
+    { label: 'Sales', href: '/sales' },
+    { label: 'Sale details' },
+  ];
 
   const getMemberById = (id: UUID) => {
     return members.find((member) => member.id === id)?.name;
@@ -57,33 +71,30 @@ const SaleDetailPage = () => {
   }, []);
 
   return (
-    <Container>
-      <div className="h-full w-full flex-1 flex-col space-y-12 md:flex ">
-        <SaleGeneralInfo
-          plants={[
-            { id: 8, name: 'Ganza', price: 14 },
-            { id: 9, name: 'Placa', price: 22 },
-          ]}
-          sale={sale}
-        />
-        <Select disabled>
-          <SelectTrigger>
-            <SelectValue
-              placeholder={getMemberById(sale.sale.userId as UUID)}
-            />
-          </SelectTrigger>
-          <SelectContent></SelectContent>
-        </Select>
-        <Select disabled>
-          <SelectTrigger>
-            <SelectValue placeholder={sale.sale.paidVia} />
-          </SelectTrigger>
-          <SelectContent></SelectContent>
-        </Select>
-        <Label>Price</Label>
-        <Input disabled value={sale.sale.totalPrice} />
-      </div>
-    </Container>
+    <>
+      <Breadcrumbs items={breadcrumbs} />
+      <Container>
+        <div className="h-full w-full flex-1 flex-col space-y-12 md:flex ">
+          <SaleGeneralInfo plants={plants} sale={sale} />
+          <Select disabled>
+            <SelectTrigger>
+              <SelectValue
+                placeholder={getMemberById(sale.sale.userId as UUID)}
+              />
+            </SelectTrigger>
+            <SelectContent></SelectContent>
+          </Select>
+          <Select disabled>
+            <SelectTrigger>
+              <SelectValue placeholder={sale.sale.paidVia} />
+            </SelectTrigger>
+            <SelectContent></SelectContent>
+          </Select>
+          <Label>Price</Label>
+          <Input disabled value={sale.sale.totalPrice} />
+        </div>
+      </Container>
+    </>
   );
 };
 
