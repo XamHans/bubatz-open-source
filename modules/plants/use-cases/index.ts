@@ -1,24 +1,33 @@
 'use server';
 
 import { logger } from '@/lib/logger';
+import { SuccessResponse } from '@/types';
 import dayjs from 'dayjs'; // Import dayjs
 import { createSafeActionClient } from 'next-safe-action';
 import { z } from 'zod';
 import {
+  PlantDetailsData,
   createBatch,
   createPlant,
+  deletePlant,
   getBatchById,
   getBatches,
   getPlants,
   getPlantsByBatchId,
+  updateBatch,
+  updatePlant,
 } from '../data-access';
 import {
+  BatchProps,
+  StrainProps,
   createBatchInputSchema,
   createPlantInputSchema,
+  deletePlantInputSchema,
   updateBatchInputSchema,
+  updatePlantInputSchema,
 } from '../data-access/schema';
 
-const action = createSafeActionClient();
+const action = createSafeActionClient({});
 
 // -------------- Batches
 export const addBatchUseCase = action(
@@ -45,23 +54,38 @@ export const fetchBatchesUseCase = action({}, async () => {
   return { batches };
 });
 
+type FetchBatchDetailsSuccess = {
+  success: {
+    batch: BatchProps;
+    strain: StrainProps;
+  };
+};
+
+type FetchBatchDetailsFailure = {
+  failure: string;
+};
+
+type FetchBatchDetailsResult =
+  | FetchBatchDetailsSuccess
+  | FetchBatchDetailsFailure;
+
 export const fetchBatchDetailsUseCase = action(
   { batchId: z.string() },
-  async ({ batchId }) => {
+  async ({ batchId }: Promise<FetchBatchDetailsResult>) => {
     logger.info('fetching batch details for id:', batchId);
-    const batch = await getBatchById(batchId);
-    if (!batch) {
+    const res = await getBatchById(batchId);
+    if (!res) {
       return { failure: 'Batch not found' };
     }
-    console.log('foudn batch details ', batch);
 
     // const plants = await getPlantsByBatchId(id);
-    return { success: { batch } };
+    return { success: { batch: res.batches, strain: res.strains } };
   },
 );
 export const updateBatchUseCase = action(
   updateBatchInputSchema,
   async ({ id, ...data }) => {
+    console.log('inside update  batch use case', id, data);
     const existingBatch = await getBatchById(id);
     if (!existingBatch) {
       return { failure: "Batch not found, can't update batch" };
@@ -76,12 +100,16 @@ export const updateBatchUseCase = action(
     //   data.startDate = parsedDate.format('YYYY-MM-DD');
     // }
 
-    // await updateBatch(id, data);
+    const result = await updateBatch(id, data);
+    logger.info('Updated batch result ', result);
     return { success: 'Batch updated successfully' };
   },
 );
 
 //----------------- Plants
+export type FetchPlantsSuccess = SuccessResponse<{
+  plants: PlantDetailsData[];
+}>;
 export const fetchPlantsFromBatchUseCase = action(
   { batchId: z.string() },
   async ({ batchId }) => {
@@ -89,10 +117,8 @@ export const fetchPlantsFromBatchUseCase = action(
     if (!plants) {
       return { failure: 'plants not found' };
     }
-    console.log('foudn plants  ', plants);
-
     // const plants = await getPlantsByBatchId(id);
-    return { success: { plants } };
+    return { success: { plants } } as FetchPlantsSuccess;
   },
 );
 
@@ -112,5 +138,30 @@ export const createPlantUseCase = action(
       return { failure: 'Failed to create plant' };
     }
     return { success: newPlantId };
+  },
+);
+
+export const deletePlantUseCase = action(
+  deletePlantInputSchema,
+  async ({ id, batchId }) => {
+    logger.info('Deleting plant with id:', id);
+    try {
+      const delResult = await deletePlant({ id, batchId });
+    } catch (error) {
+      logger.error('Error deleting plant', error);
+      return { failure: 'Failed to delete plant' };
+    }
+
+    return { success: 'Plant deleted successfully' };
+  },
+);
+
+export const updatePlantUseCase = action(
+  updatePlantInputSchema,
+  async (data) => {
+    logger.info('Updating plant with:', data);
+    await updatePlant(data.id!, data);
+
+    return { success: 'Plant updated successfully' };
   },
 );

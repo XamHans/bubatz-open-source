@@ -8,13 +8,6 @@
       "when": 1718097450237,
       "tag": "0000_brainy_meteorite",
       "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "6",
-      "when": 1717771607380,
-      "tag": "0006_new_warbound",
-      "breakpoints": true
     }
   ]
 }

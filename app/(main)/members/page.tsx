@@ -1,11 +1,9 @@
 import { auth } from '@/auth';
+import Breadcrumbs from '@/components/generic/BreadCrumbs';
 import { Container } from '@/components/generic/Container';
-import { Hero } from '@/components/generic/Hero';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SessionProvider } from 'next-auth/react';
 import MemberTable from './components/MemberTable';
-import Breadcrumbs from '@/components/generic/BreadCrumbs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AddMemberModal } from './components/AddMemberModal';
 
 async function MemberListPage() {
   const breadcrumbs = [

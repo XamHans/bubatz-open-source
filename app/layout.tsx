@@ -28,8 +28,10 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
-          <Toaster />
+          <body>
+            <main> {children}</main>
+            <Toaster />
+          </body>
         </ThemeProvider>
       </body>
     </html>

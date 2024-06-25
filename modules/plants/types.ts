@@ -6,3 +6,9 @@ export enum GrowPhase {
   Curing = 'Curing',
   Completed = 'Completed',
 }
+
+export enum HealthStatus {
+  healthy = 'healthy',
+  illness = 'illness',
+  nutrition_problem = 'nutrition problem',
+}

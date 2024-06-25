@@ -3,13 +3,30 @@
 import configuration from '../../../../app/configuration';
 
 import {
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
+import { t } from 'i18next';
+import { ArrowUpDown, ChevronLeft, ChevronRight, EyeIcon } from 'lucide-react';
+import { useAction } from 'next-safe-action/hooks';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { useRouter } from 'next/navigation';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from '../../../../components/ui/avatar';
 import { Badge } from '../../../../components/ui/badge';
 import { Button } from '../../../../components/ui/button';
-import { Checkbox } from '../../../../components/ui/checkbox';
 import { Input } from '../../../../components/ui/input';
 import {
   Table,
@@ -26,41 +43,15 @@ import {
   TooltipTrigger,
 } from '../../../../components/ui/tooltip';
 import {
-  MemberProps,
-  colorForClubMemberStatus,
+  colorForClubMemberStatus
 } from '../../../../modules/members/types';
 import { fetchMembersUseCase } from '../../../../modules/members/use-cases';
-import {
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
-import { t } from 'i18next';
-import { ArrowUpDown, EyeIcon, ChevronLeft, ChevronRight } from 'lucide-react';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { useRouter } from 'next/navigation';
-import * as React from 'react';
-import { useEffect, useState } from 'react';
 import { AddMemberModal } from './AddMemberModal';
 import { DeleteMemberModal } from './DeleteMemberModal';
-import { useAction } from 'next-safe-action/hooks';
 // import {
 //   selectUser,
 //   selectUserSchema,
 // } from '@/modules/members/data-access/schema';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  deleteMember,
-  getMembers,
-} from '../../../../modules/members/data-access';
-import { Schema } from 'zod';
 import { UserSchema } from '../../../../modules/members/data-access/schema';
 
 export default function MemberTable() {

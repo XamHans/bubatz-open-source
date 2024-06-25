@@ -1,24 +1,17 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { t } from 'i18next';
+import { useForm } from 'react-hook-form';
 import { GenericModal } from '../../../../../components/generic/GenericModal';
-import {
-  GetMemberDetailQueryData,
-  updateMember,
-} from '../../../../../modules/members/data-access/index';
-import { ClubMemberStatus } from '../../../../../modules/members/types';
-import {
-  UpdateMemberInput,
-  UserSchema,
-} from '../../../../../modules/members/data-access/schema';
 import { Button } from '../../../../../components/ui/button';
-import { DialogClose, DialogFooter } from '../../../../../components/ui/dialog';
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  FormControl,
 } from '../../../../../components/ui/form';
 import { Input } from '../../../../../components/ui/input';
 import {
@@ -28,17 +21,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../../../components/ui/select';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { t } from 'i18next';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import {
+  GetMemberDetailQueryData
+} from '../../../../../modules/members/data-access/index';
+import {
+  UpdateMemberInput
+} from '../../../../../modules/members/data-access/schema';
+import { ClubMemberStatus } from '../../../../../modules/members/types';
 
-import { z } from 'zod';
-import { useState } from 'react';
-import { useAction } from 'next-safe-action/hooks';
-import { updateMemberUseCase } from '../../../../../modules/members/use-cases';
-import { useParams } from 'next/navigation';
 import { UUID } from 'crypto';
-import React from 'react';
+import { useAction } from 'next-safe-action/hooks';
+import { useParams } from 'next/navigation';
+import React, { useState } from 'react';
+import { z } from 'zod';
+import { updateMemberUseCase } from '../../../../../modules/members/use-cases';
 
 export const memberProfileSchema = z.object({
   firstName: z.string().min(3, { message: 'First name is required' }),
