@@ -1,13 +1,10 @@
 'use client';
 
-import { GenericModal } from '@/components/generic/GenericModal';
-import {
-  GetMemberDetailQueryData,
-  updateMember,
-} from '@/modules/members/data-access/index';
-import { ClubMemberStatus, UpdateMemberInput } from '@/modules/members/types';
-import { Button } from '@/components/ui/button';
-import { DialogClose, DialogFooter } from '@/components/ui/dialog';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { t } from 'i18next';
+import { useForm } from 'react-hook-form';
+import { GenericModal } from '../../../../../components/generic/GenericModal';
+import { Button } from '../../../../../components/ui/button';
 import {
   Form,
   FormControl,
@@ -15,31 +12,41 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '../../../../../components/ui/form';
+import { Input } from '../../../../../components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { t } from 'i18next';
-import { SubmitHandler, useForm } from 'react-hook-form';
+} from '../../../../../components/ui/select';
+import {
+  GetMemberDetailQueryData
+} from '../../../../../modules/members/data-access/index';
+import {
+  UpdateMemberInput
+} from '../../../../../modules/members/data-access/schema';
+import { ClubMemberStatus } from '../../../../../modules/members/types';
 
-export interface EditMemberModalProps {
-  member: GetMemberDetailQueryData;
-}
-
+import { UUID } from 'crypto';
+import { useAction } from 'next-safe-action/hooks';
+import { useParams } from 'next/navigation';
+import React, { useState } from 'react';
 import { z } from 'zod';
+import { updateMemberUseCase } from '../../../../../modules/members/use-cases';
 
 export const memberProfileSchema = z.object({
   firstName: z.string().min(3, { message: 'First name is required' }),
   lastName: z.string().min(3, { message: 'Last name is required' }),
 });
 
-const EditMemberModal = ({ member }: EditMemberModalProps) => {
+export interface EditMemberModalProps {
+  member: GetMemberDetailQueryData;
+  setMember: React.Dispatch<React.SetStateAction<GetMemberDetailQueryData>>;
+}
+
+const EditMemberModal = ({ member, setMember }: EditMemberModalProps) => {
   // member could be passed from context or parent component, if not available, do not render
   // const { showSuccessToast } = useToast()
 
@@ -55,48 +62,53 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
       street: member.street ?? '',
       zip: member.zip ?? '',
     },
-    mode: 'onBlur',
+    mode: 'onSubmit',
     resolver: zodResolver(memberProfileSchema),
   });
 
-  const onSubmit: SubmitHandler<UpdateMemberInput> = async (data) => {
-    console.log('ON SUBMIT HANDLER REACHED');
-    const result = await updateMember(member.id, data);
-    result
-      .onSuccess((updatedMemberResult) =>
-        console.log('Member updated successfully:', updatedMemberResult),
-      )
-      .onError((error) =>
-        console.error('Failed to update member:', error.message),
-      );
-  };
+  // const onSubmit: SubmitHandler<UpdateMemberInput> = async (data) => {
+  //   console.log('ON SUBMIT HANDLER REACHED');
+  //   try {
+  //     const result = await updateMember(data);
+  //     console.log('Member updated successfully:', result);
+  //   } catch (error) {
+  //     console.error('Failed to update member:', (error as Error).message);
+  //   }
+  // };
 
-  const handleSave = () => {
-    console.log('Save action');
-  };
+  const { execute } = useAction(updateMemberUseCase, {
+    onSuccess: () => {
+      console.log('Member updated successfully');
+    },
+    onError: (error) => {
+      console.log('Error updating member', error);
+    },
+  });
 
-  const handleAbort = () => {
-    console.log('Abort action');
-  };
+  const [open, setOpen] = useState(false);
+  const params = useParams<{ id: UUID }>();
 
-  const handleChange = (selectedDate: string) => {
-    if (!selectedDate) return;
-    form.setValue('birthday', new Date(selectedDate), {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
+  const handleSave = async (data: UpdateMemberInput) => {
+    try {
+      const result = await execute({ ...data, id: params.id });
+      console.log('result', result);
+      setMember((prev) => ({ ...prev, ...data }));
+      setOpen(false);
+    } catch (error) {
+      console.log('Error updating member', error);
+    }
   };
 
   return (
     <GenericModal
       headerTitle="Edit Member"
       description="Here you can change the information of a member."
-      onSave={handleSave}
-      onAbort={handleAbort}
+      open={open}
+      setOpen={setOpen}
     >
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(handleSave)}
           className="grid gap-2 sm:grid-cols-2 md:gap-4"
         >
           <FormField
@@ -232,7 +244,7 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
 
           <FormField
             control={form.control}
-            name="member_status"
+            name="status"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
@@ -250,27 +262,50 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
                   </FormControl>
                   <SelectContent>
                     <SelectItem value={ClubMemberStatus.REQUEST}>
-                      {t('MEMBER.STATUS_OPTIONS.REQUEST')}
+                      <FormLabel>
+                        REQUEST
+                        {t('MEMBER.STATUS_OPTIONS.REQUEST')}
+                      </FormLabel>
                     </SelectItem>
                     <SelectItem value={ClubMemberStatus.PENDING}>
-                      {t('MEMBER.STATUS_OPTIONS.PENDING')}
+                      <FormLabel>
+                        PENDING
+                        {t('MEMBER.STATUS_OPTIONS.PENDING')}
+                      </FormLabel>
                     </SelectItem>
                     <SelectItem value={ClubMemberStatus.ACTIVE}>
-                      {t('MEMBER.STATUS_OPTIONS.ACTIVE')}
+                      <FormLabel>
+                        ACTIVE
+                        {t('MEMBER.STATUS_OPTIONS.ACTIVE')}
+                      </FormLabel>
                     </SelectItem>
                     <SelectItem value={ClubMemberStatus.PAUSED}>
-                      {t('MEMBER.STATUS_OPTIONS.PAUSED')}
+                      <FormLabel>
+                        PAUSED
+                        {t('MEMBER.STATUS_OPTIONS.PAUSED')}
+                      </FormLabel>
                     </SelectItem>
                     <SelectItem value={ClubMemberStatus.EXITED}>
-                      {t('MEMBER.STATUS_OPTIONS.EXITED')}
+                      <FormLabel>
+                        EXITED
+                        {t('MEMBER.STATUS_OPTIONS.EXITED')}
+                      </FormLabel>
                     </SelectItem>
                   </SelectContent>
                 </Select>
               </FormItem>
             )}
           />
+          <Button
+            type="button"
+            onClick={() => {
+              handleSave(form.getValues());
+            }}
+          >
+            Save
+          </Button>
 
-          <DialogFooter className="col-span-2">
+          {/* <DialogFooter className="col-span-2">
             <DialogClose asChild>
               <Button variant="ghost"> {t('GENERAL.ACTIONS.ABORT')}</Button>
             </DialogClose>
@@ -278,10 +313,10 @@ const EditMemberModal = ({ member }: EditMemberModalProps) => {
               <Button type="submit" disabled={!form?.formState?.isValid}>
                 {' '}
                 SUBMIT FORM
-                {/* {t("GENERAL.ACTIONS.SAVE")} */}
+                {t('GENERAL.ACTIONS.SAVE')}
               </Button>
             </DialogClose>
-          </DialogFooter>
+          </DialogFooter> */}
         </form>
       </Form>
     </GenericModal>

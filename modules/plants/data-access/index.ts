@@ -6,9 +6,12 @@ import { eq } from 'drizzle-orm/sql';
 import {
   CreateBatchInput,
   CreatePlantInput,
+  DeletePlantInput,
   UpdateBatchInput,
+  UpdatePlantInput,
   batches,
   plants,
+  strains,
 } from './schema';
 /**
  * Here is an example CRUD methods for the plants table.
@@ -43,6 +46,7 @@ const getBatchDetail = async (id: string) => {
     .from(batches)
     .where(eq(batches.id, id))
     .limit(1);
+  console.log(' foundBatches[0];', foundBatches[0]);
   return foundBatches[0];
 };
 
@@ -50,8 +54,10 @@ export const getBatchById = async (id: string) => {
   const result = await db
     .select()
     .from(batches)
+    .leftJoin(strains, eq(batches.strainId, strains.id))
     .where(eq(batches.id, id))
     .limit(1);
+  console.log('result[0]', result[0]);
   return result[0];
 };
 
@@ -68,6 +74,15 @@ export const createPlant = async (input: CreatePlantInput) => {
   return await db.insert(plants).values(input);
 };
 
+export const deletePlant = async (input: DeletePlantInput) => {
+  return await db.delete(plants).where(eq(plants.id, input.id));
+};
+
+export const updatePlant = async (id: number, data: UpdatePlantInput) => {
+  return await db.update(plants).set(data).where(eq(plants.id, id));
+};
+
 export type BatchDetailsData = AsyncReturnType<typeof getBatchDetail>;
+export type PlantDetailsData = AsyncReturnType<typeof getPlantsByBatchId>;
 
 export { getBatchDetail, getBatches, getPlants };

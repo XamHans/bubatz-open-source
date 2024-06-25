@@ -60,6 +60,11 @@ const configuration = {
       new: '/plants/new',
       detail: 'plants/:id',
     },
+    plants: {
+      all: 'plants/',
+      new: '/plants/new',
+      detail: 'plants/:id',
+    },
   },
 };
 

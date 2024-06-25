@@ -19,22 +19,26 @@ const Sidebar = ({ className }: Props) => {
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
         <TooltipProvider>
           <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
-            <Link
-              href="#"
-              className="rounded-ful group flex h-9 w-9 shrink-0 items-center justify-center gap-2 text-lg font-semibold text-muted-foreground md:h-8 md:w-8 md:text-base"
-            >
-              <Package2 className="h-4 w-4 transition-all group-hover:scale-110" />
-              <span className="sr-only">Home</span>
-            </Link>
-
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  href="/sales"
+                  className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full text-lg font-semibold text-muted-foreground hover:text-foreground md:h-8 md:w-8 md:text-base"
+                >
+                  <Package2 className="h-4 w-4 transition-all" />
+                  <span className="sr-only">Sales</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Manage your sales</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="/plants"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <Leaf className="h-5 w-5" />
-                  <span className="sr-only">Plant</span>
+                  <Leaf className="h-5 w-5 transition-all" />
+                  <span className="sr-only">Plants</span>
                 </Link>
               </TooltipTrigger>
               <TooltipContent side="right">Manage your growing</TooltipContent>
@@ -42,7 +46,7 @@ const Sidebar = ({ className }: Props) => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  href="/members"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <Users2 className="h-5 w-5" />

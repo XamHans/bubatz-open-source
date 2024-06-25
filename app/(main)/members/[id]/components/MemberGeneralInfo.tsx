@@ -3,20 +3,32 @@
 import {
   ClubMemberStatus,
   colorForClubMemberStatus,
-} from '@/modules/members/types';
+} from '../../../../../modules/members/types';
 import {
   GetMemberDetailQueryData,
   getMemberDetail,
-} from '@/modules/members/data-access/index';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+} from '../../../../../modules/members/data-access/index';
+import { Avatar, AvatarFallback } from '../../../../../components/ui/avatar';
+import { Badge } from '../../../../../components/ui/badge';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+} from '../../../../../components/ui/card';
 import { t } from 'i18next';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { EditMemberModal } from './EditMemberModal';
+import React from 'react';
+import Breadcrumbs from '@/components/generic/BreadCrumbs';
 
 const MemberGeneralInfo = () => {
+  const breadcrumbs = [
+    { label: 'Dashboard', href: '/dashboard' },
+    { label: 'Members', href: '/members' },
+    { label: 'Edit Member' },
+  ];
+
   const params = useParams<{ id: string }>();
   const [member, setMember] = useState<GetMemberDetailQueryData | undefined>(
     undefined,
@@ -36,9 +48,11 @@ const MemberGeneralInfo = () => {
 
   return (
     <>
+      <Breadcrumbs items={breadcrumbs} />
+      <br />
       <Card className="max-w-2xl">
         <CardHeader className="text-end">
-          <EditMemberModal member={member} />
+          <EditMemberModal member={member} setMember={setMember} />
         </CardHeader>
 
         <CardContent>
@@ -61,13 +75,9 @@ const MemberGeneralInfo = () => {
                 <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
                   {/* <HiFlag className="mt-px h-5 w-5" /> */}
                   <div className="space-y-1">
-                    <Badge
-                      variant="default"
-                      className={`${colorForClubMemberStatus.get(
-                        member.status as ClubMemberStatus,
-                      )}`}
-                    >
-                      {t(`MEMBER.STATUS_OPTIONS.${member.status}`)}
+                    <Badge variant="default" className="bg-zinc-700 text-white">
+                      {/* {t(`MEMBER.STATUS_OPTIONS.${member.status}`)} */}
+                      {member.status}
                     </Badge>
                   </div>
                 </div>
