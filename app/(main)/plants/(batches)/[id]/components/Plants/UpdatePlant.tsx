@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
 import {
+  PlantProps,
   UpdatePlantInput,
   updatePlantInputSchema,
 } from '@/modules/plants/data-access/schema';
@@ -35,10 +36,14 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 interface UpdatePlantFormProps {
-  plant: any;
+  plant: PlantProps;
+  onClose: () => void; // Add this prop to detect dialog close --> trigger refresh on parent
 }
 
-const UpdatePlantForm: React.FC<UpdatePlantFormProps> = ({ plant }) => {
+const UpdatePlantForm: React.FC<UpdatePlantFormProps> = ({
+  plant,
+  onClose,
+}) => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const { execute, status } = useAction(updatePlantUseCase, {
@@ -50,6 +55,7 @@ const UpdatePlantForm: React.FC<UpdatePlantFormProps> = ({ plant }) => {
         duration: 1000,
         description: 'Grow State updated successfully',
       });
+      onClose();
     },
     onError: (error) => {
       console.log('Error updating plant', error);

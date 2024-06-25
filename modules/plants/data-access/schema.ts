@@ -60,27 +60,10 @@ const defaultSeedToSale = {
   },
   harvest: {
     estimated_date: null,
-    actual_date: null,
-    yield_estimate_grams: null,
-    yield_actual_grams: null,
     drying_conditions: {
       temperature: null,
       humidity: null,
     },
-  },
-  processing: {
-    drying_start_date: null,
-    drying_end_date: null,
-    curing_start_date: null,
-    curing_end_date: null,
-    trim_date: null,
-    packaging_date: null,
-    final_weight_grams: null,
-  },
-  destroyed: {
-    weight_grams_destroyed: null,
-    destroyed_date: null,
-    reason: null,
   },
 };
 
@@ -188,8 +171,8 @@ export const getStrainsSchema = createSelectSchema(strains);
 export type CreateBatchInput = z.infer<typeof createBatchInputSchema>;
 export type BatchProps = z.infer<typeof getBatchesSchema>;
 export type StrainProps = z.infer<typeof getStrainsSchema>;
+export type PlantProps = z.infer<typeof getPlantsSchema>;
 
-export type GetPlants = z.infer<typeof getPlantsSchema>;
 export type CreatePlantInput = z.infer<typeof createPlantInputSchema>;
 export type UpdatePlantInput = z.infer<typeof updatePlantInputSchema>;
 

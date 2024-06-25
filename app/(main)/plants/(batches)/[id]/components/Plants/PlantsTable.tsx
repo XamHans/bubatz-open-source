@@ -161,7 +161,10 @@ const PlantsTable: React.FC = () => {
                 <TooltipProvider>
                   <Tooltip delayDuration={0}>
                     <TooltipTrigger>
-                      <UpdatePlantForm plant={plant} />
+                      <UpdatePlantForm
+                        plant={plant}
+                        onClose={() => execute({ batchId })}
+                      />
                     </TooltipTrigger>
                     <TooltipContent align="end">Edit Plant</TooltipContent>
                   </Tooltip>
