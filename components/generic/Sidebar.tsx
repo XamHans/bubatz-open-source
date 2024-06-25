@@ -17,7 +17,8 @@ type Props = {
 
 const Sidebar = ({ className }: Props) => {
   const pathname = usePathname();
-  const isActive = (path: string) => pathname === path;
+  console.log(pathname);
+  const isActive = (path: string) => pathname.split('/')[1] === path; // /sales -> sales, /sales/new-sales -> sales
 
   return (
     <div className={cn(className)}>
@@ -30,7 +31,8 @@ const Sidebar = ({ className }: Props) => {
                   href="/sales"
                   className={cn(
                     'group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full text-lg font-semibold text-muted-foreground hover:text-foreground md:h-8 md:w-8 md:text-base',
-                    isActive('/sales') && 'bg-black',
+                    isActive('sales') &&
+                      'bg-black text-primary-foreground hover:text-primary-foreground',
                   )}
                 >
                   <Package2 className="h-4 w-4 transition-all" />
@@ -45,7 +47,8 @@ const Sidebar = ({ className }: Props) => {
                   href="/plants"
                   className={cn(
                     'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
-                    isActive('/plants') && 'bg-black',
+                    isActive('plants') &&
+                      'bg-black text-primary-foreground hover:text-primary-foreground',
                   )}
                 >
                   <Leaf className="h-5 w-5 transition-all" />
@@ -60,7 +63,8 @@ const Sidebar = ({ className }: Props) => {
                   href="/members"
                   className={cn(
                     'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
-                    isActive('/members') && 'bg-black',
+                    isActive('members') &&
+                      'bg-black text-primary-foreground hover:text-primary-foreground',
                   )}
                 >
                   <Users2 className="h-5 w-5" />
