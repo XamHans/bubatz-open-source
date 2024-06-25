@@ -1,28 +1,36 @@
 'use server';
 
-import { createSafeActionClient } from 'next-safe-action';
+import { DEFAULT_SERVER_ERROR, createSafeActionClient } from 'next-safe-action';
 import {
-  Sale,
+  SaleWithoutItems,
+  SaleItemInsertSchema,
+  SaleWithItems,
   createSaleInputSchema,
   getSaleSchema,
 } from '../data-access/schema';
-import getLogger from '@/lib/logger';
-import { createSale, getSaleById, getSales } from '../data-access';
+import { logger } from '@/lib/logger';
+import {
+  createSale,
+  createSaleItem,
+  getSaleWithoutItemsById,
+  getSales,
+} from '../data-access';
 
-const action = createSafeActionClient();
+const action = createSafeActionClient({
+  handleReturnedServerError: (error) => {
+    console.error('Error returned from server:', error.message);
+    return DEFAULT_SERVER_ERROR;
+  },
+});
 
 /**
  * Get all sales.
  * @returns Array of all sales.
  */
-export const fetchSalesUseCase = action(
-  getSaleSchema,
-  async (): Promise<{ sales: Sale[] }> => {
-    getLogger().debug('Fetching sales from DB.');
-    const { sales }: { sales: Sale[] } = await getSales();
-    return { sales: sales };
-  },
-);
+export const fetchSalesUseCase = action({}, async () => {
+  const sales = await getSales();
+  return { sales: sales };
+});
 
 /**
  * Get a sale by its id.
@@ -31,9 +39,9 @@ export const fetchSalesUseCase = action(
  */
 export const fetchSaleUseCase = action(
   getSaleSchema,
-  async (id: { id: number }): Promise<{ sale?: Sale | null }> => {
-    getLogger().debug('Fetching sale from DB.');
-    const sale = await getSaleById(id.id);
+  async (id: { id: number }): Promise<{ sale?: SaleWithoutItems | null }> => {
+    logger.debug('Fetching sale from DB.');
+    const sale = await getSaleWithoutItemsById(id.id);
     return { sale: sale };
   },
 );
@@ -43,18 +51,22 @@ export const fetchSaleUseCase = action(
  * @param newSaleData Data of the new sale to be created.
  * @returns Object with sale in case of success, or failure otherwise.
  */
-export const createSaleUseCase = action(
-  createSaleInputSchema,
-  async (newSaleData): Promise<{ success?: Sale; failure?: string }> => {
-    console.log('data', newSaleData);
-    if (!newSaleData) {
-      return { failure: 'No data provided, cant create new sale' };
-    }
-    getLogger().debug('Creating new sale createSaleUseCase', newSaleData);
-    const newSaleId: Sale | null = await createSale(newSaleData);
+export const createSaleUseCase = action(SaleWithItems, async (newSaleData) => {
+  if (!newSaleData) {
+    return { failure: 'No data provided, cant create new sale' };
+  }
+  console.log('newSaleData', newSaleData);
+  const result = await createSale(newSaleData);
 
-    return newSaleId
-      ? { success: newSaleId }
-      : { failure: 'Error creating sale' };
+  return { success: result };
+});
+
+export const createSaleItemUseCase = action(
+  SaleItemInsertSchema,
+  async (item) => {
+    if (!item) return { failure: 'No data provided, cant create new item' };
+
+    const newItem = await createSaleItem(item);
+    return { success: newItem };
   },
 );

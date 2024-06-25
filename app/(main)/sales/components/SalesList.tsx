@@ -12,14 +12,15 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import {
-  Tooltip,
-  TooltipContent,
   TooltipProvider,
+  Tooltip,
   TooltipTrigger,
+  TooltipContent,
 } from '@/components/ui/tooltip';
+import { getMemberDetail } from '@/modules/members/data-access';
+import { UserSchema } from '@/modules/members/data-access/schema';
 import { MemberProps } from '@/modules/members/types';
-import { getSales } from '@/modules/sales/data-access';
-import { Sale } from '@/modules/sales/data-access/schema';
+import { SaleWithoutItems } from '@/modules/sales/data-access/schema';
 import { fetchSalesUseCase } from '@/modules/sales/use-cases';
 import {
   ColumnFiltersState,
@@ -33,7 +34,14 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { t } from 'i18next';
-import { ArrowUpDown } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowLeftIcon,
+  ArrowRight,
+  ArrowRightIcon,
+  ArrowUpDown,
+  EyeIcon,
+} from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
@@ -41,12 +49,6 @@ import * as React from 'react';
 import { useState } from 'react';
 
 const getSaleTableColumns = (router: AppRouterInstance) => {
-  const handleDelete = async (confirmed: boolean, member: MemberProps) => {
-    if (confirmed) {
-      if (!member.id) throw Error('No member id available');
-    }
-  };
-
   return [
     {
       accessorKey: 'id',
@@ -58,6 +60,7 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            className="text-s justify-start font-semibold"
           >
             ID
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -77,6 +80,7 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            className="text-s justify-start font-semibold"
           >
             Total price
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -97,6 +101,7 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            className="text-s justify-start font-semibold"
           >
             Paid via
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -107,11 +112,96 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
         return <div className="capitalize">{row.getValue('paidVia')}</div>;
       },
     },
+    {
+      accessorKey: 'name',
+      accessorFn: (row) => {
+        return row.firstName + ' ' + row.lastName;
+      },
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            className="text-s justify-start font-semibold"
+          >
+            Customer
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return <div className="capitalize">{row.getValue('name')}</div>;
+      },
+    },
+    {
+      accessorKey: 'createdAt',
+      accessorFn: (row) => {
+        return row.createdAt;
+      },
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            className="text-s justify-start font-semibold"
+          >
+            Date
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return <div className="capitalize">{row.getValue('createdAt')}</div>;
+      },
+    },
+    {
+      id: 'actions',
+      enableHiding: false,
+      cell: ({ row }) => {
+        const sale = row.original;
+        return (
+          <div className="flex justify-center font-semibold">
+            <Button
+              variant="ghost"
+              className="transition-transform duration-200 hover:bg-inherit"
+              onClick={() => {
+                router.push(
+                  configuration.paths.sales.detail.replace(':id', sale.id!),
+                );
+              }}
+            >
+              <TooltipProvider>
+                <Tooltip delayDuration={0}>
+                  <TooltipTrigger>
+                    <EyeIcon className="h-6 w-6 cursor-pointer" />
+                  </TooltipTrigger>
+                  <TooltipContent align="end">
+                    <Badge className="bg-inherit text-black hover:bg-inherit">
+                      {' '}
+                      {t('member:ACTIONS.DETAIL')} Edit
+                    </Badge>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </Button>
+
+            {/* <EditMemberModal member={member} />
+            <DeleteModal<MemberProps>
+              entity={member}
+              onDelete={handleDelete}
+              deleteConfirmationHeader={t("member:ACTIONS.DELETE")}
+              deleteConfirmationText={t("member:ACTIONS.DELETE_TEXT")}
+            />{" "} */}
+          </div>
+        );
+      },
+    },
   ];
 };
 
 export default function MemberTable() {
-  const [sales, setSales] = React.useState<Sale[]>([]);
+  const [sales, setSales] = React.useState<SaleWithoutItems[]>([]);
+  const [users, setUsers] = React.useState<UserSchema[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -137,15 +227,14 @@ export default function MemberTable() {
     },
   });
 
+  const fetchSales = useAction(fetchSalesUseCase, {
+    onSuccess: (data) => {
+      setSales(data.sales);
+    },
+  });
+
   React.useEffect(() => {
-    getSales()
-      .then((data) => {
-        console.log('data', data);
-        setSales(data.sales);
-      })
-      .catch((error) => {
-        console.error('Error fetching sales: ', error);
-      });
+    fetchSales.execute({});
   }, []);
 
   //  const {t} = await initializeI18nClient('en')
@@ -162,55 +251,53 @@ export default function MemberTable() {
           className="max-w-sm"
         />
       </div> */}
-      <div className="rounded-md border">
-        <Table className="rounded-md bg-white">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
+      <Table className="rounded-md bg-white">
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead
+                    key={header.id}
+                    className="text-s text-left sm:table-cell"
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && 'selected'}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell className="text-left " key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell className="h-24 text-center">
+                {t('GENERAL.DATA_TABLE.NO_RESULTS', {
+                  entity: t('member:TITLE'),
                 })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell className="mx-auto" key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell className="h-24 text-center">
-                  {t('GENERAL.DATA_TABLE.NO_RESULTS', {
-                    entity: t('member:TITLE'),
-                  })}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
       <div className="flex items-center justify-end space-x-2 py-4">
         {/* <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
@@ -223,7 +310,7 @@ export default function MemberTable() {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            {t('GENERAL.PAGINATION.PREVIOUS')}
+            {t('GENERAL.PAGINATION.PREVIOUS')} <ArrowLeftIcon />
           </Button>
           <Button
             variant="default"
@@ -231,7 +318,7 @@ export default function MemberTable() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            {t('GENERAL.PAGINATION.NEXT')}
+            {t('GENERAL.PAGINATION.NEXT')} <ArrowRightIcon />
           </Button>
         </div>
       </div>

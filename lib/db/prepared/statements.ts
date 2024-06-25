@@ -1,34 +1,34 @@
-import { eq, sql } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm';
 
-import { db } from '@/lib/db/db'
-import { users } from '@/lib/db/schema'
+import { db } from '@/lib/db/db';
+import { members } from '@/modules/members/data-access/schema';
 
 export const psGetUserById = db
-    .select()
-    .from(users)
-    .where(eq(users.id, sql.placeholder('id')))
-    .prepare('psGetUserById')
+  .select()
+  .from(members)
+  .where(eq(members.id, sql.placeholder('id')))
+  .prepare('psGetUserById');
 
 export const psGetUserByEmail = db
-    .select()
-    .from(users)
-    .where(eq(users.email, sql.placeholder('email')))
-    .prepare('psGetUserByEmail')
+  .select()
+  .from(members)
+  .where(eq(members.email, sql.placeholder('email')))
+  .prepare('psGetUserByEmail');
 
 export const psGetUserByEmailVerificationToken = db
-    .select()
-    .from(users)
-    .where(eq(users.emailVerificationToken, sql.placeholder('token')))
-    .prepare('psGetUserByEmailVerificationToken')
+  .select()
+  .from(members)
+  .where(eq(members.emailVerificationToken, sql.placeholder('token')))
+  .prepare('psGetUserByEmailVerificationToken');
 
 export const psGetUserByResetPasswordToken = db
-    .select()
-    .from(users)
-    .where(eq(users.resetPasswordToken, sql.placeholder('token')))
-    .prepare('psGetUserByResetPasswordToken')
+  .select()
+  .from(members)
+  .where(eq(members.resetPasswordToken, sql.placeholder('token')))
+  .prepare('psGetUserByResetPasswordToken');
 
 export const psLinkOAuthAccount = db
-    .update(users)
-    .set({ emailVerified: new Date() })
-    .where(eq(users.id, sql.placeholder('userId')))
-    .prepare('psLinkOAuthAccount')
+  .update(members)
+  .set({ emailVerified: new Date() })
+  .where(eq(members.id, sql.placeholder('userId')))
+  .prepare('psLinkOAuthAccount');

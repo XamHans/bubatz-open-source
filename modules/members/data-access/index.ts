@@ -2,10 +2,9 @@
 
 import { db } from '../../../lib/db/db';
 // import getLogger from '../../../lib/logger';
-import { AddMemberInput, members } from './schema';
-import { AsyncReturnType } from '../../../lib/types';
-import { UpdateMemberInput } from './schema';
 import { eq } from 'drizzle-orm/sql/expressions/conditions';
+import { AsyncReturnType } from '../../../lib/types';
+import { AddMemberInput, UpdateMemberInput, members } from './schema';
 // const logger = getLogger();
 /**
  * Here is an example CRUD methods for the members table.
@@ -61,4 +60,5 @@ const deleteMember = async (id: string) => {
   }
 };
 
-export { getMemberDetail, getMembers, updateMember, deleteMember };
+export { deleteMember, getMemberDetail, getMembers, updateMember };
+

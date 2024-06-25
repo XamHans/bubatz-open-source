@@ -51,8 +51,14 @@ const configuration = {
       detail: 'members/:id',
     },
     sales: {
-      all: 'sales/',
-      detail: 'sales/:id',
+      all: '/sales',
+      detail: '/sales/:id',
+      new: '/sales/new-sale',
+    },
+    plants: {
+      all: 'plants/',
+      new: '/plants/new',
+      detail: 'plants/:id',
     },
     plants: {
       all: 'plants/',

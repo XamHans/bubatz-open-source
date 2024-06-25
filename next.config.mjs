@@ -3,7 +3,6 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['pino', 'pino-pretty'],
   },
-
   images: {
     remotePatterns: [
       {

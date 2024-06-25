@@ -5,6 +5,7 @@ import NextAuth from 'next-auth';
 
 import authConfig from '@/config/auth';
 import { db } from '@/lib/db/db';
+import { UUID } from 'crypto';
 
 export const {
   handlers: { GET, POST },
@@ -31,12 +32,16 @@ export const {
   },
   callbacks: {
     jwt({ token, user }) {
-      if (user) token.role = user.is_admin ? 'ADMIN' : 'USER';
+      if (user) {
+        token.role = user.is_admin ? 'ADMIN' : 'USER';
+        token.id = user.id as UUID;
+      }
       return token;
     },
     session({ session, token }) {
       session.user.role = token.role as 'USER' | 'ADMIN';
       session.sessionToken = token.sub as string;
+      session.user.id = token.id as UUID;
       return session;
     },
     async signIn({ user, account }) {

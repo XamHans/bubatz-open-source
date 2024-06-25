@@ -1,0 +1,1 @@
+ALTER TABLE "transactions" RENAME TO "sales_items";
