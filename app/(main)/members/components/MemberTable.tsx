@@ -278,9 +278,6 @@ export default function MemberTable() {
           }
           className="max-w-sm"
         />
-        <AddMemberModal
-          setMembers={setMembers}
-        />
       </div>
       <div >
         <Table className="rounded-md bg-white">

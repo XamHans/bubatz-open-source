@@ -49,6 +49,7 @@ const configuration = {
     members: {
       all: 'members/',
       detail: 'members/:id',
+      addMember: 'members/add',
     },
     sales: {
       all: 'sales/',

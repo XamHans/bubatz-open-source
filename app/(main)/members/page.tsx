@@ -17,12 +17,30 @@ async function MemberListPage() {
 
   return (
     <SessionProvider session={session}>
-      <Breadcrumbs items={breadcrumbs} />
       <Container className="space-y-12">
+        <Breadcrumbs items={breadcrumbs} />
         <Card>
           <CardHeader className="px-7">
-            <CardTitle>Members</CardTitle>
-            <CardDescription>Manage your members</CardDescription>
+            <div className="grid grid-cols-2">
+              <div>
+                <CardTitle>
+                  Members
+                </CardTitle>
+                <CardDescription>
+                  Manage your members
+                </CardDescription>
+              </div>
+              <div className="flex justify-end">
+                <Link href={configuration.paths.members.addMember}>
+                  <Button size="sm" className="h-8 w-32 gap-1">
+                    <PlusCircle className="h-3.5 w-3.5" />
+                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                      Add Member
+                    </span>
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             <MemberTable />
