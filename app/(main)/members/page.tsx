@@ -17,8 +17,8 @@ async function MemberListPage() {
 
   return (
     <SessionProvider session={session}>
-      <Container className="space-y-12">
         <Breadcrumbs items={breadcrumbs} />
+      <Container className="space-y-12">
         <Card>
           <CardHeader className="px-7">
             <div className="grid grid-cols-2">
@@ -32,9 +32,9 @@ async function MemberListPage() {
               </div>
               <div className="flex justify-end">
                 <Link href={configuration.paths.members.addMember}>
-                  <Button size="sm" className="h-8 w-32 gap-1">
+                  <Button size="sm" className="h-8 w-35 gap-1">
                     <PlusCircle className="h-3.5 w-3.5" />
-                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                    <span className="sr-only sm:not-sr-only ">
                       Add Member
                     </span>
                   </Button>
