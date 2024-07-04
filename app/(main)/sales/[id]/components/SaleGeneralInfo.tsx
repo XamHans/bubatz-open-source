@@ -22,7 +22,7 @@ import {
   SaleItem,
 } from '@/modules/sales/data-access/schema';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { plants } from '@/modules/plants/data-access/schema';
+import { StrainProps, plants } from '@/modules/plants/data-access/schema';
 import {
   ColumnFiltersState,
   SortingState,
@@ -36,7 +36,7 @@ import {
 import { useRouter } from 'next/navigation';
 
 interface SaleItemsTableProps {
-  plants: { id: number; name: string; price: number }[];
+  plants: StrainProps[];
   sale: Sale;
 }
 
@@ -54,11 +54,13 @@ const SaleGeneralInfo = (props: SaleItemsTableProps) => {
   ) => {
     return [
       {
-        id: 'plantId',
-        header: <div className="text-s justify-start font-semibold">PLANT</div>,
+        id: 'strainId',
+        header: (
+          <div className="text-s justify-start font-semibold">STRAIN</div>
+        ),
         cell: ({ row }) => (
           <div className="text-s justify-start">
-            {plants?.find((plant) => plant.id === row.original.plantId)?.name}
+            {plants?.find((plant) => plant.id == row.original.strainId)?.name}
           </div>
         ),
       },
@@ -117,60 +119,53 @@ const SaleGeneralInfo = (props: SaleItemsTableProps) => {
   if (!sale) return null;
 
   return (
-    <div className="">
-      <div className="rounded-md border">
-        <Table className="rounded-md bg-white">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      className="text-s text-left sm:table-cell"
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
+    <Table className="rounded-md bg-white">
+      <TableHeader>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableRow key={headerGroup.id}>
+            {headerGroup.headers.map((header) => {
+              return (
+                <TableHead
+                  key={header.id}
+                  className="text-s text-left sm:table-cell"
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell className="text-left" key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
                       )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell className="h-24 text-center">
-                  {t('GENERAL.DATA_TABLE.NO_RESULTS', {
-                    entity: t('member:TITLE'),
-                  })}
+                </TableHead>
+              );
+            })}
+          </TableRow>
+        ))}
+      </TableHeader>
+      <TableBody>
+        {table.getRowModel().rows?.length ? (
+          table.getRowModel().rows.map((row) => (
+            <TableRow
+              key={row.id}
+              data-state={row.getIsSelected() && 'selected'}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <TableCell className="text-left" key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-    </div>
+              ))}
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell className="h-24 text-center">
+              {t('GENERAL.DATA_TABLE.NO_RESULTS', {
+                entity: t('member:TITLE'),
+              })}
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
   );
 };
 

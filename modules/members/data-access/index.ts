@@ -13,7 +13,6 @@ import { AddMemberInput, UpdateMemberInput, members } from './schema';
  */
 const getMembers = async () => {
   const allMembers = await db.select().from(members);
-  console.log('allmembers', allMembers);
   return allMembers;
 };
 
@@ -61,4 +60,3 @@ const deleteMember = async (id: string) => {
 };
 
 export { deleteMember, getMemberDetail, getMembers, updateMember };
-

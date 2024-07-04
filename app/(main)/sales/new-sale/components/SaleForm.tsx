@@ -34,12 +34,22 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { createSaleUseCase } from '@/modules/sales/use-cases';
+import { createSaleUseCase, fetchSaleUseCase } from '@/modules/sales/use-cases';
 import { useAction } from 'next-safe-action/hooks';
 import { redirect } from 'next/navigation';
 import configuration from '@/app/configuration';
 import { backToSalesPage } from '@/actions/sales';
 import { Ban, PackageCheck, Trash2 } from 'lucide-react';
+import { fetchMembersUseCase } from '@/modules/members/use-cases';
+import { UserSchema } from '@/modules/members/data-access/schema';
+import {
+  fetchPlantsUseCase,
+  fetchStrainsUseCase,
+} from '@/modules/plants/use-cases';
+import {
+  StrainProps,
+  getStrainsSchema,
+} from '@/modules/plants/data-access/schema';
 
 export default function SaleForm() {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethodsType[]>([
@@ -48,20 +58,12 @@ export default function SaleForm() {
     PaymentMethodsEnum.enum.WALLET,
   ]);
 
-  const [members, setMembers] = useState<{ id: UUID; name: string }[]>([
-    { id: '0d40439d-224d-42d3-96fb-b07e66c6ac78' as UUID, name: 'goncalo' },
-    { id: '196eeab1-3369-4563-b8df-2a88cc720e03' as UUID, name: 'andre' },
-    { id: '20eaf542-cb38-4ce3-9907-1e9fffee4ec5' as UUID, name: 'johannes' },
-  ]); // TODO: Fetch members
+  const [members, setMembers] = useState<UserSchema[]>([]);
 
   const [saleItems, setSaleItems] = useState<SaleItem[]>([]);
-  const [plants, setPlants] = useState<
-    { id: number; name: string; price: number }[]
-  >([
-    { id: 8, name: 'Ganza', price: 14 },
-    { id: 9, name: 'Placa', price: 22 },
-  ]);
-  const session = useSession();
+  const [strains, setStrains] = useState<StrainProps[]>([]);
+
+  // ------------------- Use Cases -------------------
 
   const createSaleAction = useAction(createSaleUseCase, {
     onSuccess: (result) => {
@@ -74,6 +76,33 @@ export default function SaleForm() {
       console.log('Executing with data: ', input);
     },
   });
+
+  const fetchMembers = useAction(fetchMembersUseCase, {
+    onSuccess: (data) => {
+      // Sort members by full name
+      data.members.sort((a, b) => {
+        const aFullName = a.firstName + ' ' + a.lastName;
+        const bFullName = b.firstName + ' ' + b.lastName;
+        return aFullName.localeCompare(bFullName);
+      });
+      setMembers((prev) => data.members);
+    },
+  });
+
+  const fetchStrains = useAction(fetchStrainsUseCase, {
+    onSuccess: (data) => {
+      const parsedStrains: StrainProps[] = [];
+      data.strains.forEach((strain) => {
+        const parse = getStrainsSchema.safeParse(strain);
+        if (parse.success) parsedStrains.push(parse.data);
+        else console.error('Error parsing strain: ', parse.error.errors);
+      });
+      console.log('parsedStrains', parsedStrains);
+      setStrains(() => parsedStrains);
+    },
+  });
+
+  // ------------------- Functions -------------------
 
   const addItemToSale = (sale: SaleItem) => {
     setSaleItems((prev) => [...prev, sale]);
@@ -108,6 +137,8 @@ export default function SaleForm() {
     backToSalesPage();
   };
 
+  // ------------------- Effects -------------------
+
   /*
    * Calculate the total price of the sale, whenever the sale items change
    * Whenever the total price of the sale changes, update the form value
@@ -119,8 +150,14 @@ export default function SaleForm() {
     );
 
     form.setValue('totalPrice', totalPrice.toString());
-    console.log('Sale Items: ', saleItems);
   }, [saleItems]);
+
+  useEffect(() => {
+    fetchMembers.execute({});
+    fetchStrains.execute({});
+  }, []);
+
+  // ------------------- Render -------------------
 
   const form = useForm<CreateSaleFormInput>({
     mode: 'onChange',
@@ -132,10 +169,10 @@ export default function SaleForm() {
       <SaleItemsTable
         saleItems={saleItems}
         deleteItem={deleteItemFromSale}
-        plants={plants}
+        strains={strains}
       />
       <div className="mb-2 flex justify-center">
-        <CreateSaleItemModal plants={plants} addItem={addItemToSale} />
+        <CreateSaleItemModal strains={strains} addItem={addItemToSale} />
       </div>
       <Form {...form}>
         <form className="grid gap-2 sm:grid-cols-2 md:gap-4">
@@ -154,7 +191,7 @@ export default function SaleForm() {
                   <SelectContent>
                     {members.map((member, index) => (
                       <SelectItem key={index} value={member.id}>
-                        {member.name}
+                        {member.firstName + ' ' + member.lastName}
                       </SelectItem>
                     ))}
                   </SelectContent>

@@ -14,6 +14,10 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Metadata } from 'next';
+import { UserSchema } from '@/modules/members/data-access/schema';
+import { useEffect, useState } from 'react';
+import { useAction } from 'next-safe-action/hooks';
+import { fetchMembersUseCase } from '@/modules/members/use-cases';
 
 export default function SalesPage() {
   const metadata: Metadata = {

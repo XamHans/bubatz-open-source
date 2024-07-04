@@ -26,14 +26,15 @@ import { useState } from 'react';
 import { UUID } from 'crypto';
 import { Button } from '@/components/ui/button';
 import { GenericModal } from '@/components/generic/GenericModal';
+import { StrainProps } from '@/modules/plants/data-access/schema';
 
 interface CreateSaleItemModalProps {
-  plants: { id: number; name: string; price: number }[];
+  strains: StrainProps[];
   addItem: (item: SaleItem) => void;
 }
 
 export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
-  const { plants } = props;
+  const { strains: plants } = props;
 
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState<{ field: string; message: string }[]>(
@@ -59,13 +60,13 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
   };
 
   const getPlantNameFromId = (id: number): string => {
-    const plant = plants.find((plant) => plant.id === id);
-    return plant?.name as UUID;
+    const plant = plants.find((plant) => plant.id == id);
+    return plant?.name || '';
   };
 
   const getPlantPriceFromId = (id: number): number => {
-    const plant = plants.find((p) => p.id === id);
-    return plant?.price || -1;
+    const plant = plants.find((plant) => plant.id == id);
+    return plant?.currentPricePerGram || -1;
   };
 
   /**
@@ -86,7 +87,7 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
         >
           <FormField
             control={form.control}
-            name="plantId"
+            name="strainId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Select Plant</FormLabel>
@@ -105,7 +106,7 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
                     </SelectTrigger>
                     <SelectContent>
                       {plants.map((plant, index) => (
-                        <SelectItem key={index} value={plant.id}>
+                        <SelectItem key={index} value={String(plant.id)}>
                           {plant.name}
                         </SelectItem>
                       ))}
@@ -125,7 +126,7 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
                   <FormLabel>Price</FormLabel>
                   <FormControl>
                     <Input
-                      disabled={form.getValues('plantId') === undefined}
+                      disabled={form.getValues('strainId') === undefined}
                       type="number"
                       {...field}
                       value={field.value}

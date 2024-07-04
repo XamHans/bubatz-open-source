@@ -75,6 +75,7 @@ export type AddMemberInput = z.infer<typeof addMemberInputSchema>;
 
 // Schema for selecting a user - can be used to validate API responses
 export const selectUserSchema = createSelectSchema(members);
+export const selectMultipleUsersSchema = z.array(selectUserSchema);
 export type UserSchema = z.infer<typeof selectUserSchema>;
 
 // Schema for updating a user

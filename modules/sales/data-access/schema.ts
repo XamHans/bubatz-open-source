@@ -39,7 +39,7 @@ export const salesItems = pgTable('sales_items', {
   id: serial('id').primaryKey(),
   weightGrams: real('weight_grams').notNull(),
   price: real('price').notNull(),
-  plantId: integer('plant_id')
+  strainId: integer('strain_id')
     .notNull()
     .references(() => plants.id),
   saleId: integer('sale_id')
@@ -68,7 +68,7 @@ export const salesItemsRelations = relations(salesItems, ({ one }) => ({
     references: [sales.id],
   }),
   plant: one(plants, {
-    fields: [salesItems.plantId],
+    fields: [salesItems.strainId],
     references: [plants.id],
   }),
 }));
@@ -83,7 +83,7 @@ export const salesItemsRelations = relations(salesItems, ({ one }) => ({
 export const SaleItemInsertSchema = createInsertSchema(salesItems, {
   weightGrams: z.coerce.number().positive().min(0),
   price: z.coerce.number().positive().min(0),
-  plantId: z.coerce.number().positive().min(0),
+  strainId: z.coerce.number().positive().min(0),
   saleId: (schema) => schema.saleId.optional(),
 });
 

@@ -37,37 +37,42 @@ import {
 import { EyeIcon, Trash } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { SaleItem } from '@/modules/sales/data-access/schema';
+import { StrainProps } from '@/modules/plants/data-access/schema';
 
 interface SaleItemsTableProps {
   saleItems: SaleItem[];
   deleteItem: (item: SaleItem) => void;
-  plants: { id: number; name: string; price: number }[];
+  strains: StrainProps[];
 }
 
 export default function SaleItemsTable(props: SaleItemsTableProps) {
-  const { saleItems, deleteItem, plants } = props;
+  const { saleItems, deleteItem, strains } = props;
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const router = useRouter();
 
-  const getItemSalesTableColumns = (
-    router: AppRouterInstance,
-    { deleteItem, plants }: Omit<SaleItemsTableProps, 'saleItems'>,
-  ) => {
+  const getItemSalesTableColumns = (router: AppRouterInstance) => {
     return [
       {
-        id: 'plantId',
-        header: <div className="text-s justify-start font-semibold">PLANT</div>,
+        accessorKey: 'strainId',
+        accessorFn: (item: SaleItem) => item.strainId,
+        header: (
+          <div className="text-s justify-start font-semibold">STRAIN</div>
+        ),
         cell: ({ row }) => (
           <div className="text-s justify-start">
-            {plants.find((plant) => plant.id === row.original.plantId)?.name}
+            {
+              strains.find((plant) => plant.id == row.getValue('strainId'))
+                ?.name
+            }
           </div>
         ),
       },
       {
-        id: 'weightGrams',
+        accessorKey: 'weightGrams',
+        accessorFn: (item: SaleItem) => item.weightGrams,
         header: (
           <div className="text-s justify-start font-semibold">WEIGHT</div>
         ),
@@ -78,16 +83,18 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
         ),
       },
       {
-        id: 'price',
+        accessorKey: 'price',
+        accessorFn: (item: SaleItem) => item.price,
         header: (
-          <div className="text-s justify-start font-semibold">PLANT PRICE</div>
+          <div className="text-s justify-start font-semibold">GRAM PRICE</div>
         ),
         cell: ({ row }) => (
           <div className="text-s justify-start">{row.original.price} €</div>
         ),
       },
       {
-        id: 'totalPrice',
+        accessorKey: 'totalPrice',
+        accessorFn: (item: SaleItem) => item.price * item.weightGrams,
         header: (
           <div className="text-s justify-start font-semibold">TOTAL PRICE</div>
         ),
@@ -99,7 +106,6 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
       },
       {
         id: 'actions',
-        enableHiding: false,
         header: (
           <div className="text-s justify-start font-semibold">ACTIONS</div>
         ),
@@ -132,7 +138,7 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
 
   const table = useReactTable({
     data: saleItems,
-    columns: getItemSalesTableColumns(router, props),
+    columns: getItemSalesTableColumns(router),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
