@@ -223,6 +223,18 @@ const AddMemberModal: React.FC<AddMemberModalProps> = () => {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="legal"
+          render={({field}) => (
+            <FormItem>
+              <FormControl>
+                <Input type="checkbox" {...field} value={field.value?.toString()} />
+                Check if you're over the age of 18
+              </FormControl>
+            </FormItem>
+          )}
+         />
 
         <Button
           type="submit"

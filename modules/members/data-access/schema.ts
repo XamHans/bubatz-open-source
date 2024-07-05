@@ -35,6 +35,7 @@ export const members = pgTable('members', {
   zip: text('zip').notNull(),
   //club info
   status: text('status').notNull().default('PENDING'),
+  legal: boolean('legal').notNull().default(false),
   // isAdmin: boolean('is_admin').notNull().default(false),
   role: userRoleEnum('role').notNull().default('USER'),
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
