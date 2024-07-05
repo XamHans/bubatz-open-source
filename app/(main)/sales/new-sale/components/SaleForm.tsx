@@ -171,7 +171,7 @@ export default function SaleForm() {
         deleteItem={deleteItemFromSale}
         strains={strains}
       />
-      <div className="mb-2 flex justify-center">
+      <div className="mb-3 mt-2 flex justify-center">
         <CreateSaleItemModal strains={strains} addItem={addItemToSale} />
       </div>
       <Form {...form}>
@@ -191,7 +191,7 @@ export default function SaleForm() {
                   <SelectContent>
                     {members.map((member, index) => (
                       <SelectItem key={index} value={member.id}>
-                        {member.firstName + ' ' + member.lastName}
+                        {member.fullName}
                       </SelectItem>
                     ))}
                   </SelectContent>

@@ -22,6 +22,9 @@ export const members = pgTable('members', {
   // general info
   firstName: text('first_name').notNull(),
   lastName: text('last_name').notNull(),
+  fullName: text('full_name')
+    .notNull()
+    .default(sql`first_name || ' ' || last_name`),
   username: text('username').unique(),
   birthday: date('birthday')
     .notNull()

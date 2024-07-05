@@ -81,7 +81,7 @@ const SaleDetailPage = () => {
 
   const getMemberById = (id: UUID) => {
     const member = members.find((member) => member.id == id);
-    return member ? member.firstName + ' ' + member.lastName : 'Unknown';
+    return member;
   };
 
   const [sale, setSale] = useState<Sale>({
@@ -137,7 +137,9 @@ const SaleDetailPage = () => {
                 <Select disabled>
                   <SelectTrigger>
                     <SelectValue
-                      placeholder={getMemberById(sale.sale.userId as UUID)}
+                      placeholder={
+                        getMemberById(sale.sale.userId as UUID)?.fullName
+                      }
                     />
                   </SelectTrigger>
                   <SelectContent></SelectContent>
