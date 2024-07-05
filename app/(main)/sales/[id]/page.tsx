@@ -19,18 +19,69 @@ import GenericSelect from '@/components/generic/GenericSelect';
 import { UUID } from 'crypto';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import Breadcrumbs from '@/components/generic/BreadCrumbs';
+import { Metadata } from 'next';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { UserSchema } from '@/modules/members/data-access/schema';
+import { useAction } from 'next-safe-action/hooks';
+import { fetchMembersUseCase } from '@/modules/members/use-cases';
+import { fetchStrainsUseCase } from '@/modules/plants/use-cases';
+import {
+  StrainProps,
+  getStrainsSchema,
+} from '@/modules/plants/data-access/schema';
 
 const SaleDetailPage = () => {
   const params = useParams<{ id: string }>();
 
-  const [members, setMembers] = useState<{ id: UUID; name: string }[]>([
-    { id: '0d40439d-224d-42d3-96fb-b07e66c6ac78' as UUID, name: 'goncalo' },
-    { id: '196eeab1-3369-4563-b8df-2a88cc720e03' as UUID, name: 'andre' },
-    { id: '20eaf542-cb38-4ce3-9907-1e9fffee4ec5' as UUID, name: 'johannes' },
-  ]); // TODO: Fetch specific member of the sale
+  const metadata: Metadata = {
+    title: 'Sale #' + params.id,
+    description: 'Details of the sale.',
+  };
+
+  const [members, setMembers] = useState<UserSchema[]>([]);
+  const [strains, setStrains] = useState<StrainProps[]>([]);
+
+  const breadcrumbs = [
+    { label: 'Dashboard', href: '/dashboard' },
+    { label: 'Sales', href: '/sales' },
+    { label: 'Sale details' },
+  ];
+
+  const fetchMembers = useAction(fetchMembersUseCase, {
+    onSuccess: (data) => {
+      // Sort members by full name
+      data.members.sort((a, b) => {
+        const aFullName = a.firstName + ' ' + a.lastName;
+        const bFullName = b.firstName + ' ' + b.lastName;
+        return aFullName.localeCompare(bFullName);
+      });
+      setMembers((prev) => data.members);
+    },
+  });
+
+  const fetchStrains = useAction(fetchStrainsUseCase, {
+    onSuccess: (data) => {
+      const parsedStrains: StrainProps[] = [];
+      data.strains.forEach((strain) => {
+        const parse = getStrainsSchema.safeParse(strain);
+        if (parse.success) parsedStrains.push(parse.data);
+        else console.error('Error parsing strain: ', parse.error.errors);
+      });
+      console.log('parsedStrains', parsedStrains);
+      setStrains(() => parsedStrains);
+    },
+  });
 
   const getMemberById = (id: UUID) => {
-    return members.find((member) => member.id === id)?.name;
+    const member = members.find((member) => member.id == id);
+    return member;
   };
 
   const [sale, setSale] = useState<Sale>({
@@ -54,36 +105,64 @@ const SaleDetailPage = () => {
       setSale(result);
       console.log('sale', result);
     });
+
+    fetchMembers.execute({});
+    fetchStrains.execute({});
   }, []);
 
   return (
-    <Container>
-      <div className="h-full w-full flex-1 flex-col space-y-12 md:flex ">
-        <SaleGeneralInfo
-          plants={[
-            { id: 8, name: 'Ganza', price: 14 },
-            { id: 9, name: 'Placa', price: 22 },
-          ]}
-          sale={sale}
-        />
-        <Select disabled>
-          <SelectTrigger>
-            <SelectValue
-              placeholder={getMemberById(sale.sale.userId as UUID)}
-            />
-          </SelectTrigger>
-          <SelectContent></SelectContent>
-        </Select>
-        <Select disabled>
-          <SelectTrigger>
-            <SelectValue placeholder={sale.sale.paidVia} />
-          </SelectTrigger>
-          <SelectContent></SelectContent>
-        </Select>
-        <Label>Price</Label>
-        <Input disabled value={sale.sale.totalPrice} />
-      </div>
-    </Container>
+    <>
+      <Breadcrumbs items={breadcrumbs} />
+      <Container>
+        <Card>
+          <CardHeader className="px-7">
+            <CardTitle>
+              {metadata.title
+                ? metadata.title.toString()
+                : 'Error getting title'}
+            </CardTitle>
+            <CardDescription>
+              {metadata.description
+                ? metadata.description.toString()
+                : 'Error getting description'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="mb-2 flex justify-center">
+              <SaleGeneralInfo plants={strains} sale={sale} />
+            </div>
+            <div className="grid gap-2 sm:grid-cols-2 md:gap-4">
+              <div>
+                <Label>Member</Label>
+                <Select disabled>
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder={
+                        getMemberById(sale.sale.userId as UUID)?.fullName
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent></SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Paid Via</Label>
+                <Select disabled>
+                  <SelectTrigger>
+                    <SelectValue placeholder={sale.sale.paidVia} />
+                  </SelectTrigger>
+                  <SelectContent></SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Price</Label>
+                <Input disabled value={sale.sale.totalPrice} />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </Container>
+    </>
   );
 };
 

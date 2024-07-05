@@ -66,6 +66,11 @@ const getPlants = async () => {
   return allPlants;
 };
 
+export const getStrains = async () => {
+  const allStrains = await db.select().from(strains);
+  return allStrains;
+};
+
 export const getPlantsByBatchId = async (batchId: string) => {
   return await db.select().from(plants).where(eq(plants.batchId, batchId));
 };

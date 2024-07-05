@@ -14,6 +14,7 @@ import {
   getBatches,
   getPlants,
   getPlantsByBatchId,
+  getStrains,
   updateBatch,
   updatePlant,
 } from '../data-access';
@@ -165,3 +166,10 @@ export const updatePlantUseCase = action(
     return { success: 'Plant updated successfully' };
   },
 );
+
+// -------------- Strains
+
+export const fetchStrainsUseCase = action({}, async () => {
+  const strains = await getStrains();
+  return { strains };
+});

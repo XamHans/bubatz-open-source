@@ -20,6 +20,7 @@ import {
 import { getMemberDetail } from '@/modules/members/data-access';
 import { UserSchema } from '@/modules/members/data-access/schema';
 import { MemberProps } from '@/modules/members/types';
+import { fetchMembersUseCase } from '@/modules/members/use-cases';
 import { SaleWithoutItems } from '@/modules/sales/data-access/schema';
 import { fetchSalesUseCase } from '@/modules/sales/use-cases';
 import {
@@ -46,7 +47,9 @@ import { useAction } from 'next-safe-action/hooks';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+type SaleTableData = SaleWithoutItems & { userName: string };
 
 const getSaleTableColumns = (router: AppRouterInstance) => {
   return [
@@ -73,7 +76,7 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
     {
       accessorKey: 'totalPrice',
       accessorFn: (row) => {
-        return row.totalPrice;
+        return <div className="capitalize">{row.totalPrice}</div>;
       },
       header: ({ column }) => {
         return (
@@ -113,9 +116,9 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
       },
     },
     {
-      accessorKey: 'name',
+      accessorKey: 'userName',
       accessorFn: (row) => {
-        return row.firstName + ' ' + row.lastName;
+        return row.userName;
       },
       header: ({ column }) => {
         return (
@@ -130,7 +133,7 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
         );
       },
       cell: ({ row }) => {
-        return <div className="capitalize">{row.getValue('name')}</div>;
+        return <div className="capitalize">{row.getValue('userName')}</div>;
       },
     },
     {
@@ -178,7 +181,7 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
                   <TooltipContent align="end">
                     <Badge className="bg-inherit text-black hover:bg-inherit">
                       {' '}
-                      {t('member:ACTIONS.DETAIL')} Edit
+                      {t('member:ACTIONS.DETAIL')} Details
                     </Badge>
                   </TooltipContent>
                 </Tooltip>
@@ -199,17 +202,18 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
   ];
 };
 
-export default function MemberTable() {
-  const [sales, setSales] = React.useState<SaleWithoutItems[]>([]);
-  const [users, setUsers] = React.useState<UserSchema[]>([]);
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+export default function SalesTable() {
+  const [sales, setSales] = useState<SaleWithoutItems[]>([]);
+  const [members, setMembers] = useState<UserSchema[]>([]);
+  const [parsedSalesData, setParsedSalesData] = useState<SaleTableData[]>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const router = useRouter();
 
   const table = useReactTable({
-    data: sales,
+    data: parsedSalesData,
     columns: getSaleTableColumns(router),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -227,15 +231,41 @@ export default function MemberTable() {
     },
   });
 
+  // ------------------- Use Cases -------------------
+
   const fetchSales = useAction(fetchSalesUseCase, {
     onSuccess: (data) => {
       setSales(data.sales);
     },
   });
 
-  React.useEffect(() => {
+  const fetchMembers = useAction(fetchMembersUseCase, {
+    onSuccess: (data) => {
+      setMembers((prev) => data.members);
+      console.log('data', members);
+    },
+  });
+
+  // ------------------- Effects -------------------
+
+  useEffect(() => {
     fetchSales.execute({});
+    fetchMembers.execute({});
   }, []);
+
+  useEffect(() => {
+    const parsedData = sales.map((sale) => {
+      const member = members.find((member) => member.id == sale.userId);
+      return {
+        ...sale,
+        userName: member?.firstName + ' ' + member?.lastName,
+      };
+    });
+    console.log('parsedData', parsedData);
+    setParsedSalesData(parsedData);
+  }, [sales, members]);
+
+  // ------------------- Render -------------------
 
   //  const {t} = await initializeI18nClient('en')
 

@@ -20,7 +20,6 @@ import { AsyncReturnType } from '@/lib/types';
  */
 export const getSales = async () => {
   const allSales: SaleWithoutItems[] = await db.select().from(sales);
-  console.log('allsales', allSales);
   return allSales;
 };
 
@@ -43,16 +42,14 @@ export type GetSaleWithoutItemsQueryData = AsyncReturnType<
   typeof getSaleWithoutItemsById
 >;
 
-export const getSaleById = async (
-  id: number,
-): Promise<Sale> => {
+export const getSaleById = async (id: number): Promise<Sale> => {
   const sale: SaleWithoutItems[] = await db
     .select()
     .from(sales)
     .where(eq(sales.id, id));
   console.log('sale', sale);
   const items = await getSaleItemsBySaleId(id);
-  return {sale: sale[0], items: items};
+  return { sale: sale[0], items: items };
 };
 
 export type GetSaleDetailQueryData = AsyncReturnType<

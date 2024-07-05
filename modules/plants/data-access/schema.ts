@@ -1,4 +1,3 @@
-import { transactions } from '@/modules/sales/data-access/schema';
 import { sql } from 'drizzle-orm';
 import {
   date,
@@ -15,6 +14,7 @@ import { relations } from 'drizzle-orm/relations';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { growPhasesSchema } from './grow-phases-schema';
+import { scheduler } from 'timers/promises';
 
 const defaultSeedToSale = {
   seed: {
@@ -100,6 +100,7 @@ export const strains = pgTable('strains', {
   description: text('description'),
   thc: numeric('thc').notNull(),
   cbd: numeric('cbd').notNull(),
+  currentPricePerGram: numeric('current_price_per_gram').notNull(),
 });
 
 export const strainsRelation = relations(batches, ({ one }) => ({
@@ -113,9 +114,9 @@ export const batchesRelations = relations(batches, ({ many }) => ({
   plants: many(plants),
 }));
 
-export const plantsRelations = relations(plants, ({ many }) => ({
-  transactions: many(transactions),
-}));
+// export const plantsRelations = relations(plants, ({ many }) => ({
+//   transactions: many(transactions),
+// }));
 
 export const createBatchInputSchema = createInsertSchema(batches, {
   name: z.string().min(1),
@@ -166,7 +167,10 @@ export const deletePlantInputSchema = createPlantInputSchema.pick({
 
 export const getBatchesSchema = createSelectSchema(batches);
 export const getPlantsSchema = createSelectSchema(plants);
-export const getStrainsSchema = createSelectSchema(strains);
+export const getStrainsSchema = createSelectSchema(strains, {
+  id: z.coerce.number(),
+  currentPricePerGram: z.coerce.number(),
+});
 
 export type CreateBatchInput = z.infer<typeof createBatchInputSchema>;
 export type BatchProps = z.infer<typeof getBatchesSchema>;

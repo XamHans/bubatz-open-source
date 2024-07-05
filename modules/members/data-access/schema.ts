@@ -22,6 +22,9 @@ export const members = pgTable('members', {
   // general info
   firstName: text('first_name').notNull(),
   lastName: text('last_name').notNull(),
+  fullName: text('full_name')
+    .notNull()
+    .default(sql`first_name || ' ' || last_name`),
   username: text('username').unique(),
   birthday: date('birthday')
     .notNull()
@@ -75,6 +78,7 @@ export type AddMemberInput = z.infer<typeof addMemberInputSchema>;
 
 // Schema for selecting a user - can be used to validate API responses
 export const selectUserSchema = createSelectSchema(members);
+export const selectMultipleUsersSchema = z.array(selectUserSchema);
 export type UserSchema = z.infer<typeof selectUserSchema>;
 
 // Schema for updating a user
