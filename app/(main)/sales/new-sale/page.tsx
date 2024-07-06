@@ -1,7 +1,7 @@
+'use client';
+
 import { SessionProvider } from 'next-auth/react';
-import SaleItemsTable from './components/SaleItemsTable';
 import { Container } from '@/components/generic/Container';
-import { Hero } from '@/components/generic/Hero';
 import { auth } from '@/auth';
 import SaleForm from './components/SaleForm';
 import Breadcrumbs from '@/components/generic/BreadCrumbs';
@@ -13,9 +13,64 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { createContext, useEffect, useState } from 'react';
+import { UserSchema } from '@/modules/members/data-access/schema';
+import { useAction } from 'next-safe-action/hooks';
+import { fetchMembersUseCase } from '@/modules/members/use-cases';
+import { fetchStrainsUseCase } from '@/modules/plants/use-cases';
+import {
+  StrainProps,
+  getStrainsSchema,
+} from '@/modules/plants/data-access/schema';
 
-export default async function NewSalePage() {
-  const session = await auth();
+export const NewSaleContext = createContext<{
+  members: UserSchema[];
+  strains: StrainProps[];
+  isFetching: boolean;
+}>({ members: [], strains: [], isFetching: true });
+
+export default function NewSalePage() {
+  // ------ States ------
+  const [members, setMembers] = useState<UserSchema[]>([]);
+  const [strains, setStrains] = useState<StrainProps[]>([]);
+  const [isFetching, setIsFetching] = useState<boolean>(true);
+
+  // ------ Use cases -----
+  const fetchMembers = useAction(fetchMembersUseCase, {
+    onSuccess: (data) => {
+      // Sort members by full name
+      data.members.sort((a, b) => {
+        return a.fullName.localeCompare(b.fullName);
+      });
+      setMembers((prev) => data.members);
+    },
+  });
+
+  const fetchStrains = useAction(fetchStrainsUseCase, {
+    onSuccess: (data) => {
+      const parsedStrains: StrainProps[] = [];
+      data.strains.forEach((strain) => {
+        const parse = getStrainsSchema.safeParse(strain);
+        if (parse.success) parsedStrains.push(parse.data);
+        else console.error('Error parsing strain: ', parse.error.errors);
+      });
+      console.log('parsedStrains', parsedStrains);
+      setStrains(() => parsedStrains);
+    },
+  });
+
+  // ------ Effects -----
+
+  // Fetch necessary data
+  useEffect(() => {
+    fetchMembers.execute({});
+    fetchStrains.execute({});
+  }, []);
+
+  // When all is fetched, set fetching to false
+  useEffect(() => {
+    if (members && strains) setIsFetching(() => false);
+  }, [members, strains]);
 
   const metadata: Metadata = {
     title: 'Create New Sale',
@@ -30,7 +85,7 @@ export default async function NewSalePage() {
   ];
 
   return (
-    <SessionProvider session={session}>
+    <NewSaleContext.Provider value={{ members, strains, isFetching }}>
       <Breadcrumbs items={breadcrumbs} />
       <Container className="space-y-4">
         <Card>
@@ -51,13 +106,6 @@ export default async function NewSalePage() {
           </CardContent>
         </Card>
       </Container>
-      {/* <Container className="space-y-12">
-        <Hero
-          title="Create a new sale"
-          description="Fill in the details to create a new sale."
-        />
-        <SaleForm />
-      </Container> */}
-    </SessionProvider>
+    </NewSaleContext.Provider>
   );
 }

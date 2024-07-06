@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import SaleItemsTable from './SaleItemsTable';
 import CreateSaleItemModal from './CreateSaleItemModal';
 import {
@@ -13,8 +13,6 @@ import {
   SaleWithItems,
 } from '@/modules/sales/data-access/schema';
 import { PaymentMethodsEnum } from '@/modules/sales/data-access/schema';
-import { useSession } from 'next-auth/react';
-import { UUID } from 'crypto';
 import {
   Form,
   FormControl,
@@ -34,34 +32,21 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { createSaleUseCase, fetchSaleUseCase } from '@/modules/sales/use-cases';
+import { createSaleUseCase } from '@/modules/sales/use-cases';
 import { useAction } from 'next-safe-action/hooks';
-import { redirect } from 'next/navigation';
-import configuration from '@/app/configuration';
 import { backToSalesPage } from '@/actions/sales';
-import { Ban, PackageCheck, Trash2 } from 'lucide-react';
-import { fetchMembersUseCase } from '@/modules/members/use-cases';
-import { UserSchema } from '@/modules/members/data-access/schema';
-import {
-  fetchPlantsUseCase,
-  fetchStrainsUseCase,
-} from '@/modules/plants/use-cases';
-import {
-  StrainProps,
-  getStrainsSchema,
-} from '@/modules/plants/data-access/schema';
+import { Ban, Loader2Icon, PackageCheck } from 'lucide-react';
+import { NewSaleContext } from '../page';
 
 export default function SaleForm() {
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethodsType[]>([
+  // ------------------- States -------------------
+  const [paymentMethods] = useState<PaymentMethodsType[]>([
     PaymentMethodsEnum.enum.CASH,
     PaymentMethodsEnum.enum.CARD,
     PaymentMethodsEnum.enum.WALLET,
   ]);
 
-  const [members, setMembers] = useState<UserSchema[]>([]);
-
   const [saleItems, setSaleItems] = useState<SaleItem[]>([]);
-  const [strains, setStrains] = useState<StrainProps[]>([]);
 
   // ------------------- Use Cases -------------------
 
@@ -74,31 +59,6 @@ export default function SaleForm() {
     },
     onExecute: (input) => {
       console.log('Executing with data: ', input);
-    },
-  });
-
-  const fetchMembers = useAction(fetchMembersUseCase, {
-    onSuccess: (data) => {
-      // Sort members by full name
-      data.members.sort((a, b) => {
-        const aFullName = a.firstName + ' ' + a.lastName;
-        const bFullName = b.firstName + ' ' + b.lastName;
-        return aFullName.localeCompare(bFullName);
-      });
-      setMembers((prev) => data.members);
-    },
-  });
-
-  const fetchStrains = useAction(fetchStrainsUseCase, {
-    onSuccess: (data) => {
-      const parsedStrains: StrainProps[] = [];
-      data.strains.forEach((strain) => {
-        const parse = getStrainsSchema.safeParse(strain);
-        if (parse.success) parsedStrains.push(parse.data);
-        else console.error('Error parsing strain: ', parse.error.errors);
-      });
-      console.log('parsedStrains', parsedStrains);
-      setStrains(() => parsedStrains);
     },
   });
 
@@ -152,10 +112,10 @@ export default function SaleForm() {
     form.setValue('totalPrice', totalPrice.toString());
   }, [saleItems]);
 
-  useEffect(() => {
-    fetchMembers.execute({});
-    fetchStrains.execute({});
-  }, []);
+  // useEffect(() => {
+  //   fetchMembers.execute({});
+  //   fetchStrains.execute({});
+  // }, []);
 
   // ------------------- Render -------------------
 
@@ -164,88 +124,99 @@ export default function SaleForm() {
     resolver: zodResolver(createSaleFormInputSchema),
   });
 
+  let { members, strains, isFetching } = useContext(NewSaleContext);
+
   return (
     <>
-      <SaleItemsTable
-        saleItems={saleItems}
-        deleteItem={deleteItemFromSale}
-        strains={strains}
-      />
-      <div className="mb-3 mt-2 flex justify-center">
-        <CreateSaleItemModal strains={strains} addItem={addItemToSale} />
-      </div>
-      <Form {...form}>
-        <form className="grid gap-2 sm:grid-cols-2 md:gap-4">
-          <FormField
-            control={form.control}
-            name="userId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Member</FormLabel>
-                <Select onValueChange={field.onChange}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select member" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {members.map((member, index) => (
-                      <SelectItem key={index} value={member.id}>
-                        {member.fullName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormItem>
-            )}
+      {isFetching ? (
+        <Loader2Icon />
+      ) : (
+        <>
+          <SaleItemsTable
+            saleItems={saleItems}
+            deleteItem={deleteItemFromSale}
+            strains={strains}
           />
-          <FormField
-            control={form.control}
-            name="paidVia"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Paid Via</FormLabel>
-                <Select onValueChange={field.onChange}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select payment method" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {paymentMethods.map((method, index) => (
-                      <SelectItem key={index} value={method}>
-                        {method}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="totalPrice"
-            render={({ field }) => {
-              return (
-                <FormItem>
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input disabled {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-          <div></div>
-          <Button type="button" onClick={() => createNewSale(form.getValues())}>
-            <PackageCheck /> &nbsp; Create sale
-          </Button>
-          <Button type="button" onClick={handleAbort}>
-            <Ban /> &nbsp; Abort
-          </Button>
-        </form>
-      </Form>
+          <div className="mb-3 mt-2 flex justify-center">
+            <CreateSaleItemModal strains={strains} addItem={addItemToSale} />
+          </div>
+          <Form {...form}>
+            <form className="grid gap-2 sm:grid-cols-2 md:gap-4">
+              <FormField
+                control={form.control}
+                name="userId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Member</FormLabel>
+                    <Select onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select member" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {members.map((member, index) => (
+                          <SelectItem key={index} value={member.id}>
+                            {member.fullName}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="paidVia"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Paid Via</FormLabel>
+                    <Select onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select payment method" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {paymentMethods.map((method, index) => (
+                          <SelectItem key={index} value={method}>
+                            {method}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="totalPrice"
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel>Price</FormLabel>
+                      <FormControl>
+                        <Input disabled {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+              <div></div>
+              <Button
+                type="button"
+                onClick={() => createNewSale(form.getValues())}
+              >
+                <PackageCheck /> &nbsp; Create sale
+              </Button>
+              <Button type="button" onClick={handleAbort}>
+                <Ban /> &nbsp; Abort
+              </Button>
+            </form>
+          </Form>
+        </>
+      )}
     </>
   );
 }
