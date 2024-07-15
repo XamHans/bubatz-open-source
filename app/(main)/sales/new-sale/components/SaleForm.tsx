@@ -37,8 +37,12 @@ import { useAction } from 'next-safe-action/hooks';
 import { backToSalesPage } from '@/actions/sales';
 import { Ban, Loader2Icon, PackageCheck } from 'lucide-react';
 import { NewSaleContext } from '../page';
+import { useSession } from 'next-auth/react';
 
 export default function SaleForm() {
+  const { data: session } = useSession(); // get the client session
+  const { members, strains, isFetching } = useContext(NewSaleContext);
+
   // ------------------- States -------------------
   const [paymentMethods] = useState<PaymentMethodsType[]>([
     PaymentMethodsEnum.enum.CASH,
@@ -74,10 +78,13 @@ export default function SaleForm() {
 
   const createNewSale = (saleForm: CreateSaleFormInput) => {
     console.log('Creating new sale with form: ', saleForm);
+
+    if (!session) return console.error('No session found');
+
     const parsedForm: CreateSaleInput = {
       ...saleForm,
       totalPrice: parseFloat(saleForm.totalPrice),
-      salesById: 'a5ebbad9-43e5-4cc8-ac94-fcd563c5aa51', // ! CHANGE TO FETCH THE CURREND USER LOGGED IN!!!!!!!!
+      salesById: session.user.id || '',
     };
 
     const parse = createSaleInputSchema.safeParse(parsedForm);
@@ -123,8 +130,6 @@ export default function SaleForm() {
     mode: 'onChange',
     resolver: zodResolver(createSaleFormInputSchema),
   });
-
-  let { members, strains, isFetching } = useContext(NewSaleContext);
 
   return (
     <>

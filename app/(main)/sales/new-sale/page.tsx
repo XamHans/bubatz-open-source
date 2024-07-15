@@ -85,27 +85,29 @@ export default function NewSalePage() {
   ];
 
   return (
-    <NewSaleContext.Provider value={{ members, strains, isFetching }}>
-      <Breadcrumbs items={breadcrumbs} />
-      <Container className="space-y-4">
-        <Card>
-          <CardHeader className="px-7">
-            <CardTitle>
-              {metadata.title
-                ? metadata.title.toString()
-                : 'Error getting title'}
-            </CardTitle>
-            <CardDescription>
-              {metadata.description
-                ? metadata.description.toString()
-                : 'Error getting description'}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <SaleForm />
-          </CardContent>
-        </Card>
-      </Container>
-    </NewSaleContext.Provider>
+    <SessionProvider>
+      <NewSaleContext.Provider value={{ members, strains, isFetching }}>
+        <Breadcrumbs items={breadcrumbs} />
+        <Container className="space-y-4">
+          <Card>
+            <CardHeader className="px-7">
+              <CardTitle>
+                {metadata.title
+                  ? metadata.title.toString()
+                  : 'Error getting title'}
+              </CardTitle>
+              <CardDescription>
+                {metadata.description
+                  ? metadata.description.toString()
+                  : 'Error getting description'}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <SaleForm />
+            </CardContent>
+          </Card>
+        </Container>
+      </NewSaleContext.Provider>
+    </SessionProvider>
   );
 }

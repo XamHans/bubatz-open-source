@@ -17,12 +17,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from '@/components/ui/tooltip';
-import { getMemberDetail } from '@/modules/members/data-access';
-import { UserSchema } from '@/modules/members/data-access/schema';
-import { MemberProps } from '@/modules/members/types';
-import { fetchMembersUseCase } from '@/modules/members/use-cases';
 import { SaleWithoutItems } from '@/modules/sales/data-access/schema';
-import { fetchSalesUseCase } from '@/modules/sales/use-cases';
 import {
   ColumnFiltersState,
   SortingState,
@@ -36,18 +31,19 @@ import {
 } from '@tanstack/react-table';
 import { t } from 'i18next';
 import {
-  ArrowLeft,
   ArrowLeftIcon,
-  ArrowRight,
   ArrowRightIcon,
   ArrowUpDown,
   EyeIcon,
 } from 'lucide-react';
-import { useAction } from 'next-safe-action/hooks';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { useAction } from 'next-safe-action/hooks';
+import { fetchMembersUseCase } from '@/modules/members/use-cases';
+import { fetchSalesUseCase } from '@/modules/sales/use-cases';
+import { UserSchema } from '@/modules/members/data-access/schema';
 
 type SaleTableData = SaleWithoutItems & { userName: string };
 
@@ -203,8 +199,12 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
 };
 
 export default function SalesTable() {
-  const [sales, setSales] = useState<SaleWithoutItems[]>([]);
-  const [members, setMembers] = useState<UserSchema[]>([]);
+  // const { members, sales, isFetching } = React.useContext(SalesContext);
+
+  const [members, setMembers] = useState<UserSchema[]>();
+  const [sales, setSales] = useState<SaleWithoutItems[]>();
+  const [isFetching, setIsFetching] = useState<boolean>(true);
+
   const [parsedSalesData, setParsedSalesData] = useState<SaleTableData[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -231,39 +231,45 @@ export default function SalesTable() {
     },
   });
 
-  // ------------------- Use Cases -------------------
-
-  const fetchSales = useAction(fetchSalesUseCase, {
+  // ------ Use cases -----
+  const fetchMembers = useAction(fetchMembersUseCase, {
     onSuccess: (data) => {
-      setSales(data.sales);
+      // Sort members by full name
+      data.members.sort((a, b) => {
+        return a.fullName.localeCompare(b.fullName);
+      });
+      setMembers((prev) => data.members);
     },
   });
 
-  const fetchMembers = useAction(fetchMembersUseCase, {
+  const fetchSales = useAction(fetchSalesUseCase, {
     onSuccess: (data) => {
-      setMembers((prev) => data.members);
-      console.log('data', members);
+      setSales(() => data.sales);
     },
   });
 
   // ------------------- Effects -------------------
 
   useEffect(() => {
-    fetchSales.execute({});
-    fetchMembers.execute({});
-  }, []);
+    if (!members || !sales) return;
 
-  useEffect(() => {
     const parsedData = sales.map((sale) => {
       const member = members.find((member) => member.id == sale.userId);
+      console.log('member', member);
       return {
         ...sale,
         userName: member?.firstName + ' ' + member?.lastName,
       };
     });
-    console.log('parsedData', parsedData);
-    setParsedSalesData(parsedData);
-  }, [sales, members]);
+    setParsedSalesData(() => parsedData);
+    setIsFetching(() => false);
+  }, [members, sales]);
+
+  // Fetch necessary data
+  useEffect(() => {
+    fetchMembers.execute({});
+    fetchSales.execute({});
+  }, []);
 
   // ------------------- Render -------------------
 
@@ -271,16 +277,6 @@ export default function SalesTable() {
 
   return (
     <div className="space-y-4 ">
-      {/* <div className="flex items-center space-x-2">
-        <Input
-          placeholder={t('member:ACTIONS.SEARCH') ?? ''}
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event) =>
-            table.getColumn('name')?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-      </div> */}
       <Table className="rounded-md bg-white">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
