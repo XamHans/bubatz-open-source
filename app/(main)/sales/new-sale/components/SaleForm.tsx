@@ -38,6 +38,12 @@ import { backToSalesPage } from '@/actions/sales';
 import { Ban, Loader2Icon, PackageCheck } from 'lucide-react';
 import { NewSaleContext } from '../page';
 import { useSession } from 'next-auth/react';
+import { Progress } from '@/components/ui/progress';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { set } from 'date-fns';
+import { toast } from '@/components/ui/use-toast';
+import { ToastAction } from '@/components/ui/toast';
 
 export default function SaleForm() {
   const { data: session } = useSession(); // get the client session
@@ -51,6 +57,8 @@ export default function SaleForm() {
   ]);
 
   const [saleItems, setSaleItems] = useState<SaleItem[]>([]);
+  const [currentGrams, setCurrentGrams] = useState<number>(0);
+  const [maxGramsPermitted, setMaxGramsPermitted] = useState<number>(25);
 
   // ------------------- Use Cases -------------------
 
@@ -78,6 +86,17 @@ export default function SaleForm() {
 
   const createNewSale = (saleForm: CreateSaleFormInput) => {
     console.log('Creating new sale with form: ', saleForm);
+
+    if (currentGrams >= maxGramsPermitted) {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description:
+          'You have reached the maximum/surpassed grams permitted for this sale.',
+        action: <ToastAction altText="Try again">Ok</ToastAction>,
+      });
+      return;
+    }
 
     if (!session) return console.error('No session found');
 
@@ -116,6 +135,13 @@ export default function SaleForm() {
       0,
     );
 
+    const grams = saleItems.reduce(
+      (grams, item) => grams + item.weightGrams,
+      0,
+    );
+
+    setCurrentGrams(() => grams);
+
     form.setValue('totalPrice', totalPrice.toString());
   }, [saleItems]);
 
@@ -142,9 +168,21 @@ export default function SaleForm() {
             deleteItem={deleteItemFromSale}
             strains={strains}
           />
+
+          <div className="mt-2 flex justify-center">
+            <Progress
+              className="w-6/12"
+              value={currentGrams}
+              max={maxGramsPermitted}
+            ></Progress>
+            <Label className="ml-2 rounded">
+              {currentGrams}/{maxGramsPermitted} grams
+            </Label>
+          </div>
           <div className="mb-3 mt-2 flex justify-center">
             <CreateSaleItemModal strains={strains} addItem={addItemToSale} />
           </div>
+          <Separator className="m-2" />
           <Form {...form}>
             <form className="grid gap-2 sm:grid-cols-2 md:gap-4">
               <FormField

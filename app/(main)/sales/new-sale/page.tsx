@@ -54,7 +54,6 @@ export default function NewSalePage() {
         if (parse.success) parsedStrains.push(parse.data);
         else console.error('Error parsing strain: ', parse.error.errors);
       });
-      console.log('parsedStrains', parsedStrains);
       setStrains(() => parsedStrains);
     },
   });
