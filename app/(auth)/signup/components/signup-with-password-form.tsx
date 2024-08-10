@@ -1,20 +1,18 @@
-"use client"
+'use client';
 
-import { signUpWithPassword } from "@/actions/auth"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
-import * as React from "react"
-import { useForm } from "react-hook-form"
+import { signUpWithPassword } from '@/actions/auth';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import * as React from 'react';
+import { useForm } from 'react-hook-form';
 
 import {
   signUpWithPasswordSchema,
   type SignUpWithPasswordFormInput,
-} from "@/validations/auth"
+} from '@/validations/auth';
 
-import { useToast } from "@/hooks/use-toast"
-
-import { Icons } from "@/components/generic/Icons"
-import { Button } from "@/components/ui/button"
+import { Icons } from '@/components/generic/Icons';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -22,24 +20,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { siteConfig } from "@/config/site"
-import { PasswordInput } from "./PasswordInput"
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/components/ui/use-toast';
+import { PasswordInput } from './password-input';
 
 export function SignUpWithPasswordForm(): JSX.Element {
-  const router = useRouter()
-  const { toast } = useToast()
-  const [isPending, startTransition] = React.useTransition()
+  const router = useRouter();
+  const { toast } = useToast();
+  const [isPending, startTransition] = React.useTransition();
 
   const form = useForm<SignUpWithPasswordFormInput>({
     resolver: zodResolver(signUpWithPasswordSchema),
     defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
+      email: '',
+      password: '',
+      confirmPassword: '',
     },
-  })
+  });
 
   function onSubmit(formData: SignUpWithPasswordFormInput): void {
     startTransition(async () => {
@@ -48,41 +46,41 @@ export function SignUpWithPasswordForm(): JSX.Element {
           email: formData.email,
           password: formData.password,
           confirmPassword: formData.confirmPassword,
-        })
+        });
 
         switch (message) {
-          case "exists":
+          case 'exists':
             toast({
-              title: "User with this email address already exists",
-              description: "If this is you, please sign in instead",
-              variant: "destructive",
-            })
-            form.reset()
-            break
-          case "success":
+              title: 'User with this email address already exists',
+              description: 'If this is you, please sign in instead',
+              variant: 'destructive',
+            });
+            form.reset();
+            break;
+          case 'success':
             toast({
-              title: "Success!",
-              description: "Check your inbox to verify your email address",
-            })
-            router.push(siteConfig.links.signIn)
-            break
+              title: 'Success!',
+              description: 'Check your inbox to verify your email address',
+            });
+            router.push('/signin');
+            break;
           default:
             toast({
-              title: "Something went wrong",
-              description: "Please try again",
-              variant: "destructive",
-            })
-            console.error(message)
+              title: 'Something went wrong',
+              description: 'Please try again',
+              variant: 'destructive',
+            });
+            console.error(message);
         }
       } catch (error) {
+        console.error(error);
         toast({
-          title: "Something went wrong",
-          description: "Please try again",
-          variant: "destructive",
-        })
-        console.error(error)
+          title: 'Something went wrong',
+          description: 'Please try again',
+          variant: 'destructive',
+        });
       }
-    })
+    });
   }
 
   return (
@@ -151,5 +149,5 @@ export function SignUpWithPasswordForm(): JSX.Element {
         </Button>
       </form>
     </Form>
-  )
+  );
 }

@@ -1,13 +1,13 @@
 import {
-    Body,
-    Button,
-    Container,
-    Head,
-    Html,
-    Preview,
-    Section,
-    Tailwind,
-    Text,
+  Body,
+  Button,
+  Container,
+  Head,
+  Html,
+  Preview,
+  Section,
+  Tailwind,
+  Text,
 } from "@react-email/components"
 
 import { siteConfig } from "@/config/site"

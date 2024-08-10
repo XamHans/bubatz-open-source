@@ -1,19 +1,13 @@
-import { Navbar } from "@/components/generic/Navbar";
+import * as React from 'react';
 
-type Props = {
+interface AuthLayoutProps {
   children: React.ReactNode;
-};
+}
 
-const AuthLayout = ({ children }: Props) => {
+export default function AuthLayout({ children }: AuthLayoutProps): JSX.Element {
   return (
-    <div className="flex min-h-screen flex-col">
-      <Navbar />
-      <main className="flex flex-1 flex-col items-center justify-center">
-        {children}
-      </main>
-      {/* <Footer /> */}
+    <div className="flex h-auto min-h-screen w-full items-center justify-center">
+      {children}
     </div>
   );
-};
-
-export default AuthLayout;
+}

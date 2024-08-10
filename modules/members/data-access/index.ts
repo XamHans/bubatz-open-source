@@ -3,7 +3,7 @@
 import { db } from '../../../lib/db/db';
 // import getLogger from '../../../lib/logger';
 import { eq } from 'drizzle-orm/sql/expressions/conditions';
-import { AsyncReturnType } from '../../../lib/types';
+import { AsyncReturnType } from '../../../global';
 import { AddMemberInput, UpdateMemberInput, members } from './schema';
 // const logger = getLogger();
 /**

@@ -8,9 +8,11 @@ import { eq } from 'drizzle-orm';
 import { AuthError } from 'next-auth';
 import { unstable_noStore as noStore } from 'next/cache';
 
-import { EmailVerificationEmail } from '@/components/email/email-verification-email';
+import { EmailVerificationEmail } from '@/components/emails/email-verification-email';
+import { ResetPasswordEmail } from '@/components/emails/reset-password-email';
 import { resend } from '@/config/email';
 import { db } from '@/lib/db/db';
+import { psLinkOAuthAccount } from '@/lib/db/prepared/statements';
 import { users } from '@/lib/db/schema';
 import {
   linkOAuthAccountSchema,

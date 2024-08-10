@@ -24,7 +24,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { siteConfig } from '@/config/site';
-import { PasswordInput } from './PasswordInput';
+import { PasswordInput } from '../../signup/components/password-input';
 
 export function SignInWithPasswordForm(): JSX.Element {
   const router = useRouter();

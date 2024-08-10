@@ -5,7 +5,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GitHubProvider from 'next-auth/providers/github';
 import ResendProvider from 'next-auth/providers/resend';
 
-import { MagicLinkEmail } from '@/components/email/magic-link-email';
+import { MagicLinkEmail } from '@/components/emails/magic-link-email';
 import { resend } from '@/config/email';
 import { siteConfig } from '@/config/site';
 import { signInWithPasswordSchema } from '@/validations/auth';

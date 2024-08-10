@@ -4,8 +4,10 @@ import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import NextAuth from 'next-auth';
 
 import authConfig from '@/config/auth';
+import { env } from '@/env.mjs';
 import { db } from '@/lib/db/db';
 import { UUID } from 'crypto';
+import { siteConfig } from './config/site';
 
 export const {
   handlers: { GET, POST },
@@ -15,11 +17,11 @@ export const {
 } = NextAuth({
   debug: process.env.NODE_ENV === 'development',
   pages: {
-    signIn: '/sign-in',
-    signOut: '/sign-out',
-    verifyRequest: '/sign-in/magic-link-signin',
+    signIn: siteConfig.links.signIn,
+    signOut: siteConfig.links.signOut,
+    verifyRequest: '/signin/magic-link-signin',
   },
-  secret: process.env.AUTH_SECRET,
+  secret: env.AUTH_SECRET,
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 daysd

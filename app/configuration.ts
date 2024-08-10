@@ -39,8 +39,8 @@ const configuration = {
   theme: Themes.Light,
 
   paths: {
-    signIn: '/auth/sign-in',
-    signUp: '/auth/sign-up',
+    signIn: '/signin',
+    signUp: '/signup',
     signInMfa: '/auth/verify',
     onboarding: `/onboarding`,
     appHome: '/dashboard',
