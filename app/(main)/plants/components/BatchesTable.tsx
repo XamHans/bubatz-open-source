@@ -1,6 +1,5 @@
 'use client';
 
-import configuration from '@/app/configuration';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,6 +16,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { siteConfig } from '@/config/site';
 import { fetchBatchesUseCase } from '@/modules/plants/use-cases';
 import {
   ColumnFiltersState,
@@ -143,7 +143,7 @@ const getBatchtesTableColumns = (router: AppRouterInstance) => {
               className="hover:bg-inherit"
               onClick={() => {
                 router.push(
-                  configuration.paths.plants.detail.replace(':id', plant.id),
+                  siteConfig.links.plants.detail.replace(':id', plant.id),
                 );
               }}
             >

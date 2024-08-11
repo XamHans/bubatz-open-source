@@ -21,8 +21,6 @@ async function MemberListPage() {
 
   const session = await auth();
   if (!session) redirect(siteConfig.links.signIn);
-  // const queryClient = new QueryClient()
-  console.log('session inside members', session);
 
   return (
     <SessionProvider session={session}>

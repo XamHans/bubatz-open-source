@@ -4,7 +4,25 @@ const links = {
   signIn: '/signin',
   signUp: '/signup',
   signOut: '/',
-  members: '/members',
+  members: {
+    index: '/members',
+    new: '/members/new',
+    detail: '/members/:id',
+  },
+  sales: {
+    index: '/sales',
+    new: '/sales/new',
+    detail: '/sales/:id',
+  },
+  plants: {
+    index: '/plants',
+    new: '/plants/new',
+    detail: '/plants/:id',
+    batches: {
+      index: '/plants/batches',
+      new: '/plants/batches/new',
+    },
+  },
 };
 
 export const siteConfig = {

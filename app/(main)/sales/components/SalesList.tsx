@@ -1,6 +1,5 @@
 'use client';
 
-import configuration from '@/app/configuration';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,6 +16,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { siteConfig } from '@/config/site';
 import { UserSchema } from '@/modules/members/data-access/schema';
 import { fetchMembersUseCase } from '@/modules/members/use-cases';
 import { SaleWithoutItems } from '@/modules/sales/data-access/schema';
@@ -164,7 +164,7 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
               className="transition-transform duration-200 hover:bg-inherit"
               onClick={() => {
                 router.push(
-                  configuration.paths.sales.detail.replace(':id', sale.id!),
+                  siteConfig.links.sales.detail.replace(':id', sale.id!),
                 );
               }}
             >
