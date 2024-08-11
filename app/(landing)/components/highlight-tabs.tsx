@@ -4,7 +4,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import type { TabsProps } from '@radix-ui/react-tabs';
 import React from 'react';
-import { SaasStarterkitHighlight } from './bubatz-highlight';
 
 const highlights = [
   {
@@ -26,7 +25,7 @@ const highlights = [
     id: 'guides',
     title: 'Guides',
     description:
-      'Authenticating users, setting up billing, and more — all the guides you need to launch your app.',
+      'Authenticating members, setting up billing, and more — all the guides you need to launch your app.',
     disabled: true,
     badge: 'Soon',
   },

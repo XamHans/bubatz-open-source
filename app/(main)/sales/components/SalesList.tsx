@@ -12,14 +12,12 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import {
-  TooltipProvider,
   Tooltip,
-  TooltipTrigger,
   TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { getMemberDetail } from '@/modules/members/data-access';
 import { UserSchema } from '@/modules/members/data-access/schema';
-import { MemberProps } from '@/modules/members/types';
 import { fetchMembersUseCase } from '@/modules/members/use-cases';
 import { SaleWithoutItems } from '@/modules/sales/data-access/schema';
 import { fetchSalesUseCase } from '@/modules/sales/use-cases';
@@ -36,9 +34,7 @@ import {
 } from '@tanstack/react-table';
 import { t } from 'i18next';
 import {
-  ArrowLeft,
   ArrowLeftIcon,
-  ArrowRight,
   ArrowRightIcon,
   ArrowUpDown,
   EyeIcon,
@@ -46,7 +42,6 @@ import {
 import { useAction } from 'next-safe-action/hooks';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
-import * as React from 'react';
 import { useEffect, useState } from 'react';
 
 type SaleTableData = SaleWithoutItems & { userName: string };
@@ -255,7 +250,7 @@ export default function SalesTable() {
 
   useEffect(() => {
     const parsedData = sales.map((sale) => {
-      const member = members.find((member) => member.id == sale.userId);
+      const member = members.find((member) => member.id == sale.memberId);
       return {
         ...sale,
         userName: member?.firstName + ' ' + member?.lastName,

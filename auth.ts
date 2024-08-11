@@ -8,6 +8,12 @@ import { env } from '@/env.mjs';
 import { db } from '@/lib/db/db';
 import { UUID } from 'crypto';
 import { siteConfig } from './config/site';
+import {
+  accounts,
+  sessions,
+  verificationTokens,
+} from './modules/auth/data-access/schema';
+import { members } from './modules/members/data-access/schema';
 
 export const {
   handlers: { GET, POST },
@@ -29,7 +35,7 @@ export const {
   },
   events: {
     async linkAccount({ user }) {
-      if (user.id) await linkOAuthAccount({ userId: user.id });
+      if (user.id) await linkOAuthAccount({ memberId: user.id });
     },
   },
   callbacks: {
@@ -51,9 +57,16 @@ export const {
       if (account?.provider !== 'credentials') return true;
 
       const existingUser = await getUserById({ id: user.id });
+
+      // return !existingUser?.emailVerified ? false : true;
       return !!existingUser;
     },
   },
-  adapter: DrizzleAdapter(db),
+  adapter: DrizzleAdapter(db, {
+    usersTable: members,
+    accountsTable: accounts,
+    sessionsTable: sessions,
+    verificationTokensTable: verificationTokens,
+  }),
   ...authConfig,
 });

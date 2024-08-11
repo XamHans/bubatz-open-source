@@ -1,10 +1,10 @@
+import { protectedSchema } from '@/modules/members/data-access/schema';
 import { sql } from 'drizzle-orm';
 import {
   date,
   integer,
   jsonb,
   numeric,
-  pgTable,
   real,
   serial,
   text,
@@ -14,7 +14,6 @@ import { relations } from 'drizzle-orm/relations';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { growPhasesSchema } from './grow-phases-schema';
-import { scheduler } from 'timers/promises';
 
 const defaultSeedToSale = {
   seed: {
@@ -67,7 +66,7 @@ const defaultSeedToSale = {
   },
 };
 
-export const batches = pgTable('batches', {
+export const batches = protectedSchema.table('batches', {
   id: uuid('id')
     .primaryKey()
     .default(sql`gen_random_uuid()`),
@@ -82,7 +81,7 @@ export const batches = pgTable('batches', {
   otherDetails: jsonb('other_details').default('{}'),
 });
 
-export const plants = pgTable('plants', {
+export const plants = protectedSchema.table('plants', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
   batchId: uuid('batch_id')
@@ -94,7 +93,7 @@ export const plants = pgTable('plants', {
   seedToSale: jsonb('seed_to_sale').notNull().default(defaultSeedToSale),
 });
 
-export const strains = pgTable('strains', {
+export const strains = protectedSchema.table('strains', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
   description: text('description'),

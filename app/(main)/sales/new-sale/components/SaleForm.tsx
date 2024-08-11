@@ -1,20 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import SaleItemsTable from './SaleItemsTable';
-import CreateSaleItemModal from './CreateSaleItemModal';
-import {
-  CreateSaleFormInput,
-  CreateSaleInput,
-  PaymentMethodsType,
-  createSaleFormInputSchema,
-  SaleItem,
-  createSaleInputSchema,
-  SaleWithItems,
-} from '@/modules/sales/data-access/schema';
-import { PaymentMethodsEnum } from '@/modules/sales/data-access/schema';
-import { useSession } from 'next-auth/react';
-import { UUID } from 'crypto';
+import { backToSalesPage } from '@/actions/sales';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -23,8 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -32,24 +18,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { createSaleUseCase, fetchSaleUseCase } from '@/modules/sales/use-cases';
-import { useAction } from 'next-safe-action/hooks';
-import { redirect } from 'next/navigation';
-import configuration from '@/app/configuration';
-import { backToSalesPage } from '@/actions/sales';
-import { Ban, PackageCheck, Trash2 } from 'lucide-react';
-import { fetchMembersUseCase } from '@/modules/members/use-cases';
 import { UserSchema } from '@/modules/members/data-access/schema';
-import {
-  fetchPlantsUseCase,
-  fetchStrainsUseCase,
-} from '@/modules/plants/use-cases';
+import { fetchMembersUseCase } from '@/modules/members/use-cases';
 import {
   StrainProps,
   getStrainsSchema,
 } from '@/modules/plants/data-access/schema';
+import { fetchStrainsUseCase } from '@/modules/plants/use-cases';
+import {
+  CreateSaleFormInput,
+  CreateSaleInput,
+  PaymentMethodsEnum,
+  PaymentMethodsType,
+  SaleItem,
+  SaleWithItems,
+  createSaleFormInputSchema,
+  createSaleInputSchema,
+} from '@/modules/sales/data-access/schema';
+import { createSaleUseCase } from '@/modules/sales/use-cases';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Ban, PackageCheck } from 'lucide-react';
+import { useAction } from 'next-safe-action/hooks';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import CreateSaleItemModal from './CreateSaleItemModal';
+import SaleItemsTable from './SaleItemsTable';
 
 export default function SaleForm() {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethodsType[]>([
@@ -178,7 +171,7 @@ export default function SaleForm() {
         <form className="grid gap-2 sm:grid-cols-2 md:gap-4">
           <FormField
             control={form.control}
-            name="userId"
+            name="memberId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Member</FormLabel>

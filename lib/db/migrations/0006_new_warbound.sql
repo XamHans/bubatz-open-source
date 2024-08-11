@@ -1,1 +1,0 @@
-ALTER TABLE "members" RENAME COLUMN "member_status" TO "status";

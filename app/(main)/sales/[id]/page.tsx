@@ -1,26 +1,7 @@
 'use client';
 
-import { Container } from '@/components/generic/Container';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { SaleGeneralInfo } from './components/SaleGeneralInfo';
-import { Sale } from '@/modules/sales/data-access/schema';
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { getSaleById } from '@/modules/sales/data-access';
-import { Form, FormControl, FormItem, FormLabel } from '@/components/ui/form';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import GenericSelect from '@/components/generic/GenericSelect';
-import { UUID } from 'crypto';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import Breadcrumbs from '@/components/generic/BreadCrumbs';
-import { Metadata } from 'next';
+import { Container } from '@/components/generic/Container';
 import {
   Card,
   CardContent,
@@ -28,14 +9,29 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { UserSchema } from '@/modules/members/data-access/schema';
-import { useAction } from 'next-safe-action/hooks';
 import { fetchMembersUseCase } from '@/modules/members/use-cases';
-import { fetchStrainsUseCase } from '@/modules/plants/use-cases';
 import {
   StrainProps,
   getStrainsSchema,
 } from '@/modules/plants/data-access/schema';
+import { fetchStrainsUseCase } from '@/modules/plants/use-cases';
+import { getSaleById } from '@/modules/sales/data-access';
+import { Sale } from '@/modules/sales/data-access/schema';
+import { UUID } from 'crypto';
+import { Metadata } from 'next';
+import { useAction } from 'next-safe-action/hooks';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { SaleGeneralInfo } from './components/SaleGeneralInfo';
 
 const SaleDetailPage = () => {
   const params = useParams<{ id: string }>();
@@ -88,7 +84,7 @@ const SaleDetailPage = () => {
     sale: {
       totalPrice: 0,
       paidVia: 'CASH',
-      userId: '',
+      memberId: '',
       salesById: '',
     },
     items: [],
@@ -138,7 +134,7 @@ const SaleDetailPage = () => {
                   <SelectTrigger>
                     <SelectValue
                       placeholder={
-                        getMemberById(sale.sale.userId as UUID)?.fullName
+                        getMemberById(sale.sale.memberId as UUID)?.fullName
                       }
                     />
                   </SelectTrigger>

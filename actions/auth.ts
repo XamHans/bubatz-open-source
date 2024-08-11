@@ -13,7 +13,7 @@ import { ResetPasswordEmail } from '@/components/emails/reset-password-email';
 import { resend } from '@/config/email';
 import { db } from '@/lib/db/db';
 import { psLinkOAuthAccount } from '@/lib/db/prepared/statements';
-import { users } from '@/lib/db/schema';
+import { members } from '@/modules/members/data-access/schema';
 import {
   linkOAuthAccountSchema,
   passwordResetSchema,
@@ -32,7 +32,6 @@ export async function signUpWithPassword(
   rawInput: SignUpWithPasswordFormInput,
 ): Promise<'invalid-input' | 'exists' | 'error' | 'success'> {
   try {
-    //console.log({ rawInput })
     const validatedInput = signUpWithPasswordSchema.safeParse(rawInput);
     console.log({ validatedInput });
 
@@ -43,15 +42,11 @@ export async function signUpWithPassword(
 
     const passwordHash = await bcryptjs.hash(validatedInput.data.password, 10);
     const emailVerificationToken = crypto.randomBytes(32).toString('base64url');
-    //console.log({ passwordHash, emailVerificationToken })
+    console.log({ passwordHash, emailVerificationToken });
 
-    /**
-     * TODO: Switch to using a use case
-     */
     const newUser = await db
-      .insert(users)
+      .insert(members)
       .values({
-        id: crypto.randomUUID(),
         email: validatedInput.data.email,
         passwordHash: passwordHash,
         emailVerificationToken: emailVerificationToken,
@@ -132,8 +127,8 @@ export async function resetPassword(
     const validatedInput = passwordResetSchema.safeParse(rawInput);
     if (!validatedInput.success) return 'invalid-input';
 
-    const user = await getUserByEmail({ email: validatedInput.data.email });
-    if (!user) return 'not-found';
+    const member = await getUserByEmail({ email: validatedInput.data.email });
+    if (!member) return 'not-found';
 
     const today = new Date();
     const resetPasswordToken = crypto.randomBytes(32).toString('base64url');
@@ -144,13 +139,13 @@ export async function resetPassword(
     /**
      * TODO: Switch to using a use case
      */
-    const userUpdated = await db
-      .update(users)
+    const memberUpdated = await db
+      .update(members)
       .set({
         resetPasswordToken,
         resetPasswordTokenExpiry,
       })
-      .where(eq(users.id, user.id))
+      .where(eq(members.id, member.id))
       .returning();
 
     const emailSent = await resend.emails.send({
@@ -163,7 +158,7 @@ export async function resetPassword(
       }),
     });
 
-    return userUpdated && emailSent ? 'success' : 'error';
+    return memberUpdated && emailSent ? 'success' : 'error';
   } catch (error) {
     console.error(error);
     return 'error';
@@ -177,31 +172,28 @@ export async function updatePassword(
     const validatedInput = passwordUpdateSchemaExtended.safeParse(rawInput);
     if (!validatedInput.success) return 'invalid-input';
 
-    const user = await getUserByResetPasswordToken({
+    const member = await getUserByResetPasswordToken({
       token: validatedInput.data.resetPasswordToken,
     });
-    if (!user) return 'not-found';
+    if (!member) return 'not-found';
 
-    const resetPasswordExpiry = user.resetPasswordTokenExpiry;
+    const resetPasswordExpiry = member.resetPasswordTokenExpiry;
     if (!resetPasswordExpiry || resetPasswordExpiry < new Date())
       return 'expired';
 
     const passwordHash = await bcryptjs.hash(validatedInput.data.password, 10);
 
-    /**
-     * TODO: Switch to using a use case
-     */
-    const userUpdated = await db
-      .update(users)
+    const memberUpdated = await db
+      .update(members)
       .set({
         passwordHash,
         resetPasswordToken: null,
         resetPasswordTokenExpiry: null,
       })
-      .where(eq(users.id, user.id))
+      .where(eq(members.id, member.id))
       .returning();
 
-    return userUpdated ? 'success' : 'error';
+    return memberUpdated ? 'success' : 'error';
   } catch (error) {
     console.error(error);
     throw new Error('Error updating password');
@@ -216,7 +208,9 @@ export async function linkOAuthAccount(
     if (!validatedInput.success) return;
 
     noStore();
-    await psLinkOAuthAccount.execute({ userId: validatedInput.data.userId });
+    await psLinkOAuthAccount.execute({
+      memberId: validatedInput.data.memberId,
+    });
   } catch (error) {
     console.error(error);
     throw new Error('Error linking OAuth account');

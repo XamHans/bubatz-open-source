@@ -30,5 +30,5 @@ export const psGetUserByResetPasswordToken = db
 export const psLinkOAuthAccount = db
   .update(members)
   .set({ emailVerified: new Date() })
-  .where(eq(members.id, sql.placeholder('userId')))
+  .where(eq(members.id, sql.placeholder('memberId')))
   .prepare('psLinkOAuthAccount');

@@ -2,7 +2,7 @@ import * as z from 'zod';
 
 import { emailSchema } from '@/validations/email';
 
-export const userIdSchema = z
+export const memberIdSchema = z
   .string({
     required_error: 'User Id is required',
     invalid_type_error: 'User Id must be a string',
@@ -99,7 +99,7 @@ export const passwordUpdateSchemaExtended = z
   });
 
 export const linkOAuthAccountSchema = z.object({
-  userId: userIdSchema,
+  memberId: memberIdSchema,
 });
 
 export type SignUpWithPasswordFormInput = z.infer<

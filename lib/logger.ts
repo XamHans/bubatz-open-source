@@ -1,14 +1,13 @@
-const pino = require('pino');
-import { Logger } from 'pino';
+import pino from 'pino';
 
-export const logger: Logger = pino({
+const logger = pino({
+  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
   transport: {
     target: 'pino-pretty',
     options: {
       colorize: true,
     },
   },
-  level: process.env.PINO_LOG_LEVEL || 'info',
-
-  redact: [], // prevent logging of sensitive data
 });
+
+export default logger;

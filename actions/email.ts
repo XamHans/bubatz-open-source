@@ -1,5 +1,7 @@
+import { EmailVerificationEmail } from '@/components/emails/email-verification-email';
+import { resend } from '@/config/email';
 import { db } from '@/lib/db/db';
-import { users } from '@/lib/db/schema';
+import { members } from '@/modules/members/data-access/schema';
 import {
     EmailVerificationFormInput,
     emailVerificationSchema,
@@ -17,12 +19,12 @@ export async function markEmailAsVerified(
         if (!validatedInput.success) return 'invalid-input';
 
         const userUpdated = await db
-            .update(users)
+            .update(members)
             .set({
                 emailVerified: new Date(),
                 emailVerificationToken: null,
             })
-            .where(eq(users.emailVerificationToken, validatedInput.data.token));
+            .where(eq(members.emailVerificationToken, validatedInput.data.token));
 
         return userUpdated ? 'success' : 'error';
     } catch (error) {
@@ -43,14 +45,12 @@ export async function resendEmailVerificationLink(
 
         const emailVerificationToken = crypto.randomBytes(32).toString('base64url');
 
-        const userUpdated = await prisma.user.update({
-            where: {
-                email: validatedInput.data.email,
-            },
-            data: {
+        const userUpdated = await db
+            .update(members)
+            .set({
                 emailVerificationToken,
-            },
-        });
+            })
+            .where(eq(members.email, validatedInput.data.email));
 
         const emailSent = await resend.emails.send({
             from: env.RESEND_EMAIL_FROM,

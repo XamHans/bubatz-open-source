@@ -1,45 +1,41 @@
 import { UUID } from 'crypto';
-import { relations, sql } from 'drizzle-orm';
+import { relations } from 'drizzle-orm';
 import {
   date,
-  pgTable,
+  pgEnum,
+  pgSchema,
   text,
   timestamp,
-  uuid,
-  pgEnum,
-  boolean,
+  uuid
 } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
-export const userRoleEnum = pgEnum('user_role', ['USER', 'ADMIN']);
+export const protectedSchema = pgSchema('protected');
 
-export const members = pgTable('members', {
-  id: uuid('id')
-    .primaryKey()
-    .default(sql`gen_random_uuid()`),
+export const memberRoleEnum = pgEnum('member_role', ['MEMBER', 'ADMIN']);
+
+export const members = protectedSchema.table('members', {
+  id: uuid('id').primaryKey().defaultRandom(),
 
   // general info
-  firstName: text('first_name').notNull(),
-  lastName: text('last_name').notNull(),
-  fullName: text('full_name')
-    .notNull()
-    .default(sql`first_name || ' ' || last_name`),
-  username: text('username').unique(),
-  birthday: date('birthday')
-    .notNull()
-    .default(sql`now()`),
+  firstName: text('first_name'),
+  lastName: text('last_name'),
+  fullName: text('full_name'),
+  birthday: date('birthday'),
+
   // contact
-  email: text('email').unique().notNull(),
-  phone: text('phone').notNull(),
+  email: text('email').unique(),
+  phone: text('phone'),
   // address
-  street: text('street').notNull(),
-  city: text('city').notNull(),
-  zip: text('zip').notNull(),
+  street: text('street'),
+  city: text('city'),
+  zip: text('zip'),
   //club info
-  status: text('status').notNull().default('PENDING'),
-  // isAdmin: boolean('is_admin').notNull().default(false),
-  role: userRoleEnum('role').notNull().default('USER'),
+  status: text('status').default('PENDING'),
+  // isAdmin: boolean('is_admin').default(false),
+  role: memberRoleEnum('role').default('MEMBER'),
+  // auth stuff
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
   emailVerificationToken: text('emailVerificationToken').unique(),
   passwordHash: text('passwordHash'),
@@ -48,14 +44,13 @@ export const members = pgTable('members', {
     mode: 'date',
   }),
   image: text('image'),
-  createdAt: timestamp('createdAt', { mode: 'date' }).defaultNow().notNull(),
-  updatedAt: timestamp('updatedAt', { mode: 'date' }).defaultNow().notNull(),
+  createdAt: timestamp('createdAt', { mode: 'date' }).defaultNow(),
+  updatedAt: timestamp('updatedAt', { mode: 'date' }).defaultNow(),
 });
 
 /**
  * * Relations
  */
-
 export const membersRelations = relations(members, ({ many }) => ({
   buyer: many(members),
 }));
@@ -103,15 +98,3 @@ export const deleteMemberInputSchema = z.object({
 });
 
 export type deleteMemberInput = { id: UUID };
-
-// Overriding the fields
-// const insertUserSchema = createInsertSchema(members, {
-//   role: z.string(),
-// });
-
-// Refining the fields - useful if you want to change the fields before they become nullable/optional in the final schema
-// const insertUserSchema = createInsertSchema(users, {
-//   id: (schema) => schema.id.positive(),
-//   email: (schema) => schema.email.email(),
-//   role: z.string(),
-// });

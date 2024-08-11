@@ -9,13 +9,20 @@ const links = {
 
 export const siteConfig = {
   name: 'Bubatz Manager',
-  description:
-    'An open-source starter for Next.js 14 full-stack projects with advanced authentication and several database configurations. The aim of this project is to provide a solid foundation for faster building and launching SaaS products, marketing sites, blogs, and more.',
+  description: '.',
+  auth: {
+    providers: {
+      emailPassword: true,
+      phoneNumber: false,
+      emailLink: false,
+      emailOtp: false,
+      oAuth: ['google', 'github'] as Provider[],
+    },
+  },
   links,
-  url: 'https://saasyland.com',
+  url: 'https://bubatz.club',
+
   ogImage: links.openGraphImage,
-  author: 'pjborowiecki',
-  hostingRegion: 'fra1',
   keywords: ['SaaS', 'Next.js', 'Template'],
   navItems: [
     {
