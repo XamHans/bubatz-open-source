@@ -8,21 +8,21 @@ import {
   Section,
   Tailwind,
   Text,
-} from "@react-email/components"
+} from '@react-email/components';
 
-import { env } from "@/env.mjs"
-import { siteConfig } from "@/config/site"
+import { siteConfig } from '@/config/site';
+import { env } from '@/env.mjs';
 
 interface EmailVerificationEmailProps {
-  email: string
-  emailVerificationToken: string
+  email: string;
+  emailVerificationToken: string;
 }
 
 export function EmailVerificationEmail({
   email,
   emailVerificationToken,
 }: Readonly<EmailVerificationEmailProps>): JSX.Element {
-  const previewText = `${siteConfig.name} email verification.`
+  const previewText = `${siteConfig.name} email verification.`;
   return (
     <Html lang="en">
       <Head>
@@ -35,7 +35,7 @@ export function EmailVerificationEmail({
             <Section>
               <Text className="text-xl">Hi,</Text>
               <Text className="text-base">
-                Your email address, {email}, was recently used to sign up at{" "}
+                Your email address, {email}, was recently used to sign up at{' '}
                 <span className="font-semibold tracking-wide">
                   {siteConfig.name}
                 </span>
@@ -57,10 +57,10 @@ export function EmailVerificationEmail({
                 delete this message.
               </Text>
               <Text className="text-base font-medium">
-                Enjoy{" "}
+                Enjoy{' '}
                 <span className="font-semibold tracking-wide">
                   {siteConfig.name}
-                </span>{" "}
+                </span>{' '}
                 and have a nice day!
               </Text>
             </Section>
@@ -68,5 +68,5 @@ export function EmailVerificationEmail({
         </Body>
       </Tailwind>
     </Html>
-  )
+  );
 }

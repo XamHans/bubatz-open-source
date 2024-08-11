@@ -1,8 +1,16 @@
 import { auth } from '@/auth';
 import Breadcrumbs from '@/components/generic/BreadCrumbs';
 import { Container } from '@/components/generic/Container';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { siteConfig } from '@/config/site';
 import { SessionProvider } from 'next-auth/react';
+import { redirect } from 'next/navigation';
 import MemberTable from './components/MemberTable';
 
 async function MemberListPage() {
@@ -11,8 +19,9 @@ async function MemberListPage() {
     { label: 'Members' },
   ];
 
-  // const queryClient = new QueryClient()
   const session = await auth();
+  if (!session) redirect(siteConfig.links.signIn);
+  // const queryClient = new QueryClient()
   console.log('session inside members', session);
 
   return (

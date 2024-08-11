@@ -10,6 +10,8 @@ import {
   type EmailVerificationFormInput,
 } from '@/validations/email';
 
+import { resendEmailVerificationLink } from '@/actions/email';
+import { Icons } from '@/components/generic/Icons';
 import { Button } from '@/components/ui/button';
 import {
   Form,

@@ -1,7 +1,5 @@
 'use client';
 
-import configuration from '../../../../app/configuration';
-
 import {
   ColumnFiltersState,
   SortingState,
@@ -42,9 +40,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../../../components/ui/tooltip';
-import {
-  colorForClubMemberStatus
-} from '../../../../modules/members/types';
+import { colorForClubMemberStatus } from '../../../../modules/members/types';
 import { fetchMembersUseCase } from '../../../../modules/members/use-cases';
 import { AddMemberModal } from './AddMemberModal';
 import { DeleteMemberModal } from './DeleteMemberModal';
@@ -52,6 +48,7 @@ import { DeleteMemberModal } from './DeleteMemberModal';
 //   selectUser,
 //   selectUserSchema,
 // } from '@/modules/members/data-access/schema';
+import { siteConfig } from '@/config/site';
 import { UserSchema } from '../../../../modules/members/data-access/schema';
 
 export default function MemberTable() {
@@ -71,7 +68,7 @@ export default function MemberTable() {
           //   onCheckedChange={(value) => row.toggleSelected(!!value)}
           //   aria-label="Select row"
           // />
-          <Avatar className="h-12 w-12" >
+          <Avatar className="h-12 w-12">
             <AvatarImage src={``} />
             <AvatarFallback>
               {' '}
@@ -136,10 +133,7 @@ export default function MemberTable() {
         enableHiding: false,
         header: ({ column }) => {
           return (
-            <Button
-              variant="ghost"
-              className="justify-center text-xs"
-            >
+            <Button variant="ghost" className="justify-center text-xs">
               Actions
             </Button>
           );
@@ -154,10 +148,7 @@ export default function MemberTable() {
                 onClick={() => {
                   // router.push(configuration.paths.MEMBER_DETAIL.replace(":id", member:id!))
                   router.push(
-                    configuration.paths.members.detail.replace(
-                      ':id',
-                      member.id!,
-                    ),
+                    siteConfig.links.members.replace(':id', member.id!),
                   );
                 }}
               >
@@ -278,11 +269,9 @@ export default function MemberTable() {
           }
           className="max-w-sm"
         />
-        <AddMemberModal
-          setMembers={setMembers}
-        />
+        <AddMemberModal setMembers={setMembers} />
       </div>
-      <div >
+      <div>
         <Table className="rounded-md bg-white">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
