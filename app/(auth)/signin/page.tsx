@@ -1,7 +1,5 @@
-import auth from '@/lib/auth';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 import { env } from '@/env.mjs';
 
@@ -16,7 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { siteConfig } from '@/config/site';
 import { SignInWithEmailForm } from './components/signin-with-email-form';
 import { SignInWithPasswordForm } from './components/signin-with-password-form';
 
@@ -27,9 +24,6 @@ export const metadata: Metadata = {
 };
 
 export default async function SignInPage(): Promise<JSX.Element> {
-  const session = await auth();
-  if (session) redirect(siteConfig.links.signIn);
-
   return (
     <div className="flex h-auto min-h-screen w-full items-center justify-center">
       <Card className="max-sm:flex  max-sm:w-full max-sm:flex-col max-sm:items-center max-sm:justify-center max-sm:rounded-none max-sm:border-none sm:min-w-[370px] sm:max-w-[368px]">

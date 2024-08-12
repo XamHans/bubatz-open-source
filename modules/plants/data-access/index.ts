@@ -1,11 +1,12 @@
 'use server';
 
 import { db } from '@/lib/db/db';
-import { AsyncReturnType } from '@/lib/types';
+import { AsyncReturnType } from '@/types';
 import { eq } from 'drizzle-orm/sql';
 import {
   CreateBatchInput,
   CreatePlantInput,
+  CreateStrainInput,
   DeletePlantInput,
   UpdateBatchInput,
   UpdatePlantInput,
@@ -66,11 +67,6 @@ const getPlants = async () => {
   return allPlants;
 };
 
-export const getStrains = async () => {
-  const allStrains = await db.select().from(strains);
-  return allStrains;
-};
-
 export const getPlantsByBatchId = async (batchId: string) => {
   return await db.select().from(plants).where(eq(plants.batchId, batchId));
 };
@@ -91,3 +87,14 @@ export type BatchDetailsData = AsyncReturnType<typeof getBatchDetail>;
 export type PlantDetailsData = AsyncReturnType<typeof getPlantsByBatchId>;
 
 export { getBatchDetail, getBatches, getPlants };
+
+export const getStrains = async () => {
+  const allStrains = await db.select().from(strains);
+  return allStrains;
+};
+
+export const createStrain = async (input: CreateStrainInput) => {
+  const newStrain = await db.insert(strains).values(input).returning();
+  console.info('newStrain', newStrain);
+  return newStrain[0];
+};

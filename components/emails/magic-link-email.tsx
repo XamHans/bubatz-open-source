@@ -8,20 +8,20 @@ import {
   Section,
   Tailwind,
   Text,
-} from "@react-email/components"
+} from '@react-email/components';
 
-import { siteConfig } from "@/config/site"
+import { siteConfig } from '@/config/site';
 
 interface MagicLinkEmailProps {
-  identifier: string
-  url: string
+  identifier: string;
+  url: string;
 }
 
 export function MagicLinkEmail({
   identifier,
   url,
 }: MagicLinkEmailProps): JSX.Element {
-  const previewText = `${siteConfig.name} magic link sign in.`
+  const previewText = `${siteConfig.name} magic link sign in.`;
   return (
     <Html lang="en">
       <Head>
@@ -47,10 +47,10 @@ export function MagicLinkEmail({
             </Section>
             <Section>
               <Text className="text-base font-medium">
-                Enjoy{" "}
+                Enjoy{' '}
                 <span className="font-semibold tracking-wide">
                   {siteConfig.name}
-                </span>{" "}
+                </span>{' '}
                 and have a nice day!
               </Text>
             </Section>
@@ -63,5 +63,5 @@ export function MagicLinkEmail({
         </Body>
       </Tailwind>
     </Html>
-  )
+  );
 }

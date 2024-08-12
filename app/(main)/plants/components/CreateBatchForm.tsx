@@ -19,19 +19,27 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import {
   CreateBatchInput,
   createBatchInputSchema,
+  getStrainsSchema,
+  StrainProps,
 } from '@/modules/plants/data-access/schema';
 import { GrowPhase } from '@/modules/plants/types';
-import { addBatchUseCase } from '@/modules/plants/use-cases';
+import {
+  addBatchUseCase,
+  fetchStrainsUseCase,
+} from '@/modules/plants/use-cases';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const CreateBatchForm = () => {
   const router = useRouter();
+  const [strains, setStrains] = useState<StrainProps[]>([]);
 
   const { execute, status } = useAction(addBatchUseCase, {
     onSuccess: (data) => {
@@ -43,6 +51,24 @@ const CreateBatchForm = () => {
       console.log('Error creating batch', error);
     },
   });
+
+  const fetchStrains = useAction(fetchStrainsUseCase, {
+    onSuccess: (data) => {
+      const parsedStrains: StrainProps[] = [];
+      data.strains.forEach((strain) => {
+        console.log('strain', strain);
+        const parse = getStrainsSchema.safeParse(strain);
+        if (parse.success) parsedStrains.push(parse.data);
+        else console.error('Error parsing strain: ', parse.error.errors);
+      });
+      console.log('parsedStrains', parsedStrains);
+      setStrains(() => parsedStrains);
+    },
+  });
+
+  useEffect(() => {
+    fetchStrains.execute({});
+  }, []);
 
   const form = useForm<CreateBatchInput>({
     resolver: zodResolver(createBatchInputSchema),
@@ -73,14 +99,24 @@ const CreateBatchForm = () => {
         />
         <FormField
           control={form.control}
-          name="strain"
+          name="strainId"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Strain</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter strain" {...field} />
-              </FormControl>
-              <FormMessage />
+              <Select onValueChange={field.onChange}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select strain" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {strains.map((strain, index) => (
+                    <SelectItem key={index} value={strain.id}>
+                      {strain.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </FormItem>
           )}
         />

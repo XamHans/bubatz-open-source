@@ -1,6 +1,5 @@
 import { type Metadata } from 'next';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 import { OAuthButtons } from '@/components/auth/oauth-buttons';
 import { Icons } from '@/components/generic/Icons';
@@ -12,9 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { siteConfig } from '@/config/site';
 import { env } from '@/env.mjs';
-import auth from '@/lib/auth';
 import { SignInWithEmailForm } from '../signin/components/signin-with-email-form';
 import { SignUpWithPasswordForm } from './components/signup-with-password-form';
 
@@ -25,9 +22,6 @@ export const metadata: Metadata = {
 };
 
 export default async function SignUpPage(): Promise<JSX.Element> {
-  const session = await auth();
-  if (session) redirect(siteConfig.links.signIn);
-
   return (
     <div className="flex h-auto min-h-screen w-full items-center justify-center md:flex">
       <Card className="max-sm:flex max-sm:w-full max-sm:flex-col max-sm:items-center max-sm:justify-center max-sm:rounded-none max-sm:border-none sm:min-w-[370px] sm:max-w-[368px]">

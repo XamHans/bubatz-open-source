@@ -1,6 +1,6 @@
 'use server';
 
-import { logger } from '@/lib/logger';
+import logger from '@/lib/logger';
 import { SuccessResponse } from '@/types';
 import dayjs from 'dayjs'; // Import dayjs
 import { createSafeActionClient } from 'next-safe-action';
@@ -9,6 +9,7 @@ import {
   PlantDetailsData,
   createBatch,
   createPlant,
+  createStrain,
   deletePlant,
   getBatchById,
   getBatches,
@@ -23,6 +24,7 @@ import {
   StrainProps,
   createBatchInputSchema,
   createPlantInputSchema,
+  createStrainInputSchema,
   deletePlantInputSchema,
   updateBatchInputSchema,
   updatePlantInputSchema,
@@ -173,3 +175,15 @@ export const fetchStrainsUseCase = action({}, async () => {
   const strains = await getStrains();
   return { strains };
 });
+
+export const createStrainUseCase = action(
+  createStrainInputSchema,
+  async (data) => {
+    logger.info('Creating strain with data:', data);
+    const newStrainId = await createStrain(data);
+    if (!newStrainId) {
+      return { failure: 'Failed to create strain' };
+    }
+    return { success: newStrainId };
+  },
+);

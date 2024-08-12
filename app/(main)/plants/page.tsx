@@ -49,12 +49,20 @@ async function PlantListPage() {
                     : 'Error getting description'}
                 </CardDescription>
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-end gap-2">
                 <Link href={siteConfig.links.plants.new}>
                   <Button size="sm" className="h-8 w-32 gap-1">
                     <PlusCircle className="h-3.5 w-3.5" />
                     <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                       Add Batch
+                    </span>
+                  </Button>
+                </Link>
+                <Link href="/plants/new-strain">
+                  <Button size="sm" className="h-8 w-32 gap-1">
+                    <PlusCircle className="h-3.5 w-3.5" />
+                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                      Add Strain
                     </span>
                   </Button>
                 </Link>
