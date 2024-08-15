@@ -2,6 +2,7 @@ import { protectedSchema } from '@/modules/members/data-access/schema';
 import { sql } from 'drizzle-orm';
 import {
   date,
+  integer,
   jsonb,
   numeric,
   real,
@@ -70,7 +71,7 @@ export const batches = protectedSchema.table('batches', {
     .primaryKey()
     .default(sql`gen_random_uuid()`),
   name: text('name').notNull(),
-  strainId: serial('strain_id').references(() => strains.id),
+  strainId: integer('strain_id').references(() => strains.id),
   startDate: date('start_date')
     .notNull()
     .default(sql`now()`),

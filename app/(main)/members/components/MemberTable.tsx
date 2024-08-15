@@ -1,5 +1,7 @@
 'use client';
 
+import { siteConfig } from '@/config/site';
+import { logger } from '@/lib/logger';
 import {
   ColumnFiltersState,
   SortingState,
@@ -40,39 +42,26 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../../../components/ui/tooltip';
-import { colorForClubMemberStatus } from '../../../../modules/members/types';
+import { UserSchema } from '../../../../modules/members/data-access/schema';
+import {
+  ClubMemberStatus,
+  colorForClubMemberStatus,
+} from '../../../../modules/members/types';
 import { fetchMembersUseCase } from '../../../../modules/members/use-cases';
 import { AddMemberModal } from './AddMemberModal';
 import { DeleteMemberModal } from './DeleteMemberModal';
-// import {
-//   selectUser,
-//   selectUserSchema,
-// } from '@/modules/members/data-access/schema';
-import { siteConfig } from '@/config/site';
-import { UserSchema } from '../../../../modules/members/data-access/schema';
 
 export default function MemberTable() {
   const getUserTableColumns = (router: AppRouterInstance) => {
-    // const handleDelete = async (id: string) => {
-    //   const result = await deleteMember(id);
-    //   console.log('deleted member', result);
-    // };
-
     return [
       {
         id: 'avatar',
         header: 'IMAGE',
         cell: ({ row }) => (
-          // <Checkbox
-          //   checked={row.getIsSelected()}
-          //   onCheckedChange={(value) => row.toggleSelected(!!value)}
-          //   aria-label="Select row"
-          // />
           <Avatar className="h-12 w-12">
             <AvatarImage src={``} />
             <AvatarFallback>
-              {' '}
-              {(row.getValue('name') as string).charAt(0)}
+              {(row.getValue('name') as string)?.charAt(0) || '?'}
             </AvatarFallback>
           </Avatar>
         ),
@@ -83,7 +72,9 @@ export default function MemberTable() {
       {
         accessorKey: 'name',
         accessorFn: (row) => {
-          return row.firstName + ' ' + row.lastName;
+          const fullName =
+            `${row.firstName || ''} ${row.lastName || ''}`.trim();
+          return fullName || row.email;
         },
         header: ({ column }) => {
           return (
@@ -100,7 +91,11 @@ export default function MemberTable() {
           );
         },
         cell: ({ row }) => (
-          <div className="ml-4 text-left">{row.getValue('name')}</div>
+          <div className="ml-4 text-left">
+            {row.getValue('name') || (
+              <span className="text-gray-400">No name (Email only)</span>
+            )}
+          </div>
         ),
       },
       {
@@ -119,14 +114,17 @@ export default function MemberTable() {
             </Button>
           );
         },
-        cell: ({ row }) => (
-          <Badge
-            variant="outline"
-            className={`${colorForClubMemberStatus.get(row.getValue('status'))}`}
-          >
-            ${row.getValue('status')}
-          </Badge>
-        ),
+        cell: ({ row }) => {
+          const status = row.getValue('status') as ClubMemberStatus;
+          const bgColor = colorForClubMemberStatus.get(status) || 'bg-gray-400';
+          return (
+            <Badge
+              className={`bg-${bgColor} border-none	  text-gray-950/75 hover:text-gray-400`}
+            >
+              {status}
+            </Badge>
+          );
+        },
       },
       {
         id: 'actions',
@@ -146,9 +144,8 @@ export default function MemberTable() {
                 variant="ghost"
                 className="transition-transform duration-200 hover:bg-inherit"
                 onClick={() => {
-                  // router.push(configuration.paths.MEMBER_DETAIL.replace(":id", member:id!))
                   router.push(
-                    siteConfig.links.members.replace(':id', member.id!),
+                    siteConfig.links.members.detail.replace(':id', member.id!),
                   );
                 }}
               >
@@ -159,7 +156,6 @@ export default function MemberTable() {
                     </TooltipTrigger>
                     <TooltipContent align="end">
                       <Badge className="bg-inherit text-black hover:bg-inherit">
-                        {' '}
                         {t('member:ACTIONS.DETAIL')} Edit
                       </Badge>
                     </TooltipContent>
@@ -181,21 +177,12 @@ export default function MemberTable() {
                     </TooltipTrigger>
                     <TooltipContent align="end">
                       <Badge className="bg-inherit text-black hover:bg-inherit">
-                        {' '}
                         {t('member:ACTIONS.DETAIL')} Delete
                       </Badge>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </Button>
-
-              {/* <EditMemberModal member={member} />
-            <DeleteModal<MemberProps>
-              entity={member}
-              onDelete={handleDelete}
-              deleteConfirmationHeader={t("member:ACTIONS.DELETE")}
-              deleteConfirmationText={t("member:ACTIONS.DELETE_TEXT")}
-            />{" "} */}
             </div>
           );
         },
@@ -203,26 +190,13 @@ export default function MemberTable() {
     ];
   };
 
-  /**
-   * TODO: REPLACE FOR GET USE CASE WITH NEXT ACTION
-   */
-
-  // const {
-  //     data,
-  //     error: getMemberError,
-  //     fetchStatus,
-  // } = useQuery({
-  //     queryFn: async () => getMembers(),
-  //     queryKey: ['members'],
-  // })
-
   const { execute, status } = useAction(fetchMembersUseCase, {
     onSuccess: (data) => {
-      console.log('Members fetched successfully');
-      setMembers(data.members);
+      logger.debug(data?.data?.members);
+      setMembers(data.data?.members);
     },
     onError: (error) => {
-      console.log('Error fetching member', error);
+      logger.error('Error fetching member', error);
     },
   });
 
@@ -255,8 +229,6 @@ export default function MemberTable() {
       rowSelection,
     },
   });
-
-  //  const {t} = await initializeI18nClient('en')
 
   return (
     <div className="space-y-4 ">
@@ -324,10 +296,6 @@ export default function MemberTable() {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        {/* <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div> */}
         <div className="space-x-2">
           <Button
             variant="default"
@@ -335,7 +303,6 @@ export default function MemberTable() {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            {/* {t('GENERAL.PAGINATION.PREVIOUS')} */}
             <ChevronLeft />
           </Button>
           <Button
@@ -344,7 +311,6 @@ export default function MemberTable() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            {/* {t('GENERAL.PAGINATION.NEXT')} */}
             <ChevronRight />
           </Button>
         </div>

@@ -19,14 +19,14 @@ export interface MemberProps {
   email?: string;
   phone?: string;
   isAdmin: boolean;
+  createdAt: Date;
 }
 
 // export type UpdateMemberInput = Omit<MemberProps, 'is_admin'>;
 
 export const colorForClubMemberStatus = new Map<ClubMemberStatus, string>([
-  [ClubMemberStatus.ACTIVE, 'bg-green-400'],
-  [ClubMemberStatus.REQUEST, 'bg-yellow-400'],
-  [ClubMemberStatus.PENDING, 'bg-orange-400'],
-  [ClubMemberStatus.EXITED, 'bg-gray-400'],
-  [ClubMemberStatus.PAUSED, 'bg-gray-200'],
+  [ClubMemberStatus.ACTIVE, 'lime-300'],
+  [ClubMemberStatus.REQUEST, 'amber-300'],
+  [ClubMemberStatus.EXITED, 'slate-600'],
+  [ClubMemberStatus.PAUSED, 'teal-500'],
 ]);

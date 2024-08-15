@@ -1,112 +1,122 @@
-'use client';
-
-import {
-  ClubMemberStatus,
-  colorForClubMemberStatus,
-} from '../../../../../modules/members/types';
-import {
-  GetMemberDetailQueryData,
-  getMemberDetail,
-} from '../../../../../modules/members/data-access/index';
-import { Avatar, AvatarFallback } from '../../../../../components/ui/avatar';
-import { Badge } from '../../../../../components/ui/badge';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from '../../../../../components/ui/card';
-import { t } from 'i18next';
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { EditMemberModal } from './EditMemberModal';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { MemberProps } from '@/modules/members/types';
 import React from 'react';
-import Breadcrumbs from '@/components/generic/BreadCrumbs';
+import {
+  HiCalendar,
+  HiClock,
+  HiLocationMarker,
+  HiMail,
+  HiPhone,
+  HiShieldCheck,
+} from 'react-icons/hi';
 
-const MemberGeneralInfo = () => {
-  const breadcrumbs = [
-    { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Members', href: '/members' },
-    { label: 'Edit Member' },
-  ];
+interface MemberGeneralInfoProps {
+  member: MemberProps;
+}
 
-  const params = useParams<{ id: string }>();
-  const [member, setMember] = useState<GetMemberDetailQueryData | undefined>(
-    undefined,
-  );
+const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
+  const formatDate = (date: Date) => {
+    return new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }).format(new Date(date));
+  };
 
-  useEffect(() => {
-    const fetchMember = async () => {
-      console.log('fetch member with id ', params.id);
-      const member = await getMemberDetail(params.id);
-      setMember(member);
-    };
+  const calculateAge = (birthday: Date) => {
+    const ageDifMs = Date.now() - new Date(birthday).getTime();
+    const ageDate = new Date(ageDifMs);
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  };
 
-    fetchMember();
-  }, []);
+  const calculateMembershipDuration = (createdAt: Date) => {
+    const diffMs = Date.now() - new Date(createdAt).getTime();
+    const years = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 365));
+    const months = Math.floor(
+      (diffMs % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30),
+    );
 
-  if (!member) return null;
+    if (years > 0) {
+      return `${years} year${years > 1 ? 's' : ''}${months > 0 ? ` ${months} month${months > 1 ? 's' : ''}` : ''}`;
+    } else {
+      return `${months} month${months > 1 ? 's' : ''}`;
+    }
+  };
 
   return (
-    <>
-      <Breadcrumbs items={breadcrumbs} />
-      <br />
-      <Card className="max-w-2xl">
-        <CardHeader className="text-end">
-          <EditMemberModal member={member} setMember={setMember} />
-        </CardHeader>
-
-        <CardContent>
-          <div className="flex items-center gap-x-6 ">
-            <div className="flex flex-col flex-wrap items-center justify-center px-2 md:w-1/2">
-              <Avatar className="h-32 w-32 ">
-                {/* <AvatarImage src={member.avatar_url} /> */}
-                <AvatarFallback>
-                  {' '}
-                  {member.firstName?.charAt(0)} {member.lastName?.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-            </div>
-            <div className=" flex-col flex-wrap gap-y-3 text-gray-500 dark:text-gray-400 md:w-1/2 ">
-              <div className="mt-2 grid gap-1 ">
-                <h3 className="items-start pb-2 font-bold  text-gray-900 dark:text-white sm:text-xl md:text-2xl">
-                  {member.firstName} {member.lastName}
-                </h3>
-
-                <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
-                  {/* <HiFlag className="mt-px h-5 w-5" /> */}
-                  <div className="space-y-1">
-                    <Badge variant="default" className="bg-zinc-700 text-white">
-                      {/* {t(`MEMBER.STATUS_OPTIONS.${member.status}`)} */}
-                      {member.status}
-                    </Badge>
-                  </div>
-                </div>
-                <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
-                  {/* <HiLocationMarker className="mt-px h-5 w-5" /> */}
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      {member.street}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {member.zip}, {member.city}
-                    </p>
-                  </div>
-                </div>
-                <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
-                  {/* <HiMail className="mt-px h-5 w-5" /> */}
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      {member.email}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </>
+    <Card className="w-full">
+      <CardHeader className="text-center">
+        <Avatar className="mx-auto mb-4 h-24 w-24">
+          {member.avatar_url ? (
+            <AvatarImage
+              src={member.avatar_url}
+              alt={`${member.firstName} ${member.lastName}`}
+            />
+          ) : (
+            <AvatarFallback className="text-2xl">
+              {member.firstName.charAt(0)}
+              {member.lastName.charAt(0)}
+            </AvatarFallback>
+          )}
+        </Avatar>
+        <CardTitle className="text-2xl font-bold">
+          {member.firstName} {member.lastName}
+        </CardTitle>
+        <div className="mt-2 flex justify-center gap-2">
+          <Badge variant="secondary">{member.status}</Badge>
+          {member.isAdmin && <Badge variant="default">Admin</Badge>}
+        </div>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <InfoItem
+          icon={HiLocationMarker}
+          primary={member.street}
+          secondary={`${member.zip}, ${member.city}`}
+        />
+        {member.email && <InfoItem icon={HiMail} primary={member.email} />}
+        {member.phone && <InfoItem icon={HiPhone} primary={member.phone} />}
+        <InfoItem
+          icon={HiCalendar}
+          primary="Birthday"
+          secondary={`${formatDate(member.birthday)} (Age: ${calculateAge(member.birthday)})`}
+        />
+        <InfoItem
+          icon={HiClock}
+          primary="Member Since"
+          secondary={`${formatDate(member.createdAt)} (${calculateMembershipDuration(member.createdAt)})`}
+        />
+        <InfoItem
+          icon={HiShieldCheck}
+          primary="Member ID"
+          secondary={member.id}
+        />
+      </CardContent>
+    </Card>
   );
 };
 
-export { MemberGeneralInfo };
+interface InfoItemProps {
+  icon: React.ElementType;
+  primary: string;
+  secondary?: string;
+}
+
+const InfoItem: React.FC<InfoItemProps> = ({
+  icon: Icon,
+  primary,
+  secondary,
+}) => (
+  <div className="flex items-center space-x-3 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+    <Icon className="h-5 w-5 flex-shrink-0" />
+    <div>
+      <p className="text-sm font-medium">{primary}</p>
+      {secondary && (
+        <p className="text-sm text-muted-foreground">{secondary}</p>
+      )}
+    </div>
+  </div>
+);
+
+export default MemberGeneralInfo;

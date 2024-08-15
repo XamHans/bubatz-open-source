@@ -9,6 +9,12 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ CREATE TYPE "public"."payment_status" AS ENUM('PAID', 'PENDING', 'OVERDUE');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  CREATE TYPE "public"."paymentMethods" AS ENUM('CASH', 'CARD', 'WALLET');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -74,11 +80,26 @@ CREATE TABLE IF NOT EXISTS "protected"."members" (
 	"resetPasswordToken" text,
 	"resetPasswordTokenExpiry" timestamp,
 	"image" text,
+	"current_year_paid" boolean DEFAULT false,
+	"last_payment_date" date,
 	"createdAt" timestamp DEFAULT now(),
 	"updatedAt" timestamp DEFAULT now(),
 	CONSTRAINT "members_email_unique" UNIQUE("email"),
 	CONSTRAINT "members_emailVerificationToken_unique" UNIQUE("emailVerificationToken"),
 	CONSTRAINT "members_resetPasswordToken_unique" UNIQUE("resetPasswordToken")
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "protected"."membership_payments" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"member_id" uuid NOT NULL,
+	"year" text NOT NULL,
+	"amount" numeric(10, 2) NOT NULL,
+	"payment_date" date,
+	"payment_status" "payment_status" DEFAULT 'PENDING',
+	"payment_method" text,
+	"notes" text,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "protected"."batches" (
@@ -143,6 +164,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "next_auth"."session" ADD CONSTRAINT "session_memberId_members_id_fk" FOREIGN KEY ("memberId") REFERENCES "protected"."members"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "protected"."membership_payments" ADD CONSTRAINT "membership_payments_member_id_members_id_fk" FOREIGN KEY ("member_id") REFERENCES "protected"."members"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

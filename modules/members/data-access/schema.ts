@@ -1,7 +1,9 @@
 import { UUID } from 'crypto';
 import { relations } from 'drizzle-orm';
 import {
+  boolean,
   date,
+  decimal,
   pgEnum,
   pgSchema,
   text,
@@ -44,6 +46,8 @@ export const members = protectedSchema.table('members', {
     mode: 'date',
   }),
   image: text('image'),
+  currentYearPaid: boolean('current_year_paid').default(false),
+  lastPaymentDate: date('last_payment_date'),
   createdAt: timestamp('createdAt', { mode: 'date' }).defaultNow(),
   updatedAt: timestamp('updatedAt', { mode: 'date' }).defaultNow(),
 });
@@ -98,3 +102,68 @@ export const deleteMemberInputSchema = z.object({
 });
 
 export type deleteMemberInput = { id: UUID };
+
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+// Enum for payment status
+export const paymentStatusEnum = pgEnum('payment_status', ['PAID', 'PENDING', 'OVERDUE']);
+
+// Membership payments table
+export const membershipPayments = protectedSchema.table('membership_payments', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  memberId: uuid('member_id').references(() => members.id).notNull(),
+  year: text('year').notNull(), // Store as text for flexibility, e.g., "2023-2024"
+  amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
+  paymentDate: date('payment_date'),
+  paymentStatus: paymentStatusEnum('payment_status').default('PENDING'),
+  paymentMethod: text('payment_method'),
+  notes: text('notes'),
+  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow(),
+});
+
+// Relation between members and membership payments
+export const membershipPaymentsRelations = relations(membershipPayments, ({ one }) => ({
+  member: one(members, {
+    fields: [membershipPayments.memberId],
+    references: [members.id],
+  }),
+}));
+
+
+
+// Schema for inserting a membership payment
+export const addMembershipPaymentSchema = createInsertSchema(membershipPayments, {
+  memberId: (schema) => schema.memberId.uuid(),
+  year: (schema) => schema.year.min(4).max(9), // Allows for academic years like "2023-2024"
+  amount: z.number().positive().multipleOf(0.01), // Ensures positive amount with up to 2 decimal places
+  paymentDate: (schema) => schema.paymentDate.optional(),
+  paymentStatus: (schema) => schema.paymentStatus.optional(),
+  paymentMethod: (schema) => schema.paymentMethod.optional(),
+  notes: (schema) => schema.notes.optional(),
+});
+
+export type AddMembershipPaymentInput = z.infer<typeof addMembershipPaymentSchema>;
+
+// Schema for selecting a membership payment
+export const selectMembershipPaymentSchema = createSelectSchema(membershipPayments);
+export type MembershipPaymentSchema = z.infer<typeof selectMembershipPaymentSchema>;
+
+// Schema for updating a membership payment
+export const updateMembershipPaymentSchema = createInsertSchema(membershipPayments, {
+  paymentDate: (schema) => schema.paymentDate.optional(),
+  paymentStatus: (schema) => schema.paymentStatus.optional(),
+  paymentMethod: (schema) => schema.paymentMethod.optional(),
+  notes: (schema) => schema.notes.optional(),
+});
+
+export type UpdateMembershipPaymentInput = z.infer<typeof updateMembershipPaymentSchema>;
+
+// Schema for deleting a membership payment
+export const deleteMembershipPaymentSchema = z.object({
+  id: z.string().uuid(),
+});
+
+export type DeleteMembershipPaymentInput = z.infer<typeof deleteMembershipPaymentSchema>;

@@ -24,7 +24,9 @@ async function MemberListPage() {
 
   return (
     <SessionProvider session={session}>
-      <Breadcrumbs items={breadcrumbs} />
+      <div className="mb-8 flex items-center justify-center gap-4">
+        <Breadcrumbs items={breadcrumbs} />
+      </div>
       <Container className="space-y-12">
         <Card>
           <CardHeader className="px-7">

@@ -14,6 +14,7 @@ import { resend } from '@/config/email';
 import { db } from '@/lib/db/db';
 import { psLinkOAuthAccount } from '@/lib/db/prepared/statements';
 import { members } from '@/modules/members/data-access/schema';
+import { ClubMemberStatus } from '@/modules/members/types';
 import {
   linkOAuthAccountSchema,
   passwordResetSchema,
@@ -50,6 +51,8 @@ export async function signUpWithPassword(
         email: validatedInput.data.email,
         passwordHash: passwordHash,
         emailVerificationToken: emailVerificationToken,
+        role: 'MEMBER',
+        status: ClubMemberStatus.REQUEST,
       })
       .returning();
     // console.log({ newUser })

@@ -1,6 +1,6 @@
-import { logger } from '@/logger';
 import 'dotenv/config';
 import { migrate } from 'drizzle-orm/mysql2/migrator';
+import { logger } from '../logger';
 import { client, db } from './db';
 
 async function runMigrations() {

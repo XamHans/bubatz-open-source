@@ -4,7 +4,7 @@
 import { db } from '@/lib/db/db';
 import { AsyncReturnType } from '@/types';
 import { eq } from 'drizzle-orm/sql/expressions/conditions';
-import { AddMemberInput, UpdateMemberInput, members } from './schema';
+import { AddMemberInput, UpdateMemberInput, members, membershipPayments } from './schema';
 // const logger = getLogger();
 /**
  * Here is an example CRUD methods for the members table.
@@ -60,3 +60,48 @@ const deleteMember = async (id: string) => {
 };
 
 export { deleteMember, getMemberDetail, getMembers, updateMember };
+
+
+
+//------------------------PAYMENTS
+
+
+export const getAllPayments = async () => {
+  const payments = await db
+    .select()
+    .from(membershipPayments)
+    .leftJoin(members, eq(membershipPayments.memberId, members.id));
+
+  console.log('getAllPayments', payments);
+  return payments;
+};
+
+export type GetAllPaymentsQueryData = AsyncReturnType<typeof getAllPayments>;
+
+export const getMemberPayments = async (memberId: string) => {
+  const payments = await db
+    .select()
+    .from(membershipPayments)
+    .where(eq(membershipPayments.memberId, memberId));
+
+  console.log('getMemberPayments', payments);
+  return payments;
+};
+
+export type GetMemberPaymentsQueryData = AsyncReturnType<typeof getMemberPayments>;
+
+// If you need to update a payment, you can add a function like this:
+export const updatePayment = async (data: UpdatePaymentInput) => {
+  try {
+    console.log('updatePayment data', data);
+    const updatedPaymentResult = await db
+      .update(membershipPayments)
+      .set({ ...data })
+      .where(eq(membershipPayments.id, data.id ?? ''));
+    console.log('updatedPaymentResult', updatedPaymentResult);
+    return 'Success';
+  } catch (error) {
+    console.error('Error updating payment:', error);
+    return { message: 'Failed to update payment', error: error };
+  }
+};

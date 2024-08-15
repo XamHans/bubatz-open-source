@@ -1,5 +1,5 @@
 import { createSafeActionClient } from 'next-safe-action';
-import logger from './logger';
+import { logger } from './logger';
 
 export const actionClient = createSafeActionClient({
     // Can also be an async function.
