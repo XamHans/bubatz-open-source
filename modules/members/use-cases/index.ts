@@ -67,12 +67,10 @@ export const deleteMemberUseCase = actionClient
 //--------PAYMENTS
 
 export const fetchAllPaymentsUseCase = actionClient
-  .schema(z.object({}))
   .action(async () => {
     try {
-      const payments: MembershipPaymentSchema[] = await getAllPayments();
-      const parsedPayments: MembershipPaymentSchema[] = payments.map((payment) => ({ ...payment }));
-      return { success: parsedPayments };
+      const payments = await getAllPayments();
+      return { success: payments };
     } catch (error) {
       return { failure: 'Failed to fetch payments' };
     }
