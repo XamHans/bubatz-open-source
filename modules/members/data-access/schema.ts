@@ -6,7 +6,7 @@ import {
   pgSchema,
   text,
   timestamp,
-  uuid
+  uuid,
 } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
@@ -64,10 +64,10 @@ export const addMemberInputSchema = createInsertSchema(members, {
   phone: (schema) => schema.phone.min(9),
   street: (schema) => schema.street.min(5),
   city: (schema) => schema.city.min(3),
-  zip: (schema) => schema.zip.min(7),
+  zip: (schema) => schema.zip.min(4),
   birthday: (schema) => schema.birthday,
   status: (schema) => schema.status.default('PENDING'),
-  role: (schema) => schema.role.default('USER'),
+  role: (schema) => schema.role.default('MEMBER'),
 });
 export type AddMemberInput = z.infer<typeof addMemberInputSchema>;
 

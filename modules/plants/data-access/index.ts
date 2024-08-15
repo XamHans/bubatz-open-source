@@ -30,10 +30,16 @@ const getBatches = async () => {
 
 export const createBatch = async (input: CreateBatchInput) => {
   console.log('input', input);
-  const newBatchId = await db
-    .insert(batches)
-    .values(input)
-    .returning({ insertedId: batches.id });
+  let newBatchId;
+  try {
+    newBatchId = await db
+      .insert(batches)
+      .values(input)
+      .returning({ insertedId: batches.id });
+  } catch (error) {
+    console.log('error', error);
+  }
+
   return newBatchId;
 };
 

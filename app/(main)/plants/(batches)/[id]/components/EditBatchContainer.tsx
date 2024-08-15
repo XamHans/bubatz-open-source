@@ -13,7 +13,6 @@ import { BatchProps } from '@/modules/plants/data-access/schema';
 import { BatchProvider } from './BatchContext';
 import { CurrentPhaseForm } from './Forms/CurrentPhaseForm';
 import { GrowthPhasesForm } from './Forms/GrowthPhasesForm';
-import { LogTracker } from './LogTracker';
 import { PlantsContainer } from './Plants/PlantsContainer';
 
 interface EditBatchContainerProps {
@@ -91,8 +90,8 @@ const EditBatchContainer: React.FC<EditBatchContainerProps> = ({ details }) => {
           {/* Plants & Add Plant Card */}
           <PlantsContainer />
 
-          {/* Logbook Section */}
-          <LogTracker />
+          {/* Logbook Section SOON */}
+          {/* <LogTracker /> */}
         </div>
 
         {/* Cards on Right Side */}

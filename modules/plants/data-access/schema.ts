@@ -2,7 +2,6 @@ import { protectedSchema } from '@/modules/members/data-access/schema';
 import { sql } from 'drizzle-orm';
 import {
   date,
-  integer,
   jsonb,
   numeric,
   real,
@@ -71,7 +70,7 @@ export const batches = protectedSchema.table('batches', {
     .primaryKey()
     .default(sql`gen_random_uuid()`),
   name: text('name').notNull(),
-  strainId: integer('strain_id').references(() => strains.id),
+  strainId: serial('strain_id').references(() => strains.id),
   startDate: date('start_date')
     .notNull()
     .default(sql`now()`),
@@ -119,22 +118,18 @@ export const batchesRelations = relations(batches, ({ many }) => ({
 
 export const createBatchInputSchema = createInsertSchema(batches, {
   name: z.string().min(1),
-  startDate: z.date(),
-  endDate: z.date().optional(),
+  startDate: z.coerce.date().transform((date) => date.toISOString()),
+  endDate: z.coerce
+    .date()
+    .transform((date) => date.toISOString())
+    .optional(),
   currentGrowthStage: z.string().min(1),
-
+  strainId: (schema) =>
+    schema.strainId.refine((val) => !Number.isNaN(val), {
+      message: 'Expected number, received a string',
+    }),
   otherDetails: z.object({}).optional(),
 });
-
-// export const updateBatchInputSchema = createInsertSchema(batches, {
-//   id: z.string().optional(),
-//   name: z.string().min(1).optional(),
-//   startDate: z.date(),
-//   endDate: z.date().optional(),
-//   currentGrowthStage: z.string().min(1),
-//   pricePerGram: z.number().optional(),
-//   otherDetails: z.object({}).optional(),
-// });
 
 export const updateBatchInputSchema = z.object({
   id: z.string().min(1, 'Batch id is required'),
@@ -178,6 +173,8 @@ export const getStrainsSchema = createSelectSchema(strains, {
   id: z.coerce.number(),
   currentPricePerGram: z.coerce.number(),
 });
+
+export const getBatchDetailSchema = updateBatchInputSchema.pick({ id: true });
 
 export type CreateBatchInput = z.infer<typeof createBatchInputSchema>;
 export type BatchProps = z.infer<typeof getBatchesSchema>;

@@ -21,10 +21,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { logger } from '@/lib/logger';
 import {
   CreateBatchInput,
   createBatchInputSchema,
-  getStrainsSchema,
   StrainProps,
 } from '@/modules/plants/data-access/schema';
 import { GrowPhase } from '@/modules/plants/types';
@@ -42,7 +42,7 @@ const CreateBatchForm = () => {
   const [strains, setStrains] = useState<StrainProps[]>([]);
 
   const { execute, status } = useAction(addBatchUseCase, {
-    onSuccess: (data) => {
+    onSuccess: ({ data }) => {
       console.log('Batch id', data.success[0].insertedId);
       const batchId = data.success[0].insertedId;
       router.push(`/plants/${batchId}`);
@@ -53,16 +53,8 @@ const CreateBatchForm = () => {
   });
 
   const fetchStrains = useAction(fetchStrainsUseCase, {
-    onSuccess: (data) => {
-      const parsedStrains: StrainProps[] = [];
-      data.strains.forEach((strain) => {
-        console.log('strain', strain);
-        const parse = getStrainsSchema.safeParse(strain);
-        if (parse.success) parsedStrains.push(parse.data);
-        else console.error('Error parsing strain: ', parse.error.errors);
-      });
-      console.log('parsedStrains', parsedStrains);
-      setStrains(() => parsedStrains);
+    onSuccess: ({ data }) => {
+      setStrains(data?.success);
     },
   });
 
@@ -75,6 +67,7 @@ const CreateBatchForm = () => {
   });
 
   const onSubmit = (data: CreateBatchInput) => {
+    logger.info('Creating batch', data);
     execute(data);
   };
 
@@ -103,20 +96,21 @@ const CreateBatchForm = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Strain</FormLabel>
-              <Select onValueChange={field.onChange}>
+              <Select onValueChange={(value) => field.onChange(Number(value))}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select strain" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {strains.map((strain, index) => (
-                    <SelectItem key={index} value={strain.id}>
+                  {strains.map((strain) => (
+                    <SelectItem key={strain.id} value={strain.id.toString()}>
                       {strain.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage />
             </FormItem>
           )}
         />

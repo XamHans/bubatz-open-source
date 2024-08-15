@@ -19,15 +19,15 @@ interface BatchDetailPageProps {
 }
 
 const BatchDetailPage = async ({ params: { id } }: BatchDetailPageProps) => {
-  console.log(' batch id', id);
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Plants', href: '/plants' },
     { label: `${id}` },
   ];
-  const { data } = await fetchBatchDetailsUseCase({ batchId: id });
-  console.log('data', data);
-  const { batch, strain } = data!.success;
+
+  const { data } = await fetchBatchDetailsUseCase({ id });
+  const batch = data?.success?.batch;
+  const strain = data?.success?.strain;
 
   if (!batch) {
     return (

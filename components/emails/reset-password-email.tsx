@@ -1,3 +1,5 @@
+import { siteConfig } from '@/config/site';
+import { env } from '@/env.mjs';
 import {
   Body,
   Button,
@@ -8,22 +10,18 @@ import {
   Section,
   Tailwind,
   Text,
-} from "@react-email/components"
-
-import { siteConfig } from "@/config/site"
-
-import { absoluteUrl } from "@/lib/utils"
+} from '@react-email/components';
 
 interface ResetPasswordEmailProps {
-  email: string
-  resetPasswordToken: string
+  email: string;
+  resetPasswordToken: string;
 }
 
 export function ResetPasswordEmail({
   email,
   resetPasswordToken,
 }: Readonly<ResetPasswordEmailProps>): JSX.Element {
-  const previewText = `${siteConfig.name} password reset.`
+  const previewText = `${siteConfig.name} password reset.`;
 
   return (
     <Html lang="en">
@@ -37,7 +35,7 @@ export function ResetPasswordEmail({
             <Section>
               <Text className="text-xl">Hi,</Text>
               <Text className="text-base">
-                Someone just requested a password change for your{" "}
+                Someone just requested a password change for your{' '}
                 {siteConfig.name}
                 account associated with {email}.
               </Text>
@@ -45,9 +43,7 @@ export function ResetPasswordEmail({
                 If this was you, you can set a new password here:
               </Text>
               <Button
-                href={absoluteUrl(
-                  `/signin/password-update?token=${resetPasswordToken}`
-                )}
+                href={` ${env.NEXT_PUBLIC_APP_URL}/signin/password-update?token=${resetPasswordToken}`}
               >
                 Set new password
               </Button>
@@ -64,10 +60,10 @@ export function ResetPasswordEmail({
             </Section>
             <Section>
               <Text className="text-base font-medium">
-                Enjoy{" "}
+                Enjoy{' '}
                 <span className="font-semibold tracking-wide">
                   {siteConfig.name}
-                </span>{" "}
+                </span>{' '}
                 and have a nice day!
               </Text>
             </Section>
@@ -75,5 +71,5 @@ export function ResetPasswordEmail({
         </Body>
       </Tailwind>
     </Html>
-  )
+  );
 }

@@ -251,33 +251,35 @@ const PlantsTable: React.FC = () => {
         ))}
       </TableHeader>
       <TableBody>
-        {status === 'hasSucceeded' && (
-          <>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell className="text-left" key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+        {status === 'hasSucceeded' &&
+          plants &&
+          (
+              <>
+                {table.getRowModel()?.rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && 'selected'}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell className="text-left" key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell className="col-span-3 h-24 text-center">
+                      No plants found in this batch.
                     </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell className="col-span-3 h-24 text-center">
-                  No plants found in this batch.
-                </TableCell>
-              </TableRow>
+                  </TableRow>
+                )}
+              </>,
             )}
-          </>
-        )}
       </TableBody>
     </Table>
   );
