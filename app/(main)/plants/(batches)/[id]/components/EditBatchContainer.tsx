@@ -14,6 +14,9 @@ import { BatchProvider } from './BatchContext';
 import { CurrentPhaseForm } from './Forms/CurrentPhaseForm';
 import { GrowthPhasesForm } from './Forms/GrowthPhasesForm';
 import { PlantsContainer } from './Plants/PlantsContainer';
+import { archiveBatchUseCase } from '@/modules/plants/use-cases';
+import { useAction } from 'next-safe-action/hooks';
+import { toast } from 'sonner';
 
 interface EditBatchContainerProps {
   details: BatchProps;
@@ -82,6 +85,21 @@ const initialData = {
 };
 
 const EditBatchContainer: React.FC<EditBatchContainerProps> = ({ details }) => {
+  const { execute } = useAction(archiveBatchUseCase, {
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success('Batch archived successfully');
+        // Optionally, you can add logic here to refresh the page or update the UI
+      } else {
+        toast.error(data.failure || 'Failed to archive batch');
+      }
+    },
+    onError: (error) => {
+      console.error('Failed to archive batch:', error);
+      toast.error('An error occurred while archiving the batch');
+    },
+  });
+
   return (
     <BatchProvider details={details}>
       <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
@@ -123,14 +141,8 @@ const EditBatchContainer: React.FC<EditBatchContainerProps> = ({ details }) => {
               <Button 
                 size="sm" 
                 variant="secondary"
-                onClick={async () => {
-                  try {
-                    await updateBatch({ id: details.id, isArchived: true });
-                    // Optionally, you can add a success message or refresh the page here
-                  } catch (error) {
-                    console.error('Failed to archive batch:', error);
-                    // Optionally, you can show an error message to the user
-                  }
+                onClick={() => {
+                  execute({ id: details.id, isArchived: true });
                 }}
               >
                 Archive Batch
