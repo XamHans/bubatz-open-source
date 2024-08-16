@@ -31,7 +31,16 @@ export const fetchMemberSalesUseCase = actionClient
     }
     try {
       const sales = await getMemberSales(parsedInput.memberId);
-      return { success: sales };
+      const salesWithDetails = await Promise.all(sales.map(async (sale) => {
+        const admin = await getUser(sale.salesById);
+        const strain = await getStrain(sale.strainId);
+        return {
+          ...sale,
+          adminName: admin?.name || 'Unknown',
+          strainName: strain?.name || 'Unknown',
+        };
+      }));
+      return { success: salesWithDetails };
     } catch (error) {
       return { failure: `Failed to fetch sales for member ${parsedInput.memberId}` };
     }
