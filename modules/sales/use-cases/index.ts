@@ -1,42 +1,41 @@
 'use server';
 
-import { logger } from '@/lib/logger';
 import { actionClient } from '@/lib/server-clients';
+import { z } from 'zod';
 import {
   createSale,
   createSaleItem,
-  getSaleWithoutItemsById,
-  getSales,
+  getMemberSales,
+  getSales
 } from '../data-access';
 import {
   SaleItemInsertSchema,
-  SaleWithItems,
-  SaleWithoutItems,
-  getSaleSchema,
+  SaleWithItems
 } from '../data-access/schema';
 
-/**
- * Get all sales.
- * @returns Array of all sales.
- */
-export const fetchSalesUseCase = actionClient.action(async () => {
-  const sales = await getSales();
-  return { sales: sales };
-});
+export const fetchAllSalesUseCase = actionClient
+  .action(async () => {
+    try {
+      const sales = await getSales();
+      return { success: sales };
+    } catch (error) {
+      return { failure: 'Failed to fetch sales' };
+    }
+  });
 
-/**
- * Get a sale by its id.
- * @returns Sale with the given id. If no sale is found, return null.
- */
-export const fetchSaleUseCase = actionClient
-  .schema(getSaleSchema)
-  .action(
-    async ({ parsedInput }): Promise<{ sale?: SaleWithoutItems | null }> => {
-      logger.debug('Fetching sale from DB.');
-      const sale = await getSaleWithoutItemsById(parsedInput.id);
-      return { sale: sale };
-    },
-  );
+export const fetchMemberSalesUseCase = actionClient
+  .schema(z.object({ memberId: z.string().uuid() }))
+  .action(async ({ parsedInput }) => {
+    if (!parsedInput?.memberId) {
+      return { failure: 'No member ID provided, cannot fetch sales' };
+    }
+    try {
+      const sales = await getMemberSales(parsedInput.memberId);
+      return { success: sales };
+    } catch (error) {
+      return { failure: `Failed to fetch sales for member ${parsedInput.memberId}` };
+    }
+  });
 
 /**
  * Create a new sale.
