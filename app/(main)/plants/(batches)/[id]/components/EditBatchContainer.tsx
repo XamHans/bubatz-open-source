@@ -120,7 +120,19 @@ const EditBatchContainer: React.FC<EditBatchContainerProps> = ({ details }) => {
             </CardHeader>
             <CardContent>
               <div></div>
-              <Button size="sm" variant="secondary">
+              <Button 
+                size="sm" 
+                variant="secondary"
+                onClick={async () => {
+                  try {
+                    await updateBatch({ id: details.id, isArchived: true });
+                    // Optionally, you can add a success message or refresh the page here
+                  } catch (error) {
+                    console.error('Failed to archive batch:', error);
+                    // Optionally, you can show an error message to the user
+                  }
+                }}
+              >
                 Archive Batch
               </Button>
             </CardContent>
