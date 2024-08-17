@@ -7,7 +7,6 @@ import Features from './components/features';
 import { Testimonials } from './components/testimonials';
 
 export default async function HomePage() {
-  8;
   const repoStars = await getRepoStars();
 
   return (
@@ -17,19 +16,19 @@ export default async function HomePage() {
           href="#"
           className="flex items-center space-x-2 rounded-md bg-secondary px-3 py-2 text-sm hover:bg-secondary/80"
         >
-          <span>🌱</span>
+          <span>🌿</span>
           <span className="font-medium">
-            GrowTrack is now available. Optimize your plant cultivation today!
+            Bubatz Club Manager is now available. Manage your cannabis club efficiently!
           </span>
           <ExternalLinkIcon className="h-4 w-4 flex-shrink-0" />
         </Link>
         <Container className="font-heading text-center text-3xl font-bold sm:text-4xl sm:leading-tight md:text-5xl md:leading-tight">
-          Streamline Your Plant Cultivation with Intelligent Tracking and Management
+          Streamline Your Cannabis Club Management with Intelligent Tracking and Compliance
         </Container>
         <Container className="text-center text-muted-foreground sm:text-xl">
-          GrowTrack empowers cultivators with advanced tools for strain management, 
-          batch tracking, and growth phase monitoring. Optimize your yields and 
-          streamline operations with our comprehensive plant management solution.
+          Bubatz Club Manager empowers cannabis clubs in Germany with advanced tools for member management, 
+          cultivation tracking, and sales monitoring. Optimize your operations and ensure legal compliance 
+          with our comprehensive club management solution.
         </Container>
         <div className="flex items-center gap-4">
           <Link
@@ -38,7 +37,7 @@ export default async function HomePage() {
               className: 'flex items-center gap-2',
             })}
           >
-            Start Growing
+            Start Managing
           </Link>
           <Link
             href="#"
@@ -47,7 +46,7 @@ export default async function HomePage() {
             })}
           >
             <Icons.gitHub className="mr-2 h-4 w-4" />
-            View Demo
+            View on GitHub
           </Link>
         </div>
       </section>
@@ -65,7 +64,7 @@ export default async function HomePage() {
 
 async function getRepoStars() {
   const response = await fetch(
-    'https://api.github.com/repos/alifarooq9/rapidlaunch',
+    'https://api.github.com/repos/your-repo/bubatz-club-manager',
     {
       next: {
         // run every 15 minutes

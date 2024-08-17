@@ -11,33 +11,33 @@ export type Feature = {
 
 export const features: Feature[] = [
   {
-    title: 'Strain Management',
+    title: 'Member Management',
     description:
-      'GrowTrack provides a comprehensive strain management system. Easily catalog, track, and manage various plant strains, including details like THC/CBD content, growth characteristics, and yield potential.',
+      'Bubatz Club Manager provides a comprehensive member management system. Easily add, update, and track club members, including their roles, payment history, and cannabis purchase limits.',
     image: 'https://utfs.io/f/43bbc3c8-cf3c-4fae-a0eb-9183f1779489-294m81.png',
     imageDark:
       'https://utfs.io/f/fddea366-51c6-45f4-bd54-84d273ad9fb9-1ly324.png',
   },
   {
-    title: 'Batch Tracking',
+    title: 'Cultivation Tracking',
     description:
-      'Our batch tracking feature allows you to monitor multiple batches simultaneously. Track key metrics, growth phases, and outcomes for each batch, ensuring optimal cultivation management.',
+      'Our cultivation tracking feature allows you to monitor multiple batches and plants simultaneously. Track key metrics, growth phases, and yields for each batch, ensuring optimal cultivation management and compliance.',
     image: 'https://utfs.io/f/805616c1-22b8-4508-9890-9ba9e2867a41-p24dnn.png',
     imageDark:
       'https://utfs.io/f/9074c0de-d9ea-4c0b-9d49-55dca1253a3f-6ig3yq.png',
   },
   {
-    title: 'Growth Phase Monitoring',
+    title: 'Sales and Inventory Management',
     description:
-      'GrowTrack offers detailed growth phase monitoring. Set up custom growth phases, track progress, and receive notifications for critical stages in your plants' lifecycle.',
+      'Bubatz Club Manager offers detailed sales and inventory tracking. Record all transactions, monitor stock levels, and ensure compliance with legal purchase limits for each member.',
     image: 'https://utfs.io/f/43bbc3c8-cf3c-4fae-a0eb-9183f1779489-294m81.png',
     imageDark:
       'https://utfs.io/f/fddea366-51c6-45f4-bd54-84d273ad9fb9-1ly324.png',
   },
   {
-    title: 'Yield Optimization',
+    title: 'Compliance and Reporting',
     description:
-      'Leverage GrowTrack's data-driven insights to optimize your yields. Analyze performance across strains and batches, and make informed decisions to improve your cultivation processes.',
+      'Leverage Bubatz Club Manager's built-in compliance features to stay within legal boundaries. Generate reports for authorities, track member purchase history, and maintain accurate records of all club activities.',
     image: 'https://utfs.io/f/72a2c035-69e0-46ca-84a8-446e4dabf77c-3koi6e.png',
     imageDark:
       'https://utfs.io/f/89099112-4273-4375-9e44-1b3394600e21-c6ikq1.png',
@@ -49,11 +49,10 @@ export default function Features() {
     <section className="flex flex-col items-center justify-center gap-20 py-20">
       <div className="grid gap-3">
         <h2 className="text-center text-2xl font-bold text-foreground sm:text-3xl">
-          Starterkit Features
+          Bubatz Club Manager Features
         </h2>
         <Container className="max-w-2xl text-center text-base text-muted-foreground sm:text-xl">
-          Starterkit features are designed to help you build a robust and
-          scalable SaaS project.
+          Our features are designed to help you manage your cannabis club efficiently and in compliance with German regulations.
         </Container>
       </div>
       <div className="grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2">
