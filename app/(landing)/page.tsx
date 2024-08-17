@@ -17,20 +17,19 @@ export default async function HomePage() {
           href="#"
           className="flex items-center space-x-2 rounded-md bg-secondary px-3 py-2 text-sm hover:bg-secondary/80"
         >
-          <span>🎉</span>
+          <span>🌱</span>
           <span className="font-medium">
-            RapidLaunch is in development. Follow our progress on 𝕏 (formally
-            Twitter)
+            GrowTrack is now available. Optimize your plant cultivation today!
           </span>
           <ExternalLinkIcon className="h-4 w-4 flex-shrink-0" />
         </Link>
         <Container className="font-heading text-center text-3xl font-bold sm:text-4xl sm:leading-tight md:text-5xl md:leading-tight">
-          Rapidly launch your MVP with Beautiful Starterkits, Blocks, and more.
+          Streamline Your Plant Cultivation with Intelligent Tracking and Management
         </Container>
         <Container className="text-center text-muted-foreground sm:text-xl">
-          Elevate your development game with Rapidlaunch! Launch your apps
-          faster with our SaaS starterkits, components, building guides, and
-          more. Customizable. Open Source.
+          GrowTrack empowers cultivators with advanced tools for strain management, 
+          batch tracking, and growth phase monitoring. Optimize your yields and 
+          streamline operations with our comprehensive plant management solution.
         </Container>
         <div className="flex items-center gap-4">
           <Link
@@ -39,7 +38,7 @@ export default async function HomePage() {
               className: 'flex items-center gap-2',
             })}
           >
-            Early Access
+            Start Growing
           </Link>
           <Link
             href="#"
@@ -48,10 +47,7 @@ export default async function HomePage() {
             })}
           >
             <Icons.gitHub className="mr-2 h-4 w-4" />
-            Github -
-            <span className="ml-1 flex items-center font-normal text-muted-foreground">
-              {repoStars}
-            </span>
+            View Demo
           </Link>
         </div>
       </section>
