@@ -18,6 +18,7 @@ const links = {
     index: '/plants',
     batches: {
       index: '/plants/batches',
+      detail: '/plants/batches/:id',
       new: '/plants/batches/new',
     },
     strains: {

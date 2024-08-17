@@ -2,6 +2,7 @@ import Breadcrumbs from '@/components/generic/BreadCrumbs';
 import { Container } from '@/components/generic/Container';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { siteConfig } from '@/config/site';
 import { fetchBatchDetailsUseCase } from '@/modules/plants/use-cases';
 import { ChevronLeft } from 'lucide-react';
 import { Metadata } from 'next';
@@ -55,19 +56,18 @@ const BatchDetailPage = async ({ params: { id } }: BatchDetailPageProps) => {
 
   return (
     <Container className="space-y-4">
-      <Breadcrumbs items={breadcrumbs} />
-
+      <div className="mb-8 flex items-center justify-center gap-4">
+        <Link href={siteConfig.links.plants.index}>
+          <Button variant="outline" size="icon" className="h-9 w-9">
+            <ChevronLeft className="h-5 w-5" />
+            <span className="sr-only">Back</span>
+          </Button>
+        </Link>
+        <Breadcrumbs items={breadcrumbs} />
+      </div>
       <div className=" grid max-w-[62rem] flex-1 auto-rows-max gap-4">
         {/* Crew name + category */}
         <div className="flex w-full items-center gap-4">
-          <Link href={`/`}>
-            {' '}
-            <Button variant="outline" size="icon" className="h-7 w-7">
-              <ChevronLeft className="h-4 w-4" />
-              <span className="sr-only">Back</span>
-            </Button>
-          </Link>
-
           <h1 className="shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
             {batch?.name}
           </h1>

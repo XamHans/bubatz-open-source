@@ -1,7 +1,6 @@
 'use client';
 
 import SkeletonLoader from '@/app/components/SkeletonLoader';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -56,25 +55,7 @@ const getStrainsTableColumns = (router: AppRouterInstance) => {
         <div className="ml-4 text-left">{row.getValue('name')}</div>
       ),
     },
-    {
-      id: 'type',
-      accessorKey: 'type',
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="justify-start text-xs"
-        >
-          Type
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      ),
-      cell: ({ row }) => (
-        <Badge className="ml-4" variant="outline">
-          {row.getValue('type')}
-        </Badge>
-      ),
-    },
+
     {
       id: 'thc',
       accessorKey: 'thc',

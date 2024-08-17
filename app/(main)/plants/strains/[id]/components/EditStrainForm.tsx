@@ -1,6 +1,5 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -12,79 +11,71 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { StrainProps, UpdateStrainInput } from '@/modules/plants/data-access/schema';
+import { useToast } from '@/components/ui/use-toast';
+import {
+  StrainProps,
+  UpdateStrainInput,
+  updateStrainInputSchema,
+} from '@/modules/plants/data-access/schema';
 import { updateStrainUseCase } from '@/modules/plants/use-cases';
 import { zodResolver } from '@hookform/resolvers/zod';
+import debounce from 'lodash/debounce';
 import { useAction } from 'next-safe-action/hooks';
 import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
-
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: 'Name must be at least 2 characters.',
-  }),
-  type: z.string().min(2, {
-    message: 'Type must be at least 2 characters.',
-  }),
-  thc: z.number().min(0).max(100),
-  cbd: z.number().min(0).max(100),
-  description: z.string().optional(),
-});
 
 interface EditStrainFormProps {
   strain: StrainProps;
-  onSuccess?: (updatedStrain: StrainProps) => void;
 }
 
-export function EditStrainForm({ strain, onSuccess }: EditStrainFormProps) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+export function EditStrainForm({ strain }: EditStrainFormProps) {
+  const { toast } = useToast();
+
+  const form = useForm<UpdateStrainInput>({
+    resolver: zodResolver(updateStrainInputSchema),
     defaultValues: {
-      name: strain.name,
-      type: strain.type,
-      thc: strain.thc,
-      cbd: strain.cbd,
-      description: strain.description || '',
+      ...strain,
     },
   });
 
   const { execute, status } = useAction(updateStrainUseCase, {
     onSuccess: ({ data }) => {
-      if (data?.success) {
-        toast.success('Strain updated successfully');
-        onSuccess?.(data.success);
-      }
+      toast({
+        title: 'Success',
+        duration: 1000,
+        description: 'Strain updated successfully',
+      });
     },
     onError: (error) => {
-      toast.error(`Error updating strain: ${error.serverError || 'Unknown error'}`);
+      toast({
+        title: 'Error',
+        variant: 'destructive',
+        description: `Strain could not be updated ${error}`,
+      });
     },
   });
 
+  // Create a debounced version of the execute function
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedExecute = useCallback(
+    debounce((data: UpdateStrainInput) => {
+      execute(data);
+    }, 500),
+    [execute],
+  );
+
   useEffect(() => {
     const subscription = form.watch((value, { name, type }) => {
-      console.log('Form changed:', { value, name, type });
+      const formData = form.getValues();
+      debouncedExecute({ ...strain, ...formData });
     });
-    return () => subscription.unsubscribe();
-  }, [form]);
 
-  const onSubmit = useCallback((values: z.infer<typeof formSchema>) => {
-    const updateInput: UpdateStrainInput = {
-      id: strain.id,
-      ...values,
-    };
-    execute(updateInput);
-  }
+    return () => subscription.unsubscribe();
+  }, [form, debouncedExecute, strain]);
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {form.formState.isDirty && (
-          <p className="text-sm text-yellow-600">
-            You have unsaved changes. Don't forget to submit!
-          </p>
-        )}
+      <form className="space-y-8">
         <FormField
           control={form.control}
           name="name"
@@ -99,20 +90,7 @@ export function EditStrainForm({ strain, onSuccess }: EditStrainFormProps) {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="type"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Type</FormLabel>
-              <FormControl>
-                <Input placeholder="Strain type" {...field} />
-              </FormControl>
-              <FormDescription>The type of the strain (e.g., Indica, Sativa, Hybrid).</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <FormField
           control={form.control}
           name="thc"
@@ -120,9 +98,11 @@ export function EditStrainForm({ strain, onSuccess }: EditStrainFormProps) {
             <FormItem>
               <FormLabel>THC Content (%)</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="THC content" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                <Input placeholder="THC content" {...field} />
               </FormControl>
-              <FormDescription>The THC content of the strain (0-100%).</FormDescription>
+              <FormDescription>
+                The THC content of the strain (0-100%).
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -134,9 +114,11 @@ export function EditStrainForm({ strain, onSuccess }: EditStrainFormProps) {
             <FormItem>
               <FormLabel>CBD Content (%)</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="CBD content" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                <Input placeholder="CBD content" {...field} />
               </FormControl>
-              <FormDescription>The CBD content of the strain (0-100%).</FormDescription>
+              <FormDescription>
+                The CBD content of the strain (0-100%).
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -150,17 +132,13 @@ export function EditStrainForm({ strain, onSuccess }: EditStrainFormProps) {
               <FormControl>
                 <Textarea placeholder="Strain description" {...field} />
               </FormControl>
-              <FormDescription>A brief description of the strain.</FormDescription>
+              <FormDescription>
+                A brief description of the strain.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button 
-          type="submit" 
-          disabled={status === 'executing' || !form.formState.isDirty}
-        >
-          {status === 'executing' ? 'Updating...' : 'Update Strain'}
-        </Button>
       </form>
     </Form>
   );

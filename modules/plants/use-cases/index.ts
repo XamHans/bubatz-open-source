@@ -31,6 +31,7 @@ import {
   getStrainDetailSchema,
   updateBatchInputSchema,
   updatePlantInputSchema,
+  updateStrainInputSchema,
 } from '../data-access/schema';
 
 // -------------- Batches
@@ -165,6 +166,17 @@ export const createStrainUseCase = actionClient
       return { failure: 'Failed to create strain' };
     }
     return { success: newStrainId };
+  });
+
+export const updateStrainUseCase = actionClient
+  .schema(updateStrainInputSchema)
+  .action(async ({ parsedInput }) => {
+    logger.info('Updating strain with data:', parsedInput);
+    const updatedStrain = await updateStrain(parsedInput);
+    if (!updatedStrain) {
+      return { failure: 'Failed to create strain' };
+    }
+    return { success: updatedStrain };
   });
 
 type FetchBatchDetailsSuccess = {

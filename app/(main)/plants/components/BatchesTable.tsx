@@ -136,7 +136,6 @@ const getBatchtesTableColumns = (router: AppRouterInstance) => {
       id: 'actions',
       enableHiding: false,
       cell: ({ row }) => {
-        const plant = row.original;
         return (
           <div className="flex justify-start">
             <Button
@@ -144,7 +143,10 @@ const getBatchtesTableColumns = (router: AppRouterInstance) => {
               className="hover:bg-inherit"
               onClick={() => {
                 router.push(
-                  siteConfig.links.plants.detail.replace(':id', plant.id),
+                  siteConfig.links.plants.batches.detail.replace(
+                    ':id',
+                    row.original.id,
+                  ),
                 );
               }}
             >

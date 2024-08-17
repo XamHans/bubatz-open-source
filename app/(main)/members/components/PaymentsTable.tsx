@@ -1,5 +1,6 @@
 'use client';
 
+import SkeletonLoader from '@/app/components/SkeletonLoader';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -130,6 +131,10 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
       rowSelection,
     },
   });
+
+  if (status === 'executing') {
+    return <SkeletonLoader />; // This will use the default table skeleton
+  }
 
   return (
     <div className="space-y-4">

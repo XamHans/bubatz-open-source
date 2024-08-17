@@ -47,7 +47,6 @@ const GrowthPhasesForm = ({ batch }: GrowthPhasesFormProps) => {
       //updateBatch(data.data?.success[0]);
     },
     onError: (error) => {
-      console.log('Error updating batch', error);
       toast({
         title: 'Error',
         variant: 'destructive',

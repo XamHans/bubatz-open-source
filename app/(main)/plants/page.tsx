@@ -25,15 +25,15 @@ export const metadata: Metadata = {
 
 async function PlantListPage() {
   const session = await auth();
-  console.log('session inside members', session);
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Plants', href: '/plants' },
-    { label: 'All', href: '/' },
   ];
   return (
     <SessionProvider session={session}>
-      <Breadcrumbs items={breadcrumbs} />
+      <div className="mb-8 flex items-center justify-center gap-4">
+        <Breadcrumbs items={breadcrumbs} />
+      </div>
 
       <Container className="space-y-4">
         <Card>

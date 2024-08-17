@@ -1,12 +1,5 @@
 'use client';
 
-import configuration from '@/app/configuration';
-import {
-  ClubProps,
-  ClubStatus,
-  UpdateClubDTO,
-  updateClubSchema,
-} from '@/business-logic/club/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
