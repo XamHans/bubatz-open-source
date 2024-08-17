@@ -5,7 +5,7 @@ import {
   pgEnum,
   real,
   serial,
-  time,
+  timestamp,
   uuid
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm/relations';
@@ -28,8 +28,8 @@ export const sales = protectedSchema.table('sales', {
   salesById: uuid('sales_by_id')
     .notNull()
     .references(() => members.id),
-  createdAt: time('created_at').notNull().defaultNow(), // Not yet updated on the db
-  updatedAt: time('updated_at', { withTimezone: true }).notNull().defaultNow(), // Not yet updated on the db
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(), // Not yet updated on the db
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(), // Not yet updated on the db
 });
 
 export const salesItems = protectedSchema.table('sales_items', {

@@ -1,6 +1,6 @@
 {
-  "id": "ec0c1be4-b7af-4f2f-8a28-5a4329bbcdd1",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "60999020-1791-4df1-8c37-fb4264667633",
+  "prevId": "ec0c1be4-b7af-4f2f-8a28-5a4329bbcdd1",
   "version": "6",
   "dialect": "postgresql",
   "tables": {
@@ -572,13 +572,35 @@
           "name": "current_growth_stage",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "'SEEDING'"
+        },
+        "total_yield": {
+          "name": "total_yield",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "total_destroyed": {
+          "name": "total_destroyed",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
         },
         "price_per_gram": {
           "name": "price_per_gram",
           "type": "real",
           "primaryKey": false,
           "notNull": false
+        },
+        "is_archived": {
+          "name": "is_archived",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
         },
         "other_details": {
           "name": "other_details",

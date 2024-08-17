@@ -17,10 +17,8 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { siteConfig } from '@/config/site';
-import { UserSchema } from '@/modules/members/data-access/schema';
-import { fetchMembersUseCase } from '@/modules/members/use-cases';
 import { SaleWithoutItems } from '@/modules/sales/data-access/schema';
-import { fetchSalesUseCase } from '@/modules/sales/use-cases';
+import { fetchAllSalesUseCase } from '@/modules/sales/use-cases';
 import {
   ColumnFiltersState,
   SortingState,
@@ -44,7 +42,7 @@ import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.share
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-type SaleTableData = SaleWithoutItems & { userName: string };
+type SaleTableData = SaleWithoutItems;
 
 const getSaleTableColumns = (router: AppRouterInstance) => {
   return [
@@ -182,14 +180,6 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
                 </Tooltip>
               </TooltipProvider>
             </Button>
-
-            {/* <EditMemberModal member={member} />
-            <DeleteModal<MemberProps>
-              entity={member}
-              onDelete={handleDelete}
-              deleteConfirmationHeader={t("member:ACTIONS.DELETE")}
-              deleteConfirmationText={t("member:ACTIONS.DELETE_TEXT")}
-            />{" "} */}
           </div>
         );
       },
@@ -199,7 +189,6 @@ const getSaleTableColumns = (router: AppRouterInstance) => {
 
 export default function SalesTable() {
   const [sales, setSales] = useState<SaleWithoutItems[]>([]);
-  const [members, setMembers] = useState<UserSchema[]>([]);
   const [parsedSalesData, setParsedSalesData] = useState<SaleTableData[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -228,37 +217,17 @@ export default function SalesTable() {
 
   // ------------------- Use Cases -------------------
 
-  const fetchSales = useAction(fetchSalesUseCase, {
-    onSuccess: (data) => {
-      setSales(data.sales);
-    },
-  });
-
-  const fetchMembers = useAction(fetchMembersUseCase, {
-    onSuccess: (data) => {
-      setMembers((prev) => data.members);
-      console.log('data', members);
+  const fetchSales = useAction(fetchAllSalesUseCase, {
+    onSuccess: ({ data }) => {
+      setSales(data?.success ?? []);
     },
   });
 
   // ------------------- Effects -------------------
 
   useEffect(() => {
-    fetchSales.execute({});
-    fetchMembers.execute({});
+    fetchSales.execute();
   }, []);
-
-  useEffect(() => {
-    const parsedData = sales.map((sale) => {
-      const member = members.find((member) => member.id == sale.memberId);
-      return {
-        ...sale,
-        userName: member?.firstName + ' ' + member?.lastName,
-      };
-    });
-    console.log('parsedData', parsedData);
-    setParsedSalesData(parsedData);
-  }, [sales, members]);
 
   // ------------------- Render -------------------
 

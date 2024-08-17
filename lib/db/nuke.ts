@@ -1,10 +1,11 @@
-import { env } from '@/env.mjs';
+import * as dotenv from "dotenv";
 import { Pool } from 'pg';
 import readline from 'readline';
 
+dotenv.config({ path: '../../.env' });
 // Use a connection string
 
-const connectionString = env.DATABASE_URL;
+const connectionString = process.env.DATABASE_URL;
 const pool = new Pool({ connectionString });
 
 // Specify the schemas to be deleted

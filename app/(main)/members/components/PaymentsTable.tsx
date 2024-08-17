@@ -64,7 +64,7 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
-        cell: ({ row }) => <div>${row.getValue('amount')}</div>,
+        cell: ({ row }) => <div>{row.getValue('amount')} €</div>,
       },
       {
         accessorKey: 'paymentDate',
@@ -95,8 +95,7 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
 
   const { execute, status } = useAction(fetchMemberPaymentsUseCase, {
     onSuccess: (data) => {
-      logger.debug(data?.data?.success.);
-      setPayments(data.data?.payments);
+      setPayments(data.data?.success ?? []);
     },
     onError: (error) => {
       logger.error('Error fetching member payments', error);

@@ -10,6 +10,7 @@ import {
   DeletePlantInput,
   UpdateBatchInput,
   UpdatePlantInput,
+  UpdateStrainInput,
   batches,
   plants,
   strains,
@@ -23,8 +24,19 @@ import {
 //-------------------------------------------------------------------------
 
 const getBatches = async () => {
-  const allBatches = await db.select().from(batches);
-  console.log('allBatches', allBatches);
+  const allBatches = await db
+    .select({
+      id: batches.id,
+      name: batches.name,
+      startDate: batches.startDate,
+      endDate: batches.endDate,
+      strainName: strains.name,
+      currentGrowPhase: batches.currentGrowthStage,
+    })
+    .from(batches)
+    .leftJoin(strains, eq(batches.strainId, strains.id))
+    .where(eq(batches.isArchived, false));
+
   return allBatches;
 };
 
@@ -44,7 +56,11 @@ export const createBatch = async (input: CreateBatchInput) => {
 };
 
 export const updateBatch = async (id: string, data: UpdateBatchInput) => {
-  return await db.update(batches).set(data).where(eq(batches.id, id));
+  return await db
+    .update(batches)
+    .set(data)
+    .where(eq(batches.id, id))
+    .returning();
 };
 
 const getBatchDetail = async (id: string) => {
@@ -64,7 +80,6 @@ export const getBatchById = async (id: string) => {
     .leftJoin(strains, eq(batches.strainId, strains.id))
     .where(eq(batches.id, id))
     .limit(1);
-  console.log('result[0]', result[0]);
   return result[0];
 };
 
@@ -99,8 +114,25 @@ export const getStrains = async () => {
   return allStrains;
 };
 
+export const getStrainById = async (id: number) => {
+  const result = await db
+    .select()
+    .from(strains)
+    .where(eq(strains.id, id))
+    .limit(1);
+  return result[0];
+};
+
 export const createStrain = async (input: CreateStrainInput) => {
   const newStrain = await db.insert(strains).values(input).returning();
   console.info('newStrain', newStrain);
   return newStrain[0];
+};
+
+export const updateStrain = async (input: UpdateStrainInput) => {
+  return await db
+    .update(strains)
+    .set(input)
+    .where(eq(strains.id, input.id))
+    .returning();
 };

@@ -12,7 +12,7 @@ import { siteConfig } from '@/config/site';
 import { PlusCircle } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import SalesList from './components/SalesList';
+import SalesTable from './components/SalesTable';
 
 export default function SalesPage() {
   const metadata: Metadata = {
@@ -57,7 +57,7 @@ export default function SalesPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <SalesList />
+            <SalesTable />
           </CardContent>
         </Card>
       </Container>

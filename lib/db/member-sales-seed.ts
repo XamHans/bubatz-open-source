@@ -1,32 +1,23 @@
-
-import { env } from '@/env.mjs';
 import { addMemberInputSchema, addMembershipPaymentSchema } from '@/modules/members/data-access/schema';
+import { createSaleInputSchema, paymentMethods, SaleItemInsertSchema } from '@/modules/sales/data-access/schema';
 import { faker } from '@faker-js/faker';
+import * as dotenv from "dotenv";
 import { Pool } from 'pg';
 
-// Use a connection string
-const connectionString = env.DATABASE_URL;
+dotenv.config({ path: '../../.env' });
 
+const connectionString = process.env.DATABASE_URL;
 const pool = new Pool({ connectionString });
 
 const memberStatuses = ['ACTIVE', 'INACTIVE', 'PENDING'];
-const paymentMethods = ['CREDIT_CARD', 'BANK_TRANSFER', 'CASH', 'PAYPAL'];
-
-// Fixed array of date strings
-const fixedDates = [
-    '1980-01-15',
-    '1990-05-20',
-    '2000-09-10',
-    '1975-03-30',
-    '1995-11-05'
-];
+const paymentMethodsArray = paymentMethods.enumValues;
+const fixedDates = ['1980-01-15', '1990-05-20', '2000-09-10', '1975-03-30', '1995-11-05'];
 
 async function seedDatabase() {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
 
-        // Create 50 members
         const createdMemberIds: string[] = [];
         for (let i = 0; i < 50; i++) {
             const firstName = faker.person.firstName();
@@ -84,11 +75,10 @@ async function seedDatabase() {
                     amount: faker.number.float({ min: 50, max: 200, precision: 0.01 }),
                     paymentDate: faker.helpers.arrayElement(fixedDates),
                     paymentStatus: faker.helpers.arrayElement(['PAID', 'PENDING', 'OVERDUE'] as const),
-                    paymentMethod: faker.helpers.arrayElement(paymentMethods),
+                    paymentMethod: faker.helpers.arrayElement(paymentMethodsArray),
                     notes: faker.lorem.sentence(),
                 });
 
-                // Adjust payment date for pending and overdue payments
                 if (payment.paymentStatus !== 'PAID') {
                     payment.paymentDate = null;
                 }
@@ -97,19 +87,52 @@ async function seedDatabase() {
                     INSERT INTO protected.membership_payments (
                         member_id, year, amount, payment_date, payment_status, payment_method, notes
                     ) VALUES ($1, $2, $3, $4, $5, $6, $7)
-                `, [
-                    payment.memberId,
-                    payment.year,
-                    payment.amount,
-                    payment.paymentDate,
-                    payment.paymentStatus,
-                    payment.paymentMethod,
-                    payment.notes
-                ]);
+                `, Object.values(payment));
             }
         }
 
         console.log('Payments seeded successfully.');
+
+        // Create sales and sales items
+        for (const memberId of createdMemberIds) {
+            const numberOfSales = faker.number.int({ min: 1, max: 5 });
+            for (let i = 0; i < numberOfSales; i++) {
+                const sale = createSaleInputSchema.parse({
+                    totalPrice: faker.number.float({ min: 10, max: 500, precision: 0.01 }),
+                    paidVia: faker.helpers.arrayElement(paymentMethodsArray),
+                    memberId: memberId,
+                    salesById: faker.helpers.arrayElement(createdMemberIds), // Random seller
+                });
+
+                const saleResult = await client.query(`
+                    INSERT INTO protected.sales (
+                        total_price, paid_via, member_id, sales_by_id
+                    ) VALUES ($1, $2, $3, $4)
+                    RETURNING id
+                `, Object.values(sale));
+
+                const saleId = saleResult.rows[0].id;
+
+                // Create 1-3 sales items for each sale
+                const numberOfItems = faker.number.int({ min: 1, max: 3 });
+                for (let j = 0; j < numberOfItems; j++) {
+                    const saleItem = SaleItemInsertSchema.parse({
+                        weightGrams: faker.number.float({ min: 1, max: 50, precision: 0.1 }),
+                        price: faker.number.float({ min: 5, max: 100, precision: 0.01 }),
+                        strainId: faker.number.int({ min: 1, max: 10 }), // Assuming you have 10 strains
+                        saleId: saleId,
+                    });
+
+                    await client.query(`
+                        INSERT INTO protected.sales_items (
+                            weight_grams, price, strain_id, sale_id
+                        ) VALUES ($1, $2, $3, $4)
+                    `, Object.values(saleItem));
+                }
+            }
+        }
+
+        console.log('Sales and sales items seeded successfully.');
 
         // Update current year payment status for members
         await client.query(`

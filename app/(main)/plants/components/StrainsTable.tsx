@@ -1,5 +1,6 @@
 'use client';
 
+import SkeletonLoader from '@/app/components/SkeletonLoader';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -39,25 +40,6 @@ import { useEffect, useState } from 'react';
 const getStrainsTableColumns = (router: AppRouterInstance) => {
   return [
     {
-      id: 'id',
-      accessorKey: 'id',
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="justify-start text-xs"
-        >
-          Strain ID
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      ),
-      cell: ({ row }) => (
-        <div className="ml-4 text-left">
-          {String(row.getValue('id')).slice(-6)}
-        </div>
-      ),
-    },
-    {
       id: 'name',
       accessorKey: 'name',
       header: ({ column }) => (
@@ -94,8 +76,8 @@ const getStrainsTableColumns = (router: AppRouterInstance) => {
       ),
     },
     {
-      id: 'thcContent',
-      accessorKey: 'thcContent',
+      id: 'thc',
+      accessorKey: 'thc',
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -107,12 +89,12 @@ const getStrainsTableColumns = (router: AppRouterInstance) => {
         </Button>
       ),
       cell: ({ row }) => (
-        <div className="ml-4 text-left">{row.getValue('thcContent')}%</div>
+        <div className="ml-4 text-left">{row.getValue('thc')}%</div>
       ),
     },
     {
-      id: 'cbdContent',
-      accessorKey: 'cbdContent',
+      id: 'cbd',
+      accessorKey: 'cbd',
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -124,7 +106,26 @@ const getStrainsTableColumns = (router: AppRouterInstance) => {
         </Button>
       ),
       cell: ({ row }) => (
-        <div className="ml-4 text-left">{row.getValue('cbdContent')}%</div>
+        <div className="ml-4 text-left">{row.getValue('cbd')}%</div>
+      ),
+    },
+    {
+      id: 'amountAvailable',
+      accessorKey: 'amountAvailable',
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="justify-start text-xs"
+        >
+          Amount Available
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <div className="ml-4 text-left">
+          {String(row.getValue('amountAvailable'))}
+        </div>
       ),
     },
     {
@@ -139,7 +140,10 @@ const getStrainsTableColumns = (router: AppRouterInstance) => {
               className="hover:bg-inherit"
               onClick={() => {
                 router.push(
-                  siteConfig.links.plants.strainDetail.replace(':id', strain.id),
+                  siteConfig.links.plants.strains.detail.replace(
+                    ':id',
+                    strain.id,
+                  ),
                 );
               }}
             >
@@ -161,8 +165,8 @@ const getStrainsTableColumns = (router: AppRouterInstance) => {
 
 export default function StrainsTable() {
   const { execute, status } = useAction(fetchStrainsUseCase, {
-    onSuccess: (data) => {
-      setStrains(data?.data?.success ?? []);
+    onSuccess: ({ data }) => {
+      setStrains(data?.success ?? []);
     },
     onError: (error) => {
       console.log('Error fetching strains', error);
@@ -198,6 +202,10 @@ export default function StrainsTable() {
       rowSelection,
     },
   });
+
+  if (status === 'executing') {
+    return <SkeletonLoader />; // This will use the default table skeleton
+  }
 
   return (
     <Table className="rounded-md bg-white">

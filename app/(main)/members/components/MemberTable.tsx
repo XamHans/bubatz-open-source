@@ -1,5 +1,6 @@
 'use client';
 
+import SkeletonLoader from '@/app/components/SkeletonLoader';
 import { siteConfig } from '@/config/site';
 import { logger } from '@/lib/logger';
 import {
@@ -191,9 +192,8 @@ export default function MemberTable() {
   };
 
   const { execute, status } = useAction(fetchMembersUseCase, {
-    onSuccess: (data) => {
-      logger.debug(data?.data?.members);
-      setMembers(data.data?.members);
+    onSuccess: ({ data }) => {
+      setMembers(data?.success ?? []);
     },
     onError: (error) => {
       logger.error('Error fetching member', error);
@@ -208,7 +208,7 @@ export default function MemberTable() {
   const router = useRouter();
 
   useEffect(() => {
-    execute({});
+    execute();
   }, []);
 
   const table = useReactTable({
@@ -229,6 +229,10 @@ export default function MemberTable() {
       rowSelection,
     },
   });
+
+  if (status === 'executing') {
+    return <SkeletonLoader />;
+  }
 
   return (
     <div className="space-y-4 ">

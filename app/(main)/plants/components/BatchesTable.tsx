@@ -1,5 +1,6 @@
 'use client';
 
+import SkeletonLoader from '@/app/components/SkeletonLoader';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -76,7 +77,7 @@ const getBatchtesTableColumns = (router: AppRouterInstance) => {
     },
     {
       id: 'strain',
-      accessorKey: 'strain',
+      accessorKey: 'strainName',
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -89,7 +90,7 @@ const getBatchtesTableColumns = (router: AppRouterInstance) => {
       ),
       cell: ({ row }) => (
         <Badge className="ml-4" variant="outline">
-          {row.getValue('strain')}
+          {row.original.strainName}
         </Badge>
       ),
     },
@@ -127,7 +128,7 @@ const getBatchtesTableColumns = (router: AppRouterInstance) => {
       ),
       cell: ({ row }) => (
         <div className="ml-4 text-left">
-          <Badge variant="outline">{row.getValue('currentGrowthStage')}</Badge>
+          <Badge variant="outline">{row.original.currentGrowPhase}</Badge>
         </div>
       ),
     },
@@ -165,8 +166,8 @@ const getBatchtesTableColumns = (router: AppRouterInstance) => {
 
 export default function BatchesTable() {
   const { execute, status } = useAction(fetchBatchesUseCase, {
-    onSuccess: (data) => {
-      setPlants(data?.batches);
+    onSuccess: ({ data }) => {
+      setPlants(data?.success ?? []);
     },
     onError: (error) => {
       console.log('Error fetching plants', error);
@@ -203,6 +204,10 @@ export default function BatchesTable() {
     },
   });
 
+  if (status === 'executing') {
+    return <SkeletonLoader />; // This will use the default table skeleton
+  }
+
   return (
     <Table className="rounded-md bg-white">
       <TableHeader>
@@ -225,8 +230,8 @@ export default function BatchesTable() {
         ))}
       </TableHeader>
       <TableBody>
-        {table.getRowModel().rows?.length ? (
-          table.getRowModel().rows.map((row) => (
+        {table?.getRowModel()?.rows?.length ? (
+          table?.getRowModel().rows.map((row) => (
             <TableRow
               key={row.id}
               data-state={row.getIsSelected() && 'selected'}

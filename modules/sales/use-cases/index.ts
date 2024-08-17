@@ -6,22 +6,18 @@ import {
   createSale,
   createSaleItem,
   getMemberSales,
-  getSales
+  getSales,
 } from '../data-access';
-import {
-  SaleItemInsertSchema,
-  SaleWithItems
-} from '../data-access/schema';
+import { SaleItemInsertSchema, SaleWithItems } from '../data-access/schema';
 
-export const fetchAllSalesUseCase = actionClient
-  .action(async () => {
-    try {
-      const sales = await getSales();
-      return { success: sales };
-    } catch (error) {
-      return { failure: 'Failed to fetch sales' };
-    }
-  });
+export const fetchAllSalesUseCase = actionClient.action(async () => {
+  try {
+    const sales = await getSales();
+    return { success: sales };
+  } catch (error) {
+    return { failure: 'Failed to fetch sales' };
+  }
+});
 
 export const fetchMemberSalesUseCase = actionClient
   .schema(z.object({ memberId: z.string().uuid() }))
@@ -31,18 +27,22 @@ export const fetchMemberSalesUseCase = actionClient
     }
     try {
       const sales = await getMemberSales(parsedInput.memberId);
-      const salesWithDetails = await Promise.all(sales.map(async (sale) => {
-        const admin = await getUser(sale.salesById);
-        const strain = await getStrain(sale.strainId);
-        return {
-          ...sale,
-          adminName: admin?.name || 'Unknown',
-          strainName: strain?.name || 'Unknown',
-        };
-      }));
+      const salesWithDetails = await Promise.all(
+        sales.map(async (sale) => {
+          const admin = await getUser(sale.salesById);
+          const strain = await getStrain(sale.strainId);
+          return {
+            ...sale,
+            adminName: admin?.name || 'Unknown',
+            strainName: strain?.name || 'Unknown',
+          };
+        }),
+      );
       return { success: salesWithDetails };
     } catch (error) {
-      return { failure: `Failed to fetch sales for member ${parsedInput.memberId}` };
+      return {
+        failure: `Failed to fetch sales for member ${parsedInput.memberId}`,
+      };
     }
   });
 

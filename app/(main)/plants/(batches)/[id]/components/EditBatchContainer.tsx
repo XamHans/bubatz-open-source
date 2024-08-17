@@ -1,25 +1,14 @@
 'use client';
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { Button } from '@/components/ui/button';
 import { BatchProps } from '@/modules/plants/data-access/schema';
-import { BatchProvider } from './BatchContext';
-import { CurrentPhaseForm } from './Forms/CurrentPhaseForm';
+import ArchiveBatchComponent from './ArchiveBatchModal';
 import { GrowthPhasesForm } from './Forms/GrowthPhasesForm';
 import { PlantsContainer } from './Plants/PlantsContainer';
-import { archiveBatchUseCase } from '@/modules/plants/use-cases';
-import { useAction } from 'next-safe-action/hooks';
-import { toast } from 'sonner';
 
 interface EditBatchContainerProps {
-  details: BatchProps;
+  batch: BatchProps;
 }
 const initialData = {
   germination: {
@@ -84,74 +73,33 @@ const initialData = {
   },
 };
 
-const EditBatchContainer: React.FC<EditBatchContainerProps> = ({ details }) => {
-  const { execute } = useAction(archiveBatchUseCase, {
-    onSuccess: (data) => {
-      if (data.success) {
-        toast.success('Batch archived successfully');
-        // Optionally, you can add logic here to refresh the page or update the UI
-      } else {
-        toast.error(data.failure || 'Failed to archive batch');
-      }
-    },
-    onError: (error) => {
-      console.error('Failed to archive batch:', error);
-      toast.error('An error occurred while archiving the batch');
-    },
-  });
-
+const EditBatchContainer = ({ batch }: EditBatchContainerProps) => {
   return (
-    <BatchProvider details={details}>
-      <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
-        {/* Card on Left side */}
-        <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
-          {/* Plants & Add Plant Card */}
-          <PlantsContainer />
+    <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
+      {/* Card on Left side */}
+      <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
+        {/* Plants & Add Plant Card */}
+        <PlantsContainer batch={batch} />
 
-          {/* Logbook Section SOON */}
-          {/* <LogTracker /> */}
-        </div>
-
-        {/* Cards on Right Side */}
-        <div className="grid auto-rows-max items-start gap-2 lg:gap-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Grow Phases</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Current Grow Phase */}
-              <div>
-                <CurrentPhaseForm />
-              </div>
-              <div>
-                <GrowthPhasesForm data={details.otherDetails} />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Archive Batch</CardTitle>
-              <CardDescription>
-                When you're done with the batch, you can archive it here.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div></div>
-              <Button 
-                size="sm" 
-                variant="secondary"
-                onClick={() => {
-                  execute({ id: details.id, isArchived: true });
-                }}
-              >
-                Archive Batch
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Logbook Section SOON */}
+        {/* <LogTracker /> */}
       </div>
-    </BatchProvider>
+
+      {/* Cards on Right Side */}
+      <div className="grid auto-rows-max items-start gap-2 lg:gap-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Grow Phases</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Current Grow Phase */}
+            <GrowthPhasesForm batch={batch} />
+          </CardContent>
+        </Card>
+
+        <ArchiveBatchComponent id={batch.id} />
+      </div>
+    </div>
   );
 };
 

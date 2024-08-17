@@ -1,11 +1,11 @@
 import { protectedSchema } from '@/modules/members/data-access/schema';
 import { sql } from 'drizzle-orm';
 import {
+  boolean,
   date,
   integer,
   jsonb,
   numeric,
-  real,
   serial,
   text,
   uuid,
@@ -13,7 +13,6 @@ import {
 import { relations } from 'drizzle-orm/relations';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
-import { growPhasesSchema } from './grow-phases-schema';
 
 const defaultSeedToSale = {
   seed: {
@@ -76,8 +75,10 @@ export const batches = protectedSchema.table('batches', {
     .notNull()
     .default(sql`now()`),
   endDate: date('end_date').notNull(),
-  currentGrowthStage: text('current_growth_stage').notNull(),
-  pricePerGram: real('price_per_gram'),
+  currentGrowthStage: text('current_growth_stage').notNull().default('SEEDING'),
+  totalYield: numeric('total_yield').default('0'),
+  totalDestroyed: numeric('total_destroyed').default('0'),
+  isArchived: boolean('is_archived').default(false),
   otherDetails: jsonb('other_details').default('{}'),
 });
 
@@ -88,9 +89,9 @@ export const plants = protectedSchema.table('plants', {
     .notNull()
     .references(() => batches.id, { onDelete: 'cascade' }),
   position: text('position').notNull(),
-  health: text('health').default('healthy'),
+  health: text('health').default('HEALTHY'),
   yield: numeric('yield').default('0'),
-  seedToSale: jsonb('seed_to_sale').notNull().default(defaultSeedToSale),
+  // seedToSale: jsonb('seed_to_sale').notNull().default(defaultSeedToSale),
 });
 
 export const strains = protectedSchema.table('strains', {
@@ -100,6 +101,7 @@ export const strains = protectedSchema.table('strains', {
   thc: numeric('thc').notNull(),
   cbd: numeric('cbd').notNull(),
   currentPricePerGram: numeric('current_price_per_gram').notNull(),
+  amountAvailable: numeric('amount_available').default('0'), // amount available in grams
 });
 
 export const strainsRelation = relations(batches, ({ one }) => ({
@@ -112,10 +114,6 @@ export const strainsRelation = relations(batches, ({ one }) => ({
 export const batchesRelations = relations(batches, ({ many }) => ({
   plants: many(plants),
 }));
-
-// export const plantsRelations = relations(plants, ({ many }) => ({
-//   transactions: many(transactions),
-// }));
 
 export const createBatchInputSchema = createInsertSchema(batches, {
   name: z.string().min(1),
@@ -132,28 +130,23 @@ export const createBatchInputSchema = createInsertSchema(batches, {
   otherDetails: z.object({}).optional(),
 });
 
-export const updateBatchInputSchema = z.object({
-  id: z.string().min(1, 'Batch id is required'),
-  currentGrowthStage: z.string().min(1, 'Growth stage is required').optional(),
-  otherDetails: growPhasesSchema.optional(),
-});
-export type UpdateBatchInput = z.infer<typeof updateBatchInputSchema>;
+export const updateBatchInputSchema = createSelectSchema(batches)
+  .partial()
+  .extend({
+    id: z.string().uuid(),
+  });
 
 export const createPlantInputSchema = createInsertSchema(plants, {
   name: z.string().min(1),
-  batchId: z.string().optional(), // id is coming from context not from form
+  batchId: z.string(), // id is coming from context not from form
   position: z.string().min(1),
 });
 
-export const updatePlantInputSchema = createInsertSchema(plants, {
-  batchId: z.string().optional(),
-  name: z.string().min(1),
-  position: z.string().min(1),
-  health: z.string().min(1),
-  yield: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
-    message: 'Expected number, received a string',
-  }),
-});
+export const updatePlantInputSchema = createSelectSchema(plants)
+  .partial()
+  .extend({
+    id: z.number().positive(),
+  });
 
 export const deletePlantInputSchema = createPlantInputSchema.pick({
   id: true,
@@ -168,6 +161,12 @@ export const createStrainInputSchema = createInsertSchema(strains, {
   description: z.string().optional(),
 });
 
+export const updateStrainInputSchema = createSelectSchema(strains)
+  .partial()
+  .extend({
+    id: z.number().positive(),
+  });
+
 export const getBatchesSchema = createSelectSchema(batches);
 export const getPlantsSchema = createSelectSchema(plants);
 export const getStrainsSchema = createSelectSchema(strains, {
@@ -176,15 +175,17 @@ export const getStrainsSchema = createSelectSchema(strains, {
 });
 
 export const getBatchDetailSchema = updateBatchInputSchema.pick({ id: true });
+export const getStrainDetailSchema = updateStrainInputSchema.pick({ id: true });
 
-export type CreateBatchInput = z.infer<typeof createBatchInputSchema>;
 export type BatchProps = z.infer<typeof getBatchesSchema>;
-export type StrainProps = z.infer<typeof getStrainsSchema>;
-export type PlantProps = z.infer<typeof getPlantsSchema>;
+export type CreateBatchInput = z.infer<typeof createBatchInputSchema>;
+export type UpdateBatchInput = z.infer<typeof updateBatchInputSchema>;
 
+export type PlantProps = z.infer<typeof getPlantsSchema>;
 export type CreatePlantInput = z.infer<typeof createPlantInputSchema>;
 export type UpdatePlantInput = z.infer<typeof updatePlantInputSchema>;
-
 export type DeletePlantInput = z.infer<typeof deletePlantInputSchema>;
 
+export type StrainProps = z.infer<typeof getStrainsSchema>;
 export type CreateStrainInput = z.infer<typeof createStrainInputSchema>;
+export type UpdateStrainInput = z.infer<typeof updateStrainInputSchema>;

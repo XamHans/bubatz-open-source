@@ -1,5 +1,6 @@
 'use client';
 
+import SkeletonLoader from '@/app/components/SkeletonLoader';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,6 +18,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useToast } from '@/components/ui/use-toast';
+import { BatchProps } from '@/modules/plants/data-access/schema';
 import {
   deletePlantUseCase,
   fetchPlantsFromBatchUseCase,
@@ -35,15 +37,19 @@ import {
 import { ArrowUpDown, Trash2 } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import { useEffect, useState } from 'react';
-import { useBatch } from '../BatchContext';
 import { UpdatePlantForm } from './UpdatePlant';
 
-const PlantsTable: React.FC = () => {
-  const { toast } = useToast();
-  const { id: batchId } = useBatch();
 
+export interface PlantsTableProps {
+  batch: BatchProps
+}
+
+const PlantsTable = ({batch}: PlantsTableProps) => {
+  const { toast } = useToast();
+  const batchId = batch.id;
+  
   const { execute, status } = useAction(fetchPlantsFromBatchUseCase, {
-    onSuccess: (data) => {
+    onSuccess: ({data}) => {
       setPlants(data?.success?.plants);
     },
     onError: (error) => {
@@ -59,7 +65,7 @@ const PlantsTable: React.FC = () => {
           title: 'Success',
           description: `Plant deleted successfully.`,
         });
-        execute({ batchId }); //re-fetch plants
+        execute({ batchId: batch.id }); //re-fetch plants
       },
       onError: (error) => {
         toast({
@@ -163,7 +169,7 @@ const PlantsTable: React.FC = () => {
                     <TooltipTrigger>
                       <UpdatePlantForm
                         plant={plant}
-                        onClose={() => execute({ batchId })}
+                        onClose={() => execute({ batchId: batch.id })}
                       />
                     </TooltipTrigger>
                     <TooltipContent align="end">Edit Plant</TooltipContent>
@@ -203,7 +209,7 @@ const PlantsTable: React.FC = () => {
   const [rowSelection, setRowSelection] = useState({});
 
   useEffect(() => {
-    execute({ batchId });
+    execute({ batchId: batch.id });
   }, []);
 
   const table = useReactTable({
@@ -226,8 +232,9 @@ const PlantsTable: React.FC = () => {
   });
 
   if (status === 'executing') {
-    return <div>Loading...</div>;
+    return <SkeletonLoader />;
   }
+  
 
   return (
     <Table className="rounded-md bg-white">

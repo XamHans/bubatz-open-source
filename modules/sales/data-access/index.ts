@@ -1,18 +1,19 @@
 'use server';
 
 import { db } from '@/lib/db/db';
+import { AsyncReturnType } from '@/lib/types';
+import { members } from '@/modules/members/data-access/schema';
+import { strains } from '@/modules/plants/data-access/schema';
+import { eq } from 'drizzle-orm';
 import {
-  CreateSaleInput,
-  SaleWithoutItems,
-  SaleItemInsertSchema,
-  TSaleWithItems,
-  sales,
-  salesItems,
   Sale,
   SaleItem,
+  SaleItemInsertSchema,
+  SaleWithoutItems,
+  TSaleWithItems,
+  sales,
+  salesItems
 } from './schema';
-import { eq } from 'drizzle-orm';
-import { AsyncReturnType } from '@/lib/types';
 
 /**
  * Get all sales.
@@ -21,6 +22,28 @@ import { AsyncReturnType } from '@/lib/types';
 export const getSales = async () => {
   const allSales: SaleWithoutItems[] = await db.select().from(sales);
   return allSales;
+};
+
+export const getMemberSales = async (memberId: string) => {
+  const memberSales = await db
+    .select({
+      id: sales.id,
+      memberId: sales.memberId,
+      adminId: sales.salesById,
+      adminName: members.fullName,
+      strainId: salesItems.strainId,
+      strainName: strains.name,
+      quantity: salesItems.weightGrams,
+      price: salesItems.price,
+      createdAt: sales.createdAt
+    })
+    .from(sales)
+    .leftJoin(salesItems, eq(sales.id, salesItems.saleId))
+    .leftJoin(members, eq(sales.salesById, members.id))
+    .leftJoin(strains, eq(salesItems.strainId, strains.id))
+    .where(eq(sales.memberId, memberId));
+
+  return memberSales;
 };
 
 /**

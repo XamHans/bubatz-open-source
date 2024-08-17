@@ -1,16 +1,29 @@
 import { BatchProps } from '@/modules/plants/data-access/schema';
-import { ReactNode, createContext, useContext } from 'react';
+import { ReactNode, createContext, useContext, useState } from 'react';
+
+interface BatchContextType {
+  batch: BatchProps;
+  updateBatch: (updatedBatch: Partial<BatchProps>) => void;
+}
 
 interface BatchProviderProps {
   children: ReactNode;
   details: BatchProps;
 }
 
-const BatchContext = createContext<BatchProps | undefined>(undefined);
+const BatchContext = createContext<BatchContextType | undefined>(undefined);
 
 export const BatchProvider = ({ children, details }: BatchProviderProps) => {
+  const [batch, setBatch] = useState<BatchProps>(details);
+
+  const updateBatch = (updatedBatch: Partial<BatchProps>) => {
+    setBatch((prevBatch) => ({ ...prevBatch, ...updatedBatch }));
+  };
+
   return (
-    <BatchContext.Provider value={details}>{children}</BatchContext.Provider>
+    <BatchContext.Provider value={{ batch, updateBatch }}>
+      {children}
+    </BatchContext.Provider>
   );
 };
 

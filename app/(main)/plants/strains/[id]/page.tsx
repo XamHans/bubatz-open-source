@@ -1,34 +1,34 @@
 import Breadcrumbs from '@/components/generic/BreadCrumbs';
 import { Container } from '@/components/generic/Container';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { fetchBatchDetailsUseCase } from '@/modules/plants/use-cases';
+import { fetchStrainDetailsUseCase } from '@/modules/plants/use-cases';
 import { ChevronLeft } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import EditBatchContainer from './components/EditBatchContainer';
 
 export const metadata: Metadata = {
-  title: 'Manage Batch Details',
+  title: 'Manage Strain Details',
   description: 'Manage your plants & batches',
 };
 
-interface BatchDetailPageProps {
+interface StrainDetailPageProps {
   params: { id: string };
 }
 
-const BatchDetailPage = async ({ params: { id } }: BatchDetailPageProps) => {
+const StrainDetailPage = async ({ params }: StrainDetailPageProps) => {
+  const id = parseInt(params.id, 10);
+
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Plants', href: '/plants' },
+    { label: 'Strains', href: '/strains' },
     { label: `${id}` },
   ];
 
-  const { data } = await fetchBatchDetailsUseCase({ id });
-  const batch = data?.success?.batch;
-  const strain = data?.success?.strain;
+  const data = await fetchStrainDetailsUseCase({ id });
+  const strain = data?.data?.success;
 
-  if (!batch) {
+  if (!strain) {
     return (
       <Container className="space-y-4">
         <Breadcrumbs items={breadcrumbs} />
@@ -45,7 +45,7 @@ const BatchDetailPage = async ({ params: { id } }: BatchDetailPageProps) => {
             </Link>
 
             <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-              No batch found
+              No strain found
             </h1>
           </div>
         </div>
@@ -69,17 +69,13 @@ const BatchDetailPage = async ({ params: { id } }: BatchDetailPageProps) => {
           </Link>
 
           <h1 className="shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-            {batch?.name}
-          </h1>
-          <Badge variant="outline" className="ml-auto sm:ml-0">
             {strain?.name}
-          </Badge>
+          </h1>
         </div>
         {/* Main area with two sides, each contain cards */}
-        <EditBatchContainer batch={batch} />
       </div>
     </Container>
   );
 };
 
-export default BatchDetailPage;
+export default StrainDetailPage;

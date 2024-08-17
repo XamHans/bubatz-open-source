@@ -5,6 +5,8 @@ import { getMemberDetail } from '@/modules/members/data-access';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import MemberSalesTable from '../components/MemberSalesTable';
+import PaymentTable from '../components/PaymentsTable';
 import MemberGeneralInfo from './components/MemberGeneralInfo';
 
 interface MemberDetailPageProps {
@@ -38,10 +40,6 @@ export default async function MemberDetailPage({
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center gap-4">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {member?.fullName}
-          </h1>
-
           <Button size="sm" className="ml-auto hidden md:inline-flex md:px-10">
             Edit
           </Button>
@@ -51,22 +49,22 @@ export default async function MemberDetailPage({
           <div className="space-y-8 lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>Crew Details</CardTitle>
+                <CardTitle>Sales</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="prose dark:prose-invert max-w-none">
-                  {/* Add Markdown component or content here */}
+                  <MemberSalesTable memberId={id} />
                 </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>Install</CardTitle>
+                <CardTitle>Membership Payments</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="prose dark:prose-invert max-w-none">
-                  {/* Add Markdown component or content here */}
+                  <PaymentTable memberId={id} />
                 </div>
               </CardContent>
             </Card>

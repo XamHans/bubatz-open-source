@@ -4,7 +4,7 @@
 import { db } from '@/lib/db/db';
 import { AsyncReturnType } from '@/types';
 import { eq } from 'drizzle-orm/sql/expressions/conditions';
-import { AddMemberInput, UpdateMemberInput, members, membershipPayments } from './schema';
+import { AddMemberInput, AddMembershipPaymentInput, UpdateMemberInput, members, membershipPayments } from './schema';
 // const logger = getLogger();
 /**
  * Here is an example CRUD methods for the members table.
@@ -64,7 +64,11 @@ export { deleteMember, getMemberDetail, getMembers, updateMember };
 
 
 //------------------------PAYMENTS
-
+export const createMemberPayment = async (input: AddMembershipPaymentInput) => {
+  // logger.debug('Creating new member', input);
+  const newPaymentId = await db.insert(membershipPayments).values(input).returning();
+  return newPaymentId;
+};
 
 export const getAllPayments = async () => {
   const payments = await db
@@ -72,7 +76,6 @@ export const getAllPayments = async () => {
     .from(membershipPayments)
     .leftJoin(members, eq(membershipPayments.memberId, members.id));
 
-  console.log('getAllPayments', payments);
   return payments;
 };
 
@@ -84,7 +87,6 @@ export const getMemberPayments = async (memberId: string) => {
     .from(membershipPayments)
     .where(eq(membershipPayments.memberId, memberId));
 
-  console.log('getMemberPayments', payments);
   return payments;
 };
 

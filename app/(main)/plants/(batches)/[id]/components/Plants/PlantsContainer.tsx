@@ -21,6 +21,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { PlantDetailsData } from '@/modules/plants/data-access';
 import {
+  BatchProps,
   CreatePlantInput,
   createPlantInputSchema,
 } from '@/modules/plants/data-access/schema';
@@ -34,15 +35,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useAction } from 'next-safe-action/hooks';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useBatch } from '../BatchContext';
 import { PlantsTable } from './PlantsTable';
 
-const PlantsContainer: React.FC = () => {
-  const { id: batchId, currentGrowthStage } = useBatch();
+export interface PlantsContainerProps {
+  batch: BatchProps;
+}
 
+const PlantsContainer = ({ batch }: PlantsContainerProps) => {
   const [open, setOpen] = useState(false);
   const [plants, setPlants] = useState<PlantDetailsData[]>([]);
   const { toast } = useToast();
+  const batchId = batch.id;
 
   const { execute, status } = useAction(fetchPlantsFromBatchUseCase, {
     onSuccess: (data) => {
@@ -77,7 +80,7 @@ const PlantsContainer: React.FC = () => {
 
   const onSubmit = (data: CreatePlantInput) => {
     console.log('Create Plant ', data);
-    createPlantExecute({ ...data, batchId, health: 'healthy' });
+    createPlantExecute({ ...data, batchId });
     setOpen(false);
   };
 
@@ -92,7 +95,7 @@ const PlantsContainer: React.FC = () => {
         <CardDescription>Manage plants in this batch</CardDescription>
       </CardHeader>
       <CardContent>
-        <PlantsTable />
+        <PlantsTable batch={batch} />
       </CardContent>
       <CardFooter className="justify-center border-t p-4">
         <GenericModal

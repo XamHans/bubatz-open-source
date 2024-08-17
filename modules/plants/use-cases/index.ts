@@ -14,9 +14,11 @@ import {
   getBatches,
   getPlants,
   getPlantsByBatchId,
+  getStrainById,
   getStrains,
   updateBatch,
   updatePlant,
+  updateStrain,
 } from '../data-access';
 import {
   BatchProps,
@@ -26,6 +28,7 @@ import {
   createStrainInputSchema,
   deletePlantInputSchema,
   getBatchDetailSchema,
+  getStrainDetailSchema,
   updateBatchInputSchema,
   updatePlantInputSchema,
 } from '../data-access/schema';
@@ -42,7 +45,10 @@ export const addBatchUseCase = actionClient
 
 export const fetchBatchesUseCase = actionClient.action(async () => {
   const batches = await getBatches();
-  return { batches };
+  if (!batches) {
+    return { failure: 'Batch not found' };
+  }
+  return { success: batches };
 });
 
 export const fetchBatchDetailsUseCase = actionClient
@@ -60,12 +66,24 @@ export const updateBatchUseCase = actionClient
   .schema(updateBatchInputSchema)
   .action(async ({ parsedInput }) => {
     const existingBatch = await getBatchById(parsedInput.id);
+
     if (!existingBatch) {
       return { failure: "Batch not found, can't update batch" };
     }
+    if (parsedInput.totalYield && Number(parsedInput.totalYield) > 0) {
+      // yield changed we need to update strain values as well
+      const res = await updateStrain({
+        id: existingBatch?.strains?.id!,
+        amountAvailable: parsedInput.totalYield,
+      });
+      console.log('res yield total update strain', res);
+
+      if (!res) {
+        return { failure: 'Failed to update amountAvailable of strain ' };
+      }
+    }
     const result = await updateBatch(parsedInput.id, parsedInput);
-    logger.info('Updated batch result ', result);
-    return { success: 'Batch updated successfully' };
+    return { success: [result] };
   });
 
 //----------------- Plants
@@ -91,9 +109,9 @@ export const fetchPlantsUseCase = actionClient.action(async () => {
 export const createPlantUseCase = actionClient
   .schema(createPlantInputSchema)
   .action(async ({ parsedInput }) => {
-    logger.info('Creating plant with data:', parsedInput);
+    logger.info(parsedInput, 'Creating plant with data:');
     const newPlantId = await createPlant(parsedInput);
-    logger.info('Creating plant id:', newPlantId);
+    logger.info(newPlantId, 'Creating plant id:');
     if (!newPlantId) {
       return { failure: 'Failed to create plant' };
     }
@@ -127,6 +145,16 @@ export const fetchStrainsUseCase = actionClient.action(async () => {
 
   return { success: strains };
 });
+
+export const fetchStrainDetailsUseCase = actionClient
+  .schema(getStrainDetailSchema)
+  .action(async ({ parsedInput }) => {
+    const strain = await getStrainById(parsedInput.id);
+    if (!strain) {
+      return { failure: 'Strain not found' };
+    }
+    return { success: strain };
+  });
 
 export const createStrainUseCase = actionClient
   .schema(createStrainInputSchema)

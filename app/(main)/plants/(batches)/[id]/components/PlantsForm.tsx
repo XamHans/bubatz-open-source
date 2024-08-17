@@ -28,7 +28,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import {
   CreatePlantInput,
   createPlantInputSchema,
@@ -66,7 +65,7 @@ const PlantsForm: React.FC<PlantFormProps> = ({ batchId }) => {
 
   const onSubmit = (data: CreatePlantInput) => {
     console.log('Create Plant ', data);
-    createPlantExecute({ ...data, batchId, health: 'healthy' });
+    createPlantExecute({ ...data, batchId });
     setOpen(false);
   };
 
@@ -105,13 +104,13 @@ const PlantsForm: React.FC<PlantFormProps> = ({ batchId }) => {
                 </Label>
                 <Input id="price-1" type="number" defaultValue="99.99" />
               </TableCell>
-              <TableCell>
+              {/* <TableCell>
                 <ToggleGroup type="single" defaultValue="s" variant="outline">
                   <ToggleGroupItem value="s">S</ToggleGroupItem>
                   <ToggleGroupItem value="m">M</ToggleGroupItem>
                   <ToggleGroupItem value="l">L</ToggleGroupItem>
                 </ToggleGroup>
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           </TableBody>
         </Table>
@@ -128,7 +127,6 @@ const PlantsForm: React.FC<PlantFormProps> = ({ batchId }) => {
               onSubmit={form.handleSubmit(onSubmit)}
               className="grid gap-2 sm:grid-cols-2 md:gap-4"
             >
-              <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
               <FormField
                 control={form.control}
                 name="name"
@@ -164,6 +162,8 @@ const PlantsForm: React.FC<PlantFormProps> = ({ batchId }) => {
                   </FormItem>
                 )}
               />
+              <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
+
               <Button type="submit">Save</Button>
             </form>
           </Form>

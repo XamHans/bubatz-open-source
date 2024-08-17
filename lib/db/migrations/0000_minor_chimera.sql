@@ -129,7 +129,8 @@ CREATE TABLE IF NOT EXISTS "protected"."strains" (
 	"description" text,
 	"thc" numeric NOT NULL,
 	"cbd" numeric NOT NULL,
-	"current_price_per_gram" numeric NOT NULL
+	"current_price_per_gram" numeric NOT NULL,
+	"amount_available" numeric DEFAULT '0'
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "protected"."sales" (
@@ -138,8 +139,8 @@ CREATE TABLE IF NOT EXISTS "protected"."sales" (
 	"paid_via" "paymentMethods" NOT NULL,
 	"member_id" uuid NOT NULL,
 	"sales_by_id" uuid NOT NULL,
-	"created_at" time DEFAULT now() NOT NULL,
-	"updated_at" time with time zone DEFAULT now() NOT NULL
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "protected"."sales_items" (

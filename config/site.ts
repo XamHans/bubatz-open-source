@@ -16,11 +16,13 @@ const links = {
   },
   plants: {
     index: '/plants',
-    new: '/plants/new',
-    detail: '/plants/:id',
     batches: {
       index: '/plants/batches',
       new: '/plants/batches/new',
+    },
+    strains: {
+      new: '/plants/strains/new',
+      detail: '/plants/strains/:id',
     },
   },
 };
