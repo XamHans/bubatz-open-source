@@ -16,7 +16,7 @@ import { StrainProps, UpdateStrainInput } from '@/modules/plants/data-access/sch
 import { updateStrainUseCase } from '@/modules/plants/use-cases';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAction } from 'next-safe-action/hooks';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -64,12 +64,12 @@ export function EditStrainForm({ strain, onSuccess }: EditStrainFormProps) {
 
   useEffect(() => {
     const subscription = form.watch((value, { name, type }) => {
-      console.log(value, name, type);
+      console.log('Form changed:', { value, name, type });
     });
     return () => subscription.unsubscribe();
   }, [form]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = useCallback((values: z.infer<typeof formSchema>) => {
     const updateInput: UpdateStrainInput = {
       id: strain.id,
       ...values,
@@ -80,6 +80,11 @@ export function EditStrainForm({ strain, onSuccess }: EditStrainFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {form.formState.isDirty && (
+          <p className="text-sm text-yellow-600">
+            You have unsaved changes. Don't forget to submit!
+          </p>
+        )}
         <FormField
           control={form.control}
           name="name"
@@ -150,7 +155,10 @@ export function EditStrainForm({ strain, onSuccess }: EditStrainFormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={status === 'executing'}>
+        <Button 
+          type="submit" 
+          disabled={status === 'executing' || !form.formState.isDirty}
+        >
           {status === 'executing' ? 'Updating...' : 'Update Strain'}
         </Button>
       </form>
