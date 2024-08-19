@@ -1,14 +1,17 @@
 'use server';
 
+import { logger } from '@/lib/logger';
 import { actionClient } from '@/lib/server-clients';
 import { z } from 'zod';
 import {
+  checkIfMemberIsAllowedForStrain,
   createSaleWithItems,
   getMemberSales,
   getMemberStrainAmount,
+  getSaleDetails,
   getSales,
 } from '../data-access';
-import { createSaleWithItemsInputSchema, fetchMembersStrainAmountInputSchema } from '../data-access/schema';
+import { checkIfMemberIsAllowedForStrainInputSchema, createSaleWithItemsInputSchema, fetchMembersStrainAmountInputSchema } from '../data-access/schema';
 
 export const fetchAllSalesUseCase = actionClient.action(async () => {
   try {
@@ -19,6 +22,22 @@ export const fetchAllSalesUseCase = actionClient.action(async () => {
     return { failure: 'Failed to fetch sales' };
   }
 });
+
+export const fetchSaleDetailsUseCase = actionClient
+  .schema(z.object({ saleId: z.number().int() }))
+  .action(async ({ parsedInput }) => {
+
+    try {
+      const saleDetail = await getSaleDetails(parsedInput.saleId);
+      console.log('saleDetail from query', saleDetail)
+      return { success: saleDetail };
+    } catch (error) {
+      logger.error(error)
+      return {
+        failure: `Failed to fetch sales details for sale id ${parsedInput.saleId}`,
+      };
+    }
+  });
 
 export const fetchMemberSalesUseCase = actionClient
   .schema(z.object({ memberId: z.string().uuid() }))
@@ -40,9 +59,7 @@ export const fetchMemberSalesUseCase = actionClient
 export const fetchMembersStrainAmountUseCase = actionClient
   .schema(fetchMembersStrainAmountInputSchema)
   .action(async ({ parsedInput }) => {
-    if (!parsedInput?.memberId) {
-      return { failure: 'No member ID provided, cannot fetch sales' };
-    }
+
     try {
       const totalAmountOfStrainPerMonth = await getMemberStrainAmount(parsedInput);
 
@@ -50,6 +67,22 @@ export const fetchMembersStrainAmountUseCase = actionClient
     } catch (error) {
       return {
         failure: `Failed to fetch sales for member ${parsedInput.memberId}`,
+      };
+    }
+  });
+
+export const checkIfMemberIsAllowedForStrainUseCase = actionClient
+  .schema(checkIfMemberIsAllowedForStrainInputSchema)
+  .action(async ({ parsedInput }) => {
+
+    try {
+      const isAllowed = await checkIfMemberIsAllowedForStrain(parsedInput);
+
+      return { success: isAllowed };
+    } catch (error) {
+      console.log(error)
+      return {
+        failure: `Failed to check if member is allowed for strain ${error}`,
       };
     }
   });

@@ -6,6 +6,7 @@ import { strains } from '@/modules/plants/data-access/schema';
 import { and, eq, gte, lt, sql } from 'drizzle-orm';
 import { cache } from 'react';
 import {
+  CheckIfMemberIsAllowedForStrainInput,
   CreateSaleWithItemsInput,
   FetchMembersStrainAmountInput,
 
@@ -83,6 +84,92 @@ export const getMemberSales = cache(async (memberId: string) => {
   return memberSales;
 });
 
+export const getSaleDetails = cache(async (saleId: number) => {
+  const [sale] = await db
+    .select({
+      id: sales.id,
+      totalPrice: sales.totalPrice,
+      totalAmount: sales.totalAmount,
+      paidVia: sales.paidVia,
+      createdAt: sales.createdAt,
+      updatedAt: sales.updatedAt,
+      memberId: sales.memberId,
+      salesById: sales.salesById,
+    })
+    .from(sales)
+    .where(eq(sales.id, saleId))
+    .limit(1);
+
+  if (!sale) {
+    return null;
+  }
+
+  // Buyer query
+  const [buyer] = await db
+    .select({
+      id: members.id,
+      fullName: members.fullName,
+    })
+    .from(members)
+    .where(eq(members.id, sale.memberId))
+    .limit(1);
+
+  // Seller query
+  const [seller] = await db
+    .select({
+      id: members.id,
+      fullName: members.fullName,
+    })
+    .from(members)
+    .where(eq(members.id, sale.salesById))
+    .limit(1);
+
+  // Items query
+  const items = await db
+    .select({
+      id: salesItems.id,
+      amount: salesItems.amount,
+      price: salesItems.price,
+      strainId: salesItems.strainId,
+      strainName: strains.name,
+      thc: strains.thc,
+      cbd: strains.cbd,
+    })
+    .from(salesItems)
+    .leftJoin(strains, eq(salesItems.strainId, strains.id))
+    .where(eq(salesItems.saleId, saleId));
+
+  return {
+    ...sale,
+    buyer,
+    seller,
+    items,
+  };
+
+});
+
+export const checkIfMemberIsAllowedForStrain = cache(async (input: CheckIfMemberIsAllowedForStrainInput) => {
+  const result = await db
+    .select({
+      isAllowed: sql<boolean>`
+      CASE
+        WHEN ${members.birthday} IS NULL THEN false
+        WHEN ${strains.thc} IS NULL THEN false
+        WHEN DATE_PART('year', AGE(CURRENT_DATE, ${members.birthday})) BETWEEN 18 AND 21 
+          AND ${strains.thc} >= 15 THEN false
+        WHEN DATE_PART('year', AGE(CURRENT_DATE, ${members.birthday})) < 18 THEN false
+        ELSE true
+      END
+    `.as('isAllowed')
+    })
+    .from(members)
+    .leftJoin(strains, eq(strains.id, input.strainId))
+    .where(eq(members.id, input.memberId))
+    .execute();
+
+  return result[0]?.isAllowed ?? false;
+});
+
 export const getMemberStrainAmount = cache(async (input: FetchMembersStrainAmountInput) => {
   const currentDate = new Date();
   const year = input.year ?? currentDate.getFullYear();
@@ -107,7 +194,6 @@ export const getMemberStrainAmount = cache(async (input: FetchMembersStrainAmoun
 
   return totalAmountOfStrain[0]?.totalAmount || 0;
 });
-
 
 export async function createSaleWithItems(input: CreateSaleWithItemsInput) {
   const { items, ...saleData } = input;

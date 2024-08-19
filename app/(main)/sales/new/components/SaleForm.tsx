@@ -58,16 +58,21 @@ import {
   paymentMethods,
 } from '@/modules/sales/data-access/schema';
 import {
+  checkIfMemberIsAllowedForStrainUseCase,
   createSaleUseCase,
   fetchMembersStrainAmountUseCase,
 } from '@/modules/sales/use-cases';
 
 export default function SaleForm() {
+  //@TODO: ADD USERS UUID; CHECK IF AUTHENTICATED
   const [members, setMembers] = useState<UserSchema[]>([]);
   const [strains, setStrains] = useState<StrainProps[]>([]);
   const [open, setOpen] = useState(false);
   const [totalWeight, setTotalWeight] = useState(0);
   const [memberMonthlyPurchase, setMemberMonthlyPurchase] = useState(0);
+  const [isMemberAllowedForStrain, setIsMemberAllowedForStrain] =
+    useState(true);
+
   const { toast } = useToast();
 
   const form = useForm<CreateSaleWithItemsInput>({
@@ -109,11 +114,25 @@ export default function SaleForm() {
     fetchMembersStrainAmountUseCase,
     {
       onSuccess: ({ data }) => {
-        console.log('Member purchases:', data);
         setMemberMonthlyPurchase(data?.success || 0);
       },
       onError: (error) =>
-        console.error('Error fetching member purchases:', error),
+        logger.error('Error fetching member purchases:', error),
+    },
+  );
+
+  const checkIfMemberIsAllowedForStrain = useAction(
+    checkIfMemberIsAllowedForStrainUseCase,
+    {
+      onSuccess: ({ data }) => {
+        console.log('checkIfMemberIsAllowedForStrainUseCase ', data);
+        setIsMemberAllowedForStrain(data?.success);
+      },
+      onError: (error) =>
+        logger.error(
+          error,
+          'Error happend while checking if member is allowed for strain:',
+        ),
     },
   );
 
@@ -124,7 +143,6 @@ export default function SaleForm() {
           `${b.firstName} ${b.lastName}`,
         ),
       );
-      console.log({ sortedMembers });
       setMembers(sortedMembers);
     },
   });
@@ -177,6 +195,10 @@ export default function SaleForm() {
         amount: form.getValues(`items.${index}.amount`) || 0,
         price: selectedStrain.currentPricePerGram || 0,
       });
+      const memberId = form.getValues('memberId');
+      if (memberId) {
+        checkIfMemberIsAllowedForStrain.execute({ memberId, strainId });
+      }
     }
   };
 
@@ -422,6 +444,16 @@ export default function SaleForm() {
             </div>
           </CardContent>
         </Card>
+
+        {!isMemberAllowedForStrain && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Member is between 18 - 21 years old and not allowed to consume a
+              high THC strain
+            </AlertDescription>
+          </Alert>
+        )}
 
         {form.formState.isDirty && totalWeight > 0 && (
           <Alert variant={totalWeight > 30 ? 'destructive' : 'default'}>

@@ -18,11 +18,13 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronUp,
+  EyeIcon,
 } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import React, { useEffect, useState } from 'react';
 
 import SkeletonLoader from '@/app/components/SkeletonLoader';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -32,8 +34,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { siteConfig } from '@/config/site';
 import { logger } from '@/lib/logger';
 import { fetchAllSalesUseCase } from '@/modules/sales/use-cases';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { useRouter } from 'next/navigation';
 
 export default function SalesTable() {
   const [sales, setSales] = useState<any[]>([]);
@@ -61,7 +72,7 @@ export default function SalesTable() {
     setExpandedRows((prev) => ({ ...prev, [rowId]: !prev[rowId] }));
   };
 
-  const getSalesTableColumns = () => [
+  const getSalesTableColumns = (router: AppRouterInstance) => [
     {
       id: 'expander',
       header: () => null,
@@ -153,6 +164,46 @@ export default function SalesTable() {
         <div>{new Date(row.getValue('createdAt')).toLocaleString()}</div>
       ),
     },
+    {
+      id: 'actions',
+      enableHiding: false,
+      header: ({ column }) => {
+        return (
+          <Button variant="ghost" className="justify-center text-xs">
+            Actions
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        const sale = row.original;
+        return (
+          <div className="flex justify-start ">
+            <Button
+              variant="ghost"
+              className="transition-transform duration-200 hover:bg-inherit"
+              onClick={() => {
+                router.push(
+                  siteConfig.links.sales.detail.replace(':id', sale.id!),
+                );
+              }}
+            >
+              <TooltipProvider>
+                <Tooltip delayDuration={0}>
+                  <TooltipTrigger>
+                    <EyeIcon className="h-6 w-6 cursor-pointer" />
+                  </TooltipTrigger>
+                  <TooltipContent align="end">
+                    <Badge className="bg-inherit text-black hover:bg-inherit">
+                      {t('member:ACTIONS.DETAIL')} Detail
+                    </Badge>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </Button>
+          </div>
+        );
+      },
+    },
   ];
 
   const renderSaleItems = (items: any[], totalPrice: number) => {
@@ -191,9 +242,11 @@ export default function SalesTable() {
     );
   };
 
+  const router = useRouter();
+
   const table = useReactTable({
     data: sales,
-    columns: getSalesTableColumns(),
+    columns: getSalesTableColumns(router),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),

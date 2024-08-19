@@ -1,4 +1,5 @@
 import { members, protectedSchema } from '@/modules/members/data-access/schema';
+import { MemberProps } from '@/modules/members/types';
 import { strains } from '@/modules/plants/data-access/schema';
 import {
   integer,
@@ -144,11 +145,23 @@ export const fetchMembersStrainAmountInputSchema = z.object({
 })
 
 
+export const checkIfMemberIsAllowedForStrainInputSchema = z.object({
+  memberId: z.string().uuid(),
+  strainId: z.number().int()
+})
+
+
 // Types
 export type SaleProps = z.infer<typeof getSalesSchema>;
 export type CreateSaleInput = z.infer<typeof createSaleInputSchema>;
 export type UpdateSaleInput = z.infer<typeof updateSaleInputSchema>;
 export type DeleteSaleInput = z.infer<typeof deleteSaleInputSchema>;
+
+export type SaleDetailProps = SaleProps & {
+  member: MemberProps
+  soldBy: MemberProps
+  items: SaleItemProps[]
+}
 
 export type SaleItemProps = z.infer<typeof getSalesItemsSchema>;
 export type CreateSaleItemInput = z.infer<typeof createSaleItemInputSchema>;
@@ -157,3 +170,4 @@ export type DeleteSaleItemInput = z.infer<typeof deleteSaleItemInputSchema>;
 
 export type CreateSaleWithItemsInput = z.infer<typeof createSaleWithItemsInputSchema>;
 export type FetchMembersStrainAmountInput = z.infer<typeof fetchMembersStrainAmountInputSchema>;
+export type CheckIfMemberIsAllowedForStrainInput = z.infer<typeof checkIfMemberIsAllowedForStrainInputSchema>;
