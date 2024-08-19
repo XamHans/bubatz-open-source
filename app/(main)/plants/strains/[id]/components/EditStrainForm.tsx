@@ -43,7 +43,7 @@ export function EditStrainForm({ strain }: EditStrainFormProps) {
       toast({
         title: 'Success',
         duration: 1000,
-        description: 'Strain updated successfully',
+        description: 'Batch updated successfully',
       });
     },
     onError: (error) => {

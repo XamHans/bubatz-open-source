@@ -21,7 +21,6 @@ import {
 import { t } from 'i18next';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
-import * as React from 'react';
 import { useState } from 'react';
 // import {
 //   selectUser,
@@ -34,10 +33,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { EyeIcon, Trash } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { SaleItem } from '@/modules/sales/data-access/schema';
 import { StrainProps } from '@/modules/plants/data-access/schema';
+import { SaleItem } from '@/modules/sales/data-access/schema';
+import { Trash } from 'lucide-react';
 
 interface SaleItemsTableProps {
   saleItems: SaleItem[];
@@ -71,14 +69,14 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
         ),
       },
       {
-        accessorKey: 'weightGrams',
-        accessorFn: (item: SaleItem) => item.weightGrams,
+        accessorKey: 'amount',
+        accessorFn: (item: SaleItem) => item.amount,
         header: (
           <div className="text-s justify-start font-semibold">WEIGHT</div>
         ),
         cell: ({ row }) => (
           <div className="text-s justify-start">
-            {row.original.weightGrams} grams
+            {row.original.amount} grams
           </div>
         ),
       },
@@ -94,13 +92,13 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
       },
       {
         accessorKey: 'totalPrice',
-        accessorFn: (item: SaleItem) => item.price * item.weightGrams,
+        accessorFn: (item: SaleItem) => item.price * item.amount,
         header: (
           <div className="text-s justify-start font-semibold">TOTAL PRICE</div>
         ),
         cell: ({ row }) => (
           <div className="text-s justify-start">
-            {row.original.price * row.original.weightGrams} €
+            {row.original.price * row.original.amount} €
           </div>
         ),
       },

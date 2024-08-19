@@ -154,10 +154,10 @@ export const deletePlantInputSchema = createPlantInputSchema.pick({
 });
 
 export const createStrainInputSchema = createInsertSchema(strains, {
+  id: z.number().optional(),
   name: z.string().min(3),
   cbd: z.number().min(0),
   thc: z.number().min(0),
-  currentPricePerGram: z.number().min(0),
   description: z.string().optional(),
 });
 
@@ -166,6 +166,10 @@ export const updateStrainInputSchema = createSelectSchema(strains)
   .extend({
     id: z.number().positive(),
   });
+
+export const deleteStrainInputSchema = updateStrainInputSchema.pick({
+  id: true,
+});
 
 export const getBatchesSchema = createSelectSchema(batches);
 export const getPlantsSchema = createSelectSchema(plants);
@@ -189,3 +193,4 @@ export type DeletePlantInput = z.infer<typeof deletePlantInputSchema>;
 export type StrainProps = z.infer<typeof getStrainsSchema>;
 export type CreateStrainInput = z.infer<typeof createStrainInputSchema>;
 export type UpdateStrainInput = z.infer<typeof updateStrainInputSchema>;
+export type DeleteStrainInput = z.infer<typeof deleteStrainInputSchema>;

@@ -8,6 +8,7 @@ import {
   CreatePlantInput,
   CreateStrainInput,
   DeletePlantInput,
+  DeleteStrainInput,
   UpdateBatchInput,
   UpdatePlantInput,
   UpdateStrainInput,
@@ -135,4 +136,8 @@ export const updateStrain = async (input: UpdateStrainInput) => {
     .set(input)
     .where(eq(strains.id, input.id))
     .returning();
+};
+
+export const deleteStrain = async (input: DeleteStrainInput) => {
+  return await db.delete(strains).where(eq(strains.id, input.id));
 };

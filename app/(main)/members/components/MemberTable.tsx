@@ -57,7 +57,7 @@ export default function MemberTable() {
     return [
       {
         id: 'avatar',
-        header: 'IMAGE',
+        header: 'Image',
         cell: ({ row }) => (
           <Avatar className="h-12 w-12">
             <AvatarImage src={``} />

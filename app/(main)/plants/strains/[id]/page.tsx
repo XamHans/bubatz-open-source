@@ -7,6 +7,7 @@ import { fetchStrainDetailsUseCase } from '@/modules/plants/use-cases';
 import { ChevronLeft } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
+import DeleteStrainModal from './components/DeleteStrainModal';
 import { EditStrainForm } from './components/EditStrainForm';
 
 export const metadata: Metadata = {
@@ -85,6 +86,8 @@ const StrainDetailPage = async ({ params }: StrainDetailPageProps) => {
           </CardContent>
         </Card>
       </div>
+
+      <DeleteStrainModal id={strain.id} />
     </Container>
   );
 };

@@ -27,7 +27,9 @@ export default function SalesPage() {
 
   return (
     <>
-      <Breadcrumbs items={breadcrumbs} />
+      <div className="mb-8 flex items-center justify-center gap-4">
+        <Breadcrumbs items={breadcrumbs} />
+      </div>{' '}
       <Container className="space-y-4">
         <Card>
           <CardHeader className="px-7">

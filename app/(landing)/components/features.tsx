@@ -37,7 +37,7 @@ export const features: Feature[] = [
   {
     title: 'Compliance and Reporting',
     description:
-      'Leverage Bubatz Club Manager's built-in compliance features to stay within legal boundaries. Generate reports for authorities, track member purchase history, and maintain accurate records of all club activities.',
+      'Leverage Bubatz Club Manager built-in compliance features to stay within legal boundaries. Generate reports for authorities, track member purchase history, and maintain accurate records of all club activities.',
     image: 'https://utfs.io/f/72a2c035-69e0-46ca-84a8-446e4dabf77c-3koi6e.png',
     imageDark:
       'https://utfs.io/f/89099112-4273-4375-9e44-1b3394600e21-c6ikq1.png',
@@ -52,7 +52,8 @@ export default function Features() {
           Bubatz Club Manager Features
         </h2>
         <Container className="max-w-2xl text-center text-base text-muted-foreground sm:text-xl">
-          Our features are designed to help you manage your cannabis club efficiently and in compliance with German regulations.
+          Our features are designed to help you manage your cannabis club
+          efficiently and in compliance with German regulations.
         </Container>
       </div>
       <div className="grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2">

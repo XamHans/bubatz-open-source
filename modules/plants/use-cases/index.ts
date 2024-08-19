@@ -10,6 +10,7 @@ import {
   createPlant,
   createStrain,
   deletePlant,
+  deleteStrain,
   getBatchById,
   getBatches,
   getPlants,
@@ -27,6 +28,7 @@ import {
   createPlantInputSchema,
   createStrainInputSchema,
   deletePlantInputSchema,
+  deleteStrainInputSchema,
   getBatchDetailSchema,
   getStrainDetailSchema,
   updateBatchInputSchema,
@@ -177,6 +179,18 @@ export const updateStrainUseCase = actionClient
       return { failure: 'Failed to create strain' };
     }
     return { success: updatedStrain };
+  });
+
+export const deleteStrainUseCase = actionClient
+  .schema(deleteStrainInputSchema)
+  .action(async ({ parsedInput }) => {
+    try {
+      const res = await deleteStrain({ id: parsedInput.id });
+    } catch (error) {
+      logger.error(error, 'Error deleting Strain');
+      return { failure: 'Failed to delete Strain' };
+    }
+    return { success: 'Strain deleted successfully' };
   });
 
 type FetchBatchDetailsSuccess = {

@@ -1,5 +1,5 @@
 import { addMemberInputSchema, addMembershipPaymentSchema } from '@/modules/members/data-access/schema';
-import { createSaleInputSchema, paymentMethods, SaleItemInsertSchema } from '@/modules/sales/data-access/schema';
+import { createSaleInputSchema, paymentMethods } from '@/modules/sales/data-access/schema';
 import { faker } from '@faker-js/faker';
 import * as dotenv from "dotenv";
 import { Pool } from 'pg';
@@ -36,7 +36,7 @@ async function seedDatabase() {
                 status: faker.helpers.arrayElement(memberStatuses),
                 role: faker.helpers.arrayElement(['MEMBER', 'ADMIN'] as const),
             });
-
+            console.log(member)
             const result = await client.query(`
                 INSERT INTO protected.members (
                     id, first_name, last_name, full_name, email, phone, street, city, zip, 
@@ -98,6 +98,7 @@ async function seedDatabase() {
             const numberOfSales = faker.number.int({ min: 1, max: 5 });
             for (let i = 0; i < numberOfSales; i++) {
                 const sale = createSaleInputSchema.parse({
+                    totalAmount: faker.number.float({ min: 10, max: 500, precision: 0.01 }),
                     totalPrice: faker.number.float({ min: 10, max: 500, precision: 0.01 }),
                     paidVia: faker.helpers.arrayElement(paymentMethodsArray),
                     memberId: memberId,
@@ -106,8 +107,8 @@ async function seedDatabase() {
 
                 const saleResult = await client.query(`
                     INSERT INTO protected.sales (
-                        total_price, paid_via, member_id, sales_by_id
-                    ) VALUES ($1, $2, $3, $4)
+                        total_amount, total_price, paid_via, member_id, sales_by_id
+                    ) VALUES ($1, $2, $3, $4, $5)
                     RETURNING id
                 `, Object.values(sale));
 
@@ -116,16 +117,16 @@ async function seedDatabase() {
                 // Create 1-3 sales items for each sale
                 const numberOfItems = faker.number.int({ min: 1, max: 3 });
                 for (let j = 0; j < numberOfItems; j++) {
-                    const saleItem = SaleItemInsertSchema.parse({
-                        weightGrams: faker.number.float({ min: 1, max: 50, precision: 0.1 }),
+                    const saleItem = {
+                        amount: faker.number.float({ min: 1, max: 50, precision: 0.1 }),
                         price: faker.number.float({ min: 5, max: 100, precision: 0.01 }),
                         strainId: faker.number.int({ min: 1, max: 10 }), // Assuming you have 10 strains
                         saleId: saleId,
-                    });
+                    };
 
                     await client.query(`
                         INSERT INTO protected.sales_items (
-                            weight_grams, price, strain_id, sale_id
+                            amount, price, strain_id, sale_id
                         ) VALUES ($1, $2, $3, $4)
                     `, Object.values(saleItem));
                 }

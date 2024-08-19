@@ -1,8 +1,8 @@
 'use server';
 
-import configuration from '@/app/configuration';
+import { siteConfig } from '@/config/site';
 import { redirect } from 'next/navigation';
 
 export async function backToSalesPage() {
-  redirect(configuration.paths.sales.all);
+  redirect(siteConfig.links.sales.index);
 }

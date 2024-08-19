@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1723741431697,
-      "tag": "0000_minor_chimera",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1723827555621,
-      "tag": "0001_curly_ultimates",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1723827686654,
-      "tag": "0002_true_wrecking_crew",
+      "when": 1724067264652,
+      "tag": "0000_fluffy_quasimodo",
       "breakpoints": true
     }
   ]

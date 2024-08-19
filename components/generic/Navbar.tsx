@@ -1,4 +1,6 @@
+import { Icons } from '@/app/(landing)/components/Icons';
 import Link from 'next/link';
+import { buttonVariants } from '../ui/button';
 import { ThemeToggle } from './Themetoggle';
 
 export async function Navbar() {
@@ -15,6 +17,16 @@ export async function Navbar() {
 
         <div className="flex items-center gap-x-5">
           <ThemeToggle />
+
+          <Link
+            href="#"
+            className={buttonVariants({
+              className: 'flex items-center',
+            })}
+          >
+            <Icons.gitHub className="mr-2 h-4 w-4" />
+            View on GitHub
+          </Link>
 
           {/* {(await isAuthenticated()) ? (
             <UserNav

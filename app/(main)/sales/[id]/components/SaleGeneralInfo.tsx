@@ -8,21 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  GetSaleWithoutItemsQueryData,
-  getSaleById,
-  getSaleWithoutItemsById,
-} from '@/modules/sales/data-access';
-import { t } from 'i18next';
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import {
-  CreateSaleInput,
-  Sale,
-  SaleItem,
-} from '@/modules/sales/data-access/schema';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { StrainProps, plants } from '@/modules/plants/data-access/schema';
+import { StrainProps } from '@/modules/plants/data-access/schema';
+import { Sale } from '@/modules/sales/data-access/schema';
 import {
   ColumnFiltersState,
   SortingState,
@@ -33,7 +20,10 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { t } from 'i18next';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 interface SaleItemsTableProps {
   plants: StrainProps[];
@@ -65,13 +55,13 @@ const SaleGeneralInfo = (props: SaleItemsTableProps) => {
         ),
       },
       {
-        id: 'weightGrams',
+        id: 'amount',
         header: (
           <div className="text-s justify-start font-semibold">WEIGHT</div>
         ),
         cell: ({ row }) => (
           <div className="text-s justify-start">
-            {row.original.weightGrams} grams
+            {row.original.amount} grams
           </div>
         ),
       },
@@ -91,7 +81,7 @@ const SaleGeneralInfo = (props: SaleItemsTableProps) => {
         ),
         cell: ({ row }) => (
           <div className="text-s justify-start">
-            {row.original.price * row.original.weightGrams} €
+            {row.original.price * row.original.amount} €
           </div>
         ),
       },

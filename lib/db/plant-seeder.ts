@@ -22,18 +22,20 @@ async function seedDatabase() {
         const createdStrainIds: number[] = [];
         for (let i = 0; i < 10; i++) {
             const strain = createStrainInputSchema.parse({
+                id: i,
                 name: faker.commerce.productName(),
                 description: faker.lorem.sentence(),
                 thc: faker.number.float({ min: 0, max: 30, multipleOf: 0.1 }),
                 cbd: faker.number.float({ min: 0, max: 20, multipleOf: 0.1 }),
-                currentPricePerGram: faker.number.float({ min: 5, max: 20, multipleOf: 0.01 }),
+                currentPricePerGram: faker.number.float({ min: 5, max: 20, multipleOf: 0.01 }).toString(),
                 amountAvailable: faker.number.float({ min: 0, max: 1000, multipleOf: 0.1 }).toString(),
             });
 
+            console.log('Strain:', strain);
             const result = await client.query(`
                 INSERT INTO protected.strains (
-                    name, description, thc, cbd, current_price_per_gram, amount_available
-                ) VALUES ($1, $2, $3, $4, $5, $6)
+                    id, name, description, thc, cbd,current_price_per_gram, amount_available
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7)
                 RETURNING id
             `, Object.values(strain));
 
@@ -53,15 +55,14 @@ async function seedDatabase() {
                 startDate: startDate.toISOString(),
                 endDate: endDate.toISOString(),
                 currentGrowthStage: faker.helpers.arrayElement(growthStages),
-                pricePerGram: faker.number.float({ min: 5, max: 20, multipleOf: 0.01 }),
                 otherDetails: {},
             });
 
             console.log('Batch:', batch);
             const result = await client.query(`
                 INSERT INTO protected.batches (
-                    name, strain_id, start_date, end_date, current_growth_stage, price_per_gram, other_details
-                ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+                    name, strain_id, start_date, end_date, current_growth_stage, other_details
+                ) VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING id
             `, Object.values(batch));
 

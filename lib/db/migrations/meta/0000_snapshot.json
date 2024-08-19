@@ -1,5 +1,5 @@
 {
-  "id": "ec0c1be4-b7af-4f2f-8a28-5a4329bbcdd1",
+  "id": "ff097cc0-20fb-4b18-b0d7-3429e0a3e31a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "6",
   "dialect": "postgresql",
@@ -572,13 +572,29 @@
           "name": "current_growth_stage",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "'SEEDING'"
         },
-        "price_per_gram": {
-          "name": "price_per_gram",
-          "type": "real",
+        "total_yield": {
+          "name": "total_yield",
+          "type": "numeric",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "'0'"
+        },
+        "total_destroyed": {
+          "name": "total_destroyed",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "is_archived": {
+          "name": "is_archived",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
         },
         "other_details": {
           "name": "other_details",
@@ -641,7 +657,7 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false,
-          "default": "'healthy'"
+          "default": "'HEALTHY'"
         },
         "yield": {
           "name": "yield",
@@ -649,13 +665,6 @@
           "primaryKey": false,
           "notNull": false,
           "default": "'0'"
-        },
-        "seed_to_sale": {
-          "name": "seed_to_sale",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'{\"seed\":{\"date_planted\":null,\"source\":null,\"seed_lot\":null},\"germination\":{\"date_germinated\":null,\"conditions\":{\"temperature\":null,\"humidity\":null,\"light_hours\":null}},\"vegetative\":{\"start_date\":null,\"end_date\":null,\"conditions\":{\"temperature\":null,\"humidity\":null,\"light_hours\":null},\"nutrients\":{\"type\":null,\"schedule\":null,\"ph_level\":null}},\"flowering\":{\"start_date\":null,\"estimated_end_date\":null,\"conditions\":{\"temperature\":null,\"humidity\":null,\"light_hours\":null},\"nutrients\":{\"type\":null,\"schedule\":null,\"ph_level\":null}},\"harvest\":{\"estimated_date\":null,\"drying_conditions\":{\"temperature\":null,\"humidity\":null}}}'::jsonb"
         }
       },
       "indexes": {},
@@ -745,7 +754,15 @@
           "name": "total_price",
           "type": "real",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": 0
+        },
+        "total_amount": {
+          "name": "total_amount",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
         },
         "paid_via": {
           "name": "paid_via",
@@ -825,8 +842,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "weight_grams": {
-          "name": "weight_grams",
+        "amount": {
+          "name": "amount",
           "type": "real",
           "primaryKey": false,
           "notNull": true
@@ -894,8 +911,7 @@
       "schema": "public",
       "values": [
         "CASH",
-        "CARD",
-        "WALLET"
+        "CARD"
       ]
     }
   },

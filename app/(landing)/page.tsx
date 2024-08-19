@@ -1,10 +1,9 @@
+import { Container } from '@/components/generic/Container';
+import { Icons } from '@/components/generic/Icons';
 import { buttonVariants } from '@/components/ui/button';
 import { ExternalLinkIcon } from 'lucide-react';
 import Link from 'next/link';
-import { Container } from '@/components/generic/Container';
-import { Icons } from './components/Icons';
 import Features from './components/features';
-import { Testimonials } from './components/testimonials';
 
 export default async function HomePage() {
   const repoStars = await getRepoStars();
@@ -18,35 +17,29 @@ export default async function HomePage() {
         >
           <span>🌿</span>
           <span className="font-medium">
-            Bubatz Club Manager is now available. Manage your cannabis club efficiently!
+            Bubatz Club Manager is now available. Manage your cannabis club
+            efficiently!
           </span>
           <ExternalLinkIcon className="h-4 w-4 flex-shrink-0" />
         </Link>
         <Container className="font-heading text-center text-3xl font-bold sm:text-4xl sm:leading-tight md:text-5xl md:leading-tight">
-          Streamline Your Cannabis Club Management with Intelligent Tracking and Compliance
+          Streamline Your Cannabis Club Management with Intelligent Tracking and
+          Compliance
         </Container>
         <Container className="text-center text-muted-foreground sm:text-xl">
-          Bubatz Club Manager empowers cannabis clubs in Germany with advanced tools for member management, 
-          cultivation tracking, and sales monitoring. Optimize your operations and ensure legal compliance 
-          with our comprehensive club management solution.
+          Bubatz Club Manager empowers cannabis clubs in Germany with advanced
+          tools for member management, cultivation tracking, and sales
+          monitoring. Optimize your operations and ensure legal compliance with
+          our comprehensive club management solution.
         </Container>
         <div className="flex items-center gap-4">
           <Link
             href="#"
             className={buttonVariants({
-              className: 'flex items-center gap-2',
+              className: 'flex items-center gap-2 md:px-12',
             })}
           >
-            Start Managing
-          </Link>
-          <Link
-            href="#"
-            className={buttonVariants({
-              className: 'flex items-center',
-            })}
-          >
-            <Icons.gitHub className="mr-2 h-4 w-4" />
-            View on GitHub
+            See it in action
           </Link>
         </div>
       </section>
@@ -55,9 +48,21 @@ export default async function HomePage() {
         <Features />
       </section>
 
-      <section id="testimonials" className="md:px-60">
-        <Testimonials />
+      <section id="github">
+        <Link
+          href="#"
+          className={buttonVariants({
+            className: 'flex items-center',
+          })}
+        >
+          <Icons.gitHub className="mr-2 h-4 w-4" />
+          View on GitHub
+        </Link>
       </section>
+
+      {/* <section id="testimonials" className="md:px-60">
+        <Testimonials />
+      </section> */}
     </>
   );
 }

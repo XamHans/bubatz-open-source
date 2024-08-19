@@ -3,18 +3,19 @@
 import { actionClient } from '@/lib/server-clients';
 import { z } from 'zod';
 import {
-  createSale,
-  createSaleItem,
+  createSaleWithItems,
   getMemberSales,
+  getMemberStrainAmount,
   getSales,
 } from '../data-access';
-import { SaleItemInsertSchema, SaleWithItems } from '../data-access/schema';
+import { createSaleWithItemsInputSchema, fetchMembersStrainAmountInputSchema } from '../data-access/schema';
 
 export const fetchAllSalesUseCase = actionClient.action(async () => {
   try {
     const sales = await getSales();
     return { success: sales };
   } catch (error) {
+    console.log('Error fetching sales', error);
     return { failure: 'Failed to fetch sales' };
   }
 });
@@ -27,18 +28,8 @@ export const fetchMemberSalesUseCase = actionClient
     }
     try {
       const sales = await getMemberSales(parsedInput.memberId);
-      const salesWithDetails = await Promise.all(
-        sales.map(async (sale) => {
-          const admin = await getUser(sale.salesById);
-          const strain = await getStrain(sale.strainId);
-          return {
-            ...sale,
-            adminName: admin?.name || 'Unknown',
-            strainName: strain?.name || 'Unknown',
-          };
-        }),
-      );
-      return { success: salesWithDetails };
+
+      return { success: sales };
     } catch (error) {
       return {
         failure: `Failed to fetch sales for member ${parsedInput.memberId}`,
@@ -46,28 +37,32 @@ export const fetchMemberSalesUseCase = actionClient
     }
   });
 
-/**
- * Create a new sale.
- * @returns Object with sale in case of success, or failure otherwise.
- */
-export const createSaleUseCase = actionClient
-  .schema(SaleWithItems)
+export const fetchMembersStrainAmountUseCase = actionClient
+  .schema(fetchMembersStrainAmountInputSchema)
   .action(async ({ parsedInput }) => {
-    if (!parsedInput) {
-      return { failure: 'No data provided, cant create new sale' };
+    if (!parsedInput?.memberId) {
+      return { failure: 'No member ID provided, cannot fetch sales' };
     }
-    console.log('newSaleData', parsedInput);
-    const result = await createSale(parsedInput);
+    try {
+      const totalAmountOfStrainPerMonth = await getMemberStrainAmount(parsedInput);
 
-    return { success: result };
+      return { success: totalAmountOfStrainPerMonth };
+    } catch (error) {
+      return {
+        failure: `Failed to fetch sales for member ${parsedInput.memberId}`,
+      };
+    }
   });
 
-export const createSaleItemUseCase = actionClient
-  .schema(SaleItemInsertSchema)
-  .action(async ({ parsedInput }) => {
-    if (!parsedInput)
-      return { failure: 'No data provided, cant create new item' };
 
-    const newItem = await createSaleItem(parsedInput);
-    return { success: newItem };
+export const createSaleUseCase = actionClient
+  .schema(createSaleWithItemsInputSchema)
+  .action(async ({ parsedInput }) => {
+    try {
+      const result = await createSaleWithItems(parsedInput);
+      return { success: result };
+    } catch (error) {
+      console.error('Error creating sale:', error);
+      return { failure: 'Failed to create sale: ' + (error instanceof Error ? error.message : String(error)) };
+    }
   });

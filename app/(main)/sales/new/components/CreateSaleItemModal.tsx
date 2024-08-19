@@ -1,5 +1,7 @@
 'use client';
 
+import { GenericModal } from '@/components/generic/GenericModal';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -15,18 +17,14 @@ import {
   SelectItem,
   SelectTrigger,
 } from '@/components/ui/select';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { StrainProps } from '@/modules/plants/data-access/schema';
 import {
   SaleItem,
   SaleItemFormInputSchema,
-  SaleItemInsertSchema,
 } from '@/modules/sales/data-access/schema';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { UUID } from 'crypto';
-import { Button } from '@/components/ui/button';
-import { GenericModal } from '@/components/generic/GenericModal';
-import { StrainProps } from '@/modules/plants/data-access/schema';
+import { useForm } from 'react-hook-form';
 
 interface CreateSaleItemModalProps {
   strains: StrainProps[];
@@ -140,7 +138,7 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
           />
           <FormField
             control={form.control}
-            name="weightGrams"
+            name="amount"
             render={({ field }) => {
               return (
                 <FormItem>

@@ -15,7 +15,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."paymentMethods" AS ENUM('CASH', 'CARD', 'WALLET');
+ CREATE TYPE "public"."paymentMethods" AS ENUM('CASH', 'CARD');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -108,8 +108,10 @@ CREATE TABLE IF NOT EXISTS "protected"."batches" (
 	"strain_id" integer,
 	"start_date" date DEFAULT now() NOT NULL,
 	"end_date" date NOT NULL,
-	"current_growth_stage" text NOT NULL,
-	"price_per_gram" real,
+	"current_growth_stage" text DEFAULT 'SEEDING' NOT NULL,
+	"total_yield" numeric DEFAULT '0',
+	"total_destroyed" numeric DEFAULT '0',
+	"is_archived" boolean DEFAULT false,
 	"other_details" jsonb DEFAULT '{}'
 );
 --> statement-breakpoint
@@ -118,9 +120,8 @@ CREATE TABLE IF NOT EXISTS "protected"."plants" (
 	"name" text NOT NULL,
 	"batch_id" uuid NOT NULL,
 	"position" text NOT NULL,
-	"health" text DEFAULT 'healthy',
-	"yield" numeric DEFAULT '0',
-	"seed_to_sale" jsonb DEFAULT '{"seed":{"date_planted":null,"source":null,"seed_lot":null},"germination":{"date_germinated":null,"conditions":{"temperature":null,"humidity":null,"light_hours":null}},"vegetative":{"start_date":null,"end_date":null,"conditions":{"temperature":null,"humidity":null,"light_hours":null},"nutrients":{"type":null,"schedule":null,"ph_level":null}},"flowering":{"start_date":null,"estimated_end_date":null,"conditions":{"temperature":null,"humidity":null,"light_hours":null},"nutrients":{"type":null,"schedule":null,"ph_level":null}},"harvest":{"estimated_date":null,"drying_conditions":{"temperature":null,"humidity":null}}}'::jsonb NOT NULL
+	"health" text DEFAULT 'HEALTHY',
+	"yield" numeric DEFAULT '0'
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "protected"."strains" (
@@ -135,7 +136,8 @@ CREATE TABLE IF NOT EXISTS "protected"."strains" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "protected"."sales" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"total_price" real NOT NULL,
+	"total_price" real DEFAULT 0 NOT NULL,
+	"total_amount" real DEFAULT 0 NOT NULL,
 	"paid_via" "paymentMethods" NOT NULL,
 	"member_id" uuid NOT NULL,
 	"sales_by_id" uuid NOT NULL,
@@ -145,7 +147,7 @@ CREATE TABLE IF NOT EXISTS "protected"."sales" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "protected"."sales_items" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"weight_grams" real NOT NULL,
+	"amount" real NOT NULL,
 	"price" real NOT NULL,
 	"strain_id" integer NOT NULL,
 	"sale_id" integer NOT NULL

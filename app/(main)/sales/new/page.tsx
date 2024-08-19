@@ -1,0 +1,49 @@
+import { auth } from '@/auth';
+import Breadcrumbs from '@/components/generic/BreadCrumbs';
+import { Container } from '@/components/generic/Container';
+import { Button } from '@/components/ui/button';
+import { ChevronLeft } from 'lucide-react';
+import { Metadata } from 'next';
+import { SessionProvider } from 'next-auth/react';
+import Link from 'next/link';
+import SaleForm from './components/SaleForm';
+
+export default async function NewSalePage() {
+  const session = await auth();
+
+  const metadata: Metadata = {
+    title: 'Create New Sale',
+    description:
+      'Fill in the details to create a new sale. Start by adding items to the sale.',
+  };
+
+  const breadcrumbs = [
+    { label: 'Dashboard', href: '/dashboard' },
+    { label: 'Sales', href: '/sales' },
+    { label: 'Create New Sale' },
+  ];
+
+  return (
+    <SessionProvider session={session}>
+      <div className="mb-8 flex items-center justify-center gap-4">
+        <Link href="/members">
+          <Button variant="outline" size="icon" className="h-9 w-9">
+            <ChevronLeft className="h-5 w-5" />
+            <span className="sr-only">Back</span>
+          </Button>
+        </Link>
+        <Breadcrumbs items={breadcrumbs} />
+      </div>{' '}
+      <Container className="space-y-4">
+        <SaleForm />
+      </Container>
+      {/* <Container className="space-y-12">
+        <Hero
+          title="Create a new sale"
+          description="Fill in the details to create a new sale."
+        />
+        <SaleForm />
+      </Container> */}
+    </SessionProvider>
+  );
+}

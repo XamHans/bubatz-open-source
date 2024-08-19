@@ -13,18 +13,17 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectTrigger,
-  SelectValue,
+  SelectTrigger
 } from '@/components/ui/select';
-import { useForm } from 'react-hook-form';
-import { NewItemModal } from './NewItemModal';
-import { zodResolver } from '@hookform/resolvers/zod';
 import {
   CreateSaleItemInput,
   createSaleItemInputSchema,
 } from '@/modules/sales/data-access/schema';
-import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { UUID } from 'crypto';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { NewItemModal } from './NewItemModal';
 
 interface CreateSaleItemModalProps {
   plants: { id: UUID; name: string; price: number }[];
@@ -66,11 +65,11 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
       hasErrors = true;
     }
 
-    if (!data.weightGrams) {
+    if (!data.amount) {
       setErrors((prev) => [
         ...prev,
         {
-          field: 'weightGrams',
+          field: 'amount',
           message: 'Weight in grams is required',
         },
       ]);
@@ -184,10 +183,10 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
 
           <FormField
             control={form.control}
-            name="weightGrams"
+            name="amount"
             render={({ field }) => {
               const fieldErrors = errors.findLast(
-                (error) => error.field === 'weightGrams',
+                (error) => error.field === 'amount',
               );
               return (
                 <>
@@ -203,7 +202,7 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
                         onChange={(e) => {
                           field.onChange(e.target.value);
                           form.setValue(
-                            'weightGrams',
+                            'amount',
                             parseFloat(e.target.value),
                           );
                         }}

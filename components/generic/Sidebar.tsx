@@ -17,7 +17,6 @@ type Props = {
 
 const Sidebar = ({ className }: Props) => {
   const pathname = usePathname();
-  console.log(pathname);
   const isActive = (path: string) => pathname.split('/')[1] === path; // /sales -> sales, /sales/new-sales -> sales
 
   return (
