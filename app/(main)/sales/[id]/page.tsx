@@ -13,7 +13,26 @@ interface SaleDetailPageProps {
   params: { id: string };
 }
 
-export default async function SaleDetailPage({
+// This component will handle data fetching and rendering
+async function SaleContent({ id }: { id: string }) {
+  const { data } = await fetchSaleDetailsUseCase({ saleId: +id });
+  if (data.failure) {
+    notFound();
+  }
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-3">
+      <div className="space-y-8 lg:col-span-2">
+        <SaleItemsCards items={data.success.items} />
+      </div>
+      <div>
+        <SaleGeneralInfo sale={data.success} />
+      </div>
+    </div>
+  );
+}
+
+export default function SaleDetailPage({
   params: { id },
 }: SaleDetailPageProps) {
   const breadcrumbs = [
@@ -21,10 +40,6 @@ export default async function SaleDetailPage({
     { label: 'Sales', href: '/sales' },
     { label: 'Sale Details' },
   ];
-  const { data } = await fetchSaleDetailsUseCase({ saleId: +id });
-  if (data.failure) {
-    notFound();
-  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -40,17 +55,7 @@ export default async function SaleDetailPage({
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <Suspense fallback={<SkeletonLoader type="page" />}>
-          <div className="grid gap-8 lg:grid-cols-3">
-            <div className="space-y-8 lg:col-span-2">
-              <div className="space-y-8 lg:col-span-2">
-                <SaleItemsCards items={data.success.items} />
-              </div>
-            </div>
-
-            <div>
-              <SaleGeneralInfo sale={data?.success} />
-            </div>
-          </div>
+          <SaleContent id={id} />
         </Suspense>
       </div>
     </div>

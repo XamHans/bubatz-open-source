@@ -20,11 +20,6 @@ const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
   if (type === 'page') {
     return (
       <div className="animate-pulse">
-        <div className="mb-8 flex items-center justify-center gap-4">
-          <div className="h-9 w-9 rounded-full bg-gray-200"></div>
-          <div className="h-4 w-48 rounded bg-gray-200"></div>
-        </div>
-
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-3">
             <div className="space-y-8 lg:col-span-2">

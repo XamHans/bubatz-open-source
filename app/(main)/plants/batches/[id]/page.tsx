@@ -1,3 +1,4 @@
+import SkeletonLoader from '@/app/components/SkeletonLoader';
 import Breadcrumbs from '@/components/generic/BreadCrumbs';
 import { Container } from '@/components/generic/Container';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +8,8 @@ import { fetchBatchDetailsUseCase } from '@/modules/plants/use-cases';
 import { ChevronLeft } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import EditBatchContainer from './components/EditBatchContainer';
 
 export const metadata: Metadata = {
@@ -18,41 +21,38 @@ interface BatchDetailPageProps {
   params: { id: string };
 }
 
-const BatchDetailPage = async ({ params: { id } }: BatchDetailPageProps) => {
-  const breadcrumbs = [
-    { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Plants', href: '/plants' },
-    { label: `${id}` },
-  ];
-
+async function BatchContent({ id }: { id: string }) {
   const { data } = await fetchBatchDetailsUseCase({ id });
   const batch = data?.success?.batch;
   const strain = data?.success?.strain;
 
   if (!batch) {
-    return (
-      <Container className="space-y-4">
-        <Breadcrumbs items={breadcrumbs} />
-
-        <div className=" grid max-w-[62rem] flex-1 auto-rows-max gap-4">
-          {/* Crew name + category */}
-          <div className="flex w-full items-center gap-4">
-            <Link href={`/`}>
-              {' '}
-              <Button variant="outline" size="icon" className="h-7 w-7">
-                <ChevronLeft className="h-4 w-4" />
-                <span className="sr-only">Back</span>
-              </Button>
-            </Link>
-
-            <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-              No batch found
-            </h1>
-          </div>
-        </div>
-      </Container>
-    );
+    notFound();
   }
+
+  return (
+    <div className="grid max-w-[62rem] flex-1 auto-rows-max gap-4">
+      <div className="flex w-full items-center gap-4">
+        <h1 className="shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
+          {batch.name}
+        </h1>
+        <Badge variant="outline" className="ml-auto sm:ml-0">
+          {strain?.name}
+        </Badge>
+      </div>
+      <EditBatchContainer batch={batch} />
+    </div>
+  );
+}
+
+export default function BatchDetailPage({
+  params: { id },
+}: BatchDetailPageProps) {
+  const breadcrumbs = [
+    { label: 'Dashboard', href: '/dashboard' },
+    { label: 'Plants', href: '/plants' },
+    { label: `${id}` },
+  ];
 
   return (
     <Container className="space-y-4">
@@ -65,21 +65,10 @@ const BatchDetailPage = async ({ params: { id } }: BatchDetailPageProps) => {
         </Link>
         <Breadcrumbs items={breadcrumbs} />
       </div>
-      <div className=" grid max-w-[62rem] flex-1 auto-rows-max gap-4">
-        {/* Crew name + category */}
-        <div className="flex w-full items-center gap-4">
-          <h1 className="shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-            {batch?.name}
-          </h1>
-          <Badge variant="outline" className="ml-auto sm:ml-0">
-            {strain?.name}
-          </Badge>
-        </div>
-        {/* Main area with two sides, each contain cards */}
-        <EditBatchContainer batch={batch} />
-      </div>
+
+      <Suspense fallback={<SkeletonLoader type="page" />}>
+        <BatchContent id={id} />
+      </Suspense>
     </Container>
   );
-};
-
-export default BatchDetailPage;
+}
