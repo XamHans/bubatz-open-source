@@ -1,73 +1,35 @@
+import SkeletonLoader from '@/app/components/SkeletonLoader';
 import Breadcrumbs from '@/components/generic/BreadCrumbs';
-import { Container } from '@/components/generic/Container';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { siteConfig } from '@/config/site';
 import { fetchStrainDetailsUseCase } from '@/modules/plants/use-cases';
 import { ChevronLeft } from 'lucide-react';
-import { Metadata } from 'next';
 import Link from 'next/link';
-import DeleteStrainModal from './components/DeleteStrainModal';
-import { EditStrainForm } from './components/EditStrainForm';
+import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
+import StrainGeneralInfo from './components/StrainGeneralInfo';
 
-export const metadata: Metadata = {
-  title: 'Manage Strain Details',
-  description: 'Manage your plants & batches',
-};
-
-interface StrainDetailPageProps {
+interface SaleDetailPageProps {
   params: { id: string };
 }
 
-const StrainDetailPage = async ({ params }: StrainDetailPageProps) => {
-  const id = parseInt(params.id, 10);
-
-  const data = await fetchStrainDetailsUseCase({ id });
-  const strain = data?.data?.success;
-
+export default async function SaleDetailPage({
+  params: { id },
+}: SaleDetailPageProps) {
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Plants', href: '/plants' },
     { label: 'Strains', href: '/plants' },
-    { label: `${strain?.name}` },
+    { label: 'Detail', href: '/' },
   ];
-
-  if (!strain) {
-    return (
-      <Container className="space-y-4">
-        <div className="mb-8 flex items-center justify-center gap-4">
-          <Link href={siteConfig.links.plants.index}>
-            <Button variant="outline" size="icon" className="h-9 w-9">
-              <ChevronLeft className="h-5 w-5" />
-              <span className="sr-only">Back</span>
-            </Button>
-          </Link>
-          <Breadcrumbs items={breadcrumbs} />
-        </div>
-        <div className=" grid max-w-[62rem] flex-1 auto-rows-max gap-4">
-          {/* Crew name + category */}
-          <div className="flex w-full items-center gap-4">
-            <Link href={`/`}>
-              {' '}
-              <Button variant="outline" size="icon" className="h-7 w-7">
-                <ChevronLeft className="h-4 w-4" />
-                <span className="sr-only">Back</span>
-              </Button>
-            </Link>
-
-            <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-              No strain found
-            </h1>
-          </div>
-        </div>
-      </Container>
-    );
+  const { data } = await fetchStrainDetailsUseCase({ id: +id });
+  if (data.failure) {
+    notFound();
   }
 
   return (
-    <Container className="space-y-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="mb-8 flex items-center justify-center gap-4">
-        <Link href={siteConfig.links.plants.index}>
+        <Link href="/sales">
           <Button variant="outline" size="icon" className="h-9 w-9">
             <ChevronLeft className="h-5 w-5" />
             <span className="sr-only">Back</span>
@@ -76,20 +38,28 @@ const StrainDetailPage = async ({ params }: StrainDetailPageProps) => {
         <Breadcrumbs items={breadcrumbs} />
       </div>
 
-      <div className=" grid max-w-[62rem] flex-1 auto-rows-max gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle> {strain?.name}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <EditStrainForm strain={strain} />
-          </CardContent>
-        </Card>
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mb-8 flex items-center gap-4">
+          <Button size="sm" className="ml-auto hidden md:inline-flex md:px-10">
+            Edit
+          </Button>
+        </div>
+
+        <Suspense fallback={<SkeletonLoader type="page" />}>
+          <div className="grid gap-8 lg:grid-cols-3">
+            {/* Recent Sales of this strain */}
+            <div className="space-y-8 lg:col-span-2">
+              <div className="space-y-8 lg:col-span-2"></div>
+            </div>
+
+            {/* Batches that produces  this strain */}
+
+            <div>
+              <StrainGeneralInfo strain={data?.success} />
+            </div>
+          </div>
+        </Suspense>
       </div>
-
-      <DeleteStrainModal id={strain.id} />
-    </Container>
+    </div>
   );
-};
-
-export default StrainDetailPage;
+}

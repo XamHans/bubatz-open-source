@@ -1,9 +1,11 @@
+import SkeletonLoader from '@/app/components/SkeletonLoader';
 import Breadcrumbs from '@/components/generic/BreadCrumbs';
 import { Button } from '@/components/ui/button';
 import { fetchSaleDetailsUseCase } from '@/modules/sales/use-cases';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import SaleGeneralInfo from './components/SaleGeneralInfo';
 import SaleItemsCards from './components/SaleItemCard';
 
@@ -37,23 +39,19 @@ export default async function SaleDetailPage({
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* <div className="mb-8 flex items-center gap-4">
-          <Button size="sm" className="ml-auto hidden md:inline-flex md:px-10">
-            Edit
-          </Button>
-        </div> */}
-
-        <div className="grid gap-8 lg:grid-cols-3">
-          <div className="space-y-8 lg:col-span-2">
+        <Suspense fallback={<SkeletonLoader type="page" />}>
+          <div className="grid gap-8 lg:grid-cols-3">
             <div className="space-y-8 lg:col-span-2">
-              <SaleItemsCards items={data.success.items} />
+              <div className="space-y-8 lg:col-span-2">
+                <SaleItemsCards items={data.success.items} />
+              </div>
+            </div>
+
+            <div>
+              <SaleGeneralInfo sale={data?.success} />
             </div>
           </div>
-
-          <div>
-            <SaleGeneralInfo sale={data?.success} />
-          </div>
-        </div>
+        </Suspense>
       </div>
     </div>
   );
