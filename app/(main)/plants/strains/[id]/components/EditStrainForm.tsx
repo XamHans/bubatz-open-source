@@ -43,7 +43,7 @@ export function EditStrainForm({ strain }: EditStrainFormProps) {
       toast({
         title: 'Success',
         duration: 1000,
-        description: 'Batch updated successfully',
+        description: 'Strain updated successfully',
       });
     },
     onError: (error) => {
@@ -118,6 +118,22 @@ export function EditStrainForm({ strain }: EditStrainFormProps) {
               </FormControl>
               <FormDescription>
                 The CBD content of the strain (0-100%).
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="amountAvailable"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Current Amount (in g)</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormDescription>
+                The current amount of the strain available in grams.
               </FormDescription>
               <FormMessage />
             </FormItem>

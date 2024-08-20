@@ -8,6 +8,13 @@
       "when": 1724067264652,
       "tag": "0000_fluffy_quasimodo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1724180860888,
+      "tag": "0001_nostalgic_franklin_richards",
+      "breakpoints": true
     }
   ]
 }

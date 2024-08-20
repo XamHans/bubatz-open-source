@@ -25,7 +25,7 @@ async function NewStrainPage() {
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Plants', href: '/plants' },
-    { label: 'New Strain', href: '/plants/new-strain' },
+    { label: 'New Strain', href: siteConfig.links.plants.strains.new },
   ];
 
   return (

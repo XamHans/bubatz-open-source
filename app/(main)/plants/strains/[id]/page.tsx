@@ -1,30 +1,39 @@
 import SkeletonLoader from '@/app/components/SkeletonLoader';
 import Breadcrumbs from '@/components/generic/BreadCrumbs';
 import { Button } from '@/components/ui/button';
-import { fetchStrainDetailsUseCase } from '@/modules/plants/use-cases';
+import {
+  fetchBatchesByStrainIdUseCase,
+  fetchStrainDetailsUseCase,
+} from '@/modules/plants/use-cases';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import ArchiveStrainModal from './components/ArchiveStrainModal';
 import StrainGeneralInfo from './components/StrainGeneralInfo';
+import UpcomingYield from './components/UpcomingYield';
 
-interface SaleDetailPageProps {
+interface StrainDetailPageProps {
   params: { id: string };
 }
 
-export default async function SaleDetailPage({
+export default async function StrainDetailPage({
   params: { id },
-}: SaleDetailPageProps) {
+}: StrainDetailPageProps) {
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Plants', href: '/plants' },
     { label: 'Strains', href: '/plants' },
-    { label: 'Detail', href: '/' },
+    { label: id.toString(), href: '/' },
   ];
-  const { data } = await fetchStrainDetailsUseCase({ id: +id });
-  if (data.failure) {
+  const { data: strainData } = await fetchStrainDetailsUseCase({ id: +id });
+  if (strainData.failure) {
     notFound();
   }
+
+  const { data: batchesData } = await fetchBatchesByStrainIdUseCase({
+    strainId: +id,
+  });
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -39,7 +48,7 @@ export default async function SaleDetailPage({
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-8 flex items-center gap-4">
+        <div className="mb-8 flex  gap-4">
           <Button size="sm" className="ml-auto hidden md:inline-flex md:px-10">
             Edit
           </Button>
@@ -47,15 +56,13 @@ export default async function SaleDetailPage({
 
         <Suspense fallback={<SkeletonLoader type="page" />}>
           <div className="grid gap-8 lg:grid-cols-3">
-            {/* Recent Sales of this strain */}
             <div className="space-y-8 lg:col-span-2">
-              <div className="space-y-8 lg:col-span-2"></div>
+              <UpcomingYield batches={batchesData.success} />
             </div>
 
-            {/* Batches that produces  this strain */}
-
-            <div>
-              <StrainGeneralInfo strain={data?.success} />
+            <div className="grid auto-rows-max items-start gap-2 lg:gap-8">
+              <StrainGeneralInfo strain={strainData.success} />
+              <ArchiveStrainModal id={strainData.success.id} />
             </div>
           </div>
         </Suspense>

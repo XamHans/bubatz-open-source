@@ -8,6 +8,7 @@ import {
   numeric,
   serial,
   text,
+  timestamp,
   uuid,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm/relations';
@@ -77,9 +78,16 @@ export const batches = protectedSchema.table('batches', {
   endDate: date('end_date').notNull(),
   currentGrowthStage: text('current_growth_stage').notNull().default('SEEDING'),
   totalYield: numeric('total_yield').default('0'),
+  expectedYield: numeric('expected_yield').default('0'),
   totalDestroyed: numeric('total_destroyed').default('0'),
   isArchived: boolean('is_archived').default(false),
   otherDetails: jsonb('other_details').default('{}'),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
 export const plants = protectedSchema.table('plants', {
@@ -100,6 +108,7 @@ export const strains = protectedSchema.table('strains', {
   description: text('description'),
   thc: numeric('thc').notNull(),
   cbd: numeric('cbd').notNull(),
+  isArchived: boolean('is_archived').default(false),
   currentPricePerGram: numeric('current_price_per_gram').notNull(),
   amountAvailable: numeric('amount_available').default('0'), // amount available in grams
 });
@@ -180,6 +189,9 @@ export const getStrainsSchema = createSelectSchema(strains, {
 
 export const getBatchDetailSchema = updateBatchInputSchema.pick({ id: true });
 export const getStrainDetailSchema = updateStrainInputSchema.pick({ id: true });
+export const getBatchesByStrainIdSchema = createBatchInputSchema.pick({
+  strainId: true,
+});
 
 export type BatchProps = z.infer<typeof getBatchesSchema>;
 export type CreateBatchInput = z.infer<typeof createBatchInputSchema>;

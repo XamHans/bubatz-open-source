@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/db/db';
 import { AsyncReturnType } from '@/types';
-import { eq } from 'drizzle-orm/sql';
+import { and, eq } from 'drizzle-orm';
 import {
   CreateBatchInput,
   CreatePlantInput,
@@ -82,6 +82,14 @@ export const getBatchById = async (id: string) => {
     .where(eq(batches.id, id))
     .limit(1);
   return result[0];
+};
+
+export const getBatchesByStrainId = async (strainId: number) => {
+  const result = await db
+    .select()
+    .from(batches)
+    .where(and(eq(batches.strainId, strainId), eq(batches.isArchived, false)));
+  return result;
 };
 
 const getPlants = async () => {

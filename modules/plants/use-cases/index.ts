@@ -13,6 +13,7 @@ import {
   deleteStrain,
   getBatchById,
   getBatches,
+  getBatchesByStrainId,
   getPlants,
   getPlantsByBatchId,
   getStrainById,
@@ -30,6 +31,7 @@ import {
   deletePlantInputSchema,
   deleteStrainInputSchema,
   getBatchDetailSchema,
+  getBatchesByStrainIdSchema,
   getStrainDetailSchema,
   updateBatchInputSchema,
   updatePlantInputSchema,
@@ -148,6 +150,14 @@ export const fetchStrainsUseCase = actionClient.action(async () => {
 
   return { success: strains };
 });
+
+export const fetchBatchesByStrainIdUseCase = actionClient
+  .schema(getBatchesByStrainIdSchema)
+  .action(async ({ parsedInput }) => {
+    const batches = await getBatchesByStrainId(parsedInput.strainId!);
+
+    return { success: batches };
+  });
 
 export const fetchStrainDetailsUseCase = actionClient
   .schema(getStrainDetailSchema)

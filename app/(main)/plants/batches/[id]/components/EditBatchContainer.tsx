@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { BatchProps } from '@/modules/plants/data-access/schema';
-import ArchiveBatchComponent from './ArchiveBatchModal';
+import ArchiveBatchModal from './ArchiveBatchModal';
 import { GrowthPhasesForm } from './Forms/GrowthPhasesForm';
 import { PlantsContainer } from './Plants/PlantsContainer';
 
@@ -97,7 +97,7 @@ const EditBatchContainer = ({ batch }: EditBatchContainerProps) => {
           </CardContent>
         </Card>
 
-        <ArchiveBatchComponent id={batch.id} />
+        <ArchiveBatchModal id={batch.id} />
       </div>
     </div>
   );

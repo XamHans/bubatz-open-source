@@ -21,33 +21,33 @@ import {
 } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { siteConfig } from '@/config/site';
-import { updateBatchUseCase } from '@/modules/plants/use-cases';
+import { updateStrainUseCase } from '@/modules/plants/use-cases';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 
-export interface ArchiveBatchModalProps {
-  id: string;
+export interface ArchiveStrainModalProps {
+  id: number;
 }
 
-const ArchiveBatchModal = ({ id }: ArchiveBatchModalProps) => {
+const ArchiveStrainModal = ({ id }: ArchiveStrainModalProps) => {
   const { toast } = useToast();
   const router = useRouter();
 
-  const { execute } = useAction(updateBatchUseCase, {
-    onSuccess: (data) => {
+  const { execute } = useAction(updateStrainUseCase, {
+    onSuccess: () => {
       toast({
-        title: 'Batch archived',
-        description: 'The batch has been successfully archived',
+        title: 'Strain archived',
+        description: 'The Strain has been successfully archived',
       });
       setTimeout(() => {
         router.push(`${siteConfig.links.plants.index}`);
       }, 1500);
     },
     onError: (error) => {
-      console.error('Failed to archive batch:', error);
+      console.error('Failed to archive Strain:', error);
       toast({
-        title: 'Batch archived',
-        description: 'The batch has been successfully archived',
+        title: 'Strain archived',
+        description: 'The Strain has been successfully archived',
         variant: 'destructive',
       });
     },
@@ -60,23 +60,23 @@ const ArchiveBatchModal = ({ id }: ArchiveBatchModalProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Archive Batch</CardTitle>
+        <CardTitle>Archive Strain</CardTitle>
         <CardDescription>
-          When you're done with the batch, you can archive it here.
+          When you're done with the Strain, you can archive it here.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button size="sm" variant="secondary">
-              Archive Batch
+              Archive Strain
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action will archive the current batch. You can't undo this
+                This action will archive the current Strain. You can't undo this
                 action.
               </AlertDialogDescription>
             </AlertDialogHeader>
@@ -93,4 +93,4 @@ const ArchiveBatchModal = ({ id }: ArchiveBatchModalProps) => {
   );
 };
 
-export default ArchiveBatchModal;
+export default ArchiveStrainModal;

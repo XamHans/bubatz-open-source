@@ -21,12 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../../../components/ui/select';
-import {
-  GetMemberDetailQueryData
-} from '../../../../../modules/members/data-access/index';
-import {
-  UpdateMemberInput
-} from '../../../../../modules/members/data-access/schema';
+import { GetMemberDetailQueryData } from '../../../../../modules/members/data-access/index';
+import { UpdateMemberInput } from '../../../../../modules/members/data-access/schema';
 import { ClubMemberStatus } from '../../../../../modules/members/types';
 
 import { UUID } from 'crypto';
@@ -267,12 +263,7 @@ const EditMemberModal = ({ member, setMember }: EditMemberModalProps) => {
                         {t('MEMBER.STATUS_OPTIONS.REQUEST')}
                       </FormLabel>
                     </SelectItem>
-                    <SelectItem value={ClubMemberStatus.PENDING}>
-                      <FormLabel>
-                        PENDING
-                        {t('MEMBER.STATUS_OPTIONS.PENDING')}
-                      </FormLabel>
-                    </SelectItem>
+
                     <SelectItem value={ClubMemberStatus.ACTIVE}>
                       <FormLabel>
                         ACTIVE
