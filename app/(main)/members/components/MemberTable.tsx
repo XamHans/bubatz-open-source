@@ -3,6 +3,7 @@
 import SkeletonLoader from '@/app/components/SkeletonLoader';
 import { siteConfig } from '@/config/site';
 import { logger } from '@/lib/logger';
+import { Pencil1Icon } from '@radix-ui/react-icons';
 import {
   ColumnFiltersState,
   SortingState,
@@ -50,7 +51,6 @@ import {
 } from '../../../../modules/members/types';
 import { fetchMembersUseCase } from '../../../../modules/members/use-cases';
 import { AddMemberModal } from './AddMemberModal';
-import { DeleteMemberModal } from './DeleteMemberModal';
 
 export default function MemberTable() {
   const getUserTableColumns = (router: AppRouterInstance) => {
@@ -157,28 +157,30 @@ export default function MemberTable() {
                     </TooltipTrigger>
                     <TooltipContent align="end">
                       <Badge className="bg-inherit text-black hover:bg-inherit">
-                        {t('member:ACTIONS.DETAIL')} Edit
+                        Detail
                       </Badge>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </Button>
+
               <Button
-                type="button"
                 variant="ghost"
                 className="transition-transform duration-200 hover:bg-inherit"
+                onClick={() => {
+                  router.push(
+                    siteConfig.links.members.edit.replace(':id', member.id!),
+                  );
+                }}
               >
                 <TooltipProvider>
                   <Tooltip delayDuration={0}>
                     <TooltipTrigger>
-                      <DeleteMemberModal
-                        member={member}
-                        setMembers={setMembers}
-                      />
+                      <Pencil1Icon className="h-6 w-6 cursor-pointer" />
                     </TooltipTrigger>
                     <TooltipContent align="end">
                       <Badge className="bg-inherit text-black hover:bg-inherit">
-                        {t('member:ACTIONS.DETAIL')} Delete
+                        Edit
                       </Badge>
                     </TooltipContent>
                   </Tooltip>

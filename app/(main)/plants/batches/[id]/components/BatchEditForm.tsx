@@ -32,7 +32,7 @@ export interface GrowthPhasesFormProps {
   batch: BatchProps;
 }
 
-const GrowthPhasesForm = ({ batch }: GrowthPhasesFormProps) => {
+const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
   const { toast } = useToast();
 
   const { execute } = useAction(updateBatchUseCase, {
@@ -59,6 +59,7 @@ const GrowthPhasesForm = ({ batch }: GrowthPhasesFormProps) => {
     resolver: zodResolver(updateBatchInputSchema),
     defaultValues: {
       currentGrowthStage: batch.currentGrowthStage,
+      expectedYield: batch.expectedYield,
       totalDestroyed: batch.totalDestroyed,
       totalYield: batch.totalYield,
     },
@@ -116,6 +117,23 @@ const GrowthPhasesForm = ({ batch }: GrowthPhasesFormProps) => {
 
           <FormField
             control={form.control}
+            name="expectedYield"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>Expected Yield Total (grams)</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter expected yield total in grams"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="totalYield"
             render={({ field }) => (
               <FormItem className="col-span-2">
@@ -150,4 +168,4 @@ const GrowthPhasesForm = ({ batch }: GrowthPhasesFormProps) => {
   );
 };
 
-export { GrowthPhasesForm };
+export { BatchEditForm as GrowthPhasesForm };

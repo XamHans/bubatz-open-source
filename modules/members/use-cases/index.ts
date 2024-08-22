@@ -29,7 +29,6 @@ export const addMemberUseCase = actionClient
     }
     const newMemberId: UserSchema[] = await createMember({
       ...parsedInput,
-      id: crypto.randomUUID(),
     });
     return { success: newMemberId };
   });

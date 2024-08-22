@@ -26,6 +26,7 @@ import React, { useEffect, useState } from 'react';
 import SkeletonLoader from '@/app/components/SkeletonLoader';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -269,6 +270,18 @@ export default function SalesTable() {
 
   return (
     <div className="space-y-4">
+      <div className="flex items-center justify-between space-x-2">
+        <Input
+          placeholder={t('sales:ACTIONS.SEARCH') ?? 'Search sales'}
+          value={
+            (table.getColumn('memberName')?.getFilterValue() as string) ?? ''
+          }
+          onChange={(event) =>
+            table.getColumn('memberName')?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+      </div>
       <div>
         <Table className="rounded-md bg-white">
           <TableHeader>

@@ -1,20 +1,21 @@
 {
-    "club_id": "club_001",
-    "name": "Munich CSC",
-    "description": "Tech Club is a community of tech enthusiasts who come together to share ideas and learn from each other.",
-    "location": {
-      "address": "456 Innovation Drive",
-      "city": "Techville",
-      "state": "CA",
-      "zip": "67890",
-      "country": "USA"
-    },
-    "contact": {
-      "phone": "+1234567890",
-      "email": "info@techclub.com"
-    },
-    "status": "active",
-    "owner": "user_001",
-    "created_at": "2023-01-01T10:00:00Z",
-    "updated_at": "2023-05-01T12:00:00Z"
-  }
+  "id": "uuid_001",
+  "name": "Munich CSC",
+  "description": "Tech Club is a community of tech enthusiasts who come together to share ideas and learn from each other.",
+  "location": {
+    "address": "456 Innovation Drive",
+    "city": "Techville",
+    "state": "CA",
+    "zip": "67890",
+    "country": "USA"
+  },
+  "contact": {
+    "phone": "+1234567890",
+    "email": "info@techclub.com"
+  },
+  "looking_for_members": true,
+  "status": "active",
+  "owner": "user_001",
+  "created_at": "2023-01-01T10:00:00Z",
+  "updated_at": "2023-05-01T12:00:00Z"
+}

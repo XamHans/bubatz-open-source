@@ -1,6 +1,7 @@
 import SkeletonLoader from '@/app/components/SkeletonLoader';
 import Breadcrumbs from '@/components/generic/BreadCrumbs';
 import { Button } from '@/components/ui/button';
+import { siteConfig } from '@/config/site';
 import {
   fetchBatchesByStrainIdUseCase,
   fetchStrainDetailsUseCase,
@@ -49,9 +50,14 @@ export default async function StrainDetailPage({
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8 flex  gap-4">
-          <Button size="sm" className="ml-auto hidden md:inline-flex md:px-10">
-            Edit
-          </Button>
+          <Link
+            className="ml-auto hidden md:inline-flex "
+            href={siteConfig.links.plants.strains.edit.replace(':id', id)}
+          >
+            <Button size="sm" className=" md:px-10">
+              Edit
+            </Button>
+          </Link>
         </div>
 
         <Suspense fallback={<SkeletonLoader type="page" />}>

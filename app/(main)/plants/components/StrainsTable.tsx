@@ -1,6 +1,7 @@
 'use client';
 
 import SkeletonLoader from '@/app/components/SkeletonLoader';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -18,6 +19,7 @@ import {
 } from '@/components/ui/tooltip';
 import { siteConfig } from '@/config/site';
 import { fetchStrainsUseCase } from '@/modules/plants/use-cases';
+import { Pencil1Icon } from '@radix-ui/react-icons';
 import {
   ColumnFiltersState,
   SortingState,
@@ -133,7 +135,33 @@ const getStrainsTableColumns = (router: AppRouterInstance) => {
                   <TooltipTrigger>
                     <EyeIcon className="h-6 w-6 cursor-pointer" />
                   </TooltipTrigger>
-                  <TooltipContent align="end">Zur Detail Seite</TooltipContent>
+                  <TooltipContent align="end">Detail</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </Button>
+
+            <Button
+              variant="ghost"
+              className="transition-transform duration-200 hover:bg-inherit"
+              onClick={() => {
+                router.push(
+                  siteConfig.links.plants.strains.edit.replace(
+                    ':id',
+                    strain.id!,
+                  ),
+                );
+              }}
+            >
+              <TooltipProvider>
+                <Tooltip delayDuration={0}>
+                  <TooltipTrigger>
+                    <Pencil1Icon className="h-6 w-6 cursor-pointer" />
+                  </TooltipTrigger>
+                  <TooltipContent align="end">
+                    <Badge className="bg-inherit text-black hover:bg-inherit">
+                      Edit
+                    </Badge>
+                  </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </Button>

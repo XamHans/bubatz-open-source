@@ -1,7 +1,6 @@
 export enum ClubMemberStatus {
-  ACTIVE = 'ACTIVE',
-  PENDING = 'PENDING',
   REQUEST = 'REQUEST',
+  ACTIVE = 'ACTIVE',
   PAUSED = 'PAUSED',
   EXITED = 'EXITED',
 }

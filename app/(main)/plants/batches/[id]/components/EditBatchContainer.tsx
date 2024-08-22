@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { BatchProps } from '@/modules/plants/data-access/schema';
 import ArchiveBatchModal from './ArchiveBatchModal';
-import { GrowthPhasesForm } from './Forms/GrowthPhasesForm';
+import { GrowthPhasesForm } from './BatchEditForm';
 import { PlantsContainer } from './Plants/PlantsContainer';
 
 interface EditBatchContainerProps {

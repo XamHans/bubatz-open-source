@@ -8,6 +8,7 @@ const links = {
     index: '/members',
     new: '/members/new',
     detail: '/members/:id',
+    edit: '/members/:id/edit',
   },
   sales: {
     index: '/sales',
@@ -24,6 +25,7 @@ const links = {
     strains: {
       new: '/plants/strains/new',
       detail: '/plants/strains/:id',
+      edit: '/plants/strains/:id/edit',
     },
   },
 };

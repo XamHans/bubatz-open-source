@@ -27,10 +27,12 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { t } from 'i18next';
-import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowUpDown, ChevronLeft, ChevronRight, Eye, Pencil } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { siteConfig } from '@/config/site';
 
 interface PaymentTableProps {
   memberId: string;
@@ -90,6 +92,26 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
         accessorKey: 'paymentMethod',
         header: 'Method',
         cell: ({ row }) => <div>{row.getValue('paymentMethod')}</div>,
+      },
+      {
+        id: 'actions',
+        cell: ({ row }) => {
+          const payment = row.original;
+          return (
+            <div className="flex items-center space-x-2">
+              <Link href={`${siteConfig.links.members.detail.replace(':id', memberId)}/payments/${payment.id}`}>
+                <Button variant="ghost" size="icon">
+                  <Eye className="h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href={`${siteConfig.links.members.detail.replace(':id', memberId)}/payments/${payment.id}/edit`}>
+                <Button variant="ghost" size="icon">
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          );
+        },
       },
     ];
   };

@@ -4,7 +4,13 @@
 import { db } from '@/lib/db/db';
 import { AsyncReturnType } from '@/types';
 import { eq } from 'drizzle-orm/sql/expressions/conditions';
-import { AddMemberInput, AddMembershipPaymentInput, UpdateMemberInput, members, membershipPayments } from './schema';
+import {
+  AddMemberInput,
+  AddMembershipPaymentInput,
+  UpdateMemberInput,
+  members,
+  membershipPayments,
+} from './schema';
 // const logger = getLogger();
 /**
  * Here is an example CRUD methods for the members table.
@@ -39,9 +45,10 @@ const updateMember = async (data: UpdateMemberInput) => {
     const updatedMemberResult = await db
       .update(members)
       .set({ ...data, birthday: data.birthday?.toString() }) // Added nullish coalescing operator
-      .where(eq(members.id, data.id ?? ''));
+      .where(eq(members.id, data.id ?? ''))
+      .returning();
     console.log('updatedMemberResult', updatedMemberResult);
-    return 'Success';
+    return updatedMemberResult;
   } catch (error) {
     console.error('Error updating member:', error);
     return { message: 'Failed to update member', error: error };
@@ -50,9 +57,11 @@ const updateMember = async (data: UpdateMemberInput) => {
 
 const deleteMember = async (id: string) => {
   try {
-    const deletedMember = await db.delete(members).where(eq(members.id, id));
-    console.log('deletedMember', deletedMember);
-    return 'Deleted member successfully';
+    const deletedMemberResult = await db
+      .delete(members)
+      .where(eq(members.id, id));
+    console.log('deletedMember', deletedMemberResult);
+    return deletedMemberResult;
   } catch (error) {
     console.error('Error deleting member:', error);
     return { message: 'Failed to delete member', error: error };
@@ -61,12 +70,13 @@ const deleteMember = async (id: string) => {
 
 export { deleteMember, getMemberDetail, getMembers, updateMember };
 
-
-
 //------------------------PAYMENTS
 export const createMemberPayment = async (input: AddMembershipPaymentInput) => {
   // logger.debug('Creating new member', input);
-  const newPaymentId = await db.insert(membershipPayments).values(input).returning();
+  const newPaymentId = await db
+    .insert(membershipPayments)
+    .values(input)
+    .returning();
   return newPaymentId;
 };
 
@@ -90,7 +100,9 @@ export const getMemberPayments = async (memberId: string) => {
   return payments;
 };
 
-export type GetMemberPaymentsQueryData = AsyncReturnType<typeof getMemberPayments>;
+export type GetMemberPaymentsQueryData = AsyncReturnType<
+  typeof getMemberPayments
+>;
 
 // If you need to update a payment, you can add a function like this:
 export const updatePayment = async (data: UpdatePaymentInput) => {

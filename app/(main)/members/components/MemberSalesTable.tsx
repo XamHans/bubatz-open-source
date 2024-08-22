@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { siteConfig } from '@/config/site';
 import { logger } from '@/lib/logger';
 import { fetchMemberSalesUseCase } from '@/modules/sales/use-cases';
 import {
@@ -25,8 +26,9 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { t } from 'i18next';
-import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowUpDown, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
+import Link from 'next/link';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
@@ -108,6 +110,23 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
         cell: ({ row }) => (
           <div>{new Date(row.getValue('createdAt')).toLocaleString()}</div>
         ),
+      },
+      {
+        id: 'actions',
+        cell: ({ row }) => {
+          const sale = row.original;
+          return (
+            <div className="flex items-center space-x-2">
+              <Link
+                href={siteConfig.links.sales.detail.replace(':id', sale.id)}
+              >
+                <Button variant="ghost" size="icon">
+                  <Eye className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          );
+        },
       },
     ];
   };

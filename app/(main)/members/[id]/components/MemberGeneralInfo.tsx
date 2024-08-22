@@ -16,15 +16,15 @@ interface MemberGeneralInfoProps {
   member: MemberProps;
 }
 
-const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }).format(new Date(date));
-  };
+const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(new Date(date));
+};
 
+const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
   const calculateAge = (birthday: Date) => {
     const ageDifMs = Date.now() - new Date(birthday).getTime();
     const ageDate = new Date(ageDifMs);

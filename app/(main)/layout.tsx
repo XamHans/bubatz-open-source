@@ -13,7 +13,7 @@ const AppLayout = ({ children }: Props) => {
 
         <Sidebar />
 
-        <div className="flex flex-col  sm:gap-4 sm:p-1 md:p-12">
+        <div className="flex flex-col  sm:gap-4 sm:p-1 md:p-10">
           {' '}
           {children}
         </div>
