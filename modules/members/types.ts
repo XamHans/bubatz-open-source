@@ -5,23 +5,12 @@ export enum ClubMemberStatus {
   EXITED = 'EXITED',
 }
 
-export interface MemberProps {
-  id: string;
-  avatar_url?: string | '';
-  firstName: string;
-  lastName: string;
-  status: ClubMemberStatus | string;
-  street: string;
-  zip: string;
-  city: string;
-  birthday: Date;
-  email?: string;
-  phone?: string;
-  isAdmin: boolean;
-  createdAt: Date;
+export enum ClubMemberRoles {
+  ADMIN = 'ADMIN',
+  MEMBER = 'MEMBER',
+
 }
 
-// export type UpdateMemberInput = Omit<MemberProps, 'is_admin'>;
 
 export const colorForClubMemberStatus = new Map<ClubMemberStatus, string>([
   [ClubMemberStatus.ACTIVE, 'lime-300'],

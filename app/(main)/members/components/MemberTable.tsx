@@ -16,17 +16,21 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { t } from 'i18next';
-import { ArrowUpDown, ChevronLeft, ChevronRight, EyeIcon } from 'lucide-react';
+import {
+  ArrowUpDown,
+  ChevronLeft,
+  ChevronRight,
+  EyeIcon,
+  PlusCircle,
+  ShieldIcon,
+  UserIcon,
+} from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '../../../../components/ui/avatar';
 import { Badge } from '../../../../components/ui/badge';
 import { Button } from '../../../../components/ui/button';
 import { Input } from '../../../../components/ui/input';
@@ -50,26 +54,35 @@ import {
   colorForClubMemberStatus,
 } from '../../../../modules/members/types';
 import { fetchMembersUseCase } from '../../../../modules/members/use-cases';
-import { AddMemberModal } from './AddMemberModal';
 
 export default function MemberTable() {
   const getUserTableColumns = (router: AppRouterInstance) => {
     return [
       {
-        id: 'avatar',
-        header: 'Image',
-        cell: ({ row }) => (
-          <Avatar className="h-12 w-12">
-            <AvatarImage src={``} />
-            <AvatarFallback>
-              {(row.getValue('name') as string)?.charAt(0) || '?'}
-            </AvatarFallback>
-          </Avatar>
-        ),
+        id: 'role',
+        header: 'Role',
+        cell: ({ row }) => {
+          const isAdmin = row.original.role === 'ADMIN';
+          return (
+            <TooltipProvider>
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger>
+                  {isAdmin ? (
+                    <ShieldIcon className="h-6 w-6 text-blue-500" />
+                  ) : (
+                    <UserIcon className="h-6 w-6 text-gray-500" />
+                  )}
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{isAdmin ? 'Admin' : 'Member'}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          );
+        },
         enableSorting: false,
         enableHiding: false,
       },
-
       {
         accessorKey: 'name',
         accessorFn: (row) => {
@@ -247,7 +260,14 @@ export default function MemberTable() {
           }
           className="max-w-sm"
         />
-        <AddMemberModal setMembers={setMembers} />
+        <Link href={siteConfig.links.members.new}>
+          <Button size="sm" className="h-8 w-32 gap-1">
+            <PlusCircle className="h-3.5 w-3.5" />
+            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+              Add Member
+            </span>
+          </Button>
+        </Link>
       </div>
       <div>
         <Table className="rounded-md bg-white">
@@ -291,11 +311,7 @@ export default function MemberTable() {
               ))
             ) : (
               <TableRow>
-                <TableCell className="h-24 text-center">
-                  {t('GENERAL.DATA_TABLE.NO_RESULTS', {
-                    entity: t('member:TITLE'),
-                  })}
-                </TableCell>
+                <TableCell className="h-24 text-center">No data</TableCell>
               </TableRow>
             )}
           </TableBody>

@@ -58,7 +58,7 @@ export default function NewStrainForm() {
       description: '',
       thc: 0,
       cbd: 0,
-      currentPricePerGram: 0,
+      currentPricePerGram: '0',
     },
   });
 
@@ -93,7 +93,11 @@ export default function NewStrainForm() {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea placeholder="Enter strain description" {...field} />
+                <Textarea
+                  placeholder="Enter strain description"
+                  value={field.value ?? ''}
+                  onChange={field.onChange}
+                />
               </FormControl>
               <FormDescription>
                 A brief description of the strain (optional).

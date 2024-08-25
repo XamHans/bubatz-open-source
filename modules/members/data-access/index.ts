@@ -3,6 +3,7 @@
 // import getLogger from '../../../lib/logger';
 import { db } from '@/lib/db/db';
 import { AsyncReturnType } from '@/types';
+import { format, parse } from 'date-fns';
 import { eq } from 'drizzle-orm/sql/expressions/conditions';
 import {
   AddMemberInput,
@@ -12,6 +13,7 @@ import {
   members,
   membershipPayments,
 } from './schema';
+
 // const logger = getLogger();
 /**
  * Here is an example CRUD methods for the members table.
@@ -24,9 +26,28 @@ const getMembers = async () => {
 };
 
 export const createMember = async (input: AddMemberInput) => {
-  // logger.debug('Creating new member', input);
-  const newMemberId = await db.insert(members).values(input).returning();
-  return newMemberId;
+  if (!input.birthday) {
+    throw new Error('Birthday is required');
+  }
+  try {
+    // Parse the input date string
+    const parsedDate = parse(input.birthday, 'dd.MM.yyyy', new Date());
+
+    // Format the date to ISO string format
+    const formattedDate = format(parsedDate, 'yyyy-MM-dd');
+
+    // Create a new object with the formatted date
+    const memberData = {
+      ...input,
+      birthday: formattedDate,
+    };
+
+    const newMember = await db.insert(members).values(memberData).returning();
+    return newMember[0];
+  } catch (error) {
+    console.error('Error creating member:', error);
+    throw new Error('Failed to create new member');
+  }
 };
 
 const getMemberDetail = async (id: string) => {

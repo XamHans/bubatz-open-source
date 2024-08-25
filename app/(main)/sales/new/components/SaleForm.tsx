@@ -62,9 +62,13 @@ import {
   createSaleUseCase,
   fetchMembersStrainAmountUseCase,
 } from '@/modules/sales/use-cases';
+import { Session } from 'next-auth';
 
-export default function SaleForm() {
-  //@TODO: ADD USERS UUID; CHECK IF AUTHENTICATED
+export interface SaleFormProps {
+  session: Session;
+}
+
+export default function SaleForm({ session }: SaleFormProps) {
   const [members, setMembers] = useState<UserSchema[]>([]);
   const [strains, setStrains] = useState<StrainProps[]>([]);
   const [open, setOpen] = useState(false);
@@ -74,12 +78,12 @@ export default function SaleForm() {
     useState(true);
 
   const { toast } = useToast();
-
+  console.log('session', session);
   const form = useForm<CreateSaleWithItemsInput>({
     resolver: zodResolver(createSaleWithItemsInputSchema),
     defaultValues: {
       totalPrice: 0,
-      salesById: '083b0495-7109-4854-a754-6d959406abc8',
+      salesById: session.user.id,
       paidVia: undefined,
       memberId: '',
       items: [],
@@ -218,6 +222,14 @@ export default function SaleForm() {
 
   const remainingAllowance = 50 - memberMonthlyPurchase;
   const isOverLimit = memberMonthlyPurchase + totalWeight > 50;
+
+  if (session.user.role.toLocaleLowerCase() !== 'admin') {
+    return (
+      <div>
+        <h1>You are not allowed to access this page</h1>
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>

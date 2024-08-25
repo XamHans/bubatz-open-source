@@ -28,13 +28,13 @@ import {
 export const addMemberUseCase = actionClient
   .schema(addMemberInputSchema)
   .action(async ({ parsedInput }) => {
-    if (!parsedInput) {
-      return { failure: 'No data provided, cant create new member' };
+    try {
+      const newMemberResult = await createMember(parsedInput);
+      return { success: newMemberResult };
     }
-    const newMemberId: UserSchema[] = await createMember({
-      ...parsedInput,
-    });
-    return { success: newMemberId };
+    catch (error) {
+      return { failure: `Failed to create new member ${error}` };
+    }
   });
 
 export const fetchMembersUseCase = actionClient.action(async () => {

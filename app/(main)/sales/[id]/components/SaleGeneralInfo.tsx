@@ -1,4 +1,3 @@
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import React from 'react';
 import {
@@ -17,7 +16,7 @@ interface SaleGeneralInfoProps {
 const SaleGeneralInfo: React.FC<SaleGeneralInfoProps> = ({ sale }) => {
   console.log('sale in SaleGeneralInfo', sale.buyer);
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat('de-DE', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -30,9 +29,6 @@ const SaleGeneralInfo: React.FC<SaleGeneralInfoProps> = ({ sale }) => {
     <Card className="w-full">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold">Sale #{sale.id}</CardTitle>
-        <div className="mt-2 flex justify-center gap-2">
-          <Badge variant="secondary">{sale.paidVia}</Badge>
-        </div>
       </CardHeader>
       <CardContent className="grid gap-4">
         <InfoItem

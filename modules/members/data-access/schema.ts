@@ -31,6 +31,7 @@ export const members = protectedSchema.table('members', {
   lastName: text('last_name'),
   fullName: text('full_name'),
   birthday: date('birthday'),
+  image: text('image'),
 
   // contact
   email: text('email').unique(),
@@ -41,8 +42,9 @@ export const members = protectedSchema.table('members', {
   zip: text('zip'),
   //club info
   status: text('status').default('PENDING'),
-  // isAdmin: boolean('is_admin').default(false),
   role: memberRoleEnum('role').default('MEMBER'),
+  currentYearPaid: boolean('current_year_paid').default(false),
+  lastPaymentDate: date('last_payment_date'),
   // auth stuff
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
   emailVerificationToken: text('emailVerificationToken').unique(),
@@ -51,9 +53,8 @@ export const members = protectedSchema.table('members', {
   resetPasswordTokenExpiry: timestamp('resetPasswordTokenExpiry', {
     mode: 'date',
   }),
-  image: text('image'),
-  currentYearPaid: boolean('current_year_paid').default(false),
-  lastPaymentDate: date('last_payment_date'),
+
+  // timestamps
   createdAt: timestamp('createdAt', { mode: 'date' }).defaultNow(),
   updatedAt: timestamp('updatedAt', { mode: 'date' }).defaultNow(),
 });
@@ -67,14 +68,14 @@ export const membersRelations = relations(members, ({ many }) => ({
 
 // Schema for inserting a user - can be used to validate API requests
 export const addMemberInputSchema = createInsertSchema(members, {
-  firstName: (schema) => schema.firstName,
-  lastName: (schema) => schema.lastName,
+  firstName: (schema) => schema.firstName.min(2),
+  lastName: (schema) => schema.lastName.min(2),
   email: (schema) => schema.email.email(),
   phone: (schema) => schema.phone.min(9),
-  street: (schema) => schema.street.min(5),
-  city: (schema) => schema.city,
+  street: (schema) => schema.street.min(1),
+  city: (schema) => schema.city.min(1),
   zip: (schema) => schema.zip.min(4),
-  birthday: (schema) => schema.birthday,
+  birthday: () => z.string().min(1).regex(/^\d{2}\.\d{2}\.\d{4}$/, "Birthday must be in DD.MM.YYYY format"),
   status: (schema) => schema.status.default('PENDING'),
   role: (schema) => schema.role.default('MEMBER'),
 });
@@ -86,19 +87,10 @@ export const selectMultipleUsersSchema = z.array(selectUserSchema);
 export type UserSchema = z.infer<typeof selectUserSchema>;
 
 // Schema for updating a user
-export const updateMemberInputSchema = createInsertSchema(members, {
-  // role: (schema) => schema.role,
-  id: (schema) => schema.id,
-  firstName: (schema) => schema.firstName.optional(),
-  lastName: (schema) => schema.lastName.optional(),
-  email: (schema) => schema.email.optional(),
-  phone: (schema) => schema.phone.optional(),
-  status: (schema) => schema.status.optional(),
-  street: (schema) => schema.street.optional(),
-  city: (schema) => schema.city.optional(),
-  zip: (schema) => schema.zip.optional(),
-  // birthday: (schema) => schema.birthday,
-});
+export const updateMemberInputSchema = createInsertSchema(members).partial()
+  .extend({
+    id: z.string().uuid(),
+  });;
 export type UpdateMemberInput = z.infer<typeof updateMemberInputSchema>;
 
 // Schema for deleting a user

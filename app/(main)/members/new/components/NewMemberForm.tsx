@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -17,71 +18,83 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
+import { siteConfig } from '@/config/site';
 import {
-  UpdateMemberInput,
-  updateMemberInputSchema,
+  AddMemberInput,
+  addMemberInputSchema,
 } from '@/modules/members/data-access/schema';
-import { ClubMemberStatus, MemberProps } from '@/modules/members/types';
-import { updateMemberUseCase } from '@/modules/members/use-cases';
-
+import { ClubMemberRoles, ClubMemberStatus } from '@/modules/members/types';
+import { addMemberUseCase } from '@/modules/members/use-cases';
 import { zodResolver } from '@hookform/resolvers/zod';
-import debounce from 'lodash/debounce';
 import { useAction } from 'next-safe-action/hooks';
-import { useCallback, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
-interface EditMemberFormProps {
-  member: MemberProps;
-}
-
-export function EditMemberForm({ member }: EditMemberFormProps) {
+export default function NewMemberForm() {
+  const router = useRouter();
   const { toast } = useToast();
 
-  const form = useForm<UpdateMemberInput>({
-    resolver: zodResolver(updateMemberInputSchema),
-    defaultValues: {
-      ...member,
-    },
-  });
-
-  const { execute, status } = useAction(updateMemberUseCase, {
+  const { execute, status } = useAction(addMemberUseCase, {
     onSuccess: ({ data }) => {
       toast({
         title: 'Success',
         duration: 1000,
-        description: 'Member updated successfully',
+        description: 'Member created successfully',
       });
+      console.log('data success', data);
+      setTimeout(() => {
+        if (!data?.success?.id) return;
+        router.push(
+          `${siteConfig.links.members.detail.replace(':id', data?.success?.id)}`,
+        );
+      }, 1000);
     },
     onError: (error) => {
+      console.warn('error', error);
       toast({
         title: 'Error',
         variant: 'destructive',
-        description: `Member could not be updated ${error}`,
+        duration: 50000,
+        description: `Member creation failed, ${error.error.serverError}`,
       });
     },
   });
 
-  // Create a debounced version of the execute function
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedExecute = useCallback(
-    debounce((data: UpdateMemberInput) => {
-      execute(data);
-    }, 500),
-    [execute],
-  );
+  const form = useForm<AddMemberInput>({
+    mode: 'onTouched',
+    resolver: zodResolver(addMemberInputSchema),
+    defaultValues: {
+      status: ClubMemberStatus.REQUEST,
+      role: ClubMemberRoles.MEMBER,
+      firstName: '',
+      lastName: '',
+      city: '',
+      street: '',
+      zip: '',
+    },
+  });
 
-  useEffect(() => {
-    const subscription = form.watch((value, { name, type }) => {
-      const formData = form.getValues();
-      debouncedExecute({ ...member, ...formData });
-    });
+  const handleSave = (data: AddMemberInput) => {
+    console.log('data after submit', data);
 
-    return () => subscription.unsubscribe();
-  }, [form, debouncedExecute, member]);
+    // Validate birthday
+    if (!data.birthday) {
+      form.setError('birthday', {
+        type: 'manual',
+        message: 'Birthday is required',
+      });
+      return;
+    }
+
+    execute(data);
+  };
 
   return (
     <Form {...form}>
-      <form className="grid gap-2 sm:grid-cols-2 md:gap-4">
+      <form
+        onSubmit={form.handleSubmit(handleSave)}
+        className="grid gap-2 sm:grid-cols-2 md:gap-4"
+      >
         <FormField
           control={form.control}
           name="firstName"
@@ -89,12 +102,13 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
             <FormItem>
               <FormLabel>First Name</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input placeholder="Enter first name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="lastName"
@@ -102,12 +116,13 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
             <FormItem>
               <FormLabel>Last Name</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input placeholder="Enter last name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="email"
@@ -115,12 +130,13 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input placeholder="Enter email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="phone"
@@ -128,12 +144,27 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
             <FormItem>
               <FormLabel>Phone Number</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input placeholder="Enter phone number" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="birthday"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Date of Birth</FormLabel>
+              <FormControl>
+                <Input placeholder="DD.MM.YYYY" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="zip"
@@ -141,23 +172,27 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
             <FormItem>
               <FormLabel>Zip Code</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input placeholder="Enter zip code" {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="city"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>City Name</FormLabel>
+              <FormLabel>City</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input placeholder="Enter city's name" {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="street"
@@ -167,9 +202,11 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
               <FormControl>
                 <Input placeholder="Enter street" {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="status"
@@ -183,13 +220,16 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {Object.values(ClubMemberStatus).map((status) => (
-                    <SelectItem key={status} value={status}>
-                      {status}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value={ClubMemberStatus.REQUEST}>
+                    Request
+                  </SelectItem>
+
+                  <SelectItem value={ClubMemberStatus.ACTIVE}>
+                    Active
+                  </SelectItem>
                 </SelectContent>
               </Select>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -208,6 +248,7 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="MEMBER">Member</SelectItem>
+
                   <SelectItem value="ADMIN">Admin</SelectItem>
                 </SelectContent>
               </Select>
@@ -215,6 +256,10 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
             </FormItem>
           )}
         />
+
+        <Button className="md:mt-8" type="submit">
+          Save
+        </Button>
       </form>
     </Form>
   );

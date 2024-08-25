@@ -12,20 +12,20 @@ import {
 import { ChevronLeft } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import SaleForm from './components/SaleForm';
+import NewMemberForm from './components/NewMemberForm';
 
 const metadata: Metadata = {
-  title: 'Create New Sale',
-  description: 'Fill in the details to create a new sale. ',
+  title: 'Create New Member',
+  description: 'Fill in the details to create a new member. ',
 };
 
-export default async function NewSalePage() {
+export default async function NewMemberPage() {
   const session = await auth();
 
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Sales', href: '/sales' },
-    { label: 'Create New Sale' },
+    { label: 'Sales', href: '/members' },
+    { label: 'Create New Member' },
   ];
 
   return (
@@ -48,7 +48,7 @@ export default async function NewSalePage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="bg-transparent">
-            <SaleForm session={session} />
+            <NewMemberForm />
           </CardContent>
         </Card>
       </Container>
