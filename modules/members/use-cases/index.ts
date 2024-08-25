@@ -4,10 +4,13 @@ import {
   createMember,
   createMemberPayment,
   deleteMember,
+  deleteMemberPayment,
   getAllPayments,
+  getMemberPaymentDetails,
   getMemberPayments,
   getMembers,
   updateMember,
+  updateMemberPayment,
 } from '../data-access';
 
 import { actionClient } from '@/lib/server-clients';
@@ -16,9 +19,10 @@ import {
   MembershipPaymentSchema,
   UserSchema,
   addMemberInputSchema,
-  addMembershipPaymentSchema,
+  createMemberPaymentInputSchema,
   deleteMemberInputSchema,
   updateMemberInputSchema,
+  updateMemberPaymentInputSchema,
 } from '../data-access/schema';
 
 export const addMemberUseCase = actionClient
@@ -70,20 +74,15 @@ export const fetchAllPaymentsUseCase = actionClient.action(async () => {
   }
 });
 
-export const fetchMemberPaymentsUseCase = actionClient
+export const fetchPaymentsFromMemberUseCase = actionClient
   .schema(z.object({ memberId: z.string().uuid() }))
   .action(async ({ parsedInput }) => {
-    if (!parsedInput?.memberId) {
-      return { failure: 'No member ID provided, cannot fetch payments' };
-    }
     try {
       const payments: MembershipPaymentSchema[] = await getMemberPayments(
         parsedInput.memberId,
       );
-      const parsedPayments: MembershipPaymentSchema[] = payments.map(
-        (payment) => ({ ...payment }),
-      );
-      return { success: parsedPayments };
+
+      return { success: payments };
     } catch (error) {
       return {
         failure: `Failed to fetch payments for member ${parsedInput.memberId}`,
@@ -92,11 +91,8 @@ export const fetchMemberPaymentsUseCase = actionClient
   });
 
 export const addPaymentUseCase = actionClient
-  .schema(addMembershipPaymentSchema)
+  .schema(createMemberPaymentInputSchema)
   .action(async ({ parsedInput }) => {
-    if (!parsedInput) {
-      return { failure: 'No data provided, cannot create new payment' };
-    }
     try {
       const newPaymentId = await createMemberPayment({
         ...parsedInput,
@@ -107,16 +103,43 @@ export const addPaymentUseCase = actionClient
     }
   });
 
-// export const deletePaymentUseCase = actionClient
-//   .schema(z.object({ id: z.string().uuid() }))
-//   .action(async ({ parsedInput }) => {
-//     if (!parsedInput.id) {
-//       return { failure: 'No payment ID provided, cannot delete payment' };
-//     }
-//     try {
-//       const deletedPayment = await deletePayment(parsedInput.id);
-//       return { success: deletedPayment };
-//     } catch (error) {
-//       return { failure: `Failed to delete payment ${parsedInput.id}` };
-//     }
-//   });
+export const updatePaymentUseCase = actionClient
+  .schema(updateMemberPaymentInputSchema)
+  .action(async ({ parsedInput }) => {
+    try {
+      const updatedPayment = await updateMemberPayment(parsedInput);
+      return { success: updatedPayment };
+    } catch (error) {
+      console.error('Error updating payment:', error);
+      return { failure: `Failed to update payment: ${error}` };
+    }
+  });
+
+export const fetchPaymentDetailsUseCase = actionClient
+  .schema(
+    z.object({
+      id: z.string().uuid(),
+    }),
+  )
+  .action(async ({ parsedInput }) => {
+    try {
+      const paymentDetails = await getMemberPaymentDetails(parsedInput.id);
+
+      return { success: paymentDetails };
+    } catch (error) {
+      console.error('Error fetching payment details:', error);
+      return { failure: `Failed to fetch payment details: ${error}` };
+    }
+  });
+
+export const deleteMemberPaymentUseCase = actionClient
+  .schema(deleteMemberInputSchema)
+  .action(async ({ parsedInput }) => {
+    try {
+      const deletedPayment = await deleteMemberPayment(parsedInput.id);
+      return { success: deletedPayment };
+    } catch (error) {
+      console.error('Error deleting payment:', error);
+      return { failure: `Failed to delete payment: ${error}` };
+    }
+  });

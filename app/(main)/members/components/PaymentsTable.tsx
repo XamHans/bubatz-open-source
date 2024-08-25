@@ -12,9 +12,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { siteConfig } from '@/config/site';
 import { logger } from '@/lib/logger';
 import { MembershipPaymentSchema } from '@/modules/members/data-access/schema';
-import { fetchMemberPaymentsUseCase } from '@/modules/members/use-cases';
+import { fetchPaymentsFromMemberUseCase } from '@/modules/members/use-cases';
 import {
   ColumnFiltersState,
   SortingState,
@@ -27,12 +28,12 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { t } from 'i18next';
-import { ArrowUpDown, ChevronLeft, ChevronRight, Eye, Pencil } from 'lucide-react';
+import { ArrowUpDown, ChevronLeft, ChevronRight, Pencil } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
+import Link from 'next/link';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { siteConfig } from '@/config/site';
+import DeleteMemberPayment from '../[id]/components/DeleteMemberPayment';
 
 interface PaymentTableProps {
   memberId: string;
@@ -99,16 +100,15 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
           const payment = row.original;
           return (
             <div className="flex items-center space-x-2">
-              <Link href={`${siteConfig.links.members.detail.replace(':id', memberId)}/payments/${payment.id}`}>
-                <Button variant="ghost" size="icon">
-                  <Eye className="h-4 w-4" />
-                </Button>
-              </Link>
-              <Link href={`${siteConfig.links.members.detail.replace(':id', memberId)}/payments/${payment.id}/edit`}>
+              <Link
+                href={`${siteConfig.links.members.detail.replace(':id', memberId)}/payments/${payment.id}/edit`}
+              >
                 <Button variant="ghost" size="icon">
                   <Pencil className="h-4 w-4" />
                 </Button>
               </Link>
+
+              <DeleteMemberPayment id={payment.id} />
             </div>
           );
         },
@@ -116,7 +116,7 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
     ];
   };
 
-  const { execute, status } = useAction(fetchMemberPaymentsUseCase, {
+  const { execute, status } = useAction(fetchPaymentsFromMemberUseCase, {
     onSuccess: (data) => {
       setPayments(data.data?.success ?? []);
     },

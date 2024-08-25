@@ -13,10 +13,7 @@ import { relations } from 'drizzle-orm/relations';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
-export const paymentMethods = pgEnum('paymentMethods', [
-  'CASH',
-  'CARD',
-]);
+export const paymentMethods = pgEnum('paymentMethods', ['CASH', 'CARD']);
 
 export const sales = protectedSchema.table('sales', {
   id: serial('id').primaryKey(),
@@ -73,9 +70,6 @@ export const salesStrainsRelations = relations(salesItems, ({ one }) => ({
   }),
 }));
 
-
-
-
 export const createSaleInputSchema = createInsertSchema(sales, {
   totalAmount: z.number().positive(),
   totalPrice: z.number().positive(),
@@ -101,7 +95,8 @@ export const getSaleDetailSchema = updateSaleInputSchema.pick({ id: true });
 // Sales Items Schemas
 export const createSaleItemInputSchema = createInsertSchema(salesItems, {
   amount: z.number().positive(),
-  price: z.union([z.string(), z.number()])
+  price: z
+    .union([z.string(), z.number()])
     .transform((val) => {
       if (typeof val === 'string') {
         const parsed = parseFloat(val);
@@ -113,7 +108,7 @@ export const createSaleItemInputSchema = createInsertSchema(salesItems, {
       return val;
     })
     .refine((val) => val > 0, {
-      message: "Price must be a positive number",
+      message: 'Price must be a positive number',
     }),
   strainId: z.number().positive(),
   saleId: z.number().positive(),
@@ -131,7 +126,9 @@ export const deleteSaleItemInputSchema = createSelectSchema(salesItems).pick({
 
 export const getSalesItemsSchema = createSelectSchema(salesItems);
 
-export const getSaleItemDetailSchema = updateSaleItemInputSchema.pick({ id: true });
+export const getSaleItemDetailSchema = updateSaleItemInputSchema.pick({
+  id: true,
+});
 
 // Combined Schema for Creating a Sale with Items
 export const createSaleWithItemsInputSchema = createSaleInputSchema.extend({
@@ -142,14 +139,12 @@ export const fetchMembersStrainAmountInputSchema = z.object({
   memberId: z.string().uuid(),
   month: z.number().int().optional(),
   year: z.number().int().optional(),
-})
-
+});
 
 export const checkIfMemberIsAllowedForStrainInputSchema = z.object({
   memberId: z.string().uuid(),
-  strainId: z.number().int()
-})
-
+  strainId: z.number().int(),
+});
 
 // Types
 export type SaleProps = z.infer<typeof getSalesSchema>;
@@ -158,16 +153,22 @@ export type UpdateSaleInput = z.infer<typeof updateSaleInputSchema>;
 export type DeleteSaleInput = z.infer<typeof deleteSaleInputSchema>;
 
 export type SaleDetailProps = SaleProps & {
-  member: MemberProps
-  soldBy: MemberProps
-  items: SaleItemProps[]
-}
+  member: MemberProps;
+  soldBy: MemberProps;
+  items: SaleItemProps[];
+};
 
 export type SaleItemProps = z.infer<typeof getSalesItemsSchema>;
 export type CreateSaleItemInput = z.infer<typeof createSaleItemInputSchema>;
 export type UpdateSaleItemInput = z.infer<typeof updateSaleItemInputSchema>;
 export type DeleteSaleItemInput = z.infer<typeof deleteSaleItemInputSchema>;
 
-export type CreateSaleWithItemsInput = z.infer<typeof createSaleWithItemsInputSchema>;
-export type FetchMembersStrainAmountInput = z.infer<typeof fetchMembersStrainAmountInputSchema>;
-export type CheckIfMemberIsAllowedForStrainInput = z.infer<typeof checkIfMemberIsAllowedForStrainInputSchema>;
+export type CreateSaleWithItemsInput = z.infer<
+  typeof createSaleWithItemsInputSchema
+>;
+export type FetchMembersStrainAmountInput = z.infer<
+  typeof fetchMembersStrainAmountInputSchema
+>;
+export type CheckIfMemberIsAllowedForStrainInput = z.infer<
+  typeof checkIfMemberIsAllowedForStrainInputSchema
+>;

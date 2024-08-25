@@ -9,11 +9,9 @@ import {
   CheckIfMemberIsAllowedForStrainInput,
   CreateSaleWithItemsInput,
   FetchMembersStrainAmountInput,
-
   sales,
-  salesItems
+  salesItems,
 } from './schema';
-
 
 export const getSales = cache(async () => {
   const allSales = await db
@@ -57,7 +55,6 @@ export const getSales = cache(async () => {
       };
     }),
   );
-
 
   return salesWithDetails;
 });
@@ -145,13 +142,13 @@ export const getSaleDetails = cache(async (saleId: number) => {
     seller,
     items,
   };
-
 });
 
-export const checkIfMemberIsAllowedForStrain = cache(async (input: CheckIfMemberIsAllowedForStrainInput) => {
-  const result = await db
-    .select({
-      isAllowed: sql<boolean>`
+export const checkIfMemberIsAllowedForStrain = cache(
+  async (input: CheckIfMemberIsAllowedForStrainInput) => {
+    const result = await db
+      .select({
+        isAllowed: sql<boolean>`
       CASE
         WHEN ${members.birthday} IS NULL THEN false
         WHEN ${strains.thc} IS NULL THEN false
@@ -160,59 +157,61 @@ export const checkIfMemberIsAllowedForStrain = cache(async (input: CheckIfMember
         WHEN DATE_PART('year', AGE(CURRENT_DATE, ${members.birthday})) < 18 THEN false
         ELSE true
       END
-    `.as('isAllowed')
-    })
-    .from(members)
-    .leftJoin(strains, eq(strains.id, input.strainId))
-    .where(eq(members.id, input.memberId))
-    .execute();
+    `.as('isAllowed'),
+      })
+      .from(members)
+      .leftJoin(strains, eq(strains.id, input.strainId))
+      .where(eq(members.id, input.memberId))
+      .execute();
 
-  return result[0]?.isAllowed ?? false;
-});
+    return result[0]?.isAllowed ?? false;
+  },
+);
 
-export const getMemberStrainAmount = cache(async (input: FetchMembersStrainAmountInput) => {
-  const currentDate = new Date();
-  const year = input.year ?? currentDate.getFullYear();
-  const month = input.month ?? currentDate.getMonth() + 1; // getMonth() returns 0-11
+export const getMemberStrainAmount = cache(
+  async (input: FetchMembersStrainAmountInput) => {
+    const currentDate = new Date();
+    const year = input.year ?? currentDate.getFullYear();
+    const month = input.month ?? currentDate.getMonth() + 1; // getMonth() returns 0-11
 
-  const startDate = new Date(year, month - 1, 1);
-  const endDate = new Date(year, month, 0);
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0);
 
-  const totalAmountOfStrain = await db
-    .select({
-      totalAmount: sql<number>`COALESCE(SUM(${sales.totalAmount}), 0)`.as('totalAmount'),
-    })
-    .from(sales)
-    .where(
-      and(
-        eq(sales.memberId, input.memberId),
-        gte(sales.createdAt, startDate),
-        lt(sales.createdAt, endDate)
+    const totalAmountOfStrain = await db
+      .select({
+        totalAmount: sql<number>`COALESCE(SUM(${sales.totalAmount}), 0)`.as(
+          'totalAmount',
+        ),
+      })
+      .from(sales)
+      .where(
+        and(
+          eq(sales.memberId, input.memberId),
+          gte(sales.createdAt, startDate),
+          lt(sales.createdAt, endDate),
+        ),
       )
-    )
-    .execute();
+      .execute();
 
-  return totalAmountOfStrain[0]?.totalAmount || 0;
-});
+    return totalAmountOfStrain[0]?.totalAmount || 0;
+  },
+);
 
 export async function createSaleWithItems(input: CreateSaleWithItemsInput) {
   const { items, ...saleData } = input;
 
   return await db.transaction(async (tx) => {
     // Create the sale record
-    const [createdSale] = await tx
-      .insert(sales)
-      .values(saleData)
-      .returning();
+    const [createdSale] = await tx.insert(sales).values(saleData).returning();
 
     if (!createdSale) {
       throw new Error('Failed to create sale record');
     }
 
     // Create sale items
-    const saleItemsData = items.map(item => ({
+    const saleItemsData = items.map((item) => ({
       ...item,
-      saleId: createdSale.id
+      saleId: createdSale.id,
     }));
 
     const createdSaleItems = await tx
@@ -225,8 +224,14 @@ export async function createSaleWithItems(input: CreateSaleWithItemsInput) {
     }
 
     // Update the total amount and price in the sale record
-    const totalAmount = createdSaleItems.reduce((sum, item) => sum + item.amount, 0);
-    const totalPrice = createdSaleItems.reduce((sum, item) => sum + item.price, 0);
+    const totalAmount = createdSaleItems.reduce(
+      (sum, item) => sum + item.amount,
+      0,
+    );
+    const totalPrice = createdSaleItems.reduce(
+      (sum, item) => sum + item.price,
+      0,
+    );
 
     const [updatedSale] = await tx
       .update(sales)
@@ -236,7 +241,7 @@ export async function createSaleWithItems(input: CreateSaleWithItemsInput) {
 
     return {
       sale: updatedSale,
-      saleItems: createdSaleItems
+      saleItems: createdSaleItems,
     };
   });
 }

@@ -1,26 +1,33 @@
-import { auth } from '@/auth';
 import Breadcrumbs from '@/components/generic/BreadCrumbs';
+import CreateMemberPaymentForm from '../../components/CreateMemberPaymentForm';
+
 import { Container } from '@/components/generic/Container';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { ChevronLeft } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import SaleForm from './components/SaleForm';
 
 const metadata: Metadata = {
-  title: 'Create New Sale',
-  description:
-    'Fill in the details to create a new sale. ',
+  title: 'Create New Member Payment',
+  description: 'Fill in the details to create a new member payment. ',
 };
 
-export default async function NewSalePage() {
-  const session = await auth();
- 
+export default async function NewPaymentPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Sales', href: '/sales' },
-    { label: 'Create New Sale' }>
+    { label: 'Members', href: '/members' },
+    { label: 'Create New Member Payment' },
   ];
 
   return (
@@ -43,7 +50,7 @@ export default async function NewSalePage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <SaleForm />
+            <CreateMemberPaymentForm memberId={params.id} />
           </CardContent>
         </Card>
       </Container>

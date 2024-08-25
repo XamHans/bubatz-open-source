@@ -8,6 +8,7 @@ import {
   AddMemberInput,
   AddMembershipPaymentInput,
   UpdateMemberInput,
+  UpdateMemberPaymentInput,
   members,
   membershipPayments,
 } from './schema';
@@ -89,8 +90,6 @@ export const getAllPayments = async () => {
   return payments;
 };
 
-export type GetAllPaymentsQueryData = AsyncReturnType<typeof getAllPayments>;
-
 export const getMemberPayments = async (memberId: string) => {
   const payments = await db
     .select()
@@ -100,22 +99,30 @@ export const getMemberPayments = async (memberId: string) => {
   return payments;
 };
 
-export type GetMemberPaymentsQueryData = AsyncReturnType<
-  typeof getMemberPayments
->;
+export const getMemberPaymentDetails = async (id: string) => {
+  const paymentDetails = await db
+    .select()
+    .from(membershipPayments)
+    .where(eq(membershipPayments.id, id))
+    .limit(1);
 
-// If you need to update a payment, you can add a function like this:
-export const updatePayment = async (data: UpdatePaymentInput) => {
-  try {
-    console.log('updatePayment data', data);
-    const updatedPaymentResult = await db
-      .update(membershipPayments)
-      .set({ ...data })
-      .where(eq(membershipPayments.id, data.id ?? ''));
-    console.log('updatedPaymentResult', updatedPaymentResult);
-    return 'Success';
-  } catch (error) {
-    console.error('Error updating payment:', error);
-    return { message: 'Failed to update payment', error: error };
-  }
+  return paymentDetails[0];
+};
+
+export const updateMemberPayment = async (data: UpdateMemberPaymentInput) => {
+  console.log('updatePayment data', data);
+  const updatedPaymentResult = await db
+    .update(membershipPayments)
+    // @ts-ignore
+    .set({ ...data })
+    .where(eq(membershipPayments.id, data.id ?? ''));
+  console.log('updatedPaymentResult', updatedPaymentResult);
+  return updatedPaymentResult;
+};
+
+export const deleteMemberPayment = async (id: string) => {
+  const deletedPaymentResult = await db
+    .delete(membershipPayments)
+    .where(eq(membershipPayments.id, id));
+  return deletedPaymentResult;
 };
