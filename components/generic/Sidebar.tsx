@@ -1,9 +1,10 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { Leaf, Package2, Settings, Users2 } from 'lucide-react';
+import { Leaf, Package2, Users2 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { SignOutButton } from '../auth/signout-button';
 import {
   Tooltip,
   TooltipContent,
@@ -73,7 +74,10 @@ const Sidebar = ({ className }: Props) => {
               <TooltipContent side="right">Manage your members</TooltipContent>
             </Tooltip>
           </nav>
-          <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
+          <nav className="mt-12">
+            <SignOutButton />
+          </nav>
+          {/* <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
@@ -89,7 +93,7 @@ const Sidebar = ({ className }: Props) => {
               </TooltipTrigger>
               <TooltipContent side="right">Settings</TooltipContent>
             </Tooltip>
-          </nav>
+          </nav> */}
         </TooltipProvider>
       </aside>
     </div>

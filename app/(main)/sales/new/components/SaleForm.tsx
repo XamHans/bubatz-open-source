@@ -46,6 +46,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { siteConfig } from '@/config/site';
 import { logger } from '@/lib/logger';
 import { cn } from '@/lib/utils';
 import { UserSchema } from '@/modules/members/data-access/schema';
@@ -63,6 +64,7 @@ import {
   fetchMembersStrainAmountUseCase,
 } from '@/modules/sales/use-cases';
 import { Session } from 'next-auth';
+import { useRouter } from 'next/navigation';
 
 export interface SaleFormProps {
   session: Session;
@@ -78,7 +80,8 @@ export default function SaleForm({ session }: SaleFormProps) {
     useState(true);
 
   const { toast } = useToast();
-  console.log('session', session);
+  const router = useRouter();
+
   const form = useForm<CreateSaleWithItemsInput>({
     resolver: zodResolver(createSaleWithItemsInputSchema),
     defaultValues: {
@@ -96,15 +99,20 @@ export default function SaleForm({ session }: SaleFormProps) {
   });
 
   const createSaleAction = useAction(createSaleUseCase, {
-    onSuccess: (result) => {
-      logger.info('Sale created', result);
+    // @ts-ignore
+    onSuccess: ({ data }) => {
       toast({
         title: 'Success',
         duration: 1000,
         description: 'Sale created successfully',
       });
+      setTimeout(() => {
+        router.push(
+          `${siteConfig.links.sales.detail.replace(':id', data.success.sale.id)}`,
+        );
+      }, 2000);
     },
-
+    // @ts-ignore
     onError: (error) => {
       toast({
         title: 'Error',
@@ -117,9 +125,11 @@ export default function SaleForm({ session }: SaleFormProps) {
   const fetchMemberPurchasesForCurrentMonth = useAction(
     fetchMembersStrainAmountUseCase,
     {
+      // @ts-ignore
       onSuccess: ({ data }) => {
         setMemberMonthlyPurchase(data?.success || 0);
       },
+      // @ts-ignore
       onError: (error) =>
         logger.error('Error fetching member purchases:', error),
     },
@@ -128,10 +138,11 @@ export default function SaleForm({ session }: SaleFormProps) {
   const checkIfMemberIsAllowedForStrain = useAction(
     checkIfMemberIsAllowedForStrainUseCase,
     {
+      // @ts-ignore
       onSuccess: ({ data }) => {
-        console.log('checkIfMemberIsAllowedForStrainUseCase ', data);
         setIsMemberAllowedForStrain(data?.success);
       },
+      // @ts-ignore
       onError: (error) =>
         logger.error(
           error,
@@ -141,6 +152,7 @@ export default function SaleForm({ session }: SaleFormProps) {
   );
 
   const fetchMembers = useAction(fetchMembersUseCase, {
+    // @ts-ignore
     onSuccess: ({ data }) => {
       const sortedMembers = [...data?.success].sort((a, b) =>
         `${a.firstName} ${a.lastName}`.localeCompare(
@@ -152,6 +164,7 @@ export default function SaleForm({ session }: SaleFormProps) {
   });
 
   const fetchStrains = useAction(fetchStrainsUseCase, {
+    // @ts-ignore
     onSuccess: ({ data }) => {
       setStrains(data?.success ?? []);
     },
@@ -222,14 +235,6 @@ export default function SaleForm({ session }: SaleFormProps) {
 
   const remainingAllowance = 50 - memberMonthlyPurchase;
   const isOverLimit = memberMonthlyPurchase + totalWeight > 50;
-
-  if (session.user.role.toLocaleLowerCase() !== 'admin') {
-    return (
-      <div>
-        <h1>You are not allowed to access this page</h1>
-      </div>
-    );
-  }
 
   return (
     <Form {...form}>
@@ -381,7 +386,7 @@ export default function SaleForm({ session }: SaleFormProps) {
                         <FormControl>
                           <Input
                             type="number"
-                            step="0.01"
+                            step="1"
                             {...field}
                             onChange={(e) => {
                               const value = parseFloat(e.target.value);

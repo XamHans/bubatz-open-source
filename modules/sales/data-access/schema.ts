@@ -110,7 +110,7 @@ export const createSaleItemInputSchema = createInsertSchema(salesItems, {
     .refine((val) => val > 0, {
       message: 'Price must be a positive number',
     }),
-  strainId: z.number().positive(),
+  strainId: z.number(),
   saleId: z.number().positive(),
 });
 

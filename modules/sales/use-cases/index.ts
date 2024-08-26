@@ -99,3 +99,49 @@ export const createSaleUseCase = actionClient
       return { failure: 'Failed to create sale: ' + (error instanceof Error ? error.message : String(error)) };
     }
   });
+
+//   FUNKTION Cannabis_Abgabe(Mitglied, Menge):
+//     // Prüfe Mitgliedschaft
+//     WENN NICHT Ist_Mitglied(Mitglied) DANN
+//         RÜCKGABE Fehler("Nur Mitglieder dürfen Cannabis erhalten")
+
+//     // Prüfe Alter
+//     WENN Alter(Mitglied) < 18 DANN
+//         RÜCKGABE Fehler("Cannabis-Abgabe nur an Volljährige")
+
+//     // Prüfe Abgabeort
+//     WENN NICHT Innerhalb_Befriedetes_Besitztum() DANN
+//         RÜCKGABE Fehler("Abgabe nur innerhalb des befriedeten Besitztums erlaubt")
+
+//     // Prüfe Tagesgrenze
+//     WENN Tagesabgabe(Mitglied) + Menge > 25 DANN
+//         RÜCKGABE Fehler("Tagesgrenze von 25g überschritten")
+
+//     // Prüfe Monatsgrenze
+//     WENN Alter(Mitglied) >= 21 DANN
+//         Monatsgrenze = 50
+//     SONST
+//         Monatsgrenze = 30
+
+//     WENN Monatsabgabe(Mitglied) + Menge > Monatsgrenze DANN
+//         RÜCKGABE Fehler("Monatsgrenze überschritten")
+
+//     // Prüfe THC-Gehalt für Heranwachsende
+//     WENN 18 <= Alter(Mitglied) < 21 UND THC_Gehalt(Cannabis) > 10% DANN
+//         RÜCKGABE Fehler("THC-Gehalt zu hoch für Heranwachsende")
+
+//     // Prüfe Reinform
+//     WENN NICHT Ist_Reinform(Cannabis) DANN
+//         RÜCKGABE Fehler("Nur Abgabe in Reinform als Marihuana oder Haschisch erlaubt")
+
+//     // Führe Abgabe durch
+//     Abgabe_Durchführen(Mitglied, Menge, Cannabis)
+//     Dokumentiere_Abgabe(Mitglied, Menge, Cannabis)
+
+//     // Übergebe Informationen
+//     Übergebe_Informationszettel(Mitglied, Cannabis)
+//     Übergebe_Aufklärungsinformationen(Mitglied)
+
+//     RÜCKGABE Erfolg("Cannabis erfolgreich abgegeben")
+
+// ENDE FUNKTION

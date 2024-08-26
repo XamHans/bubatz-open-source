@@ -1,11 +1,10 @@
-"use client"
+'use client';
 
-import { signOut } from "next-auth/react"
+import { signOut } from 'next-auth/react';
 
-import { DEFAULT_SIGNOUT_REDIRECT } from "@/config/defaults"
-
-import { Button } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
+import { Button } from '@/components/ui/button';
+import { siteConfig } from '@/config/site';
+import { Icons } from '../generic/Icons';
 
 export function SignOutButton(): JSX.Element {
   return (
@@ -15,13 +14,12 @@ export function SignOutButton(): JSX.Element {
       className="w-full justify-start text-sm"
       onClick={() =>
         void signOut({
-          callbackUrl: DEFAULT_SIGNOUT_REDIRECT,
+          callbackUrl: siteConfig.links.signIn,
           redirect: true,
         })
       }
     >
       <Icons.logout className="mr-2 size-4" aria-hidden="true" />
-      Sign out
     </Button>
-  )
+  );
 }

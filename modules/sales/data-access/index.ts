@@ -1,16 +1,20 @@
 'use server';
 
 import { db } from '@/lib/db/db';
+import { calculateAge } from '@/lib/utils';
 import { members } from '@/modules/members/data-access/schema';
 import { strains } from '@/modules/plants/data-access/schema';
+import { startOfDay, startOfMonth } from 'date-fns';
 import { and, eq, gte, lt, sql } from 'drizzle-orm';
 import { cache } from 'react';
 import {
   CheckIfMemberIsAllowedForStrainInput,
+  CreateSaleInput,
+  CreateSaleItemInput,
   CreateSaleWithItemsInput,
   FetchMembersStrainAmountInput,
   sales,
-  salesItems,
+  salesItems
 } from './schema';
 
 export const getSales = cache(async () => {
@@ -197,10 +201,89 @@ export const getMemberStrainAmount = cache(
   },
 );
 
+async function validateSale(saleData: CreateSaleInput, items: CreateSaleItemInput[]) {
+  // Check membership and age
+  const memberResult = await db
+    .select()
+    .from(members)
+    .where(eq(members.id, saleData.memberId))
+    .limit(1);
+
+  if (memberResult.length === 0 || !memberResult[0].birthday) {
+    throw new Error('Member not found or birthday not set');
+  }
+
+  const member = memberResult[0];
+  const age = calculateAge(new Date(member.birthday));
+  if (age < 18) {
+    throw new Error('Cannabis-Abgabe nur an Volljährige erlaubt');
+  }
+
+  // Check daily and monthly limits
+  const today = new Date();
+  const thisMonth = today.getMonth();
+  const thisYear = today.getFullYear();
+
+  const dailySales = await db
+    .select()
+    .from(sales)
+    .where(
+      and(
+        eq(sales.memberId, saleData.memberId),
+        gte(sales.createdAt, startOfDay(today))
+      )
+    );
+
+  const monthlySales = await db
+    .select()
+    .from(sales)
+    .where(
+      and(
+        eq(sales.memberId, saleData.memberId),
+        gte(sales.createdAt, startOfMonth(new Date(thisYear, thisMonth, 1)))
+      )
+    );
+
+  const dailyTotal = dailySales.reduce((sum: any, sale: { totalAmount: any; }) => sum + (sale.totalAmount ?? 0), 0);
+  const monthlyTotal = monthlySales.reduce((sum: any, sale: { totalAmount: any; }) => sum + (sale.totalAmount ?? 0), 0);
+
+  const newDailyTotal = dailyTotal + saleData.totalAmount;
+  const newMonthlyTotal = monthlyTotal + saleData.totalAmount;
+
+  if (newDailyTotal > 25) {
+    throw new Error('Tagesgrenze von 25g überschritten');
+  }
+
+  const monthlyLimit = age >= 21 ? 50 : 30;
+  if (newMonthlyTotal > monthlyLimit) {
+    throw new Error(`Monatsgrenze von ${monthlyLimit}g überschritten`);
+  }
+
+  // Check THC content for young adults
+  for (const item of items) {
+    const strainResult = await db
+      .select()
+      .from(strains)
+      .where(eq(strains.id, item.strainId))
+      .limit(1);
+
+    if (strainResult.length === 0) {
+      throw new Error(`Strain with id ${item.strainId} not found`);
+    }
+
+    const strain = strainResult[0];
+    if (age < 21 && strain.thcContent > 10) {
+      throw new Error('THC-Gehalt zu hoch für Heranwachsende');
+    }
+  }
+}
+
+
 export async function createSaleWithItems(input: CreateSaleWithItemsInput) {
   const { items, ...saleData } = input;
+  await validateSale(saleData, items);
 
-  return await db.transaction(async (tx) => {
+  const createSaleTransactionResult = await db.transaction(async (tx) => {
     // Create the sale record
     const [createdSale] = await tx.insert(sales).values(saleData).returning();
 
@@ -208,7 +291,7 @@ export async function createSaleWithItems(input: CreateSaleWithItemsInput) {
       throw new Error('Failed to create sale record');
     }
 
-    // Create sale items
+    // Create sale items and update strain amounts
     const saleItemsData = items.map((item) => ({
       ...item,
       saleId: createdSale.id,
@@ -223,14 +306,24 @@ export async function createSaleWithItems(input: CreateSaleWithItemsInput) {
       throw new Error('Failed to create all sale items');
     }
 
+    // Update strain amounts
+    for (const item of createdSaleItems) {
+      await tx
+        .update(strains)
+        .set({
+          amountAvailable: sql`${strains.amountAvailable} - ${item.amount}`,
+        })
+        .where(eq(strains.id, item.strainId));
+    }
+
     // Update the total amount and price in the sale record
     const totalAmount = createdSaleItems.reduce(
       (sum, item) => sum + item.amount,
-      0,
+      0
     );
     const totalPrice = createdSaleItems.reduce(
       (sum, item) => sum + item.price,
-      0,
+      0
     );
 
     const [updatedSale] = await tx
@@ -244,4 +337,8 @@ export async function createSaleWithItems(input: CreateSaleWithItemsInput) {
       saleItems: createdSaleItems,
     };
   });
+
+  console.log('Sale created:', createSaleTransactionResult);
+  return createSaleTransactionResult;
 }
+
