@@ -8,7 +8,6 @@ import { eq } from 'drizzle-orm';
 import { AuthError } from 'next-auth';
 import { unstable_noStore as noStore } from 'next/cache';
 
-import { EmailVerificationEmail } from '@/components/emails/email-verification-email';
 import { ResetPasswordEmail } from '@/components/emails/reset-password-email';
 import { resend } from '@/config/email';
 import { db } from '@/lib/db/db';
@@ -34,7 +33,6 @@ export async function signUpWithPassword(
 ): Promise<'invalid-input' | 'exists' | 'error' | 'success'> {
   try {
     const validatedInput = signUpWithPasswordSchema.safeParse(rawInput);
-    console.log({ validatedInput });
 
     if (!validatedInput.success) return 'invalid-input';
 
@@ -56,20 +54,18 @@ export async function signUpWithPassword(
       })
       .returning();
     // console.log({ newUser })
-    const emailSent = await resend.emails.send({
-      from: process.env.RESEND_EMAIL_FROM as string,
-      to: [validatedInput.data.email],
-      subject: 'Verify your email address',
-      react: EmailVerificationEmail({
-        email: validatedInput.data.email,
-        emailVerificationToken,
-      }),
-    });
-    console.log({ emailSent });
+    // const emailSent = await resend.emails.send({
+    //   from: process.env.RESEND_EMAIL_FROM as string,
+    //   to: [validatedInput.data.email],
+    //   subject: 'Verify your email address',
+    //   react: EmailVerificationEmail({
+    //     email: validatedInput.data.email,
+    //     emailVerificationToken,
+    //   }),
+    // });
 
-    const result = newUser && !emailSent.error ? 'success' : 'error';
-    console.log(result);
-    return result;
+    // const result = newUser && !emailSent.error ? 'success' : 'error';
+    return 'success';
   } catch (error) {
     console.error(error);
     return 'error';
@@ -89,7 +85,6 @@ export async function signInWithPassword(
   try {
     const validatedInput = signInWithPasswordSchema.safeParse(rawInput);
     if (!validatedInput.success) return 'invalid-input';
-    console.log({ validatedInput });
     const existingUser = await getUserByEmail({
       email: validatedInput.data.email,
     });
@@ -97,15 +92,17 @@ export async function signInWithPassword(
 
     if (!existingUser.email || !existingUser.passwordHash)
       return 'incorrect-provider';
-    console.log({ existingUser });
 
-    if (!existingUser.emailVerified) return 'unverified-email';
+    // if (!existingUser.emailVerified) return 'unverified-email';
 
-    await signIn('credentials', {
+    const signInResult = await signIn('credentials', {
       email: validatedInput.data.email,
       password: validatedInput.data.password,
       redirect: false,
     });
+
+    console.log({ signInResult });
+
 
     return 'success';
   } catch (error) {

@@ -18,24 +18,29 @@ import {
 } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
 import {
+  MemberProps,
   UpdateMemberInput,
   updateMemberInputSchema,
 } from '@/modules/members/data-access/schema';
-import { ClubMemberStatus, MemberProps } from '@/modules/members/types';
+import { ClubMemberStatus } from '@/modules/members/types';
 import { updateMemberUseCase } from '@/modules/members/use-cases';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import debounce from 'lodash/debounce';
+import { Session } from 'next-auth';
 import { useAction } from 'next-safe-action/hooks';
 import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 interface EditMemberFormProps {
   member: MemberProps;
+  session: Session;
 }
 
-export function EditMemberForm({ member }: EditMemberFormProps) {
+export function EditMemberForm({ member, session }: EditMemberFormProps) {
   const { toast } = useToast();
+
+  console.log('session inside edit member for ', session);
 
   const form = useForm<UpdateMemberInput>({
     resolver: zodResolver(updateMemberInputSchema),

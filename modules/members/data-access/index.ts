@@ -56,7 +56,6 @@ const getMemberDetail = async (id: string) => {
     .from(members)
     .where(eq(members.id, id))
     .limit(1);
-  console.log('getMemberDetail', foundMembers);
   return foundMembers[0];
 };
 export type GetMemberDetailQueryData = AsyncReturnType<typeof getMemberDetail>;

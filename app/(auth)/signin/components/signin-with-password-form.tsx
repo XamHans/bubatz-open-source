@@ -42,12 +42,11 @@ export function SignInWithPasswordForm(): JSX.Element {
   function onSubmit(formData: SignInWithPasswordFormInput) {
     startTransition(async () => {
       try {
-        const message = await signInWithPassword({
+        const loginResult = await signInWithPassword({
           email: formData.email,
           password: formData.password,
         });
-
-        switch (message) {
+        switch (loginResult) {
           case 'not-registered':
             toast({
               title: 'First things first',
@@ -79,7 +78,9 @@ export function SignInWithPasswordForm(): JSX.Element {
               title: 'Success!',
               description: 'You are now signed in',
             });
-            router.push(siteConfig.links.members);
+            setTimeout(() => {
+              router.push(siteConfig.links.members.index);
+            }, 700);
             break;
           default:
             toast({

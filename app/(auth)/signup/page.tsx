@@ -1,7 +1,6 @@
 import { type Metadata } from 'next';
 import Link from 'next/link';
 
-import { OAuthButtons } from '@/components/auth/oauth-buttons';
 import { Icons } from '@/components/generic/Icons';
 import {
   Card,
@@ -12,7 +11,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { env } from '@/env.mjs';
-import { SignInWithEmailForm } from '../signin/components/signin-with-email-form';
 import { SignUpWithPasswordForm } from './components/signup-with-password-form';
 
 export const metadata: Metadata = {
@@ -33,11 +31,11 @@ export default async function SignUpPage(): Promise<JSX.Element> {
             </Link>
           </div>
           <CardDescription>
-            Choose your preferred sign up method
+            Enter your details to create an account
           </CardDescription>
         </CardHeader>
         <CardContent className="max-sm:w-full max-sm:max-w-[340px] max-sm:px-10">
-          <OAuthButtons />
+          {/* <OAuthButtons />
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t" />
@@ -58,7 +56,7 @@ export default async function SignUpPage(): Promise<JSX.Element> {
                 Or continue with password
               </span>
             </div>
-          </div>
+          </div> */}
           <SignUpWithPasswordForm />
         </CardContent>
         <CardFooter className="grid w-full gap-4 text-sm text-muted-foreground max-sm:max-w-[340px] max-sm:px-10">
@@ -75,7 +73,7 @@ export default async function SignUpPage(): Promise<JSX.Element> {
               </Link>
               .
             </div>
-            <div>
+            {/* <div>
               <span>Lost email verification link? </span>
               <Link
                 aria-label="Resend email verification link"
@@ -86,7 +84,7 @@ export default async function SignUpPage(): Promise<JSX.Element> {
                 <span className="sr-only">Resend email verification link</span>
               </Link>
               .
-            </div>
+            </div> */}
           </div>
 
           <div className="text-sm text-muted-foreground md:text-xs">

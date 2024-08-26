@@ -1,15 +1,19 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['pino', 'pino-pretty'],
   },
-  webpack: (config, { webpack }) => {
-    config.plugins.push(
-      new webpack.IgnorePlugin({
-        resourceRegExp: /^pg-native$|^cloudflare:sockets$/,
-      }),
-    );
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        stream: false,
+        crypto: false,
+        'cloudflare:sockets': false,
 
+      };
+    }
     return config;
   },
   images: {

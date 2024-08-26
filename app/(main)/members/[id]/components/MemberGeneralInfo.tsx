@@ -45,53 +45,61 @@ const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
     }
   };
 
+  const hasAdditionalInfo = member.firstName && member.lastName && member.street && member.zip && member.city && member.birthday && member.createdAt;
+
   return (
     <Card className="w-full">
-      <CardHeader className="text-center">
-        <Avatar className="mx-auto mb-4 h-24 w-24">
-          {member.avatar_url ? (
-            <AvatarImage
-              src={member.avatar_url}
-              alt={`${member.firstName} ${member.lastName}`}
-            />
-          ) : (
-            <AvatarFallback className="text-2xl">
-              {member.firstName.charAt(0)}
-              {member.lastName.charAt(0)}
-            </AvatarFallback>
-          )}
-        </Avatar>
-        <CardTitle className="text-2xl font-bold">
-          {member.firstName} {member.lastName}
-        </CardTitle>
-        <div className="mt-2 flex justify-center gap-2">
-          <Badge variant="secondary">{member.status}</Badge>
-          {member.isAdmin && <Badge variant="default">Admin</Badge>}
-        </div>
-      </CardHeader>
+      {hasAdditionalInfo && (
+        <CardHeader className="text-center">
+          <Avatar className="mx-auto mb-4 h-24 w-24">
+            {member.avatar_url ? (
+              <AvatarImage
+                src={member.avatar_url}
+                alt={`${member.firstName} ${member.lastName}`}
+              />
+            ) : (
+              <AvatarFallback className="text-2xl">
+                {member.firstName.charAt(0)}
+                {member.lastName.charAt(0)}
+              </AvatarFallback>
+            )}
+          </Avatar>
+          <CardTitle className="text-2xl font-bold">
+            {member.firstName} {member.lastName}
+          </CardTitle>
+          <div className="mt-2 flex justify-center gap-2">
+            {member.status && <Badge variant="secondary">{member.status}</Badge>}
+            {member.isAdmin && <Badge variant="default">Admin</Badge>}
+          </div>
+        </CardHeader>
+      )}
       <CardContent className="grid gap-4">
-        <InfoItem
-          icon={HiLocationMarker}
-          primary={member.street}
-          secondary={`${member.zip}, ${member.city}`}
-        />
+        {hasAdditionalInfo && (
+          <>
+            <InfoItem
+              icon={HiLocationMarker}
+              primary={member.street}
+              secondary={`${member.zip}, ${member.city}`}
+            />
+            {member.phone && <InfoItem icon={HiPhone} primary={member.phone} />}
+            <InfoItem
+              icon={HiCalendar}
+              primary="Birthday"
+              secondary={`${formatDate(member.birthday)} (Age: ${calculateAge(member.birthday)})`}
+            />
+            <InfoItem
+              icon={HiClock}
+              primary="Member Since"
+              secondary={`${formatDate(member.createdAt)} (${calculateMembershipDuration(member.createdAt)})`}
+            />
+            <InfoItem
+              icon={HiShieldCheck}
+              primary="Member ID"
+              secondary={member.id}
+            />
+          </>
+        )}
         {member.email && <InfoItem icon={HiMail} primary={member.email} />}
-        {member.phone && <InfoItem icon={HiPhone} primary={member.phone} />}
-        <InfoItem
-          icon={HiCalendar}
-          primary="Birthday"
-          secondary={`${formatDate(member.birthday)} (Age: ${calculateAge(member.birthday)})`}
-        />
-        <InfoItem
-          icon={HiClock}
-          primary="Member Since"
-          secondary={`${formatDate(member.createdAt)} (${calculateMembershipDuration(member.createdAt)})`}
-        />
-        <InfoItem
-          icon={HiShieldCheck}
-          primary="Member ID"
-          secondary={member.id}
-        />
       </CardContent>
     </Card>
   );

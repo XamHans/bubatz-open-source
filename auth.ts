@@ -40,17 +40,24 @@ export const {
   },
   callbacks: {
     jwt({ token, user }) {
+      console.log('jwt callback user', user);
+      console.log('jwt callback token', token);
       if (user) {
-        token.role = user.is_admin ? 'ADMIN' : 'USER';
+        token.role = user.is_admin ? 'ADMIN' : 'MEMBER';
         token.id = user.id as UUID;
       }
       return token;
     },
     session({ session, token }) {
-      session.user.role = token.role as 'USER' | 'ADMIN';
+      session.user.role = token.role as 'MEMBER' | 'ADMIN';
       session.sessionToken = token.sub as string;
       session.user.id = token.id as UUID;
       return session;
+    },
+    authorized: async ({ auth }) => {
+      // Logged in users are authenticated, otherwise redirect to login page
+      console.log('authorized callback auth', auth);
+      return !!auth
     },
     async signIn({ user, account }) {
       if (!user.id) return false;

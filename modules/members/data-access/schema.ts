@@ -100,6 +100,10 @@ export const deleteMemberInputSchema = z.object({
 
 export type deleteMemberInput = { id: UUID };
 
+
+export const getMemberSchemaInput = createSelectSchema(members);
+export type MemberProps = z.infer<typeof getMemberSchemaInput>;
+
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Membership payments table

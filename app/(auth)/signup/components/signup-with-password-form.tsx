@@ -60,7 +60,7 @@ export function SignUpWithPasswordForm(): JSX.Element {
           case 'success':
             toast({
               title: 'Success!',
-              description: 'Check your inbox to verify your email address',
+              description: 'You can now sign in with your email and password',
             });
             router.push('/signin');
             break;

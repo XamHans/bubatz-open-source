@@ -21,7 +21,7 @@ const metadata: Metadata = {
 
 export default async function NewSalePage() {
   const session = await auth();
-
+  console.log({ session });
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Sales', href: '/sales' },

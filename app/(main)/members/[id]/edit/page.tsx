@@ -1,4 +1,5 @@
 import SkeletonLoader from '@/app/components/SkeletonLoader';
+import { auth } from '@/auth';
 import Breadcrumbs from '@/components/generic/BreadCrumbs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'; // Import Card components
@@ -21,6 +22,7 @@ export default async function MemberEditPage({
     { label: 'Members', href: '/members' },
     { label: id, href: '/' },
   ];
+  const session = await auth();
 
   if (!member) {
     return <div>Member not found</div>;
@@ -46,7 +48,7 @@ export default async function MemberEditPage({
                 <CardTitle>Edit Member</CardTitle>
               </CardHeader>
               <CardContent>
-                <EditMemberForm member={member} />
+                <EditMemberForm member={member} session={session} />
               </CardContent>
             </Card>{' '}
           </div>

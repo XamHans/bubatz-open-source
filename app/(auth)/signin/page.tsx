@@ -3,8 +3,6 @@ import Link from 'next/link';
 
 import { env } from '@/env.mjs';
 
-import { OAuthButtons } from '@/components/auth/oauth-buttons';
-
 import { Icons } from '@/components/generic/Icons';
 import {
   Card,
@@ -14,7 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { SignInWithEmailForm } from './components/signin-with-email-form';
 import { SignInWithPasswordForm } from './components/signin-with-password-form';
 
 export const metadata: Metadata = {
@@ -39,7 +36,7 @@ export default async function SignInPage(): Promise<JSX.Element> {
           </CardDescription>
         </CardHeader>
         <CardContent className="max-sm:w-full max-sm:max-w-[340px] max-sm:px-10">
-          <OAuthButtons />
+          {/* <OAuthButtons />
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t" />
@@ -60,7 +57,7 @@ export default async function SignInPage(): Promise<JSX.Element> {
                 Or continue with password
               </span>
             </div>
-          </div>
+          </div> */}
           <SignInWithPasswordForm />
         </CardContent>
 
