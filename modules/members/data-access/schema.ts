@@ -90,6 +90,7 @@ export type UserSchema = z.infer<typeof selectUserSchema>;
 export const updateMemberInputSchema = createInsertSchema(members).partial()
   .extend({
     id: z.string().uuid(),
+    birthday: z.string().transform((date) => new Date(date).toISOString()),
   });;
 export type UpdateMemberInput = z.infer<typeof updateMemberInputSchema>;
 

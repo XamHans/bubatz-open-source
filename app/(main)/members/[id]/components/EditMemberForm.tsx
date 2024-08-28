@@ -1,5 +1,6 @@
 'use client';
 
+import { CustomDatePicker } from '@/components/generic/CustomDatePicker';
 import {
   Form,
   FormControl,
@@ -26,6 +27,7 @@ import { ClubMemberStatus } from '@/modules/members/types';
 import { updateMemberUseCase } from '@/modules/members/use-cases';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { format } from 'date-fns';
 import debounce from 'lodash/debounce';
 import { Session } from 'next-auth';
 import { useAction } from 'next-safe-action/hooks';
@@ -39,8 +41,6 @@ interface EditMemberFormProps {
 
 export function EditMemberForm({ member, session }: EditMemberFormProps) {
   const { toast } = useToast();
-
-  console.log('session inside edit member for ', session);
 
   const form = useForm<UpdateMemberInput>({
     resolver: zodResolver(updateMemberInputSchema),
@@ -57,11 +57,12 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
         description: 'Member updated successfully',
       });
     },
-    onError: (error) => {
+    onError: ({ error }) => {
+      console.log(error);
       toast({
         title: 'Error',
         variant: 'destructive',
-        description: `Member could not be updated ${error}`,
+        description: `Member could not be updated ${JSON.stringify(error)}`,
       });
     },
   });
@@ -195,6 +196,28 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
                   ))}
                 </SelectContent>
               </Select>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="birthday"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Birthday</FormLabel>
+              <FormControl>
+                <CustomDatePicker
+                  value={field.value}
+                  onChange={(date) => {
+                    console.log('lol this ', date);
+                    // Convert the date to a string in 'yyyy-MM-dd' format
+                    const dateString = date ? format(date, 'yyyy-MM-dd') : '';
+                    field.onChange(dateString);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />

@@ -210,7 +210,7 @@ async function validateSale(saleData: CreateSaleInput, items: CreateSaleItemInpu
     .limit(1);
 
   if (memberResult.length === 0 || !memberResult[0].birthday) {
-    throw new Error('Member not found or birthday not set');
+    throw new Error('Kein Geburtstag für Mitglied gefunden');
   }
 
   const member = memberResult[0];

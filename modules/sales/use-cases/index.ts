@@ -91,13 +91,8 @@ export const checkIfMemberIsAllowedForStrainUseCase = actionClient
 export const createSaleUseCase = actionClient
   .schema(createSaleWithItemsInputSchema)
   .action(async ({ parsedInput }) => {
-    try {
-      const result = await createSaleWithItems(parsedInput);
-      return { success: result };
-    } catch (error) {
-      console.error('Error creating sale:', error);
-      return { failure: 'Failed to create sale: ' + (error instanceof Error ? error.message : String(error)) };
-    }
+    const result = await createSaleWithItems(parsedInput);
+    return { success: result };
   });
 
 //   FUNKTION Cannabis_Abgabe(Mitglied, Menge):

@@ -113,11 +113,12 @@ export default function SaleForm({ session }: SaleFormProps) {
       }, 2000);
     },
     // @ts-ignore
-    onError: (error) => {
+    onError: ({ error }) => {
       toast({
         title: 'Error',
-        duration: 1000,
-        description: `Sale could not be created ${error}`,
+        duration: 10000,
+        variant: 'destructive',
+        description: `Sale could not be created: ${error.fetchError}`,
       });
     },
   });
