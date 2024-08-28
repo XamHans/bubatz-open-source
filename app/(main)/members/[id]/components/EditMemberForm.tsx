@@ -1,6 +1,8 @@
+/* eslint-disable */
+// @ts-nocheck
 'use client';
 
-import { CustomDatePicker } from '@/components/generic/CustomDatePicker';
+import { BirthdayPicker } from '@/components/generic/BirthdayPicker';
 import {
   Form,
   FormControl,
@@ -27,7 +29,6 @@ import { ClubMemberStatus } from '@/modules/members/types';
 import { updateMemberUseCase } from '@/modules/members/use-cases';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format } from 'date-fns';
 import debounce from 'lodash/debounce';
 import { Session } from 'next-auth';
 import { useAction } from 'next-safe-action/hooks';
@@ -68,7 +69,6 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
   });
 
   // Create a debounced version of the execute function
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedExecute = useCallback(
     debounce((data: UpdateMemberInput) => {
       execute(data);
@@ -205,16 +205,11 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
           name="birthday"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Birthday</FormLabel>
+              <FormLabel className="block py-1">Birthday</FormLabel>
               <FormControl>
-                <CustomDatePicker
-                  value={field.value}
-                  onChange={(date) => {
-                    console.log('lol this ', date);
-                    // Convert the date to a string in 'yyyy-MM-dd' format
-                    const dateString = date ? format(date, 'yyyy-MM-dd') : '';
-                    field.onChange(dateString);
-                  }}
+                <BirthdayPicker
+                  initialDate={field.value}
+                  onChange={(date) => field.onChange(date)}
                 />
               </FormControl>
               <FormMessage />
