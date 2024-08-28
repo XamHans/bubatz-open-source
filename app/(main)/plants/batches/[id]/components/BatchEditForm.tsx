@@ -1,4 +1,4 @@
-import { CustomDatePicker } from '@/components/generic/DatePicker';
+import { CustomDatePicker } from '@/components/generic/DatePicker'
 import {
   Form,
   FormControl,
@@ -6,53 +6,53 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
-import { useToast } from '@/components/ui/use-toast';
+} from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
+import { useToast } from '@/components/ui/use-toast'
 import {
   BatchProps,
   UpdateBatchInput,
   updateBatchInputSchema,
-} from '@/modules/plants/data-access/schema';
-import { GrowPhase } from '@/modules/plants/types';
-import { updateBatchUseCase } from '@/modules/plants/use-cases';
-import { zodResolver } from '@hookform/resolvers/zod';
-import debounce from 'lodash/debounce';
-import { useAction } from 'next-safe-action/hooks';
-import { useCallback, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+} from '@/modules/plants/data-access/schema'
+import { GrowPhase } from '@/modules/plants/types'
+import { updateBatchUseCase } from '@/modules/plants/use-cases'
+import { zodResolver } from '@hookform/resolvers/zod'
+import debounce from 'lodash/debounce'
+import { useAction } from 'next-safe-action/hooks'
+import { useCallback, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 
 export interface GrowthPhasesFormProps {
-  batch: BatchProps;
+  batch: BatchProps
 }
 
 const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
-  const { toast } = useToast();
+  const { toast } = useToast()
 
   const { execute } = useAction(updateBatchUseCase, {
     onSuccess: (data) => {
-      console.log('Batch updated successfully', data);
+      console.log('Batch updated successfully', data)
       toast({
         title: 'Success',
         duration: 1000,
         description: 'Batch updated successfully',
-      });
+      })
     },
     onError: (error) => {
       toast({
         title: 'Error',
         variant: 'destructive',
         description: `Batch could not be updated ${error}`,
-      });
+      })
     },
-  });
+  })
 
   const form = useForm<UpdateBatchInput>({
     resolver: zodResolver(updateBatchInputSchema),
@@ -63,25 +63,25 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
       totalYield: batch.totalYield,
       endDate: batch.endDate,
     },
-  });
+  })
 
   // Create a debounced version of the execute function
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedExecute = useCallback(
     debounce((data: UpdateBatchInput) => {
-      execute(data);
+      execute(data)
     }, 500), // 500ms delay
     [execute],
-  );
+  )
 
   useEffect(() => {
     const subscription = form.watch(() => {
-      const formData = form.getValues();
-      debouncedExecute({ ...batch, ...formData });
-    });
+      const formData = form.getValues()
+      debouncedExecute({ ...batch, ...formData })
+    })
 
-    return () => subscription.unsubscribe();
-  }, [form, debouncedExecute, batch]);
+    return () => subscription.unsubscribe()
+  }, [form, debouncedExecute, batch])
 
   return (
     <>
@@ -184,7 +184,7 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
         </form>
       </Form>
     </>
-  );
-};
+  )
+}
 
-export { BatchEditForm };
+export { BatchEditForm }

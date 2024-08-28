@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   AlertDialog,
@@ -10,40 +10,40 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
-import { deleteMemberPaymentUseCase } from '@/modules/members/use-cases';
-import { useAction } from 'next-safe-action/hooks';
-import { useRouter } from 'next/navigation';
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/use-toast'
+import { deleteMemberPaymentUseCase } from '@/modules/members/use-cases'
+import { useAction } from 'next-safe-action/hooks'
+import { useRouter } from 'next/navigation'
 
 export interface DeleteMemberPaymentProps {
-  id: string;
+  id: string
 }
 
 const DeleteMemberPayment = ({ id }: DeleteMemberPaymentProps) => {
-  const { toast } = useToast();
-  const router = useRouter();
+  const { toast } = useToast()
+  const router = useRouter()
 
   const { execute } = useAction(deleteMemberPaymentUseCase, {
     onSuccess: () => {
       toast({
         title: 'Payment deleted',
         description: 'The Payment has been successfully deleted',
-      });
+      })
     },
     onError: (error) => {
       toast({
         title: 'Payment deleted',
         description: `${error}`,
         variant: 'destructive',
-      });
+      })
     },
-  });
+  })
 
   const handleDelete = () => {
-    execute({ id });
-  };
+    execute({ id })
+  }
 
   return (
     <AlertDialog>
@@ -68,7 +68,7 @@ const DeleteMemberPayment = ({ id }: DeleteMemberPaymentProps) => {
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  );
-};
+  )
+}
 
-export default DeleteMemberPayment;
+export default DeleteMemberPayment

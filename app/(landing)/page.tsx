@@ -1,12 +1,12 @@
-import { Container } from '@/components/generic/Container';
-import { Icons } from '@/components/generic/Icons';
-import { buttonVariants } from '@/components/ui/button';
-import { ExternalLinkIcon } from 'lucide-react';
-import Link from 'next/link';
-import Features from './components/features';
+import { Container } from '@/components/generic/Container'
+import { Icons } from '@/components/generic/Icons'
+import { buttonVariants } from '@/components/ui/button'
+import { ExternalLinkIcon } from 'lucide-react'
+import Link from 'next/link'
+import Features from './components/features'
 
 export default async function HomePage() {
-  const repoStars = await getRepoStars();
+  const repoStars = await getRepoStars()
 
   return (
     <>
@@ -64,7 +64,7 @@ export default async function HomePage() {
         <Testimonials />
       </section> */}
     </>
-  );
+  )
 }
 
 async function getRepoStars() {
@@ -76,13 +76,13 @@ async function getRepoStars() {
         revalidate: 900,
       },
     },
-  );
+  )
 
-  const data: unknown = await response.json();
+  const data: unknown = await response.json()
   const stars: number = (data as { stargazers_count?: string })
     ?.stargazers_count
     ? Number((data as { stargazers_count?: string }).stargazers_count)
-    : 0;
+    : 0
 
-  return stars;
+  return stars
 }

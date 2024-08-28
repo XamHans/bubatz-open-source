@@ -1,8 +1,8 @@
 /* eslint-disable */
 // @ts-nocheck
-'use client';
+'use client'
 
-import { BirthdayPicker } from '@/components/generic/BirthdayPicker';
+import { BirthdayPicker } from '@/components/generic/BirthdayPicker'
 import {
   Form,
   FormControl,
@@ -10,45 +10,45 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { useToast } from '@/components/ui/use-toast';
+} from '@/components/ui/select'
+import { useToast } from '@/components/ui/use-toast'
 import {
   MemberProps,
   UpdateMemberInput,
   updateMemberInputSchema,
-} from '@/modules/members/data-access/schema';
-import { ClubMemberStatus } from '@/modules/members/types';
-import { updateMemberUseCase } from '@/modules/members/use-cases';
+} from '@/modules/members/data-access/schema'
+import { ClubMemberStatus } from '@/modules/members/types'
+import { updateMemberUseCase } from '@/modules/members/use-cases'
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import debounce from 'lodash/debounce';
-import { Session } from 'next-auth';
-import { useAction } from 'next-safe-action/hooks';
-import { useCallback, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod'
+import debounce from 'lodash/debounce'
+import { Session } from 'next-auth'
+import { useAction } from 'next-safe-action/hooks'
+import { useCallback, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 
 interface EditMemberFormProps {
-  member: MemberProps;
-  session: Session;
+  member: MemberProps
+  session: Session
 }
 
 export function EditMemberForm({ member, session }: EditMemberFormProps) {
-  const { toast } = useToast();
+  const { toast } = useToast()
 
   const form = useForm<UpdateMemberInput>({
     resolver: zodResolver(updateMemberInputSchema),
     defaultValues: {
       ...member,
     },
-  });
+  })
 
   const { execute, status } = useAction(updateMemberUseCase, {
     onSuccess: ({ data }) => {
@@ -56,34 +56,34 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
         title: 'Success',
         duration: 1000,
         description: 'Member updated successfully',
-      });
+      })
     },
     onError: ({ error }) => {
-      console.log(error);
+      console.log(error)
       toast({
         title: 'Error',
         variant: 'destructive',
         description: `Member could not be updated ${JSON.stringify(error)}`,
-      });
+      })
     },
-  });
+  })
 
   // Create a debounced version of the execute function
   const debouncedExecute = useCallback(
     debounce((data: UpdateMemberInput) => {
-      execute(data);
+      execute(data)
     }, 500),
     [execute],
-  );
+  )
 
   useEffect(() => {
     const subscription = form.watch((value, { name, type }) => {
-      const formData = form.getValues();
-      debouncedExecute({ ...member, ...formData });
-    });
+      const formData = form.getValues()
+      debouncedExecute({ ...member, ...formData })
+    })
 
-    return () => subscription.unsubscribe();
-  }, [form, debouncedExecute, member]);
+    return () => subscription.unsubscribe()
+  }, [form, debouncedExecute, member])
 
   return (
     <Form {...form}>
@@ -240,5 +240,5 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
         />
       </form>
     </Form>
-  );
+  )
 }

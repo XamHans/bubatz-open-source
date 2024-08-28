@@ -1,21 +1,21 @@
-import { type Metadata } from "next"
-import Link from "next/link"
+import { type Metadata } from 'next'
+import Link from 'next/link'
 
-import { env } from "@/env.mjs"
+import { env } from '@/env.mjs'
 
-import { buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from '@/components/ui/card'
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: "Magic Link Sign In",
-  description: "Check your email for the magic link to sign in",
+  title: 'Magic Link Sign In',
+  description: 'Check your email for the magic link to sign in',
 }
 
 export default function MagicLinkSignInPage(): JSX.Element {

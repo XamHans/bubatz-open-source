@@ -1,9 +1,9 @@
-import { MobileHeader } from '@/components/generic/Mobile-Header';
-import Sidebar from '@/components/generic/Sidebar';
+import { MobileHeader } from '@/components/generic/Mobile-Header'
+import Sidebar from '@/components/generic/Sidebar'
 
 type Props = {
-  children: React.ReactNode;
-};
+  children: React.ReactNode
+}
 
 const AppLayout = ({ children }: Props) => {
   return (
@@ -19,7 +19,7 @@ const AppLayout = ({ children }: Props) => {
         </div>
       </main>
     </>
-  );
-};
+  )
+}
 
-export default AppLayout;
+export default AppLayout

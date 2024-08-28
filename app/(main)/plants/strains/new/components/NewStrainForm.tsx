@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -9,25 +9,25 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/components/ui/use-toast';
-import { siteConfig } from '@/config/site';
-import { logger } from '@/lib/logger';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { useToast } from '@/components/ui/use-toast'
+import { siteConfig } from '@/config/site'
+import { logger } from '@/lib/logger'
 import {
   CreateStrainInput,
   createStrainInputSchema,
-} from '@/modules/plants/data-access/schema';
-import { createStrainUseCase } from '@/modules/plants/use-cases';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useAction } from 'next-safe-action/hooks';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+} from '@/modules/plants/data-access/schema'
+import { createStrainUseCase } from '@/modules/plants/use-cases'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useAction } from 'next-safe-action/hooks'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
 
 export default function NewStrainForm() {
-  const router = useRouter();
-  const { toast } = useToast();
+  const router = useRouter()
+  const { toast } = useToast()
 
   const { execute, status } = useAction(createStrainUseCase, {
     onSuccess: (data) => {
@@ -35,21 +35,21 @@ export default function NewStrainForm() {
         title: 'Success',
         duration: 1000,
         description: 'Strain created successfully',
-      });
+      })
       setTimeout(() => {
-        router.push(`${siteConfig.links.plants.index}`);
-      });
+        router.push(`${siteConfig.links.plants.index}`)
+      })
     },
     onError: (error) => {
-      logger.debug('Error creating batch', error);
+      logger.debug('Error creating batch', error)
       toast({
         title: 'Error',
         variant: 'destructive',
         duration: 1000,
         description: `Strain creation failed, ${error}`,
-      });
+      })
     },
-  });
+  })
 
   const form = useForm<CreateStrainInput>({
     resolver: zodResolver(createStrainInputSchema),
@@ -61,11 +61,11 @@ export default function NewStrainForm() {
       currentPricePerGram: '0',
       amountAvailable: '0',
     },
-  });
+  })
 
   const onSubmit = (data: CreateStrainInput) => {
-    execute(data);
-  };
+    execute(data)
+  }
 
   return (
     <Form {...form}>
@@ -201,5 +201,5 @@ export default function NewStrainForm() {
         </Button>
       </form>
     </Form>
-  );
+  )
 }

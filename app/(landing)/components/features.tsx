@@ -1,13 +1,13 @@
-import { Container } from '@/components/generic/Container';
-import { cn } from '@/lib/utils';
-import Image from 'next/image';
+import { Container } from '@/components/generic/Container'
+import { cn } from '@/lib/utils'
+import Image from 'next/image'
 
 export type Feature = {
-  title: string;
-  description: string;
-  image: string;
-  imageDark?: string;
-};
+  title: string
+  description: string
+  image: string
+  imageDark?: string
+}
 
 export const features: Feature[] = [
   {
@@ -42,7 +42,7 @@ export const features: Feature[] = [
     imageDark:
       'https://utfs.io/f/89099112-4273-4375-9e44-1b3394600e21-c6ikq1.png',
   },
-];
+]
 
 export default function Features() {
   return (
@@ -62,12 +62,12 @@ export default function Features() {
         ))}
       </div>
     </section>
-  );
+  )
 }
 
 type FeatureCardProps = Feature & {
-  index: number;
-};
+  index: number
+}
 
 function FeatureCard({
   title,
@@ -122,5 +122,5 @@ function FeatureCard({
         </Container>
       </div>
     </div>
-  );
+  )
 }

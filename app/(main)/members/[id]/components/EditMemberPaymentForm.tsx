@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   Form,
@@ -8,42 +8,42 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { useToast } from '@/components/ui/use-toast';
+} from '@/components/ui/select'
+import { useToast } from '@/components/ui/use-toast'
 import {
   MemberPaymentProps,
   MembershipPaymentSchema,
   UpdateMemberPaymentInput,
   updateMemberPaymentInputSchema,
-} from '@/modules/members/data-access/schema';
-import { updatePaymentUseCase } from '@/modules/members/use-cases';
-import { zodResolver } from '@hookform/resolvers/zod';
-import debounce from 'lodash/debounce';
-import { useAction } from 'next-safe-action/hooks';
-import { useCallback, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+} from '@/modules/members/data-access/schema'
+import { updatePaymentUseCase } from '@/modules/members/use-cases'
+import { zodResolver } from '@hookform/resolvers/zod'
+import debounce from 'lodash/debounce'
+import { useAction } from 'next-safe-action/hooks'
+import { useCallback, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 
 interface EditMemberPaymentFormProps {
-  payment: MemberPaymentProps;
+  payment: MemberPaymentProps
 }
 
 export function EditMemberPaymentForm({ payment }: EditMemberPaymentFormProps) {
-  const { toast } = useToast();
-  console.log('in edit member payment form', payment);
+  const { toast } = useToast()
+  console.log('in edit member payment form', payment)
   const form = useForm<UpdateMemberPaymentInput>({
     resolver: zodResolver(updateMemberPaymentInputSchema),
     defaultValues: {
       ...payment,
     },
-  });
+  })
 
   const { execute, status } = useAction(updatePaymentUseCase, {
     onSuccess: () => {
@@ -51,32 +51,32 @@ export function EditMemberPaymentForm({ payment }: EditMemberPaymentFormProps) {
         title: 'Success',
         duration: 1000,
         description: 'Payment updated successfully',
-      });
+      })
     },
     onError: (error) => {
       toast({
         title: 'Error',
         variant: 'destructive',
         description: `Payment could not be updated: ${error}`,
-      });
+      })
     },
-  });
+  })
 
   const debouncedExecute = useCallback(
     debounce((data: MembershipPaymentSchema) => {
-      execute(data);
+      execute(data)
     }, 500),
     [execute],
-  );
+  )
 
   useEffect(() => {
     const subscription = form.watch((value, { name, type }) => {
-      const formData = form.getValues();
-      debouncedExecute({ ...payment, ...formData });
-    });
+      const formData = form.getValues()
+      debouncedExecute({ ...payment, ...formData })
+    })
 
-    return () => subscription.unsubscribe();
-  }, [form, debouncedExecute, payment]);
+    return () => subscription.unsubscribe()
+  }, [form, debouncedExecute, payment])
 
   return (
     <Form {...form}>
@@ -193,5 +193,5 @@ export function EditMemberPaymentForm({ payment }: EditMemberPaymentFormProps) {
         />
       </form>
     </Form>
-  );
+  )
 }

@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import { signIn } from 'next-auth/react';
+import { signIn } from 'next-auth/react'
 
-import { Button } from '@/components/ui/button';
-import { siteConfig } from '@/config/site';
-import { Icons } from '../generic/Icons';
-import { useToast } from '../ui/use-toast';
+import { Button } from '@/components/ui/button'
+import { siteConfig } from '@/config/site'
+import { Icons } from '../generic/Icons'
+import { useToast } from '../ui/use-toast'
 
 export function OAuthButtons(): JSX.Element {
-  const { toast } = useToast();
+  const { toast } = useToast()
 
   async function handleOAuthSignIn(
     provider: 'google' | 'github',
@@ -16,21 +16,21 @@ export function OAuthButtons(): JSX.Element {
     try {
       await signIn(provider, {
         callbackUrl: siteConfig.links.signIn,
-      });
+      })
 
       toast({
         title: 'Success!',
         description: 'You are now signed in',
-      });
+      })
     } catch (error) {
       toast({
         title: 'Something went wrong',
         description: 'Please try again',
         variant: 'destructive',
-      });
+      })
 
-      console.error(error);
-      throw new Error(`Error signing in with ${provider}`);
+      console.error(error)
+      throw new Error(`Error signing in with ${provider}`)
     }
   }
 
@@ -56,5 +56,5 @@ export function OAuthButtons(): JSX.Element {
         GitHub
       </Button>
     </div>
-  );
+  )
 }

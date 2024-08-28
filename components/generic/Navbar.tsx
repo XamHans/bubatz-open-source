@@ -1,7 +1,7 @@
-import { Icons } from '@/app/(landing)/components/Icons';
-import Link from 'next/link';
-import { buttonVariants } from '../ui/button';
-import { ThemeToggle } from './Themetoggle';
+import { Icons } from '@/app/(landing)/components/Icons'
+import Link from 'next/link'
+import { buttonVariants } from '../ui/button'
+import { ThemeToggle } from './Themetoggle'
 
 export async function Navbar() {
   // const user = await getUser();
@@ -48,5 +48,5 @@ export async function Navbar() {
         </div>
       </div>
     </nav>
-  );
+  )
 }

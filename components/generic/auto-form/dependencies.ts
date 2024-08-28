@@ -1,6 +1,6 @@
-import { FieldValues, UseFormWatch } from "react-hook-form";
-import { Dependency, DependencyType, EnumValues } from "./types";
-import * as z from "zod";
+import { FieldValues, UseFormWatch } from 'react-hook-form'
+import { Dependency, DependencyType, EnumValues } from './types'
+import * as z from 'zod'
 
 export default function resolveDependencies<
   SchemaType extends z.infer<z.ZodObject<any, any>>,
@@ -9,42 +9,42 @@ export default function resolveDependencies<
   currentFieldName: keyof SchemaType,
   watch: UseFormWatch<FieldValues>,
 ) {
-  let isDisabled = false;
-  let isHidden = false;
-  let isRequired = false;
-  let overrideOptions: EnumValues | undefined;
+  let isDisabled = false
+  let isHidden = false
+  let isRequired = false
+  let overrideOptions: EnumValues | undefined
 
-  const currentFieldValue = watch(currentFieldName as string);
+  const currentFieldValue = watch(currentFieldName as string)
 
   const currentFieldDependencies = dependencies.filter(
     (dependency) => dependency.targetField === currentFieldName,
-  );
+  )
   for (const dependency of currentFieldDependencies) {
-    const watchedValue = watch(dependency.sourceField as string);
+    const watchedValue = watch(dependency.sourceField as string)
 
-    const conditionMet = dependency.when(watchedValue, currentFieldValue);
+    const conditionMet = dependency.when(watchedValue, currentFieldValue)
 
     switch (dependency.type) {
       case DependencyType.DISABLES:
         if (conditionMet) {
-          isDisabled = true;
+          isDisabled = true
         }
-        break;
+        break
       case DependencyType.REQUIRES:
         if (conditionMet) {
-          isRequired = true;
+          isRequired = true
         }
-        break;
+        break
       case DependencyType.HIDES:
         if (conditionMet) {
-          isHidden = true;
+          isHidden = true
         }
-        break;
+        break
       case DependencyType.SETS_OPTIONS:
         if (conditionMet) {
-          overrideOptions = dependency.options;
+          overrideOptions = dependency.options
         }
-        break;
+        break
     }
   }
 
@@ -53,5 +53,5 @@ export default function resolveDependencies<
     isHidden,
     isRequired,
     overrideOptions,
-  };
+  }
 }

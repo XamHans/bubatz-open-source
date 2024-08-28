@@ -4,12 +4,12 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
-import { FormControl } from '../ui/form';
+} from '../ui/select'
+import { FormControl } from '../ui/form'
 
 interface GenericSelectProps {
-  placeholder: string;
-  items: string[];
+  placeholder: string
+  items: string[]
 }
 
 export default function GenericSelect({
@@ -31,5 +31,5 @@ export default function GenericSelect({
         ))}
       </SelectContent>
     </Select>
-  );
+  )
 }

@@ -1,42 +1,42 @@
-import { markEmailAsVerified } from '@/actions/email';
-import { getUserByEmailVerificationToken } from '@/actions/user';
-import { type Metadata } from 'next';
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { markEmailAsVerified } from '@/actions/email'
+import { getUserByEmailVerificationToken } from '@/actions/user'
+import { type Metadata } from 'next'
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
-import { env } from '@/env.mjs';
+import { env } from '@/env.mjs'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
-import { Icons } from '@/components/generic/Icons';
-import { buttonVariants } from '@/components/ui/button';
+import { Icons } from '@/components/generic/Icons'
+import { buttonVariants } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/components/ui/card'
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: 'Email Verification',
   description: 'Verify your email address to continue',
-};
+}
 
 export interface VerifyEmailPageProps {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 
 export default async function VerifyEmailPage({
   searchParams,
 }: VerifyEmailPageProps): Promise<JSX.Element> {
-  const emailVerificationToken = searchParams.token as string;
+  const emailVerificationToken = searchParams.token as string
 
   if (emailVerificationToken) {
     const user = await getUserByEmailVerificationToken({
       token: emailVerificationToken,
-    });
+    })
 
     if (!user) {
       return (
@@ -64,13 +64,13 @@ export default async function VerifyEmailPage({
             </CardContent>
           </Card>
         </div>
-      );
+      )
     }
 
     const message = await markEmailAsVerified({
       token: emailVerificationToken,
-    });
-    if (message !== 'success') redirect('/signup');
+    })
+    if (message !== 'success') redirect('/signup')
 
     return (
       <div className="flex min-h-screen w-full items-center justify-center">
@@ -93,7 +93,7 @@ export default async function VerifyEmailPage({
           </CardContent>
         </Card>
       </div>
-    );
+    )
   } else {
     return (
       <div className="flex min-h-screen w-full items-center justify-center">
@@ -117,6 +117,6 @@ export default async function VerifyEmailPage({
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 }

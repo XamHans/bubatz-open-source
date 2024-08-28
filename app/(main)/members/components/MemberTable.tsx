@@ -1,9 +1,9 @@
-'use client';
+'use client'
 
-import SkeletonLoader from '@/app/components/SkeletonLoader';
-import { siteConfig } from '@/config/site';
-import { logger } from '@/lib/logger';
-import { Pencil1Icon } from '@radix-ui/react-icons';
+import SkeletonLoader from '@/app/components/SkeletonLoader'
+import { siteConfig } from '@/config/site'
+import { logger } from '@/lib/logger'
+import { Pencil1Icon } from '@radix-ui/react-icons'
 import {
   ColumnFiltersState,
   SortingState,
@@ -14,8 +14,8 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table';
-import { t } from 'i18next';
+} from '@tanstack/react-table'
+import { t } from 'i18next'
 import {
   ArrowUpDown,
   ChevronLeft,
@@ -24,16 +24,16 @@ import {
   PlusCircle,
   ShieldIcon,
   UserIcon,
-} from 'lucide-react';
-import { useAction } from 'next-safe-action/hooks';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import { Badge } from '../../../../components/ui/badge';
-import { Button } from '../../../../components/ui/button';
-import { Input } from '../../../../components/ui/input';
+} from 'lucide-react'
+import { useAction } from 'next-safe-action/hooks'
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import { Badge } from '../../../../components/ui/badge'
+import { Button } from '../../../../components/ui/button'
+import { Input } from '../../../../components/ui/input'
 import {
   Table,
   TableBody,
@@ -41,19 +41,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../../../../components/ui/table';
+} from '../../../../components/ui/table'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../../../../components/ui/tooltip';
-import { UserSchema } from '../../../../modules/members/data-access/schema';
+} from '../../../../components/ui/tooltip'
+import { UserSchema } from '../../../../modules/members/data-access/schema'
 import {
   ClubMemberStatus,
   colorForClubMemberStatus,
-} from '../../../../modules/members/types';
-import { fetchMembersUseCase } from '../../../../modules/members/use-cases';
+} from '../../../../modules/members/types'
+import { fetchMembersUseCase } from '../../../../modules/members/use-cases'
 
 export default function MemberTable() {
   const getUserTableColumns = (router: AppRouterInstance) => {
@@ -62,7 +62,7 @@ export default function MemberTable() {
         id: 'role',
         header: 'Role',
         cell: ({ row }) => {
-          const isAdmin = row.original.role === 'ADMIN';
+          const isAdmin = row.original.role === 'ADMIN'
           return (
             <TooltipProvider>
               <Tooltip delayDuration={0}>
@@ -78,7 +78,7 @@ export default function MemberTable() {
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          );
+          )
         },
         enableSorting: false,
         enableHiding: false,
@@ -86,9 +86,8 @@ export default function MemberTable() {
       {
         accessorKey: 'name',
         accessorFn: (row) => {
-          const fullName =
-            `${row.firstName || ''} ${row.lastName || ''}`.trim();
-          return fullName || row.email;
+          const fullName = `${row.firstName || ''} ${row.lastName || ''}`.trim()
+          return fullName || row.email
         },
         header: ({ column }) => {
           return (
@@ -102,7 +101,7 @@ export default function MemberTable() {
               Name
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
-          );
+          )
         },
         cell: ({ row }) => (
           <div className="ml-4 text-left">
@@ -126,18 +125,18 @@ export default function MemberTable() {
               Status
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
-          );
+          )
         },
         cell: ({ row }) => {
-          const status = row.getValue('status') as ClubMemberStatus;
-          const bgColor = colorForClubMemberStatus.get(status) || 'bg-gray-400';
+          const status = row.getValue('status') as ClubMemberStatus
+          const bgColor = colorForClubMemberStatus.get(status) || 'bg-gray-400'
           return (
             <Badge
               className={`bg-${bgColor} border-none	  text-gray-950/75 hover:text-gray-400`}
             >
               {status}
             </Badge>
-          );
+          )
         },
       },
       {
@@ -148,10 +147,10 @@ export default function MemberTable() {
             <Button variant="ghost" className="justify-center text-xs">
               Actions
             </Button>
-          );
+          )
         },
         cell: ({ row }) => {
-          const member = row.original;
+          const member = row.original
           return (
             <div className="flex justify-start ">
               <Button
@@ -160,7 +159,7 @@ export default function MemberTable() {
                 onClick={() => {
                   router.push(
                     siteConfig.links.members.detail.replace(':id', member.id!),
-                  );
+                  )
                 }}
               >
                 <TooltipProvider>
@@ -183,7 +182,7 @@ export default function MemberTable() {
                 onClick={() => {
                   router.push(
                     siteConfig.links.members.edit.replace(':id', member.id!),
-                  );
+                  )
                 }}
               >
                 <TooltipProvider>
@@ -200,31 +199,31 @@ export default function MemberTable() {
                 </TooltipProvider>
               </Button>
             </div>
-          );
+          )
         },
       },
-    ];
-  };
+    ]
+  }
 
   const { execute, status } = useAction(fetchMembersUseCase, {
     onSuccess: ({ data }) => {
-      setMembers(data?.success ?? []);
+      setMembers(data?.success ?? [])
     },
     onError: (error) => {
-      logger.error('Error fetching member', error);
+      logger.error('Error fetching member', error)
     },
-  });
+  })
 
-  const [members, setMembers] = React.useState<UserSchema[]>([]);
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
-  const router = useRouter();
+  const [members, setMembers] = React.useState<UserSchema[]>([])
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
+  const router = useRouter()
 
   useEffect(() => {
-    execute();
-  }, []);
+    execute()
+  }, [])
 
   const table = useReactTable({
     data: members,
@@ -243,10 +242,10 @@ export default function MemberTable() {
       columnVisibility,
       rowSelection,
     },
-  });
+  })
 
   if (status === 'executing') {
-    return <SkeletonLoader />;
+    return <SkeletonLoader />
   }
 
   return (
@@ -287,7 +286,7 @@ export default function MemberTable() {
                             header.getContext(),
                           )}
                     </TableHead>
-                  );
+                  )
                 })}
               </TableRow>
             ))}
@@ -338,5 +337,5 @@ export default function MemberTable() {
         </div>
       </div>
     </div>
-  );
+  )
 }

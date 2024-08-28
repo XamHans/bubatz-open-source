@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 
-type SkeletonType = 'table' | 'simple' | 'page';
+type SkeletonType = 'table' | 'simple' | 'page'
 
 interface SkeletonLoaderProps {
-  type?: SkeletonType;
-  rows?: number;
-  columns?: number;
+  type?: SkeletonType
+  rows?: number
+  columns?: number
 }
 
 const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
@@ -14,7 +14,7 @@ const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
   columns = 4,
 }) => {
   if (type === 'simple') {
-    return <div className="h-4 w-full animate-pulse rounded bg-gray-200"></div>;
+    return <div className="h-4 w-full animate-pulse rounded bg-gray-200"></div>
   }
 
   if (type === 'page') {
@@ -80,7 +80,7 @@ const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // Default table skeleton
@@ -98,7 +98,7 @@ const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
         </div>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default SkeletonLoader;
+export default SkeletonLoader

@@ -1,17 +1,17 @@
-'use client';
+'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
-import * as React from 'react';
-import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import * as React from 'react'
+import { useForm } from 'react-hook-form'
 
 import {
   signInWithPasswordSchema,
   type SignInWithPasswordFormInput,
-} from '@/modules/auth/data-access/auth';
+} from '@/modules/auth/data-access/auth'
 
-import { Icons } from '@/components/generic/Icons';
-import { Button } from '@/components/ui/button';
+import { Icons } from '@/components/generic/Icons'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -19,17 +19,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useToast } from '@/components/ui/use-toast';
-import { siteConfig } from '@/config/site';
-import { signInWithPassword } from '@/modules/auth/use-cases/auth';
-import { PasswordInput } from '../../signup/components/password-input';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { useToast } from '@/components/ui/use-toast'
+import { siteConfig } from '@/config/site'
+import { signInWithPassword } from '@/modules/auth/use-cases/auth'
+import { PasswordInput } from '../../signup/components/password-input'
 
 export function SignInWithPasswordForm(): JSX.Element {
-  const router = useRouter();
-  const { toast } = useToast();
-  const [isPending, startTransition] = React.useTransition();
+  const router = useRouter()
+  const { toast } = useToast()
+  const [isPending, startTransition] = React.useTransition()
 
   const form = useForm<SignInWithPasswordFormInput>({
     resolver: zodResolver(signInWithPasswordSchema),
@@ -37,7 +37,7 @@ export function SignInWithPasswordForm(): JSX.Element {
       email: '',
       password: '',
     },
-  });
+  })
 
   function onSubmit(formData: SignInWithPasswordFormInput) {
     startTransition(async () => {
@@ -45,59 +45,59 @@ export function SignInWithPasswordForm(): JSX.Element {
         const loginResult = await signInWithPassword({
           email: formData.email,
           password: formData.password,
-        });
+        })
         switch (loginResult) {
           case 'not-registered':
             toast({
               title: 'First things first',
               description:
                 'Please make sure you are signed up before signing in',
-            });
-            break;
+            })
+            break
           case 'incorrect-provider':
             toast({
               title: 'Email already in use with another provider',
               description: 'Perhaps you signed up with a different method?',
-            });
-            break;
+            })
+            break
           case 'unverified-email':
             toast({
               title: 'First things first',
               description: 'Please verify your email address before signing in',
-            });
-            break;
+            })
+            break
           case 'invalid-credentials':
             toast({
               title: 'Invalid email or Password',
               description: 'Double-check your credentials and try again',
               variant: 'destructive',
-            });
-            break;
+            })
+            break
           case 'success':
             toast({
               title: 'Success!',
               description: 'You are now signed in',
-            });
+            })
             setTimeout(() => {
-              router.push(siteConfig.links.members.index);
-            }, 700);
-            break;
+              router.push(siteConfig.links.members.index)
+            }, 700)
+            break
           default:
             toast({
               title: 'Error signing in with password',
               description: 'Please try again',
               variant: 'destructive',
-            });
+            })
         }
       } catch (error) {
-        console.error(error);
+        console.error(error)
         toast({
           title: 'Something went wrong',
           description: 'Please try again',
           variant: 'destructive',
-        });
+        })
       }
-    });
+    })
   }
 
   return (
@@ -153,5 +153,5 @@ export function SignInWithPasswordForm(): JSX.Element {
         </Button>
       </form>
     </Form>
-  );
+  )
 }

@@ -1,30 +1,30 @@
-import Breadcrumbs from '@/components/generic/BreadCrumbs';
-import { Container } from '@/components/generic/Container';
-import { Button } from '@/components/ui/button';
+import Breadcrumbs from '@/components/generic/BreadCrumbs'
+import { Container } from '@/components/generic/Container'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { siteConfig } from '@/config/site';
-import { ChevronLeft } from 'lucide-react';
-import { Metadata } from 'next';
-import Link from 'next/link';
-import NewStrainForm from './components/NewStrainForm';
+} from '@/components/ui/card'
+import { siteConfig } from '@/config/site'
+import { ChevronLeft } from 'lucide-react'
+import { Metadata } from 'next'
+import Link from 'next/link'
+import NewStrainForm from './components/NewStrainForm'
 
 export const metadata: Metadata = {
   title: 'Add New Strain',
   description: 'Add a new cannabis strain to your collection',
-};
+}
 
 async function NewStrainPage() {
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Plants', href: '/plants' },
     { label: 'New Strain', href: siteConfig.links.plants.strains.new },
-  ];
+  ]
 
   return (
     <>
@@ -51,7 +51,7 @@ async function NewStrainPage() {
         </Card>
       </Container>
     </>
-  );
+  )
 }
 
-export default NewStrainPage;
+export default NewStrainPage

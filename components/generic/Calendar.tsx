@@ -1,20 +1,20 @@
-'use client';
+'use client'
 
-import { buttonVariants } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { buttonVariants } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { cn } from '@/lib/utils';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import * as React from 'react';
-import { DayPicker, DropdownProps } from 'react-day-picker';
+} from '@/components/ui/select'
+import { cn } from '@/lib/utils'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import * as React from 'react'
+import { DayPicker, DropdownProps } from 'react-day-picker'
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+export type CalendarProps = React.ComponentProps<typeof DayPicker>
 
 export function Calendar({
   className,
@@ -63,19 +63,19 @@ export function Calendar({
         Dropdown: ({ value, onChange, children, ...props }: DropdownProps) => {
           const options = React.Children.toArray(
             children,
-          ) as React.ReactElement<React.HTMLProps<HTMLOptionElement>>[];
-          const selected = options.find((child) => child.props.value === value);
+          ) as React.ReactElement<React.HTMLProps<HTMLOptionElement>>[]
+          const selected = options.find((child) => child.props.value === value)
           const handleChange = (value: string) => {
             const changeEvent = {
               target: { value },
-            } as React.ChangeEvent<HTMLSelectElement>;
-            onChange?.(changeEvent);
-          };
+            } as React.ChangeEvent<HTMLSelectElement>
+            onChange?.(changeEvent)
+          }
           return (
             <Select
               value={value?.toString()}
               onValueChange={(value) => {
-                handleChange(value);
+                handleChange(value)
               }}
             >
               <SelectTrigger className="h-[28px] pr-1.5 focus:ring-0">
@@ -94,13 +94,13 @@ export function Calendar({
                 </ScrollArea>
               </SelectContent>
             </Select>
-          );
+          )
         },
         IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
         IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
       }}
       {...props}
     />
-  );
+  )
 }
-Calendar.displayName = 'Calendar';
+Calendar.displayName = 'Calendar'

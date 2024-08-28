@@ -1,8 +1,8 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MemberProps } from '@/modules/members/types';
-import React from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { MemberProps } from '@/modules/members/types'
+import React from 'react'
 import {
   HiCalendar,
   HiClock,
@@ -10,10 +10,10 @@ import {
   HiMail,
   HiPhone,
   HiShieldCheck,
-} from 'react-icons/hi';
+} from 'react-icons/hi'
 
 interface MemberGeneralInfoProps {
-  member: MemberProps;
+  member: MemberProps
 }
 
 const formatDate = (date: Date) => {
@@ -21,31 +21,31 @@ const formatDate = (date: Date) => {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  }).format(new Date(date));
-};
+  }).format(new Date(date))
+}
 
 const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
   const calculateAge = (birthday: Date) => {
-    const ageDifMs = Date.now() - new Date(birthday).getTime();
-    const ageDate = new Date(ageDifMs);
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
-  };
+    const ageDifMs = Date.now() - new Date(birthday).getTime()
+    const ageDate = new Date(ageDifMs)
+    return Math.abs(ageDate.getUTCFullYear() - 1970)
+  }
 
   const calculateMembershipDuration = (createdAt: Date) => {
-    const diffMs = Date.now() - new Date(createdAt).getTime();
-    const years = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 365));
+    const diffMs = Date.now() - new Date(createdAt).getTime()
+    const years = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 365))
     const months = Math.floor(
       (diffMs % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30),
-    );
+    )
 
     if (years > 0) {
-      return `${years} year${years > 1 ? 's' : ''}${months > 0 ? ` ${months} month${months > 1 ? 's' : ''}` : ''}`;
+      return `${years} year${years > 1 ? 's' : ''}${months > 0 ? ` ${months} month${months > 1 ? 's' : ''}` : ''}`
     } else {
-      return `${months} month${months > 1 ? 's' : ''}`;
+      return `${months} month${months > 1 ? 's' : ''}`
     }
-  };
+  }
 
-  const hasAdditionalInfo = member.firstName && member.lastName;
+  const hasAdditionalInfo = member.firstName && member.lastName
 
   return (
     <Card className="w-full">
@@ -104,13 +104,13 @@ const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
         {member.email && <InfoItem icon={HiMail} primary={member.email} />}
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
 interface InfoItemProps {
-  icon: React.ElementType;
-  primary: string;
-  secondary?: string;
+  icon: React.ElementType
+  primary: string
+  secondary?: string
 }
 
 const InfoItem: React.FC<InfoItemProps> = ({
@@ -127,6 +127,6 @@ const InfoItem: React.FC<InfoItemProps> = ({
       )}
     </div>
   </div>
-);
+)
 
-export default MemberGeneralInfo;
+export default MemberGeneralInfo

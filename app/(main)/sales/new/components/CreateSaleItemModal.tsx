@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
-import { GenericModal } from '@/components/generic/GenericModal';
-import { Button } from '@/components/ui/button';
+import { GenericModal } from '@/components/generic/GenericModal'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -9,63 +9,61 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from '@/components/ui/select';
-import { StrainProps } from '@/modules/plants/data-access/schema';
+} from '@/components/ui/select'
+import { StrainProps } from '@/modules/plants/data-access/schema'
 import {
   SaleItem,
   SaleItemFormInputSchema,
-} from '@/modules/sales/data-access/schema';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+} from '@/modules/sales/data-access/schema'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 
 interface CreateSaleItemModalProps {
-  strains: StrainProps[];
-  addItem: (item: SaleItem) => void;
+  strains: StrainProps[]
+  addItem: (item: SaleItem) => void
 }
 
 export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
-  const { strains: plants } = props;
+  const { strains: plants } = props
 
-  const [open, setOpen] = useState(false);
-  const [errors, setErrors] = useState<{ field: string; message: string }[]>(
-    [],
-  );
+  const [open, setOpen] = useState(false)
+  const [errors, setErrors] = useState<{ field: string; message: string }[]>([])
 
   const form = useForm<SaleItem>({
     mode: 'onSubmit',
     resolver: zodResolver(SaleItemFormInputSchema),
-  });
+  })
 
   const handleSave = (data: SaleItem) => {
-    console.log(data);
-    props.addItem(data);
-    setOpen(false);
-    form.reset();
-    return true;
-  };
+    console.log(data)
+    props.addItem(data)
+    setOpen(false)
+    form.reset()
+    return true
+  }
 
   const handleAbort = () => {
-    form.reset();
-    setErrors([]);
-  };
+    form.reset()
+    setErrors([])
+  }
 
   const getPlantNameFromId = (id: number): string => {
-    const plant = plants.find((plant) => plant.id == id);
-    return plant?.name || '';
-  };
+    const plant = plants.find((plant) => plant.id == id)
+    return plant?.name || ''
+  }
 
   const getPlantPriceFromId = (id: number): number => {
-    const plant = plants.find((plant) => plant.id == id);
-    return plant?.currentPricePerGram || -1;
-  };
+    const plant = plants.find((plant) => plant.id == id)
+    return plant?.currentPricePerGram || -1
+  }
 
   /**
    * ! WHEN CHANGING THE VALUE FROM SELECT, ITS GIVES AN ERROR ON RELATED TO UNCONTROLLED INPUTS. I DONT KNOW WHAT IT IS,
@@ -92,8 +90,8 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
                 <FormControl>
                   <Select
                     onValueChange={(v) => {
-                      field.onChange(parseInt(v));
-                      form.setValue('price', getPlantPriceFromId(parseInt(v)));
+                      field.onChange(parseInt(v))
+                      form.setValue('price', getPlantPriceFromId(parseInt(v)))
                     }}
                     // defaultValue={field.value}
                   >
@@ -133,7 +131,7 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-              );
+              )
             }}
           />
           <FormField
@@ -148,7 +146,7 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-              );
+              )
             }}
           />
           <Button type="submit" className="col-span-2">
@@ -157,5 +155,5 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
         </form>
       </Form>
     </GenericModal>
-  );
+  )
 }

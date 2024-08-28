@@ -1,26 +1,26 @@
-import type { Metadata } from "next"
-import Link from "next/link"
-import { getUserByResetPasswordToken } from "@/actions/user"
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { getUserByResetPasswordToken } from '@/actions/user'
 
-import { env } from "@/env.mjs"
+import { env } from '@/env.mjs'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
-import { buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { PasswordUpdateForm } from "@/components/forms/password-update-form"
-import { Icons } from "@/components/icons"
+} from '@/components/ui/card'
+import { PasswordUpdateForm } from '@/components/forms/password-update-form'
+import { Icons } from '@/components/icons'
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: "Password Update",
-  description: "Set your new password",
+  title: 'Password Update',
+  description: 'Set your new password',
 }
 
 interface PasswordUpdatePageProps {
@@ -50,8 +50,8 @@ export default async function PasswordUpdatePage({
                 aria-label="Go back to sign in page"
                 href="/signin"
                 className={cn(
-                  buttonVariants({ variant: "secondary" }),
-                  "w-full"
+                  buttonVariants({ variant: 'secondary' }),
+                  'w-full',
                 )}
               >
                 <Icons.arrowLeft className="mr-2 size-4" />
@@ -78,7 +78,7 @@ export default async function PasswordUpdatePage({
             <Link
               aria-label="Cancel password update"
               href="/signin"
-              className={buttonVariants({ variant: "outline" })}
+              className={buttonVariants({ variant: 'outline' })}
             >
               <span className="sr-only">Cancel password update</span>
               Cancel
@@ -101,7 +101,7 @@ export default async function PasswordUpdatePage({
             <Link
               aria-label="Go back to sign in page"
               href="/signin"
-              className={cn(buttonVariants({ variant: "secondary" }), "w-full")}
+              className={cn(buttonVariants({ variant: 'secondary' }), 'w-full')}
             >
               <Icons.arrowLeft className="mr-2 size-4" />
               <span className="sr-only">Try again</span>

@@ -1,9 +1,9 @@
-'use client';
+'use client'
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
-import type { TabsProps } from '@radix-ui/react-tabs';
-import React from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { cn } from '@/lib/utils'
+import type { TabsProps } from '@radix-ui/react-tabs'
+import React from 'react'
 
 const highlights = [
   {
@@ -29,18 +29,18 @@ const highlights = [
     disabled: true,
     badge: 'Soon',
   },
-];
+]
 
-type HighlightNavProps = TabsProps;
+type HighlightNavProps = TabsProps
 
 export function HighlightTabs({ className, ...props }: HighlightNavProps) {
   const [selectedHighlight, setSelectedHighlight] = React.useState(
     highlights[0]?.id,
-  );
+  )
 
   const activeHighlight = highlights.find(
     (highlight) => highlight.id === selectedHighlight,
-  );
+  )
 
   return (
     <Tabs
@@ -81,5 +81,5 @@ export function HighlightTabs({ className, ...props }: HighlightNavProps) {
         <SaasStarterkitHighlight />
       </TabsContent>
     </Tabs>
-  );
+  )
 }

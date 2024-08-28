@@ -1,9 +1,9 @@
-'use server';
+'use server'
 
-import { logger } from '@/lib/logger';
-import { actionClient } from '@/lib/server-clients';
-import { SuccessResponse } from '@/types';
-import { z } from 'zod';
+import { logger } from '@/lib/logger'
+import { actionClient } from '@/lib/server-clients'
+import { SuccessResponse } from '@/types'
+import { z } from 'zod'
 import {
   PlantDetailsData,
   createBatch,
@@ -21,7 +21,7 @@ import {
   updateBatch,
   updatePlant,
   updateStrain,
-} from '../data-access';
+} from '../data-access'
 import {
   BatchProps,
   StrainProps,
@@ -36,182 +36,182 @@ import {
   updateBatchInputSchema,
   updatePlantInputSchema,
   updateStrainInputSchema,
-} from '../data-access/schema';
+} from '../data-access/schema'
 
 // -------------- Batches
 export const createBatchUseCase = actionClient
   .schema(createBatchInputSchema)
   .action(async ({ parsedInput }) => {
-    logger.info(parsedInput, 'Creating batch with data:');
-    console.log('new start date ', parsedInput.startDate);
-    const newBatch = await createBatch(parsedInput);
-    return { success: newBatch.id };
-  });
+    logger.info(parsedInput, 'Creating batch with data:')
+    console.log('new start date ', parsedInput.startDate)
+    const newBatch = await createBatch(parsedInput)
+    return { success: newBatch.id }
+  })
 
 export const fetchBatchesUseCase = actionClient.action(async () => {
-  const batches = await getBatches();
+  const batches = await getBatches()
   if (!batches) {
-    return { failure: 'Batch not found' };
+    return { failure: 'Batch not found' }
   }
-  return { success: batches };
-});
+  return { success: batches }
+})
 
 export const fetchBatchDetailsUseCase = actionClient
   .schema(getBatchDetailSchema)
   .action(async ({ parsedInput }) => {
-    logger.info('fetching batch details for id:', parsedInput.id);
-    const res = await getBatchById(parsedInput.id);
+    logger.info('fetching batch details for id:', parsedInput.id)
+    const res = await getBatchById(parsedInput.id)
     if (!res) {
-      return { failure: 'Batch not found' };
+      return { failure: 'Batch not found' }
     }
-    return { success: { batch: res.batches, strain: res.strains } };
-  });
+    return { success: { batch: res.batches, strain: res.strains } }
+  })
 
 export const updateBatchUseCase = actionClient
   .schema(updateBatchInputSchema)
   .action(async ({ parsedInput }) => {
-    const existingBatch = await getBatchById(parsedInput.id);
+    const existingBatch = await getBatchById(parsedInput.id)
 
     if (!existingBatch) {
-      return { failure: "Batch not found, can't update batch" };
+      return { failure: "Batch not found, can't update batch" }
     }
     if (parsedInput.totalYield && Number(parsedInput.totalYield) > 0) {
       // yield changed we need to update strain values as well
       const res = await updateStrain({
         id: existingBatch?.strains?.id!,
         amountAvailable: parsedInput.totalYield,
-      });
-      console.log('res yield total update strain', res);
+      })
+      console.log('res yield total update strain', res)
 
       if (!res) {
-        return { failure: 'Failed to update amountAvailable of strain ' };
+        return { failure: 'Failed to update amountAvailable of strain ' }
       }
     }
-    const result = await updateBatch(parsedInput.id, parsedInput);
-    return { success: [result] };
-  });
+    const result = await updateBatch(parsedInput.id, parsedInput)
+    return { success: [result] }
+  })
 
 //----------------- Plants
 export type FetchPlantsSuccess = SuccessResponse<{
-  plants: PlantDetailsData[];
-}>;
+  plants: PlantDetailsData[]
+}>
 
 export const fetchPlantsFromBatchUseCase = actionClient
   .schema(z.object({ batchId: z.string() }))
   .action(async ({ parsedInput }) => {
-    const plants = (await getPlantsByBatchId(parsedInput.batchId)) ?? [];
+    const plants = (await getPlantsByBatchId(parsedInput.batchId)) ?? []
 
-    return { success: { plants } };
-  });
+    return { success: { plants } }
+  })
 
 export const fetchPlantsUseCase = actionClient.action(async () => {
-  const plants = await getPlants();
-  return { success: plants };
-});
+  const plants = await getPlants()
+  return { success: plants }
+})
 
 export const createPlantUseCase = actionClient
   .schema(createPlantInputSchema)
   .action(async ({ parsedInput }) => {
-    logger.info(parsedInput, 'Creating plant with data:');
-    const newPlantId = await createPlant(parsedInput);
-    logger.info(newPlantId, 'Creating plant id:');
+    logger.info(parsedInput, 'Creating plant with data:')
+    const newPlantId = await createPlant(parsedInput)
+    logger.info(newPlantId, 'Creating plant id:')
     if (!newPlantId) {
-      return { failure: 'Failed to create plant' };
+      return { failure: 'Failed to create plant' }
     }
-    return { success: newPlantId };
-  });
+    return { success: newPlantId }
+  })
 
 export const deletePlantUseCase = actionClient
   .schema(deletePlantInputSchema)
   .action(async ({ parsedInput }) => {
-    logger.info('Deleting plant with id:', parsedInput.id);
+    logger.info('Deleting plant with id:', parsedInput.id)
     try {
-      await deletePlant(parsedInput);
+      await deletePlant(parsedInput)
     } catch (error) {
-      logger.error('Error deleting plant', error);
-      return { failure: 'Failed to delete plant' };
+      logger.error('Error deleting plant', error)
+      return { failure: 'Failed to delete plant' }
     }
-    return { success: 'Plant deleted successfully' };
-  });
+    return { success: 'Plant deleted successfully' }
+  })
 
 export const updatePlantUseCase = actionClient
   .schema(updatePlantInputSchema)
   .action(async ({ parsedInput }) => {
-    logger.info('Updating plant with:', parsedInput);
-    await updatePlant(parsedInput.id!, parsedInput);
-    return { success: 'Plant updated successfully' };
-  });
+    logger.info('Updating plant with:', parsedInput)
+    await updatePlant(parsedInput.id!, parsedInput)
+    return { success: 'Plant updated successfully' }
+  })
 
 // -------------- Strains
 export const fetchStrainsUseCase = actionClient.action(async () => {
-  const strains = await getStrains();
+  const strains = await getStrains()
 
-  return { success: strains };
-});
+  return { success: strains }
+})
 
 export const fetchBatchesByStrainIdUseCase = actionClient
   .schema(getBatchesByStrainIdSchema)
   .action(async ({ parsedInput }) => {
-    const batches = await getBatchesByStrainId(parsedInput.strainId!);
+    const batches = await getBatchesByStrainId(parsedInput.strainId!)
 
-    return { success: batches };
-  });
+    return { success: batches }
+  })
 
 export const fetchStrainDetailsUseCase = actionClient
   .schema(getStrainDetailSchema)
   .action(async ({ parsedInput }) => {
-    const strain = await getStrainById(parsedInput.id);
+    const strain = await getStrainById(parsedInput.id)
     if (!strain) {
-      return { failure: 'Strain not found' };
+      return { failure: 'Strain not found' }
     }
-    return { success: strain };
-  });
+    return { success: strain }
+  })
 
 export const createStrainUseCase = actionClient
   .schema(createStrainInputSchema)
   .action(async ({ parsedInput }) => {
-    logger.info('Creating strain with data:', parsedInput);
-    const newStrainId = await createStrain(parsedInput);
+    logger.info('Creating strain with data:', parsedInput)
+    const newStrainId = await createStrain(parsedInput)
     if (!newStrainId) {
-      return { failure: 'Failed to create strain' };
+      return { failure: 'Failed to create strain' }
     }
-    return { success: newStrainId };
-  });
+    return { success: newStrainId }
+  })
 
 export const updateStrainUseCase = actionClient
   .schema(updateStrainInputSchema)
   .action(async ({ parsedInput }) => {
-    logger.info('Updating strain with data:', parsedInput);
-    const updatedStrain = await updateStrain(parsedInput);
+    logger.info('Updating strain with data:', parsedInput)
+    const updatedStrain = await updateStrain(parsedInput)
     if (!updatedStrain) {
-      return { failure: 'Failed to create strain' };
+      return { failure: 'Failed to create strain' }
     }
-    return { success: updatedStrain };
-  });
+    return { success: updatedStrain }
+  })
 
 export const deleteStrainUseCase = actionClient
   .schema(deleteStrainInputSchema)
   .action(async ({ parsedInput }) => {
     try {
-      const res = await deleteStrain({ id: parsedInput.id });
+      const res = await deleteStrain({ id: parsedInput.id })
     } catch (error) {
-      logger.error(error, 'Error deleting Strain');
-      return { failure: 'Failed to delete Strain' };
+      logger.error(error, 'Error deleting Strain')
+      return { failure: 'Failed to delete Strain' }
     }
-    return { success: 'Strain deleted successfully' };
-  });
+    return { success: 'Strain deleted successfully' }
+  })
 
 type FetchBatchDetailsSuccess = {
   success: {
-    batch: BatchProps;
-    strain: StrainProps;
-  };
-};
+    batch: BatchProps
+    strain: StrainProps
+  }
+}
 
 type FetchBatchDetailsFailure = {
-  failure: string;
-};
+  failure: string
+}
 
 type FetchBatchDetailsResult =
   | FetchBatchDetailsSuccess
-  | FetchBatchDetailsFailure;
+  | FetchBatchDetailsFailure

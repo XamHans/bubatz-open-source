@@ -1,6 +1,6 @@
-import * as z from 'zod';
+import * as z from 'zod'
 
-import { emailSchema } from '@/validations/email';
+import { emailSchema } from '@/validations/email'
 
 export const memberIdSchema = z
   .string({
@@ -12,7 +12,7 @@ export const memberIdSchema = z
   })
   .max(512, {
     message: 'User Id must be at most 512 characters long',
-  });
+  })
 
 export const passwordSchema = z
   .string({
@@ -24,7 +24,7 @@ export const passwordSchema = z
   })
   .max(256, {
     message: 'Password must be made of at most 256 characters',
-  });
+  })
 
 export const signUpWithPasswordSchema = z
   .object({
@@ -41,11 +41,11 @@ export const signUpWithPasswordSchema = z
   .refine((schema) => schema.password === schema.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
-  });
+  })
 
 export const signInWithEmailSchema = z.object({
   email: emailSchema,
-});
+})
 
 export const signInWithPasswordSchema = z.object({
   email: emailSchema,
@@ -53,11 +53,11 @@ export const signInWithPasswordSchema = z.object({
     required_error: 'Password is required',
     invalid_type_error: 'Password must be a string',
   }),
-});
+})
 
 export const passwordResetSchema = z.object({
   email: emailSchema,
-});
+})
 
 export const passwordUpdateSchema = z
   .object({
@@ -73,7 +73,7 @@ export const passwordUpdateSchema = z
   .refine((schema) => schema.password === schema.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
-  });
+  })
 
 export const passwordUpdateSchemaExtended = z
   .object({
@@ -96,28 +96,28 @@ export const passwordUpdateSchemaExtended = z
   .refine((schema) => schema.password === schema.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
-  });
+  })
 
 export const linkOAuthAccountSchema = z.object({
   memberId: memberIdSchema,
-});
+})
 
 export type SignUpWithPasswordFormInput = z.infer<
   typeof signUpWithPasswordSchema
->;
+>
 
 export type SignInWithPasswordFormInput = z.infer<
   typeof signInWithPasswordSchema
->;
+>
 
-export type SignInWithEmailFormInput = z.infer<typeof signInWithEmailSchema>;
+export type SignInWithEmailFormInput = z.infer<typeof signInWithEmailSchema>
 
-export type PasswordResetFormInput = z.infer<typeof passwordResetSchema>;
+export type PasswordResetFormInput = z.infer<typeof passwordResetSchema>
 
-export type PasswordUpdateFormInput = z.infer<typeof passwordUpdateSchema>;
+export type PasswordUpdateFormInput = z.infer<typeof passwordUpdateSchema>
 
 export type PasswordUpdateFormInputExtended = z.infer<
   typeof passwordUpdateSchemaExtended
->;
+>
 
-export type LinkOAuthAccountInput = z.infer<typeof linkOAuthAccountSchema>;
+export type LinkOAuthAccountInput = z.infer<typeof linkOAuthAccountSchema>

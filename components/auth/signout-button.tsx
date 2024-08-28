@@ -1,10 +1,10 @@
-'use client';
+'use client'
 
-import { signOut } from 'next-auth/react';
+import { signOut } from 'next-auth/react'
 
-import { Button } from '@/components/ui/button';
-import { siteConfig } from '@/config/site';
-import { Icons } from '../generic/Icons';
+import { Button } from '@/components/ui/button'
+import { siteConfig } from '@/config/site'
+import { Icons } from '../generic/Icons'
 
 export function SignOutButton(): JSX.Element {
   return (
@@ -21,5 +21,5 @@ export function SignOutButton(): JSX.Element {
     >
       <Icons.logout className="mr-2 size-4" aria-hidden="true" />
     </Button>
-  );
+  )
 }

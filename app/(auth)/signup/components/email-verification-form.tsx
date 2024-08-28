@@ -1,18 +1,18 @@
-'use client';
+'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
-import * as React from 'react';
-import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import * as React from 'react'
+import { useForm } from 'react-hook-form'
 
 import {
   emailVerificationSchema,
   type EmailVerificationFormInput,
-} from '@/validations/email';
+} from '@/validations/email'
 
-import { resendEmailVerificationLink } from '@/actions/email';
-import { Icons } from '@/components/generic/Icons';
-import { Button } from '@/components/ui/button';
+import { resendEmailVerificationLink } from '@/actions/email'
+import { Icons } from '@/components/generic/Icons'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -20,61 +20,61 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useToast } from '@/components/ui/use-toast';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { useToast } from '@/components/ui/use-toast'
 
 export function EmailVerificationForm(): JSX.Element {
-  const router = useRouter();
-  const { toast } = useToast();
-  const [isPending, startTransition] = React.useTransition();
+  const router = useRouter()
+  const { toast } = useToast()
+  const [isPending, startTransition] = React.useTransition()
 
   const form = useForm<EmailVerificationFormInput>({
     resolver: zodResolver(emailVerificationSchema),
     defaultValues: {
       email: '',
     },
-  });
+  })
 
   function onSubmit(formData: EmailVerificationFormInput): void {
     startTransition(async () => {
       try {
         const message = await resendEmailVerificationLink({
           email: formData.email,
-        });
+        })
 
         switch (message) {
           case 'not-found':
             toast({
               title: 'User with this email address does not exist',
               variant: 'destructive',
-            });
-            form.reset();
-            break;
+            })
+            form.reset()
+            break
           case 'success':
             toast({
               title: 'Success!',
               description: 'Check your inbox and verify your email address',
-            });
-            router.push('/signin');
-            break;
+            })
+            router.push('/signin')
+            break
           default:
             toast({
               title: 'Error sending verification link',
               description: 'Please try again',
               variant: 'destructive',
-            });
-            router.push('/signup');
+            })
+            router.push('/signup')
         }
       } catch (error) {
         toast({
           title: 'Something went wrong',
           description: 'Please try again',
           variant: 'destructive',
-        });
-        console.error(error);
+        })
+        console.error(error)
       }
-    });
+    })
   }
 
   return (
@@ -113,5 +113,5 @@ export function EmailVerificationForm(): JSX.Element {
         </Button>
       </form>
     </Form>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   AlertDialog,
@@ -10,52 +10,52 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { useToast } from '@/components/ui/use-toast';
-import { siteConfig } from '@/config/site';
-import { updateStrainUseCase } from '@/modules/plants/use-cases';
-import { useAction } from 'next-safe-action/hooks';
-import { useRouter } from 'next/navigation';
+} from '@/components/ui/card'
+import { useToast } from '@/components/ui/use-toast'
+import { siteConfig } from '@/config/site'
+import { updateStrainUseCase } from '@/modules/plants/use-cases'
+import { useAction } from 'next-safe-action/hooks'
+import { useRouter } from 'next/navigation'
 
 export interface ArchiveStrainModalProps {
-  id: number;
+  id: number
 }
 
 const ArchiveStrainModal = ({ id }: ArchiveStrainModalProps) => {
-  const { toast } = useToast();
-  const router = useRouter();
+  const { toast } = useToast()
+  const router = useRouter()
 
   const { execute } = useAction(updateStrainUseCase, {
     onSuccess: () => {
       toast({
         title: 'Strain archived',
         description: 'The Strain has been successfully archived',
-      });
+      })
       setTimeout(() => {
-        router.push(`${siteConfig.links.plants.index}`);
-      }, 1500);
+        router.push(`${siteConfig.links.plants.index}`)
+      }, 1500)
     },
     onError: (error) => {
-      console.error('Failed to archive Strain:', error);
+      console.error('Failed to archive Strain:', error)
       toast({
         title: 'Strain archived',
         description: 'The Strain has been successfully archived',
         variant: 'destructive',
-      });
+      })
     },
-  });
+  })
 
   const handleArchive = () => {
-    execute({ id: id, isArchived: true });
-  };
+    execute({ id: id, isArchived: true })
+  }
 
   return (
     <Card>
@@ -90,7 +90,7 @@ const ArchiveStrainModal = ({ id }: ArchiveStrainModalProps) => {
         </AlertDialog>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default ArchiveStrainModal;
+export default ArchiveStrainModal

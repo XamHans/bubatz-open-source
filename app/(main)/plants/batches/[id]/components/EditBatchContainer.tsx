@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-import { BatchProps } from '@/modules/plants/data-access/schema';
-import ArchiveBatchModal from './ArchiveBatchModal';
-import { GrowthPhasesForm } from './BatchEditForm';
-import { PlantsContainer } from './Plants/PlantsContainer';
+import { BatchProps } from '@/modules/plants/data-access/schema'
+import ArchiveBatchModal from './ArchiveBatchModal'
+import { GrowthPhasesForm } from './BatchEditForm'
+import { PlantsContainer } from './Plants/PlantsContainer'
 
 interface EditBatchContainerProps {
-  batch: BatchProps;
+  batch: BatchProps
 }
 const initialData = {
   germination: {
@@ -71,7 +71,7 @@ const initialData = {
     destroyed_date: null,
     reason: null,
   },
-};
+}
 
 const EditBatchContainer = ({ batch }: EditBatchContainerProps) => {
   return (
@@ -100,7 +100,7 @@ const EditBatchContainer = ({ batch }: EditBatchContainerProps) => {
         <ArchiveBatchModal id={batch.id} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default EditBatchContainer;
+export default EditBatchContainer

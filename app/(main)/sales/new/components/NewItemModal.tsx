@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogClose,
@@ -7,17 +7,17 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import React, { ReactNode, useState } from 'react';
-import { set } from 'zod';
+} from '@/components/ui/dialog'
+import React, { ReactNode, useState } from 'react'
+import { set } from 'zod'
 
 interface GenericModalProps {
-  headerTitle: string;
-  description: string;
-  children: ReactNode;
-  onSave: () => boolean;
-  onAbort: () => void;
-  hasError?: boolean;
+  headerTitle: string
+  description: string
+  children: ReactNode
+  onSave: () => boolean
+  onAbort: () => void
+  hasError?: boolean
 }
 
 const GenericModal: React.FC<GenericModalProps> = ({
@@ -28,7 +28,7 @@ const GenericModal: React.FC<GenericModalProps> = ({
   onAbort,
   hasError,
 }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -44,7 +44,7 @@ const GenericModal: React.FC<GenericModalProps> = ({
         <Button
           type="submit"
           onClick={() => {
-            if (onSave()) setOpen(false); // Close the modal only if the save was successful
+            if (onSave()) setOpen(false) // Close the modal only if the save was successful
           }}
         >
           Save
@@ -56,7 +56,7 @@ const GenericModal: React.FC<GenericModalProps> = ({
         </DialogClose>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export { GenericModal as NewItemModal };
+export { GenericModal as NewItemModal }

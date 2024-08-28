@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -17,22 +17,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { addMemberPaymentUseCase } from '@/modules/members/use-cases';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useAction } from 'next-safe-action/hooks';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { addMemberPaymentUseCase } from '@/modules/members/use-cases'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useAction } from 'next-safe-action/hooks'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 const formSchema = z.object({
   amount: z.number().min(0, 'Amount must be a positive number'),
   year: z.number().int().min(2000, 'Year must be 2000 or later'),
-});
+})
 
 interface AddMemberPaymentModalProps {
-  memberId: string;
-  onSuccess?: () => void;
+  memberId: string
+  onSuccess?: () => void
 }
 
 export function AddMemberPaymentModal({
@@ -45,17 +45,17 @@ export function AddMemberPaymentModal({
       amount: 0,
       year: new Date().getFullYear(),
     },
-  });
+  })
 
   const { execute, status } = useAction(addMemberPaymentUseCase, {
     onSuccess: () => {
-      form.reset();
-      onSuccess?.();
+      form.reset()
+      onSuccess?.()
     },
-  });
+  })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    execute({ ...values, memberId });
+    execute({ ...values, memberId })
   }
 
   return (
@@ -83,7 +83,9 @@ export function AddMemberPaymentModal({
                       type="number"
                       step="0.01"
                       {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                      onChange={(e) =>
+                        field.onChange(parseFloat(e.target.value))
+                      }
                     />
                   </FormControl>
                   <FormMessage />
@@ -116,5 +118,5 @@ export function AddMemberPaymentModal({
         </Form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

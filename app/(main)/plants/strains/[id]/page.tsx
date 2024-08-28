@@ -1,21 +1,21 @@
-import SkeletonLoader from '@/app/components/SkeletonLoader';
-import Breadcrumbs from '@/components/generic/BreadCrumbs';
-import { Button } from '@/components/ui/button';
-import { siteConfig } from '@/config/site';
+import SkeletonLoader from '@/app/components/SkeletonLoader'
+import Breadcrumbs from '@/components/generic/BreadCrumbs'
+import { Button } from '@/components/ui/button'
+import { siteConfig } from '@/config/site'
 import {
   fetchBatchesByStrainIdUseCase,
   fetchStrainDetailsUseCase,
-} from '@/modules/plants/use-cases';
-import { ChevronLeft } from 'lucide-react';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
-import ArchiveStrainModal from './components/ArchiveStrainModal';
-import StrainGeneralInfo from './components/StrainGeneralInfo';
-import UpcomingYield from './components/UpcomingYield';
+} from '@/modules/plants/use-cases'
+import { ChevronLeft } from 'lucide-react'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
+import ArchiveStrainModal from './components/ArchiveStrainModal'
+import StrainGeneralInfo from './components/StrainGeneralInfo'
+import UpcomingYield from './components/UpcomingYield'
 
 interface StrainDetailPageProps {
-  params: { id: string };
+  params: { id: string }
 }
 
 export default async function StrainDetailPage({
@@ -26,15 +26,15 @@ export default async function StrainDetailPage({
     { label: 'Plants', href: '/plants' },
     { label: 'Strains', href: '/plants' },
     { label: id.toString(), href: '/' },
-  ];
-  const { data: strainData } = await fetchStrainDetailsUseCase({ id: +id });
+  ]
+  const { data: strainData } = await fetchStrainDetailsUseCase({ id: +id })
   if (strainData.failure) {
-    notFound();
+    notFound()
   }
 
   const { data: batchesData } = await fetchBatchesByStrainIdUseCase({
     strainId: +id,
-  });
+  })
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -74,5 +74,5 @@ export default async function StrainDetailPage({
         </Suspense>
       </div>
     </div>
-  );
+  )
 }

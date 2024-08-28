@@ -1,58 +1,58 @@
-'use client';
+'use client'
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { DialogFooter } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { DialogFooter } from '@/components/ui/dialog'
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
+} from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { User } from '@supabase/auth-helpers-nextjs';
-import { useEffect, useState } from 'react';
-import { Form, SubmitHandler, useForm } from 'react-hook-form';
+} from '@/components/ui/tooltip'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { User } from '@supabase/auth-helpers-nextjs'
+import { useEffect, useState } from 'react'
+import { Form, SubmitHandler, useForm } from 'react-hook-form'
 
 const ClubImageAndTerms = ({ club, user }: { club: ClubProps; user: User }) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [coverImg, setCoverImg] = useState<File | null>(null);
-  const { name } = club;
-  const [clubTermsUrl, setClubTermsUrl] = useState<string>('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [coverImg, setCoverImg] = useState<File | null>(null)
+  const { name } = club
+  const [clubTermsUrl, setClubTermsUrl] = useState<string>('')
   // const { showSuccessToast, showErrorToast } = useToast()
 
   const handleTermsInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const file = event.target.files && event.target.files[0];
-    setSelectedFile(file || null);
-  };
+    const file = event.target.files && event.target.files[0]
+    setSelectedFile(file || null)
+  }
 
   const handleCoverImgInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const file = event.target.files && event.target.files[0];
-    setCoverImg(file || null);
-  };
+    const file = event.target.files && event.target.files[0]
+    setCoverImg(file || null)
+  }
 
   async function getTermsUrl() {
     // const preSignedUrlResult = await uploadService.createSignedUrl(
@@ -68,20 +68,20 @@ const ClubImageAndTerms = ({ club, user }: { club: ClubProps; user: User }) => {
     const updateClubResult = await updateClubUseCase.execute({
       ...club,
       terms_url: url,
-    });
+    })
     if (updateClubResult.isLeft()) {
-      console.log('updateClubResult ERROR:', updateClubResult.value);
+      console.log('updateClubResult ERROR:', updateClubResult.value)
     }
-  };
+  }
 
   const handleUpload = async ({
     file,
     path,
     translationKey,
   }: {
-    file: File | null;
-    path: string;
-    translationKey: string;
+    file: File | null
+    path: string
+    translationKey: string
   }) => {
     if (file) {
       // const uploadResult = await uploadService.uploadFile({
@@ -99,29 +99,29 @@ const ClubImageAndTerms = ({ club, user }: { club: ClubProps; user: User }) => {
     } else {
       // return left("No file selected.")
     }
-  };
+  }
 
   const onTermsUploadButtonClick = async () => {
     const uploadResult = await handleUpload({
       file: selectedFile,
       path: `/${club.id}/satzung.pdf`,
       translationKey: 'CLUB.UPLOAD_TERMS_SUCCESS',
-    });
+    })
     // if (uploadResult.isLeft()) {
     //   //@ts-ignore
     //   throw new FrontendError(uploadResult.value)
     // }
     //@ts-ignore
-    updateClubWithNewTermsUrl(uploadResult.value);
-    getTermsUrl();
-  };
+    updateClubWithNewTermsUrl(uploadResult.value)
+    getTermsUrl()
+  }
 
   const onCoverImgUploadButtonClick = async () => {
     const uploadResult = await handleUpload({
       file: coverImg,
       path: `/${club.id}/coverImg.png`,
       translationKey: 'CLUB.UPLOAD_COVERIMG_SUCCESS',
-    });
+    })
 
     // if (uploadResult.isRight()) {
     //   const { data } = supabaseClient.storage
@@ -137,11 +137,11 @@ const ClubImageAndTerms = ({ club, user }: { club: ClubProps; user: User }) => {
     //   updateClubResult.isLeft() &&
     //     showErrorToast(updateClubResult.value.message)
     // }
-  };
+  }
 
   useEffect(() => {
-    getTermsUrl();
-  }, []);
+    getTermsUrl()
+  }, [])
 
   return (
     <section className="max-w-5xl sm:grid sm:grid-cols-2">
@@ -195,7 +195,7 @@ const ClubImageAndTerms = ({ club, user }: { club: ClubProps; user: User }) => {
             <Button
               disabled={!user.email_confirmed_at}
               onClick={() => {
-                onTermsUploadButtonClick();
+                onTermsUploadButtonClick()
               }}
               type="button"
             >
@@ -234,7 +234,7 @@ const ClubImageAndTerms = ({ club, user }: { club: ClubProps; user: User }) => {
 
             <Button
               onClick={() => {
-                onCoverImgUploadButtonClick();
+                onCoverImgUploadButtonClick()
               }}
               type="button"
             >
@@ -259,8 +259,8 @@ const ClubImageAndTerms = ({ club, user }: { club: ClubProps; user: User }) => {
         </TabsContent>
       </Tabs>
     </section>
-  );
-};
+  )
+}
 
 const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
   const form = useForm<UpdateClubDTO>({
@@ -277,17 +277,17 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
       city: club.city,
       street: club.street,
     },
-  });
+  })
   // const { showSuccessToast, showErrorToast } = useToast()
 
   const handleDateChange = (selectedDate: string) => {
-    if (!selectedDate) return;
+    if (!selectedDate) return
 
     form.setValue('birthday', new Date(selectedDate), {
       shouldValidate: true,
       shouldDirty: true,
-    });
-  };
+    })
+  }
 
   const onSubmit: SubmitHandler<UpdateClubDTO> = async (data) => {
     // Logger.debug(`The club form works! Your s: ${data}`)
@@ -296,14 +296,14 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
     const updateClubResult = await updateClubUseCase.execute({
       ...data,
       id: club.id,
-    });
+    })
     if (updateClubResult.isLeft()) {
       //@ts-ignore
-      showErrorToast(t('CLUB.UPDATE_CLUB_ERROR'));
+      showErrorToast(t('CLUB.UPDATE_CLUB_ERROR'))
     } else {
       // showSuccessToast(t("CLUB.UPDATE_CLUB_SUCCESS"))
     }
-  };
+  }
 
   return (
     <section className="max-w-5xl rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
@@ -474,7 +474,7 @@ const ClubForm = ({ club }: { user: User; club: ClubProps }) => {
         </form>
       </Form>
     </section>
-  );
-};
+  )
+}
 
-export { ClubForm, ClubImageAndTerms };
+export { ClubForm, ClubImageAndTerms }

@@ -8,21 +8,21 @@ import {
   Section,
   Tailwind,
   Text,
-} from '@react-email/components';
+} from '@react-email/components'
 
-import { siteConfig } from '@/config/site';
-import { env } from '@/env.mjs';
+import { siteConfig } from '@/config/site'
+import { env } from '@/env.mjs'
 
 interface EmailVerificationEmailProps {
-  email: string;
-  emailVerificationToken: string;
+  email: string
+  emailVerificationToken: string
 }
 
 export function EmailVerificationEmail({
   email,
   emailVerificationToken,
 }: Readonly<EmailVerificationEmailProps>): JSX.Element {
-  const previewText = `${siteConfig.name} email verification.`;
+  const previewText = `${siteConfig.name} email verification.`
   return (
     <Html lang="en">
       <Head>
@@ -68,5 +68,5 @@ export function EmailVerificationEmail({
         </Body>
       </Tailwind>
     </Html>
-  );
+  )
 }

@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { BatchProps } from '@/modules/plants/data-access/schema';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
+import { BatchProps } from '@/modules/plants/data-access/schema'
 
 export interface UpcomingYieldProps {
-  batches: BatchProps[];
+  batches: BatchProps[]
 }
 
 const UpcomingYield = ({ batches }: UpcomingYieldProps) => {
@@ -11,12 +11,12 @@ const UpcomingYield = ({ batches }: UpcomingYieldProps) => {
     startDate: string | number | Date,
     endDate: string | number | Date,
   ) => {
-    const start = new Date(startDate).getTime();
-    const end = new Date(endDate).getTime();
-    const now = new Date().getTime();
-    const progress = ((now - start) / (end - start)) * 100;
-    return Math.min(Math.max(progress, 0), 100);
-  };
+    const start = new Date(startDate).getTime()
+    const end = new Date(endDate).getTime()
+    const now = new Date().getTime()
+    const progress = ((now - start) / (end - start)) * 100
+    return Math.min(Math.max(progress, 0), 100)
+  }
 
   return (
     <Card className="w-full">
@@ -55,7 +55,7 @@ const UpcomingYield = ({ batches }: UpcomingYieldProps) => {
         </div>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default UpcomingYield;
+export default UpcomingYield

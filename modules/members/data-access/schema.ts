@@ -1,5 +1,5 @@
-import { UUID } from 'crypto';
-import { relations } from 'drizzle-orm';
+import { UUID } from 'crypto'
+import { relations } from 'drizzle-orm'
 import {
   boolean,
   date,
@@ -9,19 +9,19 @@ import {
   text,
   timestamp,
   uuid,
-} from 'drizzle-orm/pg-core';
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import { z } from 'zod';
+} from 'drizzle-orm/pg-core'
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
+import { z } from 'zod'
 
-export const protectedSchema = pgSchema('protected');
+export const protectedSchema = pgSchema('protected')
 
-export const memberRoleEnum = pgEnum('member_role', ['MEMBER', 'ADMIN']);
+export const memberRoleEnum = pgEnum('member_role', ['MEMBER', 'ADMIN'])
 // Enum for payment status
 export const paymentStatusEnum = pgEnum('payment_status', [
   'PAID',
   'PENDING',
   'OVERDUE',
-]);
+])
 
 export const members = protectedSchema.table('members', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -57,14 +57,14 @@ export const members = protectedSchema.table('members', {
   // timestamps
   createdAt: timestamp('createdAt', { mode: 'date' }).defaultNow(),
   updatedAt: timestamp('updatedAt', { mode: 'date' }).defaultNow(),
-});
+})
 
 /**
  * * Relations
  */
 export const membersRelations = relations(members, ({ many }) => ({
   buyer: many(members),
-}));
+}))
 
 // Schema for inserting a user - can be used to validate API requests
 export const addMemberInputSchema = createInsertSchema(members, {
@@ -75,35 +75,39 @@ export const addMemberInputSchema = createInsertSchema(members, {
   street: (schema) => schema.street.min(1),
   city: (schema) => schema.city.min(1),
   zip: (schema) => schema.zip.min(4),
-  birthday: () => z.string().min(1).regex(/^\d{2}\.\d{2}\.\d{4}$/, "Birthday must be in DD.MM.YYYY format"),
+  birthday: () =>
+    z
+      .string()
+      .min(1)
+      .regex(/^\d{2}\.\d{2}\.\d{4}$/, 'Birthday must be in DD.MM.YYYY format'),
   status: (schema) => schema.status.default('PENDING'),
   role: (schema) => schema.role.default('MEMBER'),
-});
-export type AddMemberInput = z.infer<typeof addMemberInputSchema>;
+})
+export type AddMemberInput = z.infer<typeof addMemberInputSchema>
 
 // Schema for selecting a user - can be used to validate API responses
-export const selectUserSchema = createSelectSchema(members);
-export const selectMultipleUsersSchema = z.array(selectUserSchema);
-export type UserSchema = z.infer<typeof selectUserSchema>;
+export const selectUserSchema = createSelectSchema(members)
+export const selectMultipleUsersSchema = z.array(selectUserSchema)
+export type UserSchema = z.infer<typeof selectUserSchema>
 
 // Schema for updating a user
-export const updateMemberInputSchema = createInsertSchema(members).partial()
+export const updateMemberInputSchema = createInsertSchema(members)
+  .partial()
   .extend({
     id: z.string().uuid(),
     birthday: z.string().transform((date) => new Date(date).toISOString()),
-  });;
-export type UpdateMemberInput = z.infer<typeof updateMemberInputSchema>;
+  })
+export type UpdateMemberInput = z.infer<typeof updateMemberInputSchema>
 
 // Schema for deleting a user
 export const deleteMemberInputSchema = z.object({
   id: z.string(),
-});
+})
 
-export type deleteMemberInput = { id: UUID };
+export type deleteMemberInput = { id: UUID }
 
-
-export const getMemberSchemaInput = createSelectSchema(members);
-export type MemberProps = z.infer<typeof getMemberSchemaInput>;
+export const getMemberSchemaInput = createSelectSchema(members)
+export type MemberProps = z.infer<typeof getMemberSchemaInput>
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -121,7 +125,7 @@ export const membershipPayments = protectedSchema.table('membership_payments', {
   notes: text('notes'),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow(),
   updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow(),
-});
+})
 
 // Relation between members and membership payments
 export const membershipPaymentsRelations = relations(
@@ -132,7 +136,7 @@ export const membershipPaymentsRelations = relations(
       references: [members.id],
     }),
   }),
-);
+)
 
 export const createMemberPaymentInputSchema = createInsertSchema(
   membershipPayments,
@@ -143,13 +147,13 @@ export const createMemberPaymentInputSchema = createInsertSchema(
       .union([z.string(), z.number()])
       .transform((val) => {
         if (typeof val === 'string') {
-          const parsed = parseFloat(val);
+          const parsed = parseFloat(val)
           if (isNaN(parsed)) {
-            throw new Error('Invalid price format');
+            throw new Error('Invalid price format')
           }
-          return parsed;
+          return parsed
         }
-        return val;
+        return val
       })
       .refine((val) => val > 0, {
         message: 'Payment amount must be a positive number',
@@ -159,7 +163,7 @@ export const createMemberPaymentInputSchema = createInsertSchema(
     paymentMethod: (schema) => schema.paymentMethod.default('CASH'),
     notes: (schema) => schema.notes.optional(),
   },
-);
+)
 
 export const updateMemberPaymentInputSchema = createSelectSchema(
   membershipPayments,
@@ -167,31 +171,31 @@ export const updateMemberPaymentInputSchema = createSelectSchema(
   .partial()
   .extend({
     id: z.string().uuid(),
-  });
+  })
 
-export const getMemberPaymentsSchema = createSelectSchema(membershipPayments);
+export const getMemberPaymentsSchema = createSelectSchema(membershipPayments)
 
-export type MemberPaymentProps = z.infer<typeof getMemberPaymentsSchema>;
+export type MemberPaymentProps = z.infer<typeof getMemberPaymentsSchema>
 
 export type AddMembershipPaymentInput = z.infer<
   typeof createMemberPaymentInputSchema
->;
+>
 
 // Schema for selecting a membership payment
 export const selectMembershipPaymentSchema =
-  createSelectSchema(membershipPayments);
+  createSelectSchema(membershipPayments)
 export type MembershipPaymentSchema = z.infer<
   typeof selectMembershipPaymentSchema
->;
+>
 
 export type UpdateMemberPaymentInput = z.infer<
   typeof updateMemberPaymentInputSchema
->;
+>
 
 export const deleteMemberPaymentInputSchema = z.object({
   id: z.string(),
-});
+})
 
 export type DeleteMembershipPaymentInput = z.infer<
   typeof deleteMemberPaymentInputSchema
->;
+>

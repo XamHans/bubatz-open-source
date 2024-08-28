@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import { GenericModal } from '@/components/generic/GenericModal';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { GenericModal } from '@/components/generic/GenericModal'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import {
   Card,
   CardContent,
@@ -10,24 +10,24 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/components/ui/card'
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from '@/components/ui/form'
 import {
   CreatePlantInput,
   createPlantInputSchema,
-} from '@/modules/plants/data-access/schema';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from 'postcss';
-import { useState } from 'react';
-import { Button } from 'react-day-picker';
-import { Form, useForm } from 'react-hook-form';
-import { z } from 'zod';
+} from '@/modules/plants/data-access/schema'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Input } from 'postcss'
+import { useState } from 'react'
+import { Button } from 'react-day-picker'
+import { Form, useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 const logSchema = z.object({
   memberId: z.string(),
@@ -37,7 +37,7 @@ const logSchema = z.object({
   description: z
     .string()
     .min(5, 'Description must be at least 5 characters long'),
-});
+})
 
 const exampleLogs = [
   {
@@ -58,18 +58,18 @@ const exampleLogs = [
     description: 'Applied fertilizer to the plants.',
     timestamp: new Date(),
   },
-];
+]
 
 const LogTracker: React.FC = () => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
   const form = useForm<CreatePlantInput>({
     resolver: zodResolver(createPlantInputSchema),
-  });
+  })
 
   const onSubmit = (data: CreatePlantInput) => {
-    console.log('Create Plant ', data);
-    setOpen(false);
-  };
+    console.log('Create Plant ', data)
+    setOpen(false)
+  }
 
   return (
     <Card>
@@ -164,7 +164,7 @@ const LogTracker: React.FC = () => {
         </GenericModal>
       </CardFooter>
     </Card>
-  );
-};
+  )
+}
 
-export { LogTracker };
+export { LogTracker }

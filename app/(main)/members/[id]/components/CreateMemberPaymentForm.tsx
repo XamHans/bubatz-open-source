@@ -1,10 +1,10 @@
-'use client';
+'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
 
-import { CustomDatePicker } from '@/components/generic/CustomDatePicker';
-import { Button } from '@/components/ui/button';
+import { CustomDatePicker } from '@/components/generic/CustomDatePicker'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -12,39 +12,39 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/components/ui/use-toast';
-import { siteConfig } from '@/config/site';
-import { logger } from '@/lib/logger';
+} from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { useToast } from '@/components/ui/use-toast'
+import { siteConfig } from '@/config/site'
+import { logger } from '@/lib/logger'
 import {
   AddMembershipPaymentInput,
   createMemberPaymentInputSchema,
   paymentStatusEnum,
-} from '@/modules/members/data-access/schema';
-import { addPaymentUseCase } from '@/modules/members/use-cases';
-import { paymentMethods } from '@/modules/sales/data-access/schema';
-import { useAction } from 'next-safe-action/hooks';
-import { useRouter } from 'next/navigation';
-import 'react-datepicker/dist/react-datepicker.css';
+} from '@/modules/members/data-access/schema'
+import { addPaymentUseCase } from '@/modules/members/use-cases'
+import { paymentMethods } from '@/modules/sales/data-access/schema'
+import { useAction } from 'next-safe-action/hooks'
+import { useRouter } from 'next/navigation'
+import 'react-datepicker/dist/react-datepicker.css'
 
 export interface CreateMemberPaymentFormProps {
-  memberId: string;
+  memberId: string
 }
 
 const CreateMemberPaymentForm = ({
   memberId,
 }: CreateMemberPaymentFormProps) => {
-  const router = useRouter();
-  const { toast } = useToast();
+  const router = useRouter()
+  const { toast } = useToast()
 
   const { execute, status } = useAction(addPaymentUseCase, {
     onSuccess: () => {
@@ -52,24 +52,24 @@ const CreateMemberPaymentForm = ({
         title: 'Success',
         duration: 2000,
         description: 'Payment created successfully',
-      });
+      })
       setTimeout(() => {
         router.push(
           `${siteConfig.links.members.detail.replace(':id', memberId)}`,
-        );
-      }, 2000);
+        )
+      }, 2000)
     },
     onError: (error) => {
-      console.error('Error creating payment', error);
-      logger.debug('Error creating payment', error);
+      console.error('Error creating payment', error)
+      logger.debug('Error creating payment', error)
       toast({
         title: 'Error',
         variant: 'destructive',
         duration: 3000,
         description: `Payment creation failed: ${error}`,
-      });
+      })
     },
-  });
+  })
 
   const form = useForm<AddMembershipPaymentInput>({
     resolver: zodResolver(createMemberPaymentInputSchema),
@@ -79,12 +79,12 @@ const CreateMemberPaymentForm = ({
       paymentStatus: 'PENDING',
       paymentMethod: 'CASH',
     },
-  });
+  })
 
   const onSubmit = (data: AddMembershipPaymentInput) => {
-    logger.info('Creating payment', data);
-    execute(data);
-  };
+    logger.info('Creating payment', data)
+    execute(data)
+  }
 
   return (
     <Form {...form}>
@@ -217,7 +217,7 @@ const CreateMemberPaymentForm = ({
         </Button>
       </form>
     </Form>
-  );
-};
+  )
+}
 
-export default CreateMemberPaymentForm;
+export default CreateMemberPaymentForm

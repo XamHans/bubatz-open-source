@@ -1,9 +1,9 @@
-'use client';
+'use client'
 
-import SkeletonLoader from '@/app/components/SkeletonLoader';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import SkeletonLoader from '@/app/components/SkeletonLoader'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -11,11 +11,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { siteConfig } from '@/config/site';
-import { logger } from '@/lib/logger';
-import { MembershipPaymentSchema } from '@/modules/members/data-access/schema';
-import { fetchPaymentsFromMemberUseCase } from '@/modules/members/use-cases';
+} from '@/components/ui/table'
+import { siteConfig } from '@/config/site'
+import { logger } from '@/lib/logger'
+import { MembershipPaymentSchema } from '@/modules/members/data-access/schema'
+import { fetchPaymentsFromMemberUseCase } from '@/modules/members/use-cases'
 import {
   ColumnFiltersState,
   SortingState,
@@ -26,17 +26,17 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table';
-import { t } from 'i18next';
-import { ArrowUpDown, ChevronLeft, ChevronRight, Pencil } from 'lucide-react';
-import { useAction } from 'next-safe-action/hooks';
-import Link from 'next/link';
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import DeleteMemberPayment from '../[id]/components/DeleteMemberPayment';
+} from '@tanstack/react-table'
+import { t } from 'i18next'
+import { ArrowUpDown, ChevronLeft, ChevronRight, Pencil } from 'lucide-react'
+import { useAction } from 'next-safe-action/hooks'
+import Link from 'next/link'
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import DeleteMemberPayment from '../[id]/components/DeleteMemberPayment'
 
 interface PaymentTableProps {
-  memberId: string;
+  memberId: string
 }
 
 export default function PaymentTable({ memberId }: PaymentTableProps) {
@@ -97,7 +97,7 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
       {
         id: 'actions',
         cell: ({ row }) => {
-          const payment = row.original;
+          const payment = row.original
           return (
             <div className="flex items-center space-x-2">
               <Link
@@ -110,30 +110,30 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
 
               <DeleteMemberPayment id={payment.id} />
             </div>
-          );
+          )
         },
       },
-    ];
-  };
+    ]
+  }
 
   const { execute, status } = useAction(fetchPaymentsFromMemberUseCase, {
     onSuccess: (data) => {
-      setPayments(data.data?.success ?? []);
+      setPayments(data.data?.success ?? [])
     },
     onError: (error) => {
-      logger.error('Error fetching member payments', error);
+      logger.error('Error fetching member payments', error)
     },
-  });
+  })
 
-  const [payments, setPayments] = React.useState<MembershipPaymentSchema[]>([]);
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
+  const [payments, setPayments] = React.useState<MembershipPaymentSchema[]>([])
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
 
   useEffect(() => {
-    execute({ memberId });
-  }, [memberId]);
+    execute({ memberId })
+  }, [memberId])
 
   const table = useReactTable({
     data: payments,
@@ -152,10 +152,10 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
       columnVisibility,
       rowSelection,
     },
-  });
+  })
 
   if (status === 'executing') {
-    return <SkeletonLoader />; // This will use the default table skeleton
+    return <SkeletonLoader /> // This will use the default table skeleton
   }
 
   return (
@@ -244,5 +244,5 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,34 +1,34 @@
-import { auth } from '@/auth';
-import Breadcrumbs from '@/components/generic/BreadCrumbs';
-import { Container } from '@/components/generic/Container';
-import { Button } from '@/components/ui/button';
+import { auth } from '@/auth'
+import Breadcrumbs from '@/components/generic/BreadCrumbs'
+import { Container } from '@/components/generic/Container'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { siteConfig } from '@/config/site';
-import { PlusCircle } from 'lucide-react';
-import { Metadata } from 'next';
-import { SessionProvider } from 'next-auth/react';
-import Link from 'next/link';
-import BatchesTable from './components/BatchesTable';
-import StrainsTable from './components/StrainsTable';
+} from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { siteConfig } from '@/config/site'
+import { PlusCircle } from 'lucide-react'
+import { Metadata } from 'next'
+import { SessionProvider } from 'next-auth/react'
+import Link from 'next/link'
+import BatchesTable from './components/BatchesTable'
+import StrainsTable from './components/StrainsTable'
 
 export const metadata: Metadata = {
   title: 'Manage Plants',
   description: 'Manage your plants & batches',
-};
+}
 
 async function PlantListPage() {
-  const session = await auth();
+  const session = await auth()
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Plants', href: '/plants' },
-  ];
+  ]
   return (
     <SessionProvider session={session}>
       <div className="mb-8 flex items-center justify-center gap-4">
@@ -93,7 +93,7 @@ async function PlantListPage() {
         </Card>
       </Container>
     </SessionProvider>
-  );
+  )
 }
 
-export default PlantListPage;
+export default PlantListPage

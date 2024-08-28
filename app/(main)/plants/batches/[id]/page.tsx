@@ -1,33 +1,33 @@
-import SkeletonLoader from '@/app/components/SkeletonLoader';
-import Breadcrumbs from '@/components/generic/BreadCrumbs';
-import { Container } from '@/components/generic/Container';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { siteConfig } from '@/config/site';
-import { fetchBatchDetailsUseCase } from '@/modules/plants/use-cases';
-import { ChevronLeft } from 'lucide-react';
-import { Metadata } from 'next';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
-import EditBatchContainer from './components/EditBatchContainer';
+import SkeletonLoader from '@/app/components/SkeletonLoader'
+import Breadcrumbs from '@/components/generic/BreadCrumbs'
+import { Container } from '@/components/generic/Container'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { siteConfig } from '@/config/site'
+import { fetchBatchDetailsUseCase } from '@/modules/plants/use-cases'
+import { ChevronLeft } from 'lucide-react'
+import { Metadata } from 'next'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
+import EditBatchContainer from './components/EditBatchContainer'
 
 export const metadata: Metadata = {
   title: 'Manage Batch Details',
   description: 'Manage your plants & batches',
-};
+}
 
 interface BatchDetailPageProps {
-  params: { id: string };
+  params: { id: string }
 }
 
 async function BatchContent({ id }: { id: string }) {
-  const { data } = await fetchBatchDetailsUseCase({ id });
-  const batch = data?.success?.batch;
-  const strain = data?.success?.strain;
+  const { data } = await fetchBatchDetailsUseCase({ id })
+  const batch = data?.success?.batch
+  const strain = data?.success?.strain
 
   if (!batch) {
-    notFound();
+    notFound()
   }
 
   return (
@@ -42,7 +42,7 @@ async function BatchContent({ id }: { id: string }) {
       </div>
       <EditBatchContainer batch={batch} />
     </div>
-  );
+  )
 }
 
 export default function BatchDetailPage({
@@ -52,7 +52,7 @@ export default function BatchDetailPage({
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Plants', href: '/plants' },
     { label: `${id}` },
-  ];
+  ]
 
   return (
     <Container className="space-y-4">
@@ -70,5 +70,5 @@ export default function BatchDetailPage({
         <BatchContent id={id} />
       </Suspense>
     </Container>
-  );
+  )
 }

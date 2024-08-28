@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
-import { useToast } from '@/components/ui/use-toast';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useToast } from '@/components/ui/use-toast'
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   AlertCircle,
   Check,
@@ -9,14 +9,14 @@ import {
   PackageCheck,
   Plus,
   Trash2,
-} from 'lucide-react';
-import { useAction } from 'next-safe-action/hooks';
-import { useEffect, useState } from 'react';
-import { useFieldArray, useForm } from 'react-hook-form';
+} from 'lucide-react'
+import { useAction } from 'next-safe-action/hooks'
+import { useEffect, useState } from 'react'
+import { useFieldArray, useForm } from 'react-hook-form'
 
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Command,
   CommandEmpty,
@@ -24,7 +24,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command';
+} from '@/components/ui/command'
 import {
   Form,
   FormControl,
@@ -32,55 +32,54 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
+} from '@/components/ui/popover'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { siteConfig } from '@/config/site';
-import { logger } from '@/lib/logger';
-import { cn } from '@/lib/utils';
-import { UserSchema } from '@/modules/members/data-access/schema';
-import { fetchMembersUseCase } from '@/modules/members/use-cases';
-import { StrainProps } from '@/modules/plants/data-access/schema';
-import { fetchStrainsUseCase } from '@/modules/plants/use-cases';
+} from '@/components/ui/select'
+import { siteConfig } from '@/config/site'
+import { logger } from '@/lib/logger'
+import { cn } from '@/lib/utils'
+import { UserSchema } from '@/modules/members/data-access/schema'
+import { fetchMembersUseCase } from '@/modules/members/use-cases'
+import { StrainProps } from '@/modules/plants/data-access/schema'
+import { fetchStrainsUseCase } from '@/modules/plants/use-cases'
 import {
   CreateSaleWithItemsInput,
   createSaleWithItemsInputSchema,
   paymentMethods,
-} from '@/modules/sales/data-access/schema';
+} from '@/modules/sales/data-access/schema'
 import {
   checkIfMemberIsAllowedForStrainUseCase,
   createSaleUseCase,
   fetchMembersStrainAmountUseCase,
-} from '@/modules/sales/use-cases';
-import { Session } from 'next-auth';
-import { useRouter } from 'next/navigation';
+} from '@/modules/sales/use-cases'
+import { Session } from 'next-auth'
+import { useRouter } from 'next/navigation'
 
 export interface SaleFormProps {
-  session: Session;
+  session: Session
 }
 
 export default function SaleForm({ session }: SaleFormProps) {
-  const [members, setMembers] = useState<UserSchema[]>([]);
-  const [strains, setStrains] = useState<StrainProps[]>([]);
-  const [open, setOpen] = useState(false);
-  const [totalWeight, setTotalWeight] = useState(0);
-  const [memberMonthlyPurchase, setMemberMonthlyPurchase] = useState(0);
-  const [isMemberAllowedForStrain, setIsMemberAllowedForStrain] =
-    useState(true);
+  const [members, setMembers] = useState<UserSchema[]>([])
+  const [strains, setStrains] = useState<StrainProps[]>([])
+  const [open, setOpen] = useState(false)
+  const [totalWeight, setTotalWeight] = useState(0)
+  const [memberMonthlyPurchase, setMemberMonthlyPurchase] = useState(0)
+  const [isMemberAllowedForStrain, setIsMemberAllowedForStrain] = useState(true)
 
-  const { toast } = useToast();
-  const router = useRouter();
+  const { toast } = useToast()
+  const router = useRouter()
 
   const form = useForm<CreateSaleWithItemsInput>({
     resolver: zodResolver(createSaleWithItemsInputSchema),
@@ -91,12 +90,12 @@ export default function SaleForm({ session }: SaleFormProps) {
       memberId: '',
       items: [],
     },
-  });
+  })
 
   const { fields, append, remove, update } = useFieldArray({
     control: form.control,
     name: 'items',
-  });
+  })
 
   const createSaleAction = useAction(createSaleUseCase, {
     // @ts-ignore
@@ -105,12 +104,12 @@ export default function SaleForm({ session }: SaleFormProps) {
         title: 'Success',
         duration: 1000,
         description: 'Sale created successfully',
-      });
+      })
       setTimeout(() => {
         router.push(
           `${siteConfig.links.sales.detail.replace(':id', data.success.sale.id)}`,
-        );
-      }, 2000);
+        )
+      }, 2000)
     },
     // @ts-ignore
     onError: ({ error }) => {
@@ -119,29 +118,29 @@ export default function SaleForm({ session }: SaleFormProps) {
         duration: 10000,
         variant: 'destructive',
         description: `Sale could not be created: ${error.fetchError}`,
-      });
+      })
     },
-  });
+  })
 
   const fetchMemberPurchasesForCurrentMonth = useAction(
     fetchMembersStrainAmountUseCase,
     {
       // @ts-ignore
       onSuccess: ({ data }) => {
-        setMemberMonthlyPurchase(data?.success || 0);
+        setMemberMonthlyPurchase(data?.success || 0)
       },
       // @ts-ignore
       onError: (error) =>
         logger.error('Error fetching member purchases:', error),
     },
-  );
+  )
 
   const checkIfMemberIsAllowedForStrain = useAction(
     checkIfMemberIsAllowedForStrainUseCase,
     {
       // @ts-ignore
       onSuccess: ({ data }) => {
-        setIsMemberAllowedForStrain(data?.success);
+        setIsMemberAllowedForStrain(data?.success)
       },
       // @ts-ignore
       onError: (error) =>
@@ -150,7 +149,7 @@ export default function SaleForm({ session }: SaleFormProps) {
           'Error happend while checking if member is allowed for strain:',
         ),
     },
-  );
+  )
 
   const fetchMembers = useAction(fetchMembersUseCase, {
     // @ts-ignore
@@ -159,83 +158,83 @@ export default function SaleForm({ session }: SaleFormProps) {
         `${a.firstName} ${a.lastName}`.localeCompare(
           `${b.firstName} ${b.lastName}`,
         ),
-      );
-      setMembers(sortedMembers);
+      )
+      setMembers(sortedMembers)
     },
-  });
+  })
 
   const fetchStrains = useAction(fetchStrainsUseCase, {
     // @ts-ignore
     onSuccess: ({ data }) => {
-      setStrains(data?.success ?? []);
+      setStrains(data?.success ?? [])
     },
-  });
+  })
 
   useEffect(() => {
-    fetchMembers.execute();
-    fetchStrains.execute();
-  }, []);
+    fetchMembers.execute()
+    fetchStrains.execute()
+  }, [])
 
   useEffect(() => {
     const totalPrice = fields.reduce(
       (sum, item) => sum + (item.price || 0) * (item.amount || 0),
       0,
-    );
-    form.setValue('totalPrice', totalPrice);
-    const weight = fields.reduce((sum, item) => sum + (item.amount || 0), 0);
-    setTotalWeight(weight);
+    )
+    form.setValue('totalPrice', totalPrice)
+    const weight = fields.reduce((sum, item) => sum + (item.amount || 0), 0)
+    setTotalWeight(weight)
 
     if (weight > 30) {
       form.setError('root', {
         type: 'manual',
         message: 'Total weight cannot exceed 30g per day',
-      });
+      })
     } else {
-      form.clearErrors('root');
+      form.clearErrors('root')
     }
-  }, [fields, form]);
+  }, [fields, form])
 
   const handleMemberChange = (memberId: string) => {
-    form.setValue('memberId', memberId);
+    form.setValue('memberId', memberId)
     fetchMemberPurchasesForCurrentMonth.execute({
       memberId,
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear(),
-    });
-  };
+    })
+  }
 
   const handleStrainChange = (index: number, strainId: number) => {
-    const selectedStrain = strains.find((strain) => strain.id === strainId);
+    const selectedStrain = strains.find((strain) => strain.id === strainId)
     if (selectedStrain) {
       // Update the form field with the new strain and its default price
       update(index, {
         strainId,
         amount: form.getValues(`items.${index}.amount`) || 0,
         price: selectedStrain.currentPricePerGram || 0,
-      });
-      const memberId = form.getValues('memberId');
+      })
+      const memberId = form.getValues('memberId')
       if (memberId) {
-        checkIfMemberIsAllowedForStrain.execute({ memberId, strainId });
+        checkIfMemberIsAllowedForStrain.execute({ memberId, strainId })
       }
     }
-  };
+  }
 
   const handleWeightChange = (index: number, weight: number) => {
-    const currentItem = form.getValues(`items.${index}`);
-    const totalPrice = weight * (currentItem.price || 0);
+    const currentItem = form.getValues(`items.${index}`)
+    const totalPrice = weight * (currentItem.price || 0)
     update(index, {
       ...currentItem,
       amount: weight,
       totalPrice: totalPrice,
-    });
-  };
+    })
+  }
 
   const onSubmit = (data: CreateSaleWithItemsInput) => {
-    createSaleAction.execute(data);
-  };
+    createSaleAction.execute(data)
+  }
 
-  const remainingAllowance = 50 - memberMonthlyPurchase;
-  const isOverLimit = memberMonthlyPurchase + totalWeight > 50;
+  const remainingAllowance = 50 - memberMonthlyPurchase
+  const isOverLimit = memberMonthlyPurchase + totalWeight > 50
 
   return (
     <Form {...form}>
@@ -283,8 +282,8 @@ export default function SaleForm({ session }: SaleFormProps) {
                                 key={member.id}
                                 value={`${member.firstName} ${member.lastName}`}
                                 onSelect={() => {
-                                  handleMemberChange(member.id);
-                                  setOpen(false);
+                                  handleMemberChange(member.id)
+                                  setOpen(false)
                                 }}
                               >
                                 <Check
@@ -340,8 +339,8 @@ export default function SaleForm({ session }: SaleFormProps) {
                         <FormLabel>Strain</FormLabel>
                         <Select
                           onValueChange={(value) => {
-                            field.onChange(parseInt(value));
-                            handleStrainChange(index, parseInt(value));
+                            field.onChange(parseInt(value))
+                            handleStrainChange(index, parseInt(value))
                           }}
                           value={field.value?.toString()}
                         >
@@ -390,9 +389,9 @@ export default function SaleForm({ session }: SaleFormProps) {
                             step="1"
                             {...field}
                             onChange={(e) => {
-                              const value = parseFloat(e.target.value);
-                              field.onChange(value);
-                              handleWeightChange(index, value);
+                              const value = parseFloat(e.target.value)
+                              field.onChange(value)
+                              handleWeightChange(index, value)
                             }}
                           />
                         </FormControl>
@@ -416,12 +415,12 @@ export default function SaleForm({ session }: SaleFormProps) {
                               const value =
                                 e.target.value === ''
                                   ? 0
-                                  : parseFloat(e.target.value);
-                              field.onChange(value); // Pass the number directly, not as a string
+                                  : parseFloat(e.target.value)
+                              field.onChange(value) // Pass the number directly, not as a string
                               handleWeightChange(
                                 index,
                                 form.getValues(`items.${index}.amount`),
-                              );
+                              )
                             }}
                           />
                         </FormControl>
@@ -549,5 +548,5 @@ export default function SaleForm({ session }: SaleFormProps) {
         </div>
       </form>
     </Form>
-  );
+  )
 }

@@ -1,26 +1,26 @@
-import SkeletonLoader from '@/app/components/SkeletonLoader';
-import Breadcrumbs from '@/components/generic/BreadCrumbs';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { siteConfig } from '@/config/site';
-import { getMemberDetail } from '@/modules/members/data-access';
-import { ChevronLeft, Plus } from 'lucide-react';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
-import MemberSalesTable from '../components/MemberSalesTable';
-import PaymentTable from '../components/PaymentsTable';
-import MemberGeneralInfo from './components/MemberGeneralInfo';
+import SkeletonLoader from '@/app/components/SkeletonLoader'
+import Breadcrumbs from '@/components/generic/BreadCrumbs'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { siteConfig } from '@/config/site'
+import { getMemberDetail } from '@/modules/members/data-access'
+import { ChevronLeft, Plus } from 'lucide-react'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
+import MemberSalesTable from '../components/MemberSalesTable'
+import PaymentTable from '../components/PaymentsTable'
+import MemberGeneralInfo from './components/MemberGeneralInfo'
 
 interface MemberDetailPageProps {
-  params: { id: string };
+  params: { id: string }
 }
 
 async function MemberContent({ id }: { id: string }) {
-  const member = await getMemberDetail(id);
+  const member = await getMemberDetail(id)
 
   if (!member) {
-    notFound();
+    notFound()
   }
 
   return (
@@ -67,7 +67,7 @@ async function MemberContent({ id }: { id: string }) {
         <MemberGeneralInfo member={member} />
       </div>
     </div>
-  );
+  )
 }
 
 export default function MemberDetailPage({
@@ -77,7 +77,7 @@ export default function MemberDetailPage({
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Members', href: '/members' },
     { label: 'Member Details' },
-  ];
+  ]
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -108,5 +108,5 @@ export default function MemberDetailPage({
         </Suspense>
       </div>
     </div>
-  );
+  )
 }

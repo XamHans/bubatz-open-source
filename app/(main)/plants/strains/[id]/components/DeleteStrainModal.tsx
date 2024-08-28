@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   AlertDialog,
@@ -10,42 +10,42 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/components/ui/use-toast';
-import { siteConfig } from '@/config/site';
-import { deleteStrainUseCase } from '@/modules/plants/use-cases';
-import { useAction } from 'next-safe-action/hooks';
-import { useRouter } from 'next/navigation';
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useToast } from '@/components/ui/use-toast'
+import { siteConfig } from '@/config/site'
+import { deleteStrainUseCase } from '@/modules/plants/use-cases'
+import { useAction } from 'next-safe-action/hooks'
+import { useRouter } from 'next/navigation'
 
 const DeleteStrainModal = ({ id }) => {
-  const { toast } = useToast();
-  const router = useRouter();
+  const { toast } = useToast()
+  const router = useRouter()
 
   const { execute } = useAction(deleteStrainUseCase, {
     onSuccess: (data) => {
       toast({
         title: 'Strain deleted',
         description: 'The Strain has been successfully deleted',
-      });
+      })
       setTimeout(() => {
-        router.push(`${siteConfig.links.plants.index}`);
-      }, 1500);
+        router.push(`${siteConfig.links.plants.index}`)
+      }, 1500)
     },
     onError: (error) => {
-      console.error('Failed to archive batch:', error);
+      console.error('Failed to archive batch:', error)
       toast({
         title: 'Error',
         description: `The Strain could not be deleted ${error}`,
         variant: 'destructive',
-      });
+      })
     },
-  });
+  })
 
   const handleDelete = () => {
-    execute({ id: id });
-  };
+    execute({ id: id })
+  }
 
   return (
     <Card>
@@ -76,7 +76,7 @@ const DeleteStrainModal = ({ id }) => {
         </AlertDialog>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default DeleteStrainModal;
+export default DeleteStrainModal

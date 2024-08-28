@@ -1,32 +1,32 @@
-import { auth } from '@/auth';
-import Breadcrumbs from '@/components/generic/BreadCrumbs';
-import { Container } from '@/components/generic/Container';
-import { Button } from '@/components/ui/button';
+import { auth } from '@/auth'
+import Breadcrumbs from '@/components/generic/BreadCrumbs'
+import { Container } from '@/components/generic/Container'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { ChevronLeft } from 'lucide-react';
-import { Metadata } from 'next';
-import Link from 'next/link';
-import NewMemberForm from './components/NewMemberForm';
+} from '@/components/ui/card'
+import { ChevronLeft } from 'lucide-react'
+import { Metadata } from 'next'
+import Link from 'next/link'
+import NewMemberForm from './components/NewMemberForm'
 
 const metadata: Metadata = {
   title: 'Create New Member',
   description: 'Fill in the details to create a new member. ',
-};
+}
 
 export default async function NewMemberPage() {
-  const session = await auth();
+  const session = await auth()
 
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Sales', href: '/members' },
     { label: 'Create New Member' },
-  ];
+  ]
 
   return (
     <>
@@ -53,5 +53,5 @@ export default async function NewMemberPage() {
         </Card>
       </Container>
     </>
-  );
+  )
 }

@@ -1,19 +1,19 @@
-import { DrizzleAdapter } from '@auth/drizzle-adapter';
-import NextAuth from 'next-auth';
+import { DrizzleAdapter } from '@auth/drizzle-adapter'
+import NextAuth from 'next-auth'
 
-import authConfig from '@/config/auth';
-import { env } from '@/env.mjs';
-import { db } from '@/lib/db/db';
-import { UUID } from 'crypto';
-import { siteConfig } from './config/site';
+import authConfig from '@/config/auth'
+import { env } from '@/env.mjs'
+import { db } from '@/lib/db/db'
+import { UUID } from 'crypto'
+import { siteConfig } from './config/site'
 import {
   accounts,
   sessions,
   verificationTokens,
-} from './modules/auth/data-access/schema';
-import { linkOAuthAccount } from './modules/auth/use-cases/auth';
-import { getUserById } from './modules/auth/use-cases/user';
-import { members } from './modules/members/data-access/schema';
+} from './modules/auth/data-access/schema'
+import { linkOAuthAccount } from './modules/auth/use-cases/auth'
+import { getUserById } from './modules/auth/use-cases/user'
+import { members } from './modules/members/data-access/schema'
 
 export const {
   handlers: { GET, POST },
@@ -35,38 +35,38 @@ export const {
   },
   events: {
     async linkAccount({ user }) {
-      if (user.id) await linkOAuthAccount({ memberId: user.id });
+      if (user.id) await linkOAuthAccount({ memberId: user.id })
     },
   },
   callbacks: {
     jwt({ token, user }) {
-      console.log('jwt callback user', user);
-      console.log('jwt callback token', token);
+      console.log('jwt callback user', user)
+      console.log('jwt callback token', token)
       if (user) {
-        token.role = user.is_admin ? 'ADMIN' : 'MEMBER';
-        token.id = user.id as UUID;
+        token.role = user.is_admin ? 'ADMIN' : 'MEMBER'
+        token.id = user.id as UUID
       }
-      return token;
+      return token
     },
     session({ session, token }) {
-      session.user.role = token.role as 'MEMBER' | 'ADMIN';
-      session.sessionToken = token.sub as string;
-      session.user.id = token.id as UUID;
-      return session;
+      session.user.role = token.role as 'MEMBER' | 'ADMIN'
+      session.sessionToken = token.sub as string
+      session.user.id = token.id as UUID
+      return session
     },
     authorized: async ({ auth }) => {
       // Logged in users are authenticated, otherwise redirect to login page
-      console.log('authorized callback auth', auth);
-      return !!auth;
+      console.log('authorized callback auth', auth)
+      return !!auth
     },
     async signIn({ user, account }) {
-      if (!user.id) return false;
-      if (account?.provider !== 'credentials') return true;
+      if (!user.id) return false
+      if (account?.provider !== 'credentials') return true
 
-      const existingUser = await getUserById({ id: user.id });
+      const existingUser = await getUserById({ id: user.id })
 
       // return !existingUser?.emailVerified ? false : true;
-      return !!existingUser;
+      return !!existingUser
     },
   },
   adapter: DrizzleAdapter(db, {
@@ -80,4 +80,4 @@ export const {
     verificationTokensTable: verificationTokens,
   }),
   ...authConfig,
-});
+})

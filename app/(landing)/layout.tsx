@@ -1,8 +1,8 @@
-import { Navbar } from "@/components/generic/Navbar";
+import { Navbar } from '@/components/generic/Navbar'
 
 type Props = {
-  children: React.ReactNode;
-};
+  children: React.ReactNode
+}
 
 const LandingLayout = ({ children }: Props) => {
   return (
@@ -13,7 +13,7 @@ const LandingLayout = ({ children }: Props) => {
       </main>
       {/* <Footer /> */}
     </div>
-  );
-};
+  )
+}
 
-export default LandingLayout;
+export default LandingLayout

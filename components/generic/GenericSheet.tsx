@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
@@ -6,15 +6,15 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
-import React, { ReactNode } from 'react';
+} from '@/components/ui/sheet'
+import React, { ReactNode } from 'react'
 
 interface GenericSheetProps {
-  headerTitle: string;
-  description: string;
-  children: ReactNode;
-  onSave: () => void;
-  onAbort: () => void;
+  headerTitle: string
+  description: string
+  children: ReactNode
+  onSave: () => void
+  onAbort: () => void
 }
 
 const GenericSheet: React.FC<GenericSheetProps> = ({
@@ -45,7 +45,7 @@ const GenericSheet: React.FC<GenericSheetProps> = ({
         </div>
       </SheetContent>
     </Sheet>
-  );
-};
+  )
+}
 
-export { GenericSheet };
+export { GenericSheet }

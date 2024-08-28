@@ -82,12 +82,8 @@
           "tableFrom": "account",
           "tableTo": "members",
           "schemaTo": "protected",
-          "columnsFrom": [
-            "memberId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["memberId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -95,10 +91,7 @@
       "compositePrimaryKeys": {
         "account_provider_providerAccountId_pk": {
           "name": "account_provider_providerAccountId_pk",
-          "columns": [
-            "provider",
-            "providerAccountId"
-          ]
+          "columns": ["provider", "providerAccountId"]
         }
       },
       "uniqueConstraints": {}
@@ -163,12 +156,8 @@
           "tableFrom": "authenticator",
           "tableTo": "members",
           "schemaTo": "protected",
-          "columnsFrom": [
-            "memberId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["memberId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -176,19 +165,14 @@
       "compositePrimaryKeys": {
         "authenticator_memberId_credentialID_pk": {
           "name": "authenticator_memberId_credentialID_pk",
-          "columns": [
-            "memberId",
-            "credentialID"
-          ]
+          "columns": ["memberId", "credentialID"]
         }
       },
       "uniqueConstraints": {
         "authenticator_credentialID_unique": {
           "name": "authenticator_credentialID_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "credentialID"
-          ]
+          "columns": ["credentialID"]
         }
       }
     },
@@ -222,12 +206,8 @@
           "tableFrom": "session",
           "tableTo": "members",
           "schemaTo": "protected",
-          "columnsFrom": [
-            "memberId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["memberId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -263,10 +243,7 @@
       "compositePrimaryKeys": {
         "verificationToken_identifier_token_pk": {
           "name": "verificationToken_identifier_token_pk",
-          "columns": [
-            "identifier",
-            "token"
-          ]
+          "columns": ["identifier", "token"]
         }
       },
       "uniqueConstraints": {}
@@ -422,23 +399,17 @@
         "members_email_unique": {
           "name": "members_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         },
         "members_emailVerificationToken_unique": {
           "name": "members_emailVerificationToken_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "emailVerificationToken"
-          ]
+          "columns": ["emailVerificationToken"]
         },
         "members_resetPasswordToken_unique": {
           "name": "members_resetPasswordToken_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "resetPasswordToken"
-          ]
+          "columns": ["resetPasswordToken"]
         }
       }
     },
@@ -519,12 +490,8 @@
           "tableFrom": "membership_payments",
           "tableTo": "members",
           "schemaTo": "protected",
-          "columnsFrom": [
-            "member_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["member_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -632,12 +599,8 @@
           "tableFrom": "batches",
           "tableTo": "strains",
           "schemaTo": "protected",
-          "columnsFrom": [
-            "strain_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["strain_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -695,12 +658,8 @@
           "tableFrom": "plants",
           "tableTo": "batches",
           "schemaTo": "protected",
-          "columnsFrom": [
-            "batch_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["batch_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -833,12 +792,8 @@
           "tableFrom": "sales",
           "tableTo": "members",
           "schemaTo": "protected",
-          "columnsFrom": [
-            "member_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["member_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -847,12 +802,8 @@
           "tableFrom": "sales",
           "tableTo": "members",
           "schemaTo": "protected",
-          "columnsFrom": [
-            "sales_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sales_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -902,12 +853,8 @@
           "tableFrom": "sales_items",
           "tableTo": "sales",
           "schemaTo": "protected",
-          "columnsFrom": [
-            "sale_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sale_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -920,27 +867,17 @@
     "public.member_role": {
       "name": "member_role",
       "schema": "public",
-      "values": [
-        "MEMBER",
-        "ADMIN"
-      ]
+      "values": ["MEMBER", "ADMIN"]
     },
     "public.payment_status": {
       "name": "payment_status",
       "schema": "public",
-      "values": [
-        "PAID",
-        "PENDING",
-        "OVERDUE"
-      ]
+      "values": ["PAID", "PENDING", "OVERDUE"]
     },
     "public.paymentMethods": {
       "name": "paymentMethods",
       "schema": "public",
-      "values": [
-        "CASH",
-        "CARD"
-      ]
+      "values": ["CASH", "CARD"]
     }
   },
   "schemas": {

@@ -1,18 +1,18 @@
-'use server';
+'use server'
 
-import crypto from 'crypto';
+import crypto from 'crypto'
 
-import { signIn } from '@/auth';
-import bcryptjs from 'bcryptjs';
-import { eq } from 'drizzle-orm';
-import { AuthError } from 'next-auth';
-import { unstable_noStore as noStore } from 'next/cache';
+import { signIn } from '@/auth'
+import bcryptjs from 'bcryptjs'
+import { eq } from 'drizzle-orm'
+import { AuthError } from 'next-auth'
+import { unstable_noStore as noStore } from 'next/cache'
 
-import { ResetPasswordEmail } from '@/components/emails/reset-password-email';
-import { resend } from '@/config/email';
-import { db } from '@/lib/db/db';
-import { members } from '@/modules/members/data-access/schema';
-import { ClubMemberStatus } from '@/modules/members/types';
+import { ResetPasswordEmail } from '@/components/emails/reset-password-email'
+import { resend } from '@/config/email'
+import { db } from '@/lib/db/db'
+import { members } from '@/modules/members/data-access/schema'
+import { ClubMemberStatus } from '@/modules/members/types'
 import {
   linkOAuthAccountSchema,
   passwordResetSchema,
@@ -24,31 +24,31 @@ import {
   type PasswordUpdateFormInputExtended,
   type SignInWithPasswordFormInput,
   type SignUpWithPasswordFormInput,
-} from '../data-access/auth';
-import { psLinkOAuthAccount } from '../data-access/prepared/statements';
+} from '../data-access/auth'
+import { psLinkOAuthAccount } from '../data-access/prepared/statements'
 import {
   checkIfFirstUser,
   getUserByEmail,
   getUserByResetPasswordToken,
-} from './user';
+} from './user'
 
 export async function signUpWithPassword(
   rawInput: SignUpWithPasswordFormInput,
 ): Promise<'invalid-input' | 'exists' | 'error' | 'success'> {
   try {
-    const validatedInput = signUpWithPasswordSchema.safeParse(rawInput);
+    const validatedInput = signUpWithPasswordSchema.safeParse(rawInput)
 
-    if (!validatedInput.success) return 'invalid-input';
+    if (!validatedInput.success) return 'invalid-input'
 
-    const user = await getUserByEmail({ email: validatedInput.data.email });
-    if (user) return 'exists';
+    const user = await getUserByEmail({ email: validatedInput.data.email })
+    if (user) return 'exists'
 
     // check if first user ever, then make them an admin
-    const firstMember = await checkIfFirstUser();
-    console.log({ firstMember });
-    const passwordHash = await bcryptjs.hash(validatedInput.data.password, 10);
-    const emailVerificationToken = crypto.randomBytes(32).toString('base64url');
-    console.log({ passwordHash, emailVerificationToken });
+    const firstMember = await checkIfFirstUser()
+    console.log({ firstMember })
+    const passwordHash = await bcryptjs.hash(validatedInput.data.password, 10)
+    const emailVerificationToken = crypto.randomBytes(32).toString('base64url')
+    console.log({ passwordHash, emailVerificationToken })
 
     const newUser = await db
       .insert(members)
@@ -61,7 +61,7 @@ export async function signUpWithPassword(
           ? ClubMemberStatus.ACTIVE
           : ClubMemberStatus.REQUEST,
       })
-      .returning();
+      .returning()
     // console.log({ newUser })
     // const emailSent = await resend.emails.send({
     //   from: process.env.RESEND_EMAIL_FROM as string,
@@ -74,10 +74,10 @@ export async function signUpWithPassword(
     // });
 
     // const result = newUser && !emailSent.error ? 'success' : 'error';
-    return 'success';
+    return 'success'
   } catch (error) {
-    console.error(error);
-    return 'error';
+    console.error(error)
+    return 'error'
   }
 }
 
@@ -92,15 +92,15 @@ export async function signInWithPassword(
   | 'success'
 > {
   try {
-    const validatedInput = signInWithPasswordSchema.safeParse(rawInput);
-    if (!validatedInput.success) return 'invalid-input';
+    const validatedInput = signInWithPasswordSchema.safeParse(rawInput)
+    if (!validatedInput.success) return 'invalid-input'
     const existingUser = await getUserByEmail({
       email: validatedInput.data.email,
-    });
-    if (!existingUser) return 'not-registered';
+    })
+    if (!existingUser) return 'not-registered'
 
     if (!existingUser.email || !existingUser.passwordHash)
-      return 'incorrect-provider';
+      return 'incorrect-provider'
 
     // if (!existingUser.emailVerified) return 'unverified-email';
 
@@ -108,22 +108,22 @@ export async function signInWithPassword(
       email: validatedInput.data.email,
       password: validatedInput.data.password,
       redirect: false,
-    });
+    })
 
-    console.log({ signInResult });
+    console.log({ signInResult })
 
-    return 'success';
+    return 'success'
   } catch (error) {
-    console.error(error);
+    console.error(error)
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
-          return 'invalid-credentials';
+          return 'invalid-credentials'
         default:
-          throw error;
+          throw error
       }
     } else {
-      throw new Error('Error signin in with password');
+      throw new Error('Error signin in with password')
     }
   }
 }
@@ -132,17 +132,17 @@ export async function resetPassword(
   rawInput: PasswordResetFormInput,
 ): Promise<'invalid-input' | 'not-found' | 'error' | 'success'> {
   try {
-    const validatedInput = passwordResetSchema.safeParse(rawInput);
-    if (!validatedInput.success) return 'invalid-input';
+    const validatedInput = passwordResetSchema.safeParse(rawInput)
+    if (!validatedInput.success) return 'invalid-input'
 
-    const member = await getUserByEmail({ email: validatedInput.data.email });
-    if (!member) return 'not-found';
+    const member = await getUserByEmail({ email: validatedInput.data.email })
+    if (!member) return 'not-found'
 
-    const today = new Date();
-    const resetPasswordToken = crypto.randomBytes(32).toString('base64url');
+    const today = new Date()
+    const resetPasswordToken = crypto.randomBytes(32).toString('base64url')
     const resetPasswordTokenExpiry = new Date(
       today.setDate(today.getDate() + 1),
-    ); // 24 hours from now
+    ) // 24 hours from now
 
     /**
      * TODO: Switch to using a use case
@@ -154,7 +154,7 @@ export async function resetPassword(
         resetPasswordTokenExpiry,
       })
       .where(eq(members.id, member.id))
-      .returning();
+      .returning()
 
     const emailSent = await resend.emails.send({
       from: process.env.RESEND_EMAIL_FROM,
@@ -164,12 +164,12 @@ export async function resetPassword(
         email: validatedInput.data.email,
         resetPasswordToken,
       }),
-    });
+    })
 
-    return memberUpdated && emailSent ? 'success' : 'error';
+    return memberUpdated && emailSent ? 'success' : 'error'
   } catch (error) {
-    console.error(error);
-    return 'error';
+    console.error(error)
+    return 'error'
   }
 }
 
@@ -177,19 +177,19 @@ export async function updatePassword(
   rawInput: PasswordUpdateFormInputExtended,
 ): Promise<'invalid-input' | 'not-found' | 'expired' | 'error' | 'success'> {
   try {
-    const validatedInput = passwordUpdateSchemaExtended.safeParse(rawInput);
-    if (!validatedInput.success) return 'invalid-input';
+    const validatedInput = passwordUpdateSchemaExtended.safeParse(rawInput)
+    if (!validatedInput.success) return 'invalid-input'
 
     const member = await getUserByResetPasswordToken({
       token: validatedInput.data.resetPasswordToken,
-    });
-    if (!member) return 'not-found';
+    })
+    if (!member) return 'not-found'
 
-    const resetPasswordExpiry = member.resetPasswordTokenExpiry;
+    const resetPasswordExpiry = member.resetPasswordTokenExpiry
     if (!resetPasswordExpiry || resetPasswordExpiry < new Date())
-      return 'expired';
+      return 'expired'
 
-    const passwordHash = await bcryptjs.hash(validatedInput.data.password, 10);
+    const passwordHash = await bcryptjs.hash(validatedInput.data.password, 10)
 
     const memberUpdated = await db
       .update(members)
@@ -199,12 +199,12 @@ export async function updatePassword(
         resetPasswordTokenExpiry: null,
       })
       .where(eq(members.id, member.id))
-      .returning();
+      .returning()
 
-    return memberUpdated ? 'success' : 'error';
+    return memberUpdated ? 'success' : 'error'
   } catch (error) {
-    console.error(error);
-    throw new Error('Error updating password');
+    console.error(error)
+    throw new Error('Error updating password')
   }
 }
 
@@ -212,15 +212,15 @@ export async function linkOAuthAccount(
   rawInput: LinkOAuthAccountInput,
 ): Promise<void> {
   try {
-    const validatedInput = linkOAuthAccountSchema.safeParse(rawInput);
-    if (!validatedInput.success) return;
+    const validatedInput = linkOAuthAccountSchema.safeParse(rawInput)
+    if (!validatedInput.success) return
 
-    noStore();
+    noStore()
     await psLinkOAuthAccount.execute({
       memberId: validatedInput.data.memberId,
-    });
+    })
   } catch (error) {
-    console.error(error);
-    throw new Error('Error linking OAuth account');
+    console.error(error)
+    throw new Error('Error linking OAuth account')
   }
 }

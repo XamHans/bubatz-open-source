@@ -4,22 +4,22 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import React from 'react';
+} from '@/components/ui/card'
+import React from 'react'
 import {
   HiCurrencyDollar,
   HiEmojiHappy,
   HiOutlineMoon,
   HiShieldCheck,
   HiShoppingCart,
-} from 'react-icons/hi';
+} from 'react-icons/hi'
 
 interface StrainGeneralInfoProps {
-  strain: any;
+  strain: any
 }
 
 const StrainGeneralInfo: React.FC<StrainGeneralInfoProps> = ({ strain }) => {
-  console.log('strain in info card ', strain);
+  console.log('strain in info card ', strain)
   return (
     <Card className="w-full">
       <CardHeader className="text-center">
@@ -54,13 +54,13 @@ const StrainGeneralInfo: React.FC<StrainGeneralInfoProps> = ({ strain }) => {
         />
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
 interface InfoItemProps {
-  icon: React.ElementType;
-  primary: string;
-  secondary?: string;
+  icon: React.ElementType
+  primary: string
+  secondary?: string
 }
 
 const InfoItem: React.FC<InfoItemProps> = ({
@@ -77,6 +77,6 @@ const InfoItem: React.FC<InfoItemProps> = ({
       )}
     </div>
   </div>
-);
+)
 
-export default StrainGeneralInfo;
+export default StrainGeneralInfo

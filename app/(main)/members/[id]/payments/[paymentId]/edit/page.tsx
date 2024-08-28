@@ -1,29 +1,29 @@
-import SkeletonLoader from '@/app/components/SkeletonLoader';
-import Breadcrumbs from '@/components/generic/BreadCrumbs';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getMemberPaymentDetails } from '@/modules/members/data-access';
-import { ChevronLeft } from 'lucide-react';
-import Link from 'next/link';
-import { Suspense } from 'react';
-import DeleteMemberPayment from '../../../components/DeleteMemberPayment';
-import { EditMemberPaymentForm } from '../../../components/EditMemberPaymentForm';
+import SkeletonLoader from '@/app/components/SkeletonLoader'
+import Breadcrumbs from '@/components/generic/BreadCrumbs'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { getMemberPaymentDetails } from '@/modules/members/data-access'
+import { ChevronLeft } from 'lucide-react'
+import Link from 'next/link'
+import { Suspense } from 'react'
+import DeleteMemberPayment from '../../../components/DeleteMemberPayment'
+import { EditMemberPaymentForm } from '../../../components/EditMemberPaymentForm'
 
 const breadcrumbs = [
   { label: 'Dashboard', href: '/dashboard' },
   { label: 'Members', href: '/members' },
   { label: 'Payments', href: '/members/payments' },
-];
+]
 
 interface MemberPaymentEditPageProps {
-  params: { paymentId: string };
+  params: { paymentId: string }
 }
 
 export default async function MemberPaymentEditPage({
   params: { paymentId },
 }: MemberPaymentEditPageProps) {
-  const payment = await getMemberPaymentDetails(paymentId);
-  console.log(payment);
+  const payment = await getMemberPaymentDetails(paymentId)
+  console.log(payment)
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -57,5 +57,5 @@ export default async function MemberPaymentEditPage({
         </Suspense>
       </div>
     </div>
-  );
+  )
 }

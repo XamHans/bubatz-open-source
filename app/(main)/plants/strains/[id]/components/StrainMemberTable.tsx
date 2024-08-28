@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import SkeletonLoader from '@/app/components/SkeletonLoader';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import SkeletonLoader from '@/app/components/SkeletonLoader'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -10,9 +10,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { logger } from '@/lib/logger';
-import { fetchMemberSalesUseCase } from '@/modules/sales/use-cases';
+} from '@/components/ui/table'
+import { logger } from '@/lib/logger'
+import { fetchMemberSalesUseCase } from '@/modules/sales/use-cases'
 import {
   ColumnFiltersState,
   SortingState,
@@ -23,15 +23,15 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table';
-import { t } from 'i18next';
-import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useAction } from 'next-safe-action/hooks';
-import * as React from 'react';
-import { useEffect, useState } from 'react';
+} from '@tanstack/react-table'
+import { t } from 'i18next'
+import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useAction } from 'next-safe-action/hooks'
+import * as React from 'react'
+import { useEffect, useState } from 'react'
 
 interface StrainMemberTableProps {
-  strainId: string;
+  strainId: string
 }
 
 export default function StrainMemberTable({
@@ -111,28 +111,28 @@ export default function StrainMemberTable({
           <div>{new Date(row.getValue('createdAt')).toLocaleString()}</div>
         ),
       },
-    ];
-  };
+    ]
+  }
 
   const { execute, status } = useAction(fetchMemberSalesUseCase, {
     onSuccess: (data) => {
-      console.info('Fetched member sales', data);
-      setSales(data.data?.success ?? []);
+      console.info('Fetched member sales', data)
+      setSales(data.data?.success ?? [])
     },
     onError: (error) => {
-      logger.error('Error fetching member sales', error);
+      logger.error('Error fetching member sales', error)
     },
-  });
+  })
 
-  const [sales, setSales] = React.useState<any[]>([]);
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
+  const [sales, setSales] = React.useState<any[]>([])
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
 
   useEffect(() => {
-    execute({ memberId });
-  }, [memberId]);
+    execute({ memberId })
+  }, [memberId])
 
   const table = useReactTable({
     data: sales,
@@ -151,10 +151,10 @@ export default function StrainMemberTable({
       columnVisibility,
       rowSelection,
     },
-  });
+  })
 
   if (status === 'executing') {
-    return <SkeletonLoader />;
+    return <SkeletonLoader />
   }
 
   return (
@@ -245,5 +245,5 @@ export default function StrainMemberTable({
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,29 +1,29 @@
-import Breadcrumbs from '@/components/generic/BreadCrumbs';
-import { Container } from '@/components/generic/Container';
-import { Button } from '@/components/ui/button';
+import Breadcrumbs from '@/components/generic/BreadCrumbs'
+import { Container } from '@/components/generic/Container'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { siteConfig } from '@/config/site';
-import { PlusCircle } from 'lucide-react';
-import { Metadata } from 'next';
-import Link from 'next/link';
-import SalesTable from './components/SalesTable';
+} from '@/components/ui/card'
+import { siteConfig } from '@/config/site'
+import { PlusCircle } from 'lucide-react'
+import { Metadata } from 'next'
+import Link from 'next/link'
+import SalesTable from './components/SalesTable'
 
 export default function SalesPage() {
   const metadata: Metadata = {
     title: 'Manage Sales',
     description: 'Add a new sale or see the details of an existing one.',
-  };
+  }
 
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Sales' },
-  ];
+  ]
 
   return (
     <>
@@ -64,5 +64,5 @@ export default function SalesPage() {
         </Card>
       </Container>
     </>
-  );
+  )
 }

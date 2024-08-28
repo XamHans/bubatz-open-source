@@ -1,24 +1,24 @@
-'use client';
+'use client'
 
-import { cn } from '@/lib/utils';
-import { Leaf, Package2, Users2 } from 'lucide-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { SignOutButton } from '../auth/signout-button';
+import { cn } from '@/lib/utils'
+import { Leaf, Package2, Users2 } from 'lucide-react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { SignOutButton } from '../auth/signout-button'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../ui/tooltip';
+} from '../ui/tooltip'
 
 type Props = {
-  className?: string;
-};
+  className?: string
+}
 
 const Sidebar = ({ className }: Props) => {
-  const pathname = usePathname();
-  const isActive = (path: string) => pathname.split('/')[1] === path; // /sales -> sales, /sales/new-sales -> sales
+  const pathname = usePathname()
+  const isActive = (path: string) => pathname.split('/')[1] === path // /sales -> sales, /sales/new-sales -> sales
 
   return (
     <div className={cn(className)}>
@@ -97,7 +97,7 @@ const Sidebar = ({ className }: Props) => {
         </TooltipProvider>
       </aside>
     </div>
-  );
-};
+  )
+}
 
-export default Sidebar;
+export default Sidebar

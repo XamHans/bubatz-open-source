@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { format } from 'date-fns';
-import { Calendar as CalendarIcon } from 'lucide-react';
+} from '@/components/ui/popover'
+import { format } from 'date-fns'
+import { Calendar as CalendarIcon } from 'lucide-react'
 
 export function CustomDatePicker({ value, onChange }) {
   return (
@@ -31,5 +31,5 @@ export function CustomDatePicker({ value, onChange }) {
         />
       </PopoverContent>
     </Popover>
-  );
+  )
 }

@@ -1,9 +1,9 @@
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import React from 'react';
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
+import React from 'react'
 
 interface SaleItemsCardsProps {
-  items: any[];
+  items: any[]
 }
 
 const SaleItemsCards: React.FC<SaleItemsCardsProps> = ({ items }) => {
@@ -68,7 +68,7 @@ const SaleItemsCards: React.FC<SaleItemsCardsProps> = ({ items }) => {
         </Card>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default SaleItemsCards;
+export default SaleItemsCards

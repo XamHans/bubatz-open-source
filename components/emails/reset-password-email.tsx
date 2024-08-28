@@ -1,5 +1,5 @@
-import { siteConfig } from '@/config/site';
-import { env } from '@/env.mjs';
+import { siteConfig } from '@/config/site'
+import { env } from '@/env.mjs'
 import {
   Body,
   Button,
@@ -10,18 +10,18 @@ import {
   Section,
   Tailwind,
   Text,
-} from '@react-email/components';
+} from '@react-email/components'
 
 interface ResetPasswordEmailProps {
-  email: string;
-  resetPasswordToken: string;
+  email: string
+  resetPasswordToken: string
 }
 
 export function ResetPasswordEmail({
   email,
   resetPasswordToken,
 }: Readonly<ResetPasswordEmailProps>): JSX.Element {
-  const previewText = `${siteConfig.name} password reset.`;
+  const previewText = `${siteConfig.name} password reset.`
 
   return (
     <Html lang="en">
@@ -71,5 +71,5 @@ export function ResetPasswordEmail({
         </Body>
       </Tailwind>
     </Html>
-  );
+  )
 }

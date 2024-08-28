@@ -1,26 +1,26 @@
-import { auth } from '@/auth';
-import Breadcrumbs from '@/components/generic/BreadCrumbs';
-import { Container } from '@/components/generic/Container';
+import { auth } from '@/auth'
+import Breadcrumbs from '@/components/generic/BreadCrumbs'
+import { Container } from '@/components/generic/Container'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { siteConfig } from '@/config/site';
-import { SessionProvider } from 'next-auth/react';
-import { redirect } from 'next/navigation';
-import MemberTable from './components/MemberTable';
+} from '@/components/ui/card'
+import { siteConfig } from '@/config/site'
+import { SessionProvider } from 'next-auth/react'
+import { redirect } from 'next/navigation'
+import MemberTable from './components/MemberTable'
 
 async function MemberListPage() {
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Members' },
-  ];
+  ]
 
-  const session = await auth();
-  if (!session) redirect(siteConfig.links.signIn);
+  const session = await auth()
+  if (!session) redirect(siteConfig.links.signIn)
 
   return (
     <SessionProvider session={session}>
@@ -39,7 +39,7 @@ async function MemberListPage() {
         </Card>
       </Container>
     </SessionProvider>
-  );
+  )
 }
 
-export default MemberListPage;
+export default MemberListPage

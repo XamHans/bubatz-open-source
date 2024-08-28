@@ -1,8 +1,8 @@
-import { cn } from '@/lib/utils';
-import { Loader2Icon } from 'lucide-react';
-import type { ElementType } from 'react';
+import { cn } from '@/lib/utils'
+import { Loader2Icon } from 'lucide-react'
+import type { ElementType } from 'react'
 
-export type IconProps = React.HTMLAttributes<SVGElement>;
+export type IconProps = React.HTMLAttributes<SVGElement>
 
 export const Icons = {
   logo: ({
@@ -11,12 +11,12 @@ export const Icons = {
     className,
     classNameText,
   }: {
-    iconProps?: IconProps;
-    as?: ElementType;
-    className?: string;
-    classNameText?: string;
+    iconProps?: IconProps
+    as?: ElementType
+    className?: string
+    classNameText?: string
   }) => {
-    const Comp = as ?? 'div';
+    const Comp = as ?? 'div'
     return (
       <Comp
         className={cn(
@@ -30,7 +30,7 @@ export const Icons = {
         />
         <span className={classNameText}>{siteConfig?.name ?? 'Bubatz'}</span>
       </Comp>
-    );
+    )
   },
   logoIcon: (props: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
@@ -89,4 +89,4 @@ export const Icons = {
       ></path>
     </svg>
   ),
-};
+}

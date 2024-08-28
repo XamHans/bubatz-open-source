@@ -1,23 +1,23 @@
-import SkeletonLoader from '@/app/components/SkeletonLoader';
-import Breadcrumbs from '@/components/generic/BreadCrumbs';
-import { Button } from '@/components/ui/button';
-import { fetchSaleDetailsUseCase } from '@/modules/sales/use-cases';
-import { ChevronLeft } from 'lucide-react';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
-import SaleGeneralInfo from './components/SaleGeneralInfo';
-import SaleItemsCards from './components/SaleItemCard';
+import SkeletonLoader from '@/app/components/SkeletonLoader'
+import Breadcrumbs from '@/components/generic/BreadCrumbs'
+import { Button } from '@/components/ui/button'
+import { fetchSaleDetailsUseCase } from '@/modules/sales/use-cases'
+import { ChevronLeft } from 'lucide-react'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
+import SaleGeneralInfo from './components/SaleGeneralInfo'
+import SaleItemsCards from './components/SaleItemCard'
 
 interface SaleDetailPageProps {
-  params: { id: string };
+  params: { id: string }
 }
 
 // This component will handle data fetching and rendering
 async function SaleContent({ id }: { id: string }) {
-  const { data } = await fetchSaleDetailsUseCase({ saleId: +id });
+  const { data } = await fetchSaleDetailsUseCase({ saleId: +id })
   if (data.failure) {
-    notFound();
+    notFound()
   }
 
   return (
@@ -29,7 +29,7 @@ async function SaleContent({ id }: { id: string }) {
         <SaleGeneralInfo sale={data.success} />
       </div>
     </div>
-  );
+  )
 }
 
 export default function SaleDetailPage({
@@ -39,7 +39,7 @@ export default function SaleDetailPage({
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Sales', href: '/sales' },
     { label: 'Sale Details' },
-  ];
+  ]
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -59,5 +59,5 @@ export default function SaleDetailPage({
         </Suspense>
       </div>
     </div>
-  );
+  )
 }

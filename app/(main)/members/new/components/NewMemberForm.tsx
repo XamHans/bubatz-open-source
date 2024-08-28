@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -8,31 +8,31 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { useToast } from '@/components/ui/use-toast';
-import { siteConfig } from '@/config/site';
+} from '@/components/ui/select'
+import { useToast } from '@/components/ui/use-toast'
+import { siteConfig } from '@/config/site'
 import {
   AddMemberInput,
   addMemberInputSchema,
-} from '@/modules/members/data-access/schema';
-import { ClubMemberRoles, ClubMemberStatus } from '@/modules/members/types';
-import { addMemberUseCase } from '@/modules/members/use-cases';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useAction } from 'next-safe-action/hooks';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+} from '@/modules/members/data-access/schema'
+import { ClubMemberRoles, ClubMemberStatus } from '@/modules/members/types'
+import { addMemberUseCase } from '@/modules/members/use-cases'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useAction } from 'next-safe-action/hooks'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
 
 export default function NewMemberForm() {
-  const router = useRouter();
-  const { toast } = useToast();
+  const router = useRouter()
+  const { toast } = useToast()
 
   const { execute, status } = useAction(addMemberUseCase, {
     onSuccess: ({ data }) => {
@@ -40,25 +40,25 @@ export default function NewMemberForm() {
         title: 'Success',
         duration: 1000,
         description: 'Member created successfully',
-      });
-      console.log('data success', data);
+      })
+      console.log('data success', data)
       setTimeout(() => {
-        if (!data?.success?.id) return;
+        if (!data?.success?.id) return
         router.push(
           `${siteConfig.links.members.detail.replace(':id', data?.success?.id)}`,
-        );
-      }, 1000);
+        )
+      }, 1000)
     },
     onError: (error) => {
-      console.warn('error', error);
+      console.warn('error', error)
       toast({
         title: 'Error',
         variant: 'destructive',
         duration: 50000,
         description: `Member creation failed, ${error.error.serverError}`,
-      });
+      })
     },
-  });
+  })
 
   const form = useForm<AddMemberInput>({
     mode: 'onTouched',
@@ -72,22 +72,22 @@ export default function NewMemberForm() {
       street: '',
       zip: '',
     },
-  });
+  })
 
   const handleSave = (data: AddMemberInput) => {
-    console.log('data after submit', data);
+    console.log('data after submit', data)
 
     // Validate birthday
     if (!data.birthday) {
       form.setError('birthday', {
         type: 'manual',
         message: 'Birthday is required',
-      });
-      return;
+      })
+      return
     }
 
-    execute(data);
-  };
+    execute(data)
+  }
 
   return (
     <Form {...form}>
@@ -262,5 +262,5 @@ export default function NewMemberForm() {
         </Button>
       </form>
     </Form>
-  );
+  )
 }

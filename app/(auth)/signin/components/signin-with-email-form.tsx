@@ -1,18 +1,18 @@
-'use client';
+'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
-import * as React from 'react';
-import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod'
+import { signIn } from 'next-auth/react'
+import { useSearchParams } from 'next/navigation'
+import * as React from 'react'
+import { useForm } from 'react-hook-form'
 
 import {
   signInWithEmailSchema,
   type SignInWithEmailFormInput,
-} from '@/modules/auth/data-access/auth';
+} from '@/modules/auth/data-access/auth'
 
-import { Icons } from '@/components/generic/Icons';
-import { Button } from '@/components/ui/button';
+import { Icons } from '@/components/generic/Icons'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -20,28 +20,28 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useToast } from '@/components/ui/use-toast';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { useToast } from '@/components/ui/use-toast'
 
 export function SignInWithEmailForm(): JSX.Element {
-  const searchParams = useSearchParams();
-  const { toast } = useToast();
-  const [isPending, startTransition] = React.useTransition();
+  const searchParams = useSearchParams()
+  const { toast } = useToast()
+  const [isPending, startTransition] = React.useTransition()
 
   const form = useForm<SignInWithEmailFormInput>({
     resolver: zodResolver(signInWithEmailSchema),
     defaultValues: {
       email: '',
     },
-  });
+  })
 
   function onSubmit(formData: SignInWithEmailFormInput): void {
     startTransition(async () => {
       try {
-        await signIn('resend', { email: formData.email });
+        await signIn('resend', { email: formData.email })
       } catch (error) {
-        console.error(error);
+        console.error(error)
 
         searchParams.get('error') === 'OAuthAccountNotLinked'
           ? toast({
@@ -53,9 +53,9 @@ export function SignInWithEmailForm(): JSX.Element {
               title: 'Something went wrong',
               description: 'Please try again',
               variant: 'destructive',
-            });
+            })
       }
-    });
+    })
   }
 
   return (
@@ -98,5 +98,5 @@ export function SignInWithEmailForm(): JSX.Element {
         </Button>
       </form>
     </Form>
-  );
+  )
 }

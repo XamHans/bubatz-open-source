@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import SkeletonLoader from '@/app/components/SkeletonLoader';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import SkeletonLoader from '@/app/components/SkeletonLoader'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -10,10 +10,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { siteConfig } from '@/config/site';
-import { logger } from '@/lib/logger';
-import { fetchMemberSalesUseCase } from '@/modules/sales/use-cases';
+} from '@/components/ui/table'
+import { siteConfig } from '@/config/site'
+import { logger } from '@/lib/logger'
+import { fetchMemberSalesUseCase } from '@/modules/sales/use-cases'
 import {
   ColumnFiltersState,
   SortingState,
@@ -24,16 +24,16 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table';
-import { t } from 'i18next';
-import { ArrowUpDown, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
-import { useAction } from 'next-safe-action/hooks';
-import Link from 'next/link';
-import * as React from 'react';
-import { useEffect, useState } from 'react';
+} from '@tanstack/react-table'
+import { t } from 'i18next'
+import { ArrowUpDown, ChevronLeft, ChevronRight, Eye } from 'lucide-react'
+import { useAction } from 'next-safe-action/hooks'
+import Link from 'next/link'
+import * as React from 'react'
+import { useEffect, useState } from 'react'
 
 interface MemberSalesTableProps {
-  memberId: string;
+  memberId: string
 }
 
 export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
@@ -114,7 +114,7 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
       {
         id: 'actions',
         cell: ({ row }) => {
-          const sale = row.original;
+          const sale = row.original
           return (
             <div className="flex items-center space-x-2">
               <Link
@@ -125,31 +125,31 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
                 </Button>
               </Link>
             </div>
-          );
+          )
         },
       },
-    ];
-  };
+    ]
+  }
 
   const { execute, status } = useAction(fetchMemberSalesUseCase, {
     onSuccess: (data) => {
-      console.info('Fetched member sales', data);
-      setSales(data.data?.success ?? []);
+      console.info('Fetched member sales', data)
+      setSales(data.data?.success ?? [])
     },
     onError: (error) => {
-      logger.error('Error fetching member sales', error);
+      logger.error('Error fetching member sales', error)
     },
-  });
+  })
 
-  const [sales, setSales] = React.useState<any[]>([]);
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
+  const [sales, setSales] = React.useState<any[]>([])
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
 
   useEffect(() => {
-    execute({ memberId });
-  }, [memberId]);
+    execute({ memberId })
+  }, [memberId])
 
   const table = useReactTable({
     data: sales,
@@ -168,10 +168,10 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
       columnVisibility,
       rowSelection,
     },
-  });
+  })
 
   if (status === 'executing') {
-    return <SkeletonLoader />;
+    return <SkeletonLoader />
   }
 
   return (
@@ -262,5 +262,5 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

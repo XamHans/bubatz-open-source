@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import React from 'react'
 import {
   HiCalendar,
   HiCash,
@@ -7,14 +7,14 @@ import {
   HiScale,
   HiShieldCheck,
   HiUser,
-} from 'react-icons/hi';
+} from 'react-icons/hi'
 
 interface SaleGeneralInfoProps {
-  sale: any;
+  sale: any
 }
 
 const SaleGeneralInfo: React.FC<SaleGeneralInfoProps> = ({ sale }) => {
-  console.log('sale in SaleGeneralInfo', sale.buyer);
+  console.log('sale in SaleGeneralInfo', sale.buyer)
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('de-DE', {
       year: 'numeric',
@@ -22,8 +22,8 @@ const SaleGeneralInfo: React.FC<SaleGeneralInfoProps> = ({ sale }) => {
       day: 'numeric',
       hour: 'numeric',
       minute: 'numeric',
-    }).format(new Date(date));
-  };
+    }).format(new Date(date))
+  }
 
   return (
     <Card className="w-full">
@@ -68,13 +68,13 @@ const SaleGeneralInfo: React.FC<SaleGeneralInfoProps> = ({ sale }) => {
         />
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
 interface InfoItemProps {
-  icon: React.ElementType;
-  primary: string;
-  secondary?: string;
+  icon: React.ElementType
+  primary: string
+  secondary?: string
 }
 
 const InfoItem: React.FC<InfoItemProps> = ({
@@ -91,6 +91,6 @@ const InfoItem: React.FC<InfoItemProps> = ({
       )}
     </div>
   </div>
-);
+)
 
-export default SaleGeneralInfo;
+export default SaleGeneralInfo

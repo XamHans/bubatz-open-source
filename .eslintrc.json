@@ -4,6 +4,9 @@
     "plugin:prettier/recommended",
     "prettier"
   ],
-  "plugins": ["prettier"] // If not already present
-  
+  "plugins": ["prettier"],
+  "rules": {
+    "semi": ["error", "never"],
+    "prettier/prettier": ["error", { "semi": false }]
+  }
 }

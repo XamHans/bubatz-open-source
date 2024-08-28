@@ -1,5 +1,5 @@
-import { PlusCircle } from 'lucide-react';
-import { Button } from '../../../../components/ui/button';
+import { PlusCircle } from 'lucide-react'
+import { Button } from '../../../../components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -7,15 +7,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../../../../components/ui/dialog';
-import React, { ReactNode } from 'react';
+} from '../../../../components/ui/dialog'
+import React, { ReactNode } from 'react'
 
 interface GenericModalProps {
-  headerTitle: string;
-  description: string;
-  children: ReactNode;
-  open: boolean;
-  setOpen: (open: boolean) => void;
+  headerTitle: string
+  description: string
+  children: ReactNode
+  open: boolean
+  setOpen: (open: boolean) => void
 }
 
 const GenericAddModal: React.FC<GenericModalProps> = ({
@@ -43,7 +43,7 @@ const GenericAddModal: React.FC<GenericModalProps> = ({
         {children}
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export { GenericAddModal };
+export { GenericAddModal }

@@ -1,11 +1,11 @@
-'use client';
+'use client'
 
-import { Button } from '@/components/ui/button';
-import { Loader2, Trash } from 'lucide-react';
-import { useFormStatus } from 'react-dom';
+import { Button } from '@/components/ui/button'
+import { Loader2, Trash } from 'lucide-react'
+import { useFormStatus } from 'react-dom'
 
 export function SubmitButton() {
-  const { pending } = useFormStatus();
+  const { pending } = useFormStatus()
   return (
     <>
       {pending ? (
@@ -18,11 +18,11 @@ export function SubmitButton() {
         </Button>
       )}
     </>
-  );
+  )
 }
 
 export function StripeSubscriptionCreationButton() {
-  const { pending } = useFormStatus();
+  const { pending } = useFormStatus()
 
   return (
     <>
@@ -36,11 +36,11 @@ export function StripeSubscriptionCreationButton() {
         </Button>
       )}
     </>
-  );
+  )
 }
 
 export function StripePortal() {
-  const { pending } = useFormStatus();
+  const { pending } = useFormStatus()
 
   return (
     <>
@@ -54,11 +54,11 @@ export function StripePortal() {
         </Button>
       )}
     </>
-  );
+  )
 }
 
 export function TrashDelete() {
-  const { pending } = useFormStatus();
+  const { pending } = useFormStatus()
 
   return (
     <>
@@ -72,5 +72,5 @@ export function TrashDelete() {
         </Button>
       )}
     </>
-  );
+  )
 }

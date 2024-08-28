@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState } from 'react'
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -9,18 +9,18 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
+} from '@/components/ui/dialog'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 
-import ImageCropper from '../ImageCropper';
+import ImageCropper from '../ImageCropper'
 
 export interface ImageEditorProps {
-  title: string;
-  description: string;
-  avatar_url: string;
-  club_id?: string;
-  profile_id?: string;
+  title: string
+  description: string
+  avatar_url: string
+  club_id?: string
+  profile_id?: string
 }
 
 const ImageEditor = ({
@@ -30,21 +30,21 @@ const ImageEditor = ({
   title,
   description,
 }: ImageEditorProps) => {
-  const [urlOfNewImage, setImg] = useState(avatar_url);
-  const { club } = useAuth();
+  const [urlOfNewImage, setImg] = useState(avatar_url)
+  const { club } = useAuth()
   //   const { showSuccessToast, showErrorToast } = useToast()
-  const { t } = useTranslation();
-  const CLUB_AVATAR_PATH = `/${club_id ?? club?.id}/avatar.png`;
-  const PROFILE_AVATAR_PATH = `/${profile_id}/avatar.png`;
+  const { t } = useTranslation()
+  const CLUB_AVATAR_PATH = `/${club_id ?? club?.id}/avatar.png`
+  const PROFILE_AVATAR_PATH = `/${profile_id}/avatar.png`
 
-  let cacheVersion = 1;
+  let cacheVersion = 1
 
   function handleCroppedImage(blob: Blob) {
     // Logger.debug("ImageEditor : handleCroppedImage", blob)
     if (profile_id) {
-      uploadProfileCroppedImage(blob);
+      uploadProfileCroppedImage(blob)
     }
-    uploadClubCroppedImage(blob);
+    uploadClubCroppedImage(blob)
   }
 
   const updateClubAvatar = async (url: string) => {
@@ -52,23 +52,23 @@ const ImageEditor = ({
     await updateClubUseCase.execute({
       ...club,
       avatar_url: url,
-    });
-  };
+    })
+  }
 
   const setImageUrlFromUploadKey = () => {
     const { data } = supabaseClient.storage
       .from('clubs')
-      .getPublicUrl(CLUB_AVATAR_PATH);
-    cacheVersion += 1;
-    const newImgUrl = data.publicUrl + `?version=${cacheVersion}`;
-    setImg(newImgUrl);
-    updateClubAvatar(newImgUrl);
-  };
+      .getPublicUrl(CLUB_AVATAR_PATH)
+    cacheVersion += 1
+    const newImgUrl = data.publicUrl + `?version=${cacheVersion}`
+    setImg(newImgUrl)
+    updateClubAvatar(newImgUrl)
+  }
 
   async function uploadClubCroppedImage(blob: Blob) {
-    if (!club) throw new Error('No club found, can not upload image');
+    if (!club) throw new Error('No club found, can not upload image')
 
-    const file = new File([blob], 'image.png', { type: 'image/png' }); // Cast Blob to File
+    const file = new File([blob], 'image.png', { type: 'image/png' }) // Cast Blob to File
 
     uploadService
       .uploadFile({
@@ -77,36 +77,36 @@ const ImageEditor = ({
         bucket: 'clubs',
       })
       .then((result) => {
-        Logger.debug('ImageEditor : uploadResult', result);
+        Logger.debug('ImageEditor : uploadResult', result)
         if (result.isLeft()) {
           //@ts-ignore
-          showErrorToast(t('GENERAL.ACTIONS.EDIT_IMAGE_ERROR'));
+          showErrorToast(t('GENERAL.ACTIONS.EDIT_IMAGE_ERROR'))
         } else {
-          showSuccessToast(t('GENERAL.ACTIONS.EDIT_IMAGE_SUCCESS'));
-          setImageUrlFromUploadKey();
+          showSuccessToast(t('GENERAL.ACTIONS.EDIT_IMAGE_SUCCESS'))
+          setImageUrlFromUploadKey()
         }
       })
       .catch((error) => {
         //@ts-ignore
-        showErrorToast(t('CLUB.UPLOAD_TERMS_ERROR'));
-        console.log('ERROR:', error);
-      });
+        showErrorToast(t('CLUB.UPLOAD_TERMS_ERROR'))
+        console.log('ERROR:', error)
+      })
   }
 
   const updateProfileAvatar = async (url: string) => {
     const updateProfileAvatar = await updateMemberUseCase.execute({
       avatar_url: url,
       id: profile_id!,
-    });
+    })
     if (updateProfileAvatar.isLeft()) {
       //@ts-ignore
-      showErrorToast(t('GENERAL.ACTIONS.EDIT_IMAGE_ERROR'));
+      showErrorToast(t('GENERAL.ACTIONS.EDIT_IMAGE_ERROR'))
     }
-  };
+  }
 
   //@ts-ignore
   async function uploadProfileCroppedImage(blob) {
-    if (!club) throw new Error('No club found, can not upload image');
+    if (!club) throw new Error('No club found, can not upload image')
 
     uploadService
       .uploadFile({
@@ -115,28 +115,28 @@ const ImageEditor = ({
         bucket: Buckets.PROFILES,
       })
       .then(async (result) => {
-        Logger.debug('ImageEditor : uploadResult', result);
+        Logger.debug('ImageEditor : uploadResult', result)
         if (result.isLeft()) {
           //@ts-ignore
-          showErrorToast(t('GENERAL.ACTIONS.EDIT_IMAGE_ERROR'));
+          showErrorToast(t('GENERAL.ACTIONS.EDIT_IMAGE_ERROR'))
         } else {
-          showSuccessToast(t('GENERAL.ACTIONS.EDIT_IMAGE_SUCCESS'));
+          showSuccessToast(t('GENERAL.ACTIONS.EDIT_IMAGE_SUCCESS'))
           const { data } = supabaseClient.storage
             .from(Buckets.PROFILES)
-            .getPublicUrl(`/${profile_id}/avatar.png`);
+            .getPublicUrl(`/${profile_id}/avatar.png`)
 
-          cacheVersion += 1;
-          const newImgUrl = data.publicUrl + `?version=${cacheVersion}`;
-          console.log({ newImgUrl });
-          setImg(newImgUrl);
-          updateProfileAvatar(newImgUrl);
+          cacheVersion += 1
+          const newImgUrl = data.publicUrl + `?version=${cacheVersion}`
+          console.log({ newImgUrl })
+          setImg(newImgUrl)
+          updateProfileAvatar(newImgUrl)
         }
       })
       .catch((error) => {
         //@ts-ignore
-        showErrorToast(t('CLUB.UPLOAD_TERMS_ERROR'));
-        console.log('ERROR:', error);
-      });
+        showErrorToast(t('CLUB.UPLOAD_TERMS_ERROR'))
+        console.log('ERROR:', error)
+      })
   }
 
   return (
@@ -155,8 +155,8 @@ const ImageEditor = ({
         <ImageCropper onCropComplete={handleCroppedImage} />
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
 export const AvatarAnimated = ({ image }: { image: string }) => {
   return (
@@ -176,7 +176,7 @@ export const AvatarAnimated = ({ image }: { image: string }) => {
         </motion.div>
       </AnimatePresence>
     </>
-  );
-};
+  )
+}
 
-export { ImageEditor };
+export { ImageEditor }

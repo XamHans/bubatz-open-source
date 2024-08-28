@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   Table,
@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@/components/ui/table'
 import {
   ColumnFiltersState,
   SortingState,
@@ -17,39 +17,39 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table';
-import { t } from 'i18next';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+} from '@tanstack/react-table'
+import { t } from 'i18next'
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 // import {
 //   selectUser,
 //   selectUserSchema,
 // } from '@/modules/members/data-access/schema';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { StrainProps } from '@/modules/plants/data-access/schema';
-import { SaleItem } from '@/modules/sales/data-access/schema';
-import { Trash } from 'lucide-react';
+} from '@/components/ui/tooltip'
+import { StrainProps } from '@/modules/plants/data-access/schema'
+import { SaleItem } from '@/modules/sales/data-access/schema'
+import { Trash } from 'lucide-react'
 
 interface SaleItemsTableProps {
-  saleItems: SaleItem[];
-  deleteItem: (item: SaleItem) => void;
-  strains: StrainProps[];
+  saleItems: SaleItem[]
+  deleteItem: (item: SaleItem) => void
+  strains: StrainProps[]
 }
 
 export default function SaleItemsTable(props: SaleItemsTableProps) {
-  const { saleItems, deleteItem, strains } = props;
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
-  const router = useRouter();
+  const { saleItems, deleteItem, strains } = props
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
+  const router = useRouter()
 
   const getItemSalesTableColumns = (router: AppRouterInstance) => {
     return [
@@ -108,14 +108,14 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
           <div className="text-s justify-start font-semibold">ACTIONS</div>
         ),
         cell: ({ row }) => {
-          const item: SaleItem = row.original;
+          const item: SaleItem = row.original
           return (
             <div className=" ">
               <Button
                 variant="ghost"
                 className="hover:bg-inherit"
                 onClick={() => {
-                  deleteItem(item);
+                  deleteItem(item)
                 }}
               >
                 <TooltipProvider>
@@ -128,11 +128,11 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
                 </TooltipProvider>
               </Button>
             </div>
-          );
+          )
         },
       },
-    ];
-  };
+    ]
+  }
 
   const table = useReactTable({
     data: saleItems,
@@ -151,7 +151,7 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
       columnVisibility,
       rowSelection,
     },
-  });
+  })
 
   // React.useEffect(() => {
   //   if (saleItemsDisplayData.length === 0) return;
@@ -182,7 +182,7 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
                         header.getContext(),
                       )}
                 </TableHead>
-              );
+              )
             })}
           </TableRow>
         ))}
@@ -212,5 +212,5 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
         )}
       </TableBody>
     </Table>
-  );
+  )
 }

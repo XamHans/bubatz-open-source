@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import SkeletonLoader from '@/app/components/SkeletonLoader';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import SkeletonLoader from '@/app/components/SkeletonLoader'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -10,16 +10,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@/components/ui/table'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { siteConfig } from '@/config/site';
-import { fetchStrainsUseCase } from '@/modules/plants/use-cases';
-import { Pencil1Icon } from '@radix-ui/react-icons';
+} from '@/components/ui/tooltip'
+import { siteConfig } from '@/config/site'
+import { fetchStrainsUseCase } from '@/modules/plants/use-cases'
+import { Pencil1Icon } from '@radix-ui/react-icons'
 import {
   ColumnFiltersState,
   SortingState,
@@ -30,13 +30,13 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table';
-import { t } from 'i18next';
-import { ArrowUpDown, EyeIcon } from 'lucide-react';
-import { useAction } from 'next-safe-action/hooks';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+} from '@tanstack/react-table'
+import { t } from 'i18next'
+import { ArrowUpDown, EyeIcon } from 'lucide-react'
+import { useAction } from 'next-safe-action/hooks'
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 const getStrainsTableColumns = (router: AppRouterInstance) => {
   return [
@@ -117,7 +117,7 @@ const getStrainsTableColumns = (router: AppRouterInstance) => {
       id: 'actions',
       enableHiding: false,
       cell: ({ row }) => {
-        const strain = row.original;
+        const strain = row.original
         return (
           <div className="flex justify-start">
             <Button
@@ -129,7 +129,7 @@ const getStrainsTableColumns = (router: AppRouterInstance) => {
                     ':id',
                     strain.id,
                   ),
-                );
+                )
               }}
             >
               <TooltipProvider>
@@ -151,7 +151,7 @@ const getStrainsTableColumns = (router: AppRouterInstance) => {
                     ':id',
                     strain.id!,
                   ),
-                );
+                )
               }}
             >
               <TooltipProvider>
@@ -168,32 +168,32 @@ const getStrainsTableColumns = (router: AppRouterInstance) => {
               </TooltipProvider>
             </Button>
           </div>
-        );
+        )
       },
     },
-  ];
-};
+  ]
+}
 
 export default function StrainsTable() {
   const { execute, status } = useAction(fetchStrainsUseCase, {
     onSuccess: ({ data }) => {
-      setStrains(data?.success ?? []);
+      setStrains(data?.success ?? [])
     },
     onError: (error) => {
-      console.log('Error fetching strains', error);
+      console.log('Error fetching strains', error)
     },
-  });
+  })
 
-  const [strains, setStrains] = useState([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
-  const router = useRouter();
+  const [strains, setStrains] = useState([])
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
+  const router = useRouter()
 
   useEffect(() => {
-    execute(undefined);
-  }, [execute]);
+    execute(undefined)
+  }, [execute])
 
   const table = useReactTable({
     data: strains,
@@ -212,10 +212,10 @@ export default function StrainsTable() {
       columnVisibility,
       rowSelection,
     },
-  });
+  })
 
   if (status === 'executing') {
-    return <SkeletonLoader />; // This will use the default table skeleton
+    return <SkeletonLoader /> // This will use the default table skeleton
   }
 
   return (
@@ -264,5 +264,5 @@ export default function StrainsTable() {
         )}
       </TableBody>
     </Table>
-  );
+  )
 }

@@ -5,17 +5,17 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import Link from 'next/link';
-import React from 'react';
+} from '@/components/ui/breadcrumb'
+import Link from 'next/link'
+import React from 'react'
 
 interface BreadcrumbItem {
-  label: string;
-  href?: string;
+  label: string
+  href?: string
 }
 
 interface BreadcrumbsProps {
-  items: BreadcrumbItem[];
+  items: BreadcrumbItem[]
 }
 
 const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
@@ -38,7 +38,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
         ))}
       </BreadcrumbList>
     </Breadcrumb>
-  );
-};
+  )
+}
 
-export default Breadcrumbs;
+export default Breadcrumbs

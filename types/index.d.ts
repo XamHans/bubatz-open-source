@@ -1,93 +1,93 @@
-import type { Account, Profile, Session, User } from 'next-auth';
-import type { JWT } from 'next-auth/jwt';
+import type { Account, Profile, Session, User } from 'next-auth'
+import type { JWT } from 'next-auth/jwt'
 
 export interface SuccessResponse<T> {
-  success: T;
+  success: T
 }
 
 export interface FailureResponse {
-  failure: string;
+  failure: string
 }
 
 export interface NavItem {
-  title: string;
-  href: string;
-  disabled?: boolean;
+  title: string
+  href: string
+  disabled?: boolean
 }
 
 export interface NavItemFooter {
-  title: string;
+  title: string
   items: {
-    title: string;
-    href: string;
-    external?: boolean;
-  }[];
+    title: string
+    href: string
+    external?: boolean
+  }[]
 }
 
 export interface SessionCallbackParams {
-  session: Session;
-  token: JWT;
-  user: User;
+  session: Session
+  token: JWT
+  user: User
 }
 
 export interface JWTCallbackParams {
-  token: JWT;
-  user?: User | undefined;
-  account?: Account | null | undefined;
-  profile?: Profile | undefined;
-  isNewUser?: boolean | undefined;
+  token: JWT
+  user?: User | undefined
+  account?: Account | null | undefined
+  profile?: Profile | undefined
+  isNewUser?: boolean | undefined
 }
 
 export interface BlogPostParamsProps {
   params: {
-    slug: string[];
-  };
+    slug: string[]
+  }
 }
 
 export interface PricingPlan {
-  id: 'basic' | 'standard' | 'premium';
-  name: string;
-  description: string;
-  features: string[];
-  limitations: string[];
-  stripePriceId: string;
+  id: 'basic' | 'standard' | 'premium'
+  name: string
+  description: string
+  features: string[]
+  limitations: string[]
+  stripePriceId: string
   prices: {
-    monthly: number;
-    yearly: number;
-  };
+    monthly: number
+    yearly: number
+  }
   stripeIds: {
-    monthly?: string;
-    yearly?: string;
-  };
+    monthly?: string
+    yearly?: string
+  }
 }
 
 export interface UserSubscriptionPlan extends SubscriptionPlan {
-  stripeSubscriptionId?: string | null;
-  stripeCurrentPeriodEnd?: string | null;
-  stripeCustomerId?: string | null;
-  isSubscribed: boolean;
-  isCanceled: boolean;
-  isActive: boolean;
+  stripeSubscriptionId?: string | null
+  stripeCurrentPeriodEnd?: string | null
+  stripeCustomerId?: string | null
+  isSubscribed: boolean
+  isCanceled: boolean
+  isActive: boolean
 }
 
 export interface FrequentlyAskedQuestion {
-  question: string;
-  answer: string;
+  question: string
+  answer: string
 }
 
 export interface Feature {
-  title: string;
-  description: string;
-  image: string;
+  title: string
+  description: string
+  image: string
 }
 
 export interface Testimonial {
-  title: string;
-  body: string;
-  name: string;
-  role: string;
-  avatar: string;
+  title: string
+  body: string
+  name: string
+  role: string
+  avatar: string
 }
 
 export type AsyncReturnType<T extends (...args: any) => Promise<any>> =
-  T extends (...args: any) => Promise<infer R> ? R : any;
+  T extends (...args: any) => Promise<infer R> ? R : any

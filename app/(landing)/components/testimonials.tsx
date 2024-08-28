@@ -1,15 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 type Testimonial = {
-  body: string;
+  body: string
   author: {
-    name: string;
-    handle: string;
-    imageUrl: string;
-    logoUrl?: string;
-  };
-};
+    name: string
+    handle: string
+    imageUrl: string
+    logoUrl?: string
+  }
+}
 
 export const featuredTestimonial: Testimonial = {
   body: 'Integer id nunc sit semper purus. Bibendum at lacus ut arcu blandit montes vitae auctor libero. Hac condimentum dignissim nibh vulputate ut nunc. Amet nibh orci mi venenatis blandit vel et proin. Non hendrerit in vel ac diam.',
@@ -20,7 +20,7 @@ export const featuredTestimonial: Testimonial = {
       'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80',
     logoUrl: 'https://tailwindui.com/img/logos/savvycal-logo-gray-900.svg',
   },
-};
+}
 
 export const testimonials: Testimonial[][][] = [
   [
@@ -94,7 +94,7 @@ export const testimonials: Testimonial[][][] = [
       // More testimonials...
     ],
   ],
-];
+]
 
 export function Testimonials() {
   return (
@@ -178,5 +178,5 @@ export function Testimonials() {
         ))}
       </div>
     </section>
-  );
+  )
 }

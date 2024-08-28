@@ -1,10 +1,10 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -12,60 +12,60 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from '@/components/ui/select';
-import { useToast } from '@/components/ui/use-toast';
+} from '@/components/ui/select'
+import { useToast } from '@/components/ui/use-toast'
 import {
   PlantProps,
   UpdatePlantInput,
   updatePlantInputSchema,
-} from '@/modules/plants/data-access/schema';
-import { HealthStatus } from '@/modules/plants/types';
-import { updatePlantUseCase } from '@/modules/plants/use-cases';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { DialogTitle } from '@radix-ui/react-dialog';
-import { Edit2Icon } from 'lucide-react';
-import { useAction } from 'next-safe-action/hooks';
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+} from '@/modules/plants/data-access/schema'
+import { HealthStatus } from '@/modules/plants/types'
+import { updatePlantUseCase } from '@/modules/plants/use-cases'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { DialogTitle } from '@radix-ui/react-dialog'
+import { Edit2Icon } from 'lucide-react'
+import { useAction } from 'next-safe-action/hooks'
+import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
 
 interface UpdatePlantFormProps {
-  plant: PlantProps;
-  onClose: () => void; // Add this prop to detect dialog close --> trigger refresh on parent
+  plant: PlantProps
+  onClose: () => void // Add this prop to detect dialog close --> trigger refresh on parent
 }
 
 const UpdatePlantForm: React.FC<UpdatePlantFormProps> = ({
   plant,
   onClose,
 }) => {
-  const { toast } = useToast();
-  const [open, setOpen] = useState(false);
+  const { toast } = useToast()
+  const [open, setOpen] = useState(false)
   const { execute, status } = useAction(updatePlantUseCase, {
     onSuccess: (data) => {
-      console.log('plant updated successfully', data);
-      setOpen(false);
+      console.log('plant updated successfully', data)
+      setOpen(false)
       toast({
         title: 'Success',
         duration: 1000,
         description: 'Grow State updated successfully',
-      });
-      onClose();
+      })
+      onClose()
     },
     onError: (error) => {
-      console.log('Error updating plant', error);
+      console.log('Error updating plant', error)
       toast({
         title: 'Error',
         variant: 'destructive',
         description: `Grow State could not be updated ${error}`,
-      });
+      })
     },
-  });
+  })
 
   const form = useForm<UpdatePlantInput>({
     resolver: zodResolver(updatePlantInputSchema),
@@ -73,12 +73,12 @@ const UpdatePlantForm: React.FC<UpdatePlantFormProps> = ({
       ...plant,
       yield: plant.yield || 0,
     },
-  });
+  })
 
   const onSubmit = (data: UpdatePlantInput) => {
-    console.log('save data dynamically ', data);
-    execute(data);
-  };
+    console.log('save data dynamically ', data)
+    execute(data)
+  }
 
   return (
     <>
@@ -184,7 +184,7 @@ const UpdatePlantForm: React.FC<UpdatePlantFormProps> = ({
         </DialogContent>
       </Dialog>
     </>
-  );
-};
+  )
+}
 
-export { UpdatePlantForm };
+export { UpdatePlantForm }

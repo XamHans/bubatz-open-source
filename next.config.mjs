@@ -11,10 +11,9 @@ const nextConfig = {
         stream: false,
         crypto: false,
         'cloudflare:sockets': false,
-
-      };
+      }
     }
-    return config;
+    return config
   },
   images: {
     remotePatterns: [
@@ -24,6 +23,6 @@ const nextConfig = {
       },
     ],
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig

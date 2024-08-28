@@ -10,12 +10,12 @@ import {
   Section,
   Tailwind,
   Text,
-} from "@react-email/components"
+} from '@react-email/components'
 
-import { env } from "@/env.mjs"
+import { env } from '@/env.mjs'
 
 export function NewsletterWelcomeEmail(): JSX.Element {
-  const previewText = "Hello and welcome to SaaSy Land!"
+  const previewText = 'Hello and welcome to SaaSy Land!'
 
   return (
     <Html>
@@ -46,7 +46,7 @@ export function NewsletterWelcomeEmail(): JSX.Element {
             <Section className="mt-4 text-center text-zinc-400">
               <Text className="my-4">
                 {`We're`} looking forward to seeing you around! If you have any
-                questions, please {`don't`} hesitate to reach out to us at{" "}
+                questions, please {`don't`} hesitate to reach out to us at{' '}
                 <Link
                   href={`mailto:${env.RESEND_EMAIL_FROM}`}
                   className="text-blue-500 underline"

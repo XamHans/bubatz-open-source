@@ -1,22 +1,22 @@
-import { type Metadata } from "next"
-import Link from "next/link"
+import { type Metadata } from 'next'
+import Link from 'next/link'
 
-import { env } from "@/env.mjs"
+import { env } from '@/env.mjs'
 
-import { buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { PasswordResetForm } from "@/components/forms/password-reset-form"
+} from '@/components/ui/card'
+import { PasswordResetForm } from '@/components/forms/password-reset-form'
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: "Password Reset",
-  description: "Provide your email address to receive a reset link",
+  title: 'Password Reset',
+  description: 'Provide your email address to receive a reset link',
 }
 
 export default function PasswordReset(): JSX.Element {
@@ -34,7 +34,7 @@ export default function PasswordReset(): JSX.Element {
           <Link
             aria-label="Back to the sign in page"
             href="/signin"
-            className={buttonVariants({ variant: "outline" })}
+            className={buttonVariants({ variant: 'outline' })}
           >
             Cancel
           </Link>

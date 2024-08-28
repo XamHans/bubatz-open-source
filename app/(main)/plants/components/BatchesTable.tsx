@@ -1,9 +1,9 @@
-'use client';
+'use client'
 
-import SkeletonLoader from '@/app/components/SkeletonLoader';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import SkeletonLoader from '@/app/components/SkeletonLoader'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -11,15 +11,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@/components/ui/table'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { siteConfig } from '@/config/site';
-import { fetchBatchesUseCase } from '@/modules/plants/use-cases';
+} from '@/components/ui/tooltip'
+import { siteConfig } from '@/config/site'
+import { fetchBatchesUseCase } from '@/modules/plants/use-cases'
 import {
   ColumnFiltersState,
   SortingState,
@@ -30,13 +30,13 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table';
-import { t } from 'i18next';
-import { ArrowUpDown, EyeIcon } from 'lucide-react';
-import { useAction } from 'next-safe-action/hooks';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+} from '@tanstack/react-table'
+import { t } from 'i18next'
+import { ArrowUpDown, EyeIcon } from 'lucide-react'
+import { useAction } from 'next-safe-action/hooks'
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 const getBatchtesTableColumns = (router: AppRouterInstance) => {
   return [
@@ -148,7 +148,7 @@ const getBatchtesTableColumns = (router: AppRouterInstance) => {
                     ':id',
                     row.original.id,
                   ),
-                );
+                )
               }}
             >
               <TooltipProvider>
@@ -161,32 +161,32 @@ const getBatchtesTableColumns = (router: AppRouterInstance) => {
               </TooltipProvider>
             </Button>
           </div>
-        );
+        )
       },
     },
-  ];
-};
+  ]
+}
 
 export default function BatchesTable() {
   const { execute, status } = useAction(fetchBatchesUseCase, {
     onSuccess: ({ data }) => {
-      setPlants(data?.success ?? []);
+      setPlants(data?.success ?? [])
     },
     onError: (error) => {
-      console.log('Error fetching plants', error);
+      console.log('Error fetching plants', error)
     },
-  });
+  })
 
-  const [plants, setPlants] = useState([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
-  const router = useRouter();
+  const [plants, setPlants] = useState([])
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
+  const router = useRouter()
 
   useEffect(() => {
-    execute(undefined);
-  }, [execute]);
+    execute(undefined)
+  }, [execute])
 
   const table = useReactTable({
     data: plants,
@@ -205,10 +205,10 @@ export default function BatchesTable() {
       columnVisibility,
       rowSelection,
     },
-  });
+  })
 
   if (status === 'executing') {
-    return <SkeletonLoader />; // This will use the default table skeleton
+    return <SkeletonLoader /> // This will use the default table skeleton
   }
 
   return (
@@ -272,5 +272,5 @@ export default function BatchesTable() {
         </TableBody>
       </Table>
     </div>
-  );
+  )
 }

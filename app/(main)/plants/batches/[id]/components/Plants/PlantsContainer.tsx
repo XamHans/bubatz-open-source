@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
-import { GenericModal } from '@/components/generic/GenericModal';
-import { Button } from '@/components/ui/button';
+import { GenericModal } from '@/components/generic/GenericModal'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -9,7 +9,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/components/ui/card'
 import {
   Form,
   FormControl,
@@ -17,62 +17,62 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { PlantDetailsData } from '@/modules/plants/data-access';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { PlantDetailsData } from '@/modules/plants/data-access'
 import {
   BatchProps,
   CreatePlantInput,
   createPlantInputSchema,
-} from '@/modules/plants/data-access/schema';
+} from '@/modules/plants/data-access/schema'
 
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/use-toast'
 import {
   createPlantUseCase,
   fetchPlantsFromBatchUseCase,
-} from '@/modules/plants/use-cases';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useAction } from 'next-safe-action/hooks';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { PlantsTable } from './PlantsTable';
+} from '@/modules/plants/use-cases'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useAction } from 'next-safe-action/hooks'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { PlantsTable } from './PlantsTable'
 
 export interface PlantsContainerProps {
-  batch: BatchProps;
+  batch: BatchProps
 }
 
 const PlantsContainer = ({ batch }: PlantsContainerProps) => {
-  const [open, setOpen] = useState(false);
-  const [plants, setPlants] = useState<PlantDetailsData[]>([]);
-  const { toast } = useToast();
-  const batchId = batch.id;
+  const [open, setOpen] = useState(false)
+  const [plants, setPlants] = useState<PlantDetailsData[]>([])
+  const { toast } = useToast()
+  const batchId = batch.id
 
   const { execute, status } = useAction(fetchPlantsFromBatchUseCase, {
     onSuccess: (data) => {
-      const { plants } = data?.success as any;
-      setPlants(plants);
+      const { plants } = data?.success as any
+      setPlants(plants)
     },
     onError: (error) => {
       toast({
         title: 'Error',
         description: `Plants could not be fetched: ${error}`,
         duration: 5000,
-      });
+      })
     },
-  });
+  })
 
   const { execute: createPlantExecute } = useAction(createPlantUseCase, {
     onSuccess: (data) => {
-      execute({ batchId }); //re-fetch plants
+      execute({ batchId }) //re-fetch plants
     },
     onError: (error) => {
       toast({
         title: 'Error',
         duration: 5000,
         description: `Plant could not be created: ${error}`,
-      });
+      })
     },
-  });
+  })
 
   const form = useForm<CreatePlantInput>({
     resolver: zodResolver(createPlantInputSchema),
@@ -82,18 +82,18 @@ const PlantsContainer = ({ batch }: PlantsContainerProps) => {
       batchId,
       health: 'HEALTHY',
     },
-  });
+  })
 
   const onSubmit = (data: CreatePlantInput) => {
-    console.log('Create Plant ', data);
-    createPlantExecute({ ...data, batchId });
-    setOpen(false);
-  };
+    console.log('Create Plant ', data)
+    createPlantExecute({ ...data, batchId })
+    setOpen(false)
+  }
 
   useEffect(() => {
-    execute({ batchId });
+    execute({ batchId })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   return (
     <Card>
@@ -155,7 +155,7 @@ const PlantsContainer = ({ batch }: PlantsContainerProps) => {
         </GenericModal>
       </CardFooter>
     </Card>
-  );
-};
+  )
+}
 
-export { PlantsContainer };
+export { PlantsContainer }

@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   ColumnFiltersState,
@@ -10,8 +10,8 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table';
-import { t } from 'i18next';
+} from '@tanstack/react-table'
+import { t } from 'i18next'
 import {
   ArrowUpDown,
   ChevronDown,
@@ -19,14 +19,14 @@ import {
   ChevronRight,
   ChevronUp,
   EyeIcon,
-} from 'lucide-react';
-import { useAction } from 'next-safe-action/hooks';
-import React, { useEffect, useState } from 'react';
+} from 'lucide-react'
+import { useAction } from 'next-safe-action/hooks'
+import React, { useEffect, useState } from 'react'
 
-import SkeletonLoader from '@/app/components/SkeletonLoader';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import SkeletonLoader from '@/app/components/SkeletonLoader'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -34,44 +34,44 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@/components/ui/table'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { siteConfig } from '@/config/site';
-import { logger } from '@/lib/logger';
-import { fetchAllSalesUseCase } from '@/modules/sales/use-cases';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { useRouter } from 'next/navigation';
+} from '@/components/ui/tooltip'
+import { siteConfig } from '@/config/site'
+import { logger } from '@/lib/logger'
+import { fetchAllSalesUseCase } from '@/modules/sales/use-cases'
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
+import { useRouter } from 'next/navigation'
 
 export default function SalesTable() {
-  const [sales, setSales] = useState<any[]>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
-  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
+  const [sales, setSales] = useState<any[]>([])
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
+  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({})
 
   const { execute, status } = useAction(fetchAllSalesUseCase, {
     onSuccess: (data) => {
-      console.info('Fetched sales', data);
-      setSales(data.data?.success ?? []);
+      console.info('Fetched sales', data)
+      setSales(data.data?.success ?? [])
     },
     onError: (error) => {
-      logger.error('Error fetching sales', error);
+      logger.error('Error fetching sales', error)
     },
-  });
+  })
 
   useEffect(() => {
-    execute();
-  }, []);
+    execute()
+  }, [])
 
   const toggleRowExpanded = (rowId: string) => {
-    setExpandedRows((prev) => ({ ...prev, [rowId]: !prev[rowId] }));
-  };
+    setExpandedRows((prev) => ({ ...prev, [rowId]: !prev[rowId] }))
+  }
 
   const getSalesTableColumns = (router: AppRouterInstance) => [
     {
@@ -173,10 +173,10 @@ export default function SalesTable() {
           <Button variant="ghost" className="justify-center text-xs">
             Actions
           </Button>
-        );
+        )
       },
       cell: ({ row }) => {
-        const sale = row.original;
+        const sale = row.original
         return (
           <div className="flex justify-start ">
             <Button
@@ -185,7 +185,7 @@ export default function SalesTable() {
               onClick={() => {
                 router.push(
                   siteConfig.links.sales.detail.replace(':id', sale.id!),
-                );
+                )
               }}
             >
               <TooltipProvider>
@@ -202,13 +202,13 @@ export default function SalesTable() {
               </TooltipProvider>
             </Button>
           </div>
-        );
+        )
       },
     },
-  ];
+  ]
 
   const renderSaleItems = (items: any[], totalPrice: number) => {
-    let sumTotal = 0;
+    let sumTotal = 0
 
     return (
       <div className="space-y-4">
@@ -223,8 +223,8 @@ export default function SalesTable() {
           </TableHeader>
           <TableBody>
             {items.map((item, index) => {
-              const subtotal = item.amount * item.price;
-              sumTotal += subtotal;
+              const subtotal = item.amount * item.price
+              sumTotal += subtotal
               return (
                 <TableRow key={index}>
                   <TableCell>{item.strainName}</TableCell>
@@ -232,7 +232,7 @@ export default function SalesTable() {
                   <TableCell>{item.price.toFixed(2)} €</TableCell>
                   <TableCell>{subtotal.toFixed(2)} €</TableCell>
                 </TableRow>
-              );
+              )
             })}
           </TableBody>
         </Table>
@@ -240,10 +240,10 @@ export default function SalesTable() {
           <span className="font-semibold">Total: {sumTotal.toFixed(2)} €</span>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
-  const router = useRouter();
+  const router = useRouter()
 
   const table = useReactTable({
     data: sales,
@@ -262,10 +262,10 @@ export default function SalesTable() {
       columnVisibility,
       rowSelection,
     },
-  });
+  })
 
   if (status === 'executing') {
-    return <SkeletonLoader />;
+    return <SkeletonLoader />
   }
 
   return (
@@ -367,5 +367,5 @@ export default function SalesTable() {
         </div>
       </div>
     </div>
-  );
+  )
 }

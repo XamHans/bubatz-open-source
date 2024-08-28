@@ -1,30 +1,30 @@
-import SkeletonLoader from '@/app/components/SkeletonLoader';
-import Breadcrumbs from '@/components/generic/BreadCrumbs';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'; // Import Card components
-import { ChevronLeft } from 'lucide-react';
-import Link from 'next/link';
-import { Suspense } from 'react';
-import { getStrainById } from '../../../../../../modules/plants/data-access';
-import { EditStrainForm } from '../components/EditStrainForm';
+import SkeletonLoader from '@/app/components/SkeletonLoader'
+import Breadcrumbs from '@/components/generic/BreadCrumbs'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card' // Import Card components
+import { ChevronLeft } from 'lucide-react'
+import Link from 'next/link'
+import { Suspense } from 'react'
+import { getStrainById } from '../../../../../../modules/plants/data-access'
+import { EditStrainForm } from '../components/EditStrainForm'
 
 const breadcrumbs = [
   { label: 'Dashboard', href: '/dashboard' },
   { label: 'Plants', href: '/plants' },
   { label: 'Strains', href: '/plants' },
-];
+]
 
 interface StrainDetailPageProps {
-  params: { id: number };
+  params: { id: number }
 }
 
 export default async function StrainEditPage({
   params: { id },
 }: StrainDetailPageProps) {
-  const strain = await getStrainById(id);
+  const strain = await getStrainById(id)
 
   if (!strain) {
-    return <div>Strain not found</div>;
+    return <div>Strain not found</div>
   }
 
   return (
@@ -54,5 +54,5 @@ export default async function StrainEditPage({
         </Suspense>
       </div>
     </div>
-  );
+  )
 }

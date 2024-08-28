@@ -1,4 +1,4 @@
-import { type NavItem, type NavItemFooter } from '@/types';
+import { type NavItem, type NavItemFooter } from '@/types'
 
 const links = {
   signIn: '/signin',
@@ -28,7 +28,7 @@ const links = {
       edit: '/plants/strains/:id/edit',
     },
   },
-};
+}
 
 export const siteConfig = {
   name: 'Bubatz Manager',
@@ -151,4 +151,4 @@ export const siteConfig = {
       ],
     },
   ] satisfies NavItemFooter[],
-};
+}

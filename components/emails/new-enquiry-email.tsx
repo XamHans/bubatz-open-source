@@ -9,7 +9,7 @@ import {
   Section,
   Tailwind,
   Text,
-} from "@react-email/components"
+} from '@react-email/components'
 
 interface NewEnquiryEmailProps {
   name: string
@@ -37,7 +37,7 @@ export function NewEnquiryEmail({
               <Hr className="my-2" />
               <Heading>New enquiry from {email}</Heading>
               <Text>
-                {name} has sent you a message from your website. Their email is{" "}
+                {name} has sent you a message from your website. Their email is{' '}
                 <span className="font-bold">{email}</span> and this is what they
                 said:
               </Text>

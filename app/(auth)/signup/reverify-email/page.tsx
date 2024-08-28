@@ -1,23 +1,23 @@
-import { type Metadata } from 'next';
-import Link from 'next/link';
+import { type Metadata } from 'next'
+import Link from 'next/link'
 
-import { env } from '@/env.mjs';
+import { env } from '@/env.mjs'
 
-import { buttonVariants } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { EmailVerificationForm } from '../components/email-verification-form';
+} from '@/components/ui/card'
+import { EmailVerificationForm } from '../components/email-verification-form'
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: 'Email Verification',
   description: 'Provide your email address to receive the verification link',
-};
+}
 
 export default function ReverifyEmailPage(): JSX.Element {
   return (
@@ -42,5 +42,5 @@ export default function ReverifyEmailPage(): JSX.Element {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

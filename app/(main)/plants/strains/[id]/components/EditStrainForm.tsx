@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   Form,
@@ -8,35 +8,35 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/components/ui/use-toast';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { useToast } from '@/components/ui/use-toast'
 import {
   StrainProps,
   UpdateStrainInput,
   updateStrainInputSchema,
-} from '@/modules/plants/data-access/schema';
-import { updateStrainUseCase } from '@/modules/plants/use-cases';
-import { zodResolver } from '@hookform/resolvers/zod';
-import debounce from 'lodash/debounce';
-import { useAction } from 'next-safe-action/hooks';
-import { useCallback, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+} from '@/modules/plants/data-access/schema'
+import { updateStrainUseCase } from '@/modules/plants/use-cases'
+import { zodResolver } from '@hookform/resolvers/zod'
+import debounce from 'lodash/debounce'
+import { useAction } from 'next-safe-action/hooks'
+import { useCallback, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 
 interface EditStrainFormProps {
-  strain: StrainProps;
+  strain: StrainProps
 }
 
 export function EditStrainForm({ strain }: EditStrainFormProps) {
-  const { toast } = useToast();
+  const { toast } = useToast()
 
   const form = useForm<UpdateStrainInput>({
     resolver: zodResolver(updateStrainInputSchema),
     defaultValues: {
       ...strain,
     },
-  });
+  })
 
   const { execute, status } = useAction(updateStrainUseCase, {
     onSuccess: ({ data }) => {
@@ -44,34 +44,34 @@ export function EditStrainForm({ strain }: EditStrainFormProps) {
         title: 'Success',
         duration: 1000,
         description: 'Strain updated successfully',
-      });
+      })
     },
     onError: (error) => {
       toast({
         title: 'Error',
         variant: 'destructive',
         description: `Strain could not be updated ${error}`,
-      });
+      })
     },
-  });
+  })
 
   // Create a debounced version of the execute function
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedExecute = useCallback(
     debounce((data: UpdateStrainInput) => {
-      execute(data);
+      execute(data)
     }, 500),
     [execute],
-  );
+  )
 
   useEffect(() => {
     const subscription = form.watch((value, { name, type }) => {
-      const formData = form.getValues();
-      debouncedExecute({ ...strain, ...formData });
-    });
+      const formData = form.getValues()
+      debouncedExecute({ ...strain, ...formData })
+    })
 
-    return () => subscription.unsubscribe();
-  }, [form, debouncedExecute, strain]);
+    return () => subscription.unsubscribe()
+  }, [form, debouncedExecute, strain])
 
   return (
     <Form {...form}>
@@ -157,5 +157,5 @@ export function EditStrainForm({ strain }: EditStrainFormProps) {
         />
       </form>
     </Form>
-  );
+  )
 }

@@ -1,8 +1,8 @@
-import * as z from 'zod';
+import * as z from 'zod'
 
-import { members } from '@/modules/members/data-access/schema';
-import { emailSchema } from '@/validations/email';
-import { memberIdSchema, passwordSchema } from './auth';
+import { members } from '@/modules/members/data-access/schema'
+import { emailSchema } from '@/validations/email'
+import { memberIdSchema, passwordSchema } from './auth'
 
 export const userSchema = z.object({
   role: z
@@ -13,23 +13,23 @@ export const userSchema = z.object({
     .default('MEMBER'),
   email: emailSchema,
   password: passwordSchema,
-});
+})
 
 export const getUserByEmailSchema = z.object({
   email: emailSchema,
-});
+})
 
 export const getUserByIdSchema = z.object({
   id: memberIdSchema,
-});
+})
 
 export const getUserByResetPasswordTokenSchema = z.object({
   token: z.string(),
-});
+})
 
 export const getUserByEmailVerificationTokenSchema = z.object({
   token: z.string(),
-});
+})
 
 export const addUserAsAdminSchema = userSchema
   .extend({
@@ -38,7 +38,7 @@ export const addUserAsAdminSchema = userSchema
   .refine((schema) => schema.password === schema.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
-  });
+  })
 
 export const updateUserAsAdminSchema = userSchema
   .omit({
@@ -47,7 +47,7 @@ export const updateUserAsAdminSchema = userSchema
   .extend({
     id: memberIdSchema,
     createdAt: z.date(),
-  });
+  })
 
 export const updateUserSchema = userSchema
   .omit({
@@ -55,30 +55,30 @@ export const updateUserSchema = userSchema
   })
   .extend({
     confirmPassword: passwordSchema,
-  });
+  })
 
 export const deleteUserSchema = z.object({
   id: memberIdSchema,
-});
+})
 
 export const checkIfUserExistsSchema = z.object({
   id: memberIdSchema,
-});
+})
 
-export type GetUserByEmailInput = z.infer<typeof getUserByEmailSchema>;
+export type GetUserByEmailInput = z.infer<typeof getUserByEmailSchema>
 
-export type GetUserByIdInput = z.infer<typeof getUserByIdSchema>;
+export type GetUserByIdInput = z.infer<typeof getUserByIdSchema>
 
 export type GetUserByResetPasswordTokenInput = z.infer<
   typeof getUserByResetPasswordTokenSchema
->;
+>
 
 export type GetUserByEmailVerificationTokenInput = z.infer<
   typeof getUserByEmailVerificationTokenSchema
->;
+>
 
-export type UpdateUserInput = z.infer<typeof updateUserSchema>;
+export type UpdateUserInput = z.infer<typeof updateUserSchema>
 
-export type DeleteUserInput = z.infer<typeof deleteUserSchema>;
+export type DeleteUserInput = z.infer<typeof deleteUserSchema>
 
-export type CheckIfUserExistsInput = z.infer<typeof checkIfUserExistsSchema>;
+export type CheckIfUserExistsInput = z.infer<typeof checkIfUserExistsSchema>

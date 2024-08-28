@@ -1,10 +1,10 @@
-'use client';
+'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
 
-import { CustomDatePicker } from '@/components/generic/CustomDatePicker';
-import { Button } from '@/components/ui/button';
+import { CustomDatePicker } from '@/components/generic/CustomDatePicker'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -12,35 +12,35 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { useToast } from '@/components/ui/use-toast';
-import { siteConfig } from '@/config/site';
+} from '@/components/ui/select'
+import { useToast } from '@/components/ui/use-toast'
+import { siteConfig } from '@/config/site'
 import {
   CreateBatchInput,
   createBatchInputSchema,
   StrainProps,
-} from '@/modules/plants/data-access/schema';
-import { GrowPhase } from '@/modules/plants/types';
+} from '@/modules/plants/data-access/schema'
+import { GrowPhase } from '@/modules/plants/types'
 import {
   createBatchUseCase,
   fetchStrainsUseCase,
-} from '@/modules/plants/use-cases';
-import { useAction } from 'next-safe-action/hooks';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+} from '@/modules/plants/use-cases'
+import { useAction } from 'next-safe-action/hooks'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 const CreateBatchForm = () => {
-  const router = useRouter();
-  const [strains, setStrains] = useState<StrainProps[]>([]);
-  const { toast } = useToast();
+  const router = useRouter()
+  const [strains, setStrains] = useState<StrainProps[]>([])
+  const { toast } = useToast()
 
   const { execute, status } = useAction(createBatchUseCase, {
     onSuccess: ({ data }) => {
@@ -48,33 +48,33 @@ const CreateBatchForm = () => {
         title: 'Success',
         duration: 1000,
         description: 'Batch created successfully',
-      });
+      })
       const redictUrl = siteConfig.links.plants.batches.detail.replace(
         ':id',
         //@ts-ignore
         data?.success,
-      );
-      router.push(redictUrl);
+      )
+      router.push(redictUrl)
     },
     onError: ({ error }) => {
       toast({
         title: 'Error',
         variant: 'destructive',
         description: `Batch could not be created ${error?.serverError}`,
-      });
+      })
     },
-  });
+  })
 
   const fetchStrains = useAction(fetchStrainsUseCase, {
     onSuccess: ({ data }) => {
       //@ts-ignore
-      setStrains(data?.success);
+      setStrains(data?.success)
     },
-  });
+  })
 
   useEffect(() => {
-    fetchStrains.execute();
-  }, []);
+    fetchStrains.execute()
+  }, [])
 
   const form = useForm<CreateBatchInput>({
     resolver: zodResolver(createBatchInputSchema),
@@ -85,12 +85,12 @@ const CreateBatchForm = () => {
       currentGrowthStage: '',
       strainId: null,
     },
-  });
+  })
 
   const onSubmit = (data: CreateBatchInput) => {
     //@ts-ignore
-    execute(data);
-  };
+    execute(data)
+  }
 
   return (
     <Form {...form}>
@@ -200,7 +200,7 @@ const CreateBatchForm = () => {
         </Button>
       </form>
     </Form>
-  );
-};
+  )
+}
 
-export default CreateBatchForm;
+export default CreateBatchForm

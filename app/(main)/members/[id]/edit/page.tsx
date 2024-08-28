@@ -1,31 +1,31 @@
-import SkeletonLoader from '@/app/components/SkeletonLoader';
-import { auth } from '@/auth';
-import Breadcrumbs from '@/components/generic/BreadCrumbs';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'; // Import Card components
-import { getMemberDetail } from '@/modules/members/data-access';
-import { ChevronLeft } from 'lucide-react';
-import Link from 'next/link';
-import { Suspense } from 'react';
-import { EditMemberForm } from '../components/EditMemberForm';
+import SkeletonLoader from '@/app/components/SkeletonLoader'
+import { auth } from '@/auth'
+import Breadcrumbs from '@/components/generic/BreadCrumbs'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card' // Import Card components
+import { getMemberDetail } from '@/modules/members/data-access'
+import { ChevronLeft } from 'lucide-react'
+import Link from 'next/link'
+import { Suspense } from 'react'
+import { EditMemberForm } from '../components/EditMemberForm'
 
 interface MemberDetailPageProps {
-  params: { id: string };
+  params: { id: string }
 }
 
 export default async function MemberEditPage({
   params: { id },
 }: MemberDetailPageProps) {
-  const member = await getMemberDetail(id);
+  const member = await getMemberDetail(id)
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Members', href: '/members' },
     { label: id, href: '/' },
-  ];
-  const session = await auth();
+  ]
+  const session = await auth()
 
   if (!member) {
-    return <div>Member not found</div>;
+    return <div>Member not found</div>
   }
 
   return (
@@ -55,5 +55,5 @@ export default async function MemberEditPage({
         </Suspense>
       </div>
     </div>
-  );
+  )
 }

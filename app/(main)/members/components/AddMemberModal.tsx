@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
-import { Button } from '../../../../components/ui/button';
-import { DialogClose, DialogFooter } from '../../../../components/ui/dialog';
+import { Button } from '../../../../components/ui/button'
+import { DialogClose, DialogFooter } from '../../../../components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -9,68 +9,68 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../../../../components/ui/form';
-import { Input } from '../../../../components/ui/input';
+} from '../../../../components/ui/form'
+import { Input } from '../../../../components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../../components/ui/select';
+} from '../../../../components/ui/select'
 import {
   AddMemberInput,
   UserSchema,
   addMemberInputSchema,
-} from '../../../../modules/members/data-access/schema';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { t } from 'i18next';
-import { useForm } from 'react-hook-form';
+} from '../../../../modules/members/data-access/schema'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { t } from 'i18next'
+import { useForm } from 'react-hook-form'
 
-import { ClubMemberStatus } from '../../../../modules/members/types';
-import { addMemberUseCase } from '../../../../modules/members/use-cases';
-import { useAction } from 'next-safe-action/hooks';
-import { GenericAddModal } from '../../members/components/GenericAddModal';
-import DatePicker from 'react-datepicker';
-import { useState } from 'react';
-import 'react-datepicker/dist/react-datepicker.css';
-import { FaCalendarAlt } from 'react-icons/fa';
-import React from 'react';
-import { set } from 'date-fns';
+import { ClubMemberStatus } from '../../../../modules/members/types'
+import { addMemberUseCase } from '../../../../modules/members/use-cases'
+import { useAction } from 'next-safe-action/hooks'
+import { GenericAddModal } from '../../members/components/GenericAddModal'
+import DatePicker from 'react-datepicker'
+import { useState } from 'react'
+import 'react-datepicker/dist/react-datepicker.css'
+import { FaCalendarAlt } from 'react-icons/fa'
+import React from 'react'
+import { set } from 'date-fns'
 
 interface AddMemberModalProps {
-  setMembers: React.Dispatch<React.SetStateAction<UserSchema[]>>;
-  className?: string;
+  setMembers: React.Dispatch<React.SetStateAction<UserSchema[]>>
+  className?: string
 }
 
 const AddMemberModal: React.FC<AddMemberModalProps> = ({ setMembers }) => {
   const { execute } = useAction(addMemberUseCase, {
     onSuccess: (result) => {
-      console.log('Member added successfully', result);
-      const newMember: UserSchema[] | undefined = result.success;
-      if (newMember) setMembers((prev) => prev.concat(newMember));
+      console.log('Member added successfully', result)
+      const newMember: UserSchema[] | undefined = result.success
+      if (newMember) setMembers((prev) => prev.concat(newMember))
     },
     onError: (error) => {
-      console.log('Error adding member', error);
+      console.log('Error adding member', error)
     },
-  });
+  })
 
   const form = useForm<AddMemberInput>({
     mode: 'onChange',
     resolver: zodResolver(addMemberInputSchema),
-  });
+  })
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   const handleSave = (data: AddMemberInput) => {
-    console.log('Data:', data);
+    console.log('Data:', data)
     try {
-      const result = execute(data);
-      setOpen(false);
+      const result = execute(data)
+      setOpen(false)
     } catch (error) {
-      console.log('Error added member', error);
+      console.log('Error added member', error)
     }
-  };
+  }
 
   return (
     <GenericAddModal
@@ -241,7 +241,7 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({ setMembers }) => {
         </form>
       </Form>
     </GenericAddModal>
-  );
-};
+  )
+}
 
-export { AddMemberModal };
+export { AddMemberModal }

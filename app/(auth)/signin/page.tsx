@@ -1,9 +1,9 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
+import type { Metadata } from 'next'
+import Link from 'next/link'
 
-import { env } from '@/env.mjs';
+import { env } from '@/env.mjs'
 
-import { Icons } from '@/components/generic/Icons';
+import { Icons } from '@/components/generic/Icons'
 import {
   Card,
   CardContent,
@@ -11,14 +11,14 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { SignInWithPasswordForm } from './components/signin-with-password-form';
+} from '@/components/ui/card'
+import { SignInWithPasswordForm } from './components/signin-with-password-form'
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: 'Sign In',
   description: 'Sign in to your account',
-};
+}
 
 export default async function SignInPage(): Promise<JSX.Element> {
   return (
@@ -89,5 +89,5 @@ export default async function SignInPage(): Promise<JSX.Element> {
         </CardFooter>
       </Card>
     </div>
-  );
+  )
 }

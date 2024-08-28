@@ -1,8 +1,8 @@
-'use server';
+'use server'
 
-import { db } from '@/lib/db/db';
-import { AsyncReturnType } from '@/types';
-import { and, eq } from 'drizzle-orm';
+import { db } from '@/lib/db/db'
+import { AsyncReturnType } from '@/types'
+import { and, eq } from 'drizzle-orm'
 import {
   CreateBatchInput,
   CreatePlantInput,
@@ -15,7 +15,7 @@ import {
   batches,
   plants,
   strains,
-} from './schema';
+} from './schema'
 /**
  * Here is an example CRUD methods for the plants table.
  * If you plan to keep your code base "clean", we recommend
@@ -36,34 +36,34 @@ const getBatches = async () => {
     })
     .from(batches)
     .leftJoin(strains, eq(batches.strainId, strains.id))
-    .where(eq(batches.isArchived, false));
+    .where(eq(batches.isArchived, false))
 
-  return allBatches;
-};
+  return allBatches
+}
 
 export const createBatch = async (input: CreateBatchInput) => {
   //@ts-ignore
-  const newBatch = await db.insert(batches).values(input).returning();
-  return newBatch[0];
-};
+  const newBatch = await db.insert(batches).values(input).returning()
+  return newBatch[0]
+}
 
 export const updateBatch = async (id: string, data: UpdateBatchInput) => {
   return await db
     .update(batches)
     .set(data)
     .where(eq(batches.id, id))
-    .returning();
-};
+    .returning()
+}
 
 const getBatchDetail = async (id: string) => {
   const foundBatches = await db
     .select()
     .from(batches)
     .where(eq(batches.id, id))
-    .limit(1);
-  console.log(' foundBatches[0];', foundBatches[0]);
-  return foundBatches[0];
-};
+    .limit(1)
+  console.log(' foundBatches[0];', foundBatches[0])
+  return foundBatches[0]
+}
 
 export const getBatchById = async (id: string) => {
   const result = await db
@@ -71,72 +71,72 @@ export const getBatchById = async (id: string) => {
     .from(batches)
     .leftJoin(strains, eq(batches.strainId, strains.id))
     .where(eq(batches.id, id))
-    .limit(1);
-  return result[0];
-};
+    .limit(1)
+  return result[0]
+}
 
 export const getBatchesByStrainId = async (strainId: number) => {
   const result = await db
     .select()
     .from(batches)
-    .where(and(eq(batches.strainId, strainId), eq(batches.isArchived, false)));
-  return result;
-};
+    .where(and(eq(batches.strainId, strainId), eq(batches.isArchived, false)))
+  return result
+}
 
 const getPlants = async () => {
-  const allPlants = await db.select().from(plants);
-  return allPlants;
-};
+  const allPlants = await db.select().from(plants)
+  return allPlants
+}
 
 export const getPlantsByBatchId = async (batchId: string) => {
-  return await db.select().from(plants).where(eq(plants.batchId, batchId));
-};
+  return await db.select().from(plants).where(eq(plants.batchId, batchId))
+}
 
 export const createPlant = async (input: CreatePlantInput) => {
-  return await db.insert(plants).values(input);
-};
+  return await db.insert(plants).values(input)
+}
 
 export const deletePlant = async (input: DeletePlantInput) => {
-  return await db.delete(plants).where(eq(plants.id, input.id));
-};
+  return await db.delete(plants).where(eq(plants.id, input.id))
+}
 
 export const updatePlant = async (id: number, data: UpdatePlantInput) => {
-  return await db.update(plants).set(data).where(eq(plants.id, id));
-};
+  return await db.update(plants).set(data).where(eq(plants.id, id))
+}
 
-export type BatchDetailsData = AsyncReturnType<typeof getBatchDetail>;
-export type PlantDetailsData = AsyncReturnType<typeof getPlantsByBatchId>;
+export type BatchDetailsData = AsyncReturnType<typeof getBatchDetail>
+export type PlantDetailsData = AsyncReturnType<typeof getPlantsByBatchId>
 
-export { getBatchDetail, getBatches, getPlants };
+export { getBatchDetail, getBatches, getPlants }
 
 export const getStrains = async () => {
-  const allStrains = await db.select().from(strains);
-  return allStrains;
-};
+  const allStrains = await db.select().from(strains)
+  return allStrains
+}
 
 export const getStrainById = async (id: number) => {
   const result = await db
     .select()
     .from(strains)
     .where(eq(strains.id, id))
-    .limit(1);
-  return result[0];
-};
+    .limit(1)
+  return result[0]
+}
 
 export const createStrain = async (input: CreateStrainInput) => {
-  const newStrain = await db.insert(strains).values(input).returning();
-  console.info('newStrain', newStrain);
-  return newStrain[0];
-};
+  const newStrain = await db.insert(strains).values(input).returning()
+  console.info('newStrain', newStrain)
+  return newStrain[0]
+}
 
 export const updateStrain = async (input: UpdateStrainInput) => {
   return await db
     .update(strains)
     .set(input)
     .where(eq(strains.id, input.id))
-    .returning();
-};
+    .returning()
+}
 
 export const deleteStrain = async (input: DeleteStrainInput) => {
-  return await db.delete(strains).where(eq(strains.id, input.id));
-};
+  return await db.delete(strains).where(eq(strains.id, input.id))
+}

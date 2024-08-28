@@ -2,25 +2,25 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Plus, Trash } from "lucide-react";
-import { useFieldArray, useForm } from "react-hook-form";
-import * as z from "zod";
-import { beautifyObjectName } from "../utils";
-import AutoFormObject from "./object";
+} from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import { Plus, Trash } from 'lucide-react'
+import { useFieldArray, useForm } from 'react-hook-form'
+import * as z from 'zod'
+import { beautifyObjectName } from '../utils'
+import AutoFormObject from './object'
 
 function isZodArray(
   item: z.ZodArray<any> | z.ZodDefault<any>,
 ): item is z.ZodArray<any> {
-  return item instanceof z.ZodArray;
+  return item instanceof z.ZodArray
 }
 
 function isZodDefault(
   item: z.ZodArray<any> | z.ZodDefault<any>,
 ): item is z.ZodDefault<any> {
-  return item instanceof z.ZodDefault;
+  return item instanceof z.ZodDefault
 }
 
 export default function AutoFormArray({
@@ -30,30 +30,30 @@ export default function AutoFormArray({
   path = [],
   fieldConfig,
 }: {
-  name: string;
-  item: z.ZodArray<any> | z.ZodDefault<any>;
-  form: ReturnType<typeof useForm>;
-  path?: string[];
-  fieldConfig?: any;
+  name: string
+  item: z.ZodArray<any> | z.ZodDefault<any>
+  form: ReturnType<typeof useForm>
+  path?: string[]
+  fieldConfig?: any
 }) {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name,
-  });
-  const title = item._def.description ?? beautifyObjectName(name);
+  })
+  const title = item._def.description ?? beautifyObjectName(name)
 
   const itemDefType = isZodArray(item)
     ? item._def.type
     : isZodDefault(item)
-    ? item._def.innerType._def.type
-    : null;
+      ? item._def.innerType._def.type
+      : null
 
   return (
     <AccordionItem value={name} className="border-none">
       <AccordionTrigger>{title}</AccordionTrigger>
       <AccordionContent>
         {fields.map((_field, index) => {
-          const key = _field.id;
+          const key = _field.id
           return (
             <div className="mt-4 flex flex-col" key={`${key}`}>
               <AutoFormObject
@@ -76,7 +76,7 @@ export default function AutoFormArray({
 
               <Separator />
             </div>
-          );
+          )
         })}
         <Button
           type="button"
@@ -89,5 +89,5 @@ export default function AutoFormArray({
         </Button>
       </AccordionContent>
     </AccordionItem>
-  );
+  )
 }
