@@ -25,7 +25,7 @@ import {
   type PasswordUpdateFormInputExtended,
   type SignInWithPasswordFormInput,
   type SignUpWithPasswordFormInput,
-} from '../validations/auth';
+} from '../data-access/auth';
 import { getUserByEmail, getUserByResetPasswordToken } from './user';
 
 export async function signUpWithPassword(
@@ -102,7 +102,6 @@ export async function signInWithPassword(
     });
 
     console.log({ signInResult });
-
 
     return 'success';
   } catch (error) {

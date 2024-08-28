@@ -8,7 +8,6 @@ import {
   psGetUserById,
   psGetUserByResetPasswordToken,
 } from '@/lib/db/prepared/statements';
-import { UserSchema } from '@/modules/members/data-access/schema';
 import {
   getUserByEmailSchema,
   getUserByEmailVerificationTokenSchema,
@@ -18,7 +17,8 @@ import {
   type GetUserByEmailVerificationTokenInput,
   type GetUserByIdInput,
   type GetUserByResetPasswordTokenInput,
-} from '@/validations/user';
+} from '@/modules/auth/data-access/user';
+import { UserSchema } from '@/modules/members/data-access/schema';
 
 export async function getUserById(
   rawInput: GetUserByIdInput,

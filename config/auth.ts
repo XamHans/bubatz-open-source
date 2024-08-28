@@ -1,4 +1,3 @@
-import { getUserByEmail } from '@/actions/user';
 import bcryptjs from 'bcryptjs';
 import type { NextAuthConfig } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -8,7 +7,8 @@ import ResendProvider from 'next-auth/providers/resend';
 import { MagicLinkEmail } from '@/components/emails/magic-link-email';
 import { resend } from '@/config/email';
 import { siteConfig } from '@/config/site';
-import { signInWithPasswordSchema } from '@/validations/auth';
+import { signInWithPasswordSchema } from '@/modules/auth/data-access/auth';
+import { getUserByEmail } from '@/modules/auth/use-cases/user';
 
 export default {
   providers: [

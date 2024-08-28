@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form';
 import {
   signInWithEmailSchema,
   type SignInWithEmailFormInput,
-} from '@/validations/auth';
+} from '@/modules/auth/data-access/auth';
 
 import { Icons } from '@/components/generic/Icons';
 import { Button } from '@/components/ui/button';

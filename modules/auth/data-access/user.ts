@@ -1,8 +1,8 @@
 import * as z from 'zod';
 
 import { members } from '@/modules/members/data-access/schema';
-import { memberIdSchema, passwordSchema } from '@/validations/auth';
 import { emailSchema } from '@/validations/email';
+import { memberIdSchema, passwordSchema } from './auth';
 
 export const userSchema = z.object({
   role: z
