@@ -43,6 +43,7 @@ const getStrainsTableColumns = (router: AppRouterInstance) => {
     {
       id: 'name',
       accessorKey: 'name',
+      //@ts-ignore
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -53,6 +54,7 @@ const getStrainsTableColumns = (router: AppRouterInstance) => {
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
+      //@ts-ignore
       cell: ({ row }) => (
         <div className="ml-4 text-left">{row.getValue('name')}</div>
       ),

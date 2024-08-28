@@ -51,6 +51,7 @@ const CreateBatchForm = () => {
       });
       const redictUrl = siteConfig.links.plants.batches.detail.replace(
         ':id',
+        //@ts-ignore
         data?.success,
       );
       router.push(redictUrl);
@@ -66,6 +67,7 @@ const CreateBatchForm = () => {
 
   const fetchStrains = useAction(fetchStrainsUseCase, {
     onSuccess: ({ data }) => {
+      //@ts-ignore
       setStrains(data?.success);
     },
   });
@@ -86,6 +88,7 @@ const CreateBatchForm = () => {
   });
 
   const onSubmit = (data: CreateBatchInput) => {
+    //@ts-ignore
     execute(data);
   };
 

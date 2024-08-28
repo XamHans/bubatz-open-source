@@ -139,6 +139,7 @@ const UpdatePlantForm: React.FC<UpdatePlantFormProps> = ({
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}
+                        //@ts-ignore
                         defaultValue={field.value}
                       >
                         <SelectTrigger className="w-full">

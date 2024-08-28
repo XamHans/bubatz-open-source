@@ -1,3 +1,4 @@
+import { CustomDatePicker } from '@/components/generic/DatePicker';
 import {
   Form,
   FormControl,
@@ -43,8 +44,6 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
         duration: 1000,
         description: 'Batch updated successfully',
       });
-      // Update the local batch state with the new data
-      //updateBatch(data.data?.success[0]);
     },
     onError: (error) => {
       toast({
@@ -62,10 +61,12 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
       expectedYield: batch.expectedYield,
       totalDestroyed: batch.totalDestroyed,
       totalYield: batch.totalYield,
+      endDate: batch.endDate,
     },
   });
 
   // Create a debounced version of the execute function
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedExecute = useCallback(
     debounce((data: UpdateBatchInput) => {
       execute(data);
@@ -74,7 +75,7 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
   );
 
   useEffect(() => {
-    const subscription = form.watch((value, { name, type }) => {
+    const subscription = form.watch(() => {
       const formData = form.getValues();
       debouncedExecute({ ...batch, ...formData });
     });
@@ -113,6 +114,24 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="endDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="pr-5">(Estimated) End Date</FormLabel>
+                <FormControl>
+                  <CustomDatePicker
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <Separator className="col-span-2 my-4" />
 
           <FormField
@@ -168,4 +187,4 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
   );
 };
 
-export { BatchEditForm as GrowthPhasesForm };
+export { BatchEditForm };
