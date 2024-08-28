@@ -76,6 +76,12 @@ const PlantsContainer = ({ batch }: PlantsContainerProps) => {
 
   const form = useForm<CreatePlantInput>({
     resolver: zodResolver(createPlantInputSchema),
+    defaultValues: {
+      name: '',
+      position: '',
+      batchId,
+      health: 'HEALTHY',
+    },
   });
 
   const onSubmit = (data: CreatePlantInput) => {
@@ -86,6 +92,7 @@ const PlantsContainer = ({ batch }: PlantsContainerProps) => {
 
   useEffect(() => {
     execute({ batchId });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -114,7 +121,6 @@ const PlantsContainer = ({ batch }: PlantsContainerProps) => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel>{t('MEMBER.FIRST_NAME')}</FormLabel> */}
                     <FormLabel>Name</FormLabel>
                     <FormControl>
                       <Input
@@ -132,7 +138,6 @@ const PlantsContainer = ({ batch }: PlantsContainerProps) => {
                 name="position"
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel>{t('MEMBER.LAST_NAME')}</FormLabel> */}
                     <FormLabel>Position</FormLabel>
                     <FormControl>
                       <Input

@@ -1,0 +1,1 @@
+ALTER TABLE "protected"."batches" ALTER COLUMN "start_date" SET DEFAULT CURRENT_DATE;

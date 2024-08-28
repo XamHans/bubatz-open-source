@@ -1,18 +1,23 @@
-import { createSafeActionClient } from 'next-safe-action';
+import {
+  createSafeActionClient,
+  DEFAULT_SERVER_ERROR_MESSAGE,
+} from 'next-safe-action';
 import { logger } from './logger';
 
 export const actionClient = createSafeActionClient({
-    // Can also be an async function.
-    handleServerErrorLog(originalError, utils) {
-        // You can access these properties inside the `utils` object.
-        // Note that here you also have access to the custom server error defined by `handleReturnedServerError`.
-        const { clientInput, bindArgsClientInputs, metadata, ctx, returnedError } =
-            utils;
+  handleReturnedServerError(e) {
+    // In this case, we can use the 'MyCustomError` class to unmask errors
+    // and return them with their actual messages to the client.
+    if (e instanceof Error) {
+      return e.message;
+    }
 
-        // We can, for example, also send the error to a dedicated logging system.
-        //reportToErrorHandlingSystem(originalError);
-        logger.info(utils);
-        // And also log it to the console.
-        logger.error('Server  error:', originalError.message);
-    },
+    // Every other error that occurs will be masked with the default message.
+    return DEFAULT_SERVER_ERROR_MESSAGE;
+  },
+  // Can also be an async function.
+  handleServerErrorLog(originalError, utils) {
+    // And also log it to the console.
+    logger.error(originalError, 'Server  error:');
+  },
 });

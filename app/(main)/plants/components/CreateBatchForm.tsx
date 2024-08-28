@@ -21,7 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { logger } from '@/lib/logger';
+import { useToast } from '@/components/ui/use-toast';
+import { siteConfig } from '@/config/site';
 import {
   CreateBatchInput,
   createBatchInputSchema,
@@ -29,26 +30,37 @@ import {
 } from '@/modules/plants/data-access/schema';
 import { GrowPhase } from '@/modules/plants/types';
 import {
-  addBatchUseCase,
+  createBatchUseCase,
   fetchStrainsUseCase,
 } from '@/modules/plants/use-cases';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import 'react-datepicker/dist/react-datepicker.css';
 
 const CreateBatchForm = () => {
   const router = useRouter();
   const [strains, setStrains] = useState<StrainProps[]>([]);
+  const { toast } = useToast();
 
-  const { execute, status } = useAction(addBatchUseCase, {
+  const { execute, status } = useAction(createBatchUseCase, {
     onSuccess: ({ data }) => {
-      console.log('Batch id', data.success[0].insertedId);
-      const batchId = data.success[0].insertedId;
-      router.push(`/plants/${batchId}`);
+      toast({
+        title: 'Success',
+        duration: 1000,
+        description: 'Batch created successfully',
+      });
+      const redictUrl = siteConfig.links.plants.batches.detail.replace(
+        ':id',
+        data?.success,
+      );
+      router.push(redictUrl);
     },
-    onError: (error) => {
-      console.log('Error creating batch', error);
+    onError: ({ error }) => {
+      toast({
+        title: 'Error',
+        variant: 'destructive',
+        description: `Batch could not be created ${error?.serverError}`,
+      });
     },
   });
 
@@ -59,15 +71,21 @@ const CreateBatchForm = () => {
   });
 
   useEffect(() => {
-    fetchStrains.execute({});
+    fetchStrains.execute();
   }, []);
 
   const form = useForm<CreateBatchInput>({
     resolver: zodResolver(createBatchInputSchema),
+    defaultValues: {
+      name: '',
+      //@ts-ignore
+      startDate: new Date(),
+      currentGrowthStage: '',
+      strainId: null,
+    },
   });
 
   const onSubmit = (data: CreateBatchInput) => {
-    logger.info('Creating batch', data);
     execute(data);
   };
 
@@ -119,7 +137,7 @@ const CreateBatchForm = () => {
           name="startDate"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Start Date</FormLabel>
+              <FormLabel className="pr-5">Start Date</FormLabel>
               <FormControl>
                 <CustomDatePicker
                   value={field.value}
@@ -135,7 +153,7 @@ const CreateBatchForm = () => {
           name="endDate"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>(Estimated) End Date</FormLabel>
+              <FormLabel className="pr-5">(Estimated) End Date</FormLabel>
               <FormControl>
                 <CustomDatePicker
                   value={field.value}
@@ -174,12 +192,8 @@ const CreateBatchForm = () => {
           )}
         />
 
-        <Button
-          type="submit"
-          disabled={status === 'loading'}
-          className="col-span-2"
-        >
-          {status === 'loading' ? 'Creating...' : 'Create Batch'}
+        <Button type="submit" className="col-span-2">
+          {status === 'executing' ? 'Creating...' : 'Create Batch'}
         </Button>
       </form>
     </Form>

@@ -1,6 +1,5 @@
 'use client';
 
-import { signUpWithPassword } from '@/actions/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
@@ -23,6 +22,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
+import { signUpWithPassword } from '@/modules/auth/use-cases/auth';
 import { PasswordInput } from './password-input';
 
 export function SignUpWithPasswordForm(): JSX.Element {

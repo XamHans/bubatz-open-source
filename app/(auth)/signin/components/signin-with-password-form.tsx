@@ -1,6 +1,5 @@
 'use client';
 
-import { signInWithPassword } from '@/actions/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
@@ -24,6 +23,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { siteConfig } from '@/config/site';
+import { signInWithPassword } from '@/modules/auth/use-cases/auth';
 import { PasswordInput } from '../../signup/components/password-input';
 
 export function SignInWithPasswordForm(): JSX.Element {

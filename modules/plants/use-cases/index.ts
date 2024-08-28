@@ -39,13 +39,13 @@ import {
 } from '../data-access/schema';
 
 // -------------- Batches
-export const addBatchUseCase = actionClient
+export const createBatchUseCase = actionClient
   .schema(createBatchInputSchema)
   .action(async ({ parsedInput }) => {
-    logger.info('Creating batch with data:', parsedInput);
+    logger.info(parsedInput, 'Creating batch with data:');
     console.log('new start date ', parsedInput.startDate);
-    const newBatchId = await createBatch(parsedInput);
-    return { success: newBatchId };
+    const newBatch = await createBatch(parsedInput);
+    return { success: newBatch.id };
   });
 
 export const fetchBatchesUseCase = actionClient.action(async () => {
@@ -99,16 +99,14 @@ export type FetchPlantsSuccess = SuccessResponse<{
 export const fetchPlantsFromBatchUseCase = actionClient
   .schema(z.object({ batchId: z.string() }))
   .action(async ({ parsedInput }) => {
-    const plants = await getPlantsByBatchId(parsedInput.batchId);
-    if (!plants) {
-      return { failure: 'plants not found' };
-    }
+    const plants = (await getPlantsByBatchId(parsedInput.batchId)) ?? [];
+
     return { success: { plants } };
   });
 
 export const fetchPlantsUseCase = actionClient.action(async () => {
   const plants = await getPlants();
-  return { plants };
+  return { success: plants };
 });
 
 export const createPlantUseCase = actionClient

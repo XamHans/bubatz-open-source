@@ -45,7 +45,7 @@ const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
     }
   };
 
-  const hasAdditionalInfo = member.firstName && member.lastName && member.street && member.zip && member.city && member.birthday && member.createdAt;
+  const hasAdditionalInfo = member.firstName && member.lastName;
 
   return (
     <Card className="w-full">
@@ -68,7 +68,9 @@ const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
             {member.firstName} {member.lastName}
           </CardTitle>
           <div className="mt-2 flex justify-center gap-2">
-            {member.status && <Badge variant="secondary">{member.status}</Badge>}
+            {member.status && (
+              <Badge variant="secondary">{member.status}</Badge>
+            )}
             {member.isAdmin && <Badge variant="default">Admin</Badge>}
           </div>
         </CardHeader>

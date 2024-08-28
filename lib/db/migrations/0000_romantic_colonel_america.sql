@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS "protected"."members" (
 	"last_name" text,
 	"full_name" text,
 	"birthday" date,
+	"image" text,
 	"email" text,
 	"phone" text,
 	"street" text,
@@ -74,14 +75,13 @@ CREATE TABLE IF NOT EXISTS "protected"."members" (
 	"zip" text,
 	"status" text DEFAULT 'PENDING',
 	"role" "member_role" DEFAULT 'MEMBER',
+	"current_year_paid" boolean DEFAULT false,
+	"last_payment_date" date,
 	"emailVerified" timestamp,
 	"emailVerificationToken" text,
 	"passwordHash" text,
 	"resetPasswordToken" text,
 	"resetPasswordTokenExpiry" timestamp,
-	"image" text,
-	"current_year_paid" boolean DEFAULT false,
-	"last_payment_date" date,
 	"createdAt" timestamp DEFAULT now(),
 	"updatedAt" timestamp DEFAULT now(),
 	CONSTRAINT "members_email_unique" UNIQUE("email"),
@@ -110,9 +110,12 @@ CREATE TABLE IF NOT EXISTS "protected"."batches" (
 	"end_date" date NOT NULL,
 	"current_growth_stage" text DEFAULT 'SEEDING' NOT NULL,
 	"total_yield" numeric DEFAULT '0',
+	"expected_yield" numeric DEFAULT '0',
 	"total_destroyed" numeric DEFAULT '0',
 	"is_archived" boolean DEFAULT false,
-	"other_details" jsonb DEFAULT '{}'
+	"other_details" jsonb DEFAULT '{}',
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "protected"."plants" (
@@ -130,6 +133,7 @@ CREATE TABLE IF NOT EXISTS "protected"."strains" (
 	"description" text,
 	"thc" numeric NOT NULL,
 	"cbd" numeric NOT NULL,
+	"is_archived" boolean DEFAULT false,
 	"current_price_per_gram" numeric NOT NULL,
 	"amount_available" numeric DEFAULT '0'
 );

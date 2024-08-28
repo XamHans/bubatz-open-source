@@ -107,7 +107,7 @@ export default function MemberTable() {
         cell: ({ row }) => (
           <div className="ml-4 text-left">
             {row.getValue('name') || (
-              <span className="text-gray-400">No name (Email only)</span>
+              <span className="text-gray-400">{row.original.email}</span>
             )}
           </div>
         ),

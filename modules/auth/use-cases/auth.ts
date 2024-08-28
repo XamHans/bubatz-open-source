@@ -11,7 +11,6 @@ import { unstable_noStore as noStore } from 'next/cache';
 import { ResetPasswordEmail } from '@/components/emails/reset-password-email';
 import { resend } from '@/config/email';
 import { db } from '@/lib/db/db';
-import { psLinkOAuthAccount } from '@/lib/db/prepared/statements';
 import { members } from '@/modules/members/data-access/schema';
 import { ClubMemberStatus } from '@/modules/members/types';
 import {
@@ -26,7 +25,12 @@ import {
   type SignInWithPasswordFormInput,
   type SignUpWithPasswordFormInput,
 } from '../data-access/auth';
-import { getUserByEmail, getUserByResetPasswordToken } from './user';
+import { psLinkOAuthAccount } from '../data-access/prepared/statements';
+import {
+  checkIfFirstUser,
+  getUserByEmail,
+  getUserByResetPasswordToken,
+} from './user';
 
 export async function signUpWithPassword(
   rawInput: SignUpWithPasswordFormInput,
@@ -39,6 +43,9 @@ export async function signUpWithPassword(
     const user = await getUserByEmail({ email: validatedInput.data.email });
     if (user) return 'exists';
 
+    // check if first user ever, then make them an admin
+    const firstMember = await checkIfFirstUser();
+    console.log({ firstMember });
     const passwordHash = await bcryptjs.hash(validatedInput.data.password, 10);
     const emailVerificationToken = crypto.randomBytes(32).toString('base64url');
     console.log({ passwordHash, emailVerificationToken });
@@ -49,8 +56,10 @@ export async function signUpWithPassword(
         email: validatedInput.data.email,
         passwordHash: passwordHash,
         emailVerificationToken: emailVerificationToken,
-        role: 'MEMBER',
-        status: ClubMemberStatus.REQUEST,
+        role: firstMember ? 'ADMIN' : 'MEMBER',
+        status: firstMember
+          ? ClubMemberStatus.ACTIVE
+          : ClubMemberStatus.REQUEST,
       })
       .returning();
     // console.log({ newUser })

@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "npx prettier --write .",
     "typegen": "npx supabase gen types typescript --project-id 'fytmwwwieonvsqdufcgt' --schema public > types/database.ts",
-    "db:generate": "drizzle-kit generate",
+    "db:generate": "drizzle-kit generate --config=drizzle.config.ts",
     "db:migrate": "npx tsx './lib/db/migrator.ts' ",
     "db:drop": "drizzle-kit drop",
     "db:push": "drizzle-kit push --config=drizzle.config.ts",

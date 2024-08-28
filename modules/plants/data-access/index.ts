@@ -42,18 +42,9 @@ const getBatches = async () => {
 };
 
 export const createBatch = async (input: CreateBatchInput) => {
-  console.log('input', input);
-  let newBatchId;
-  try {
-    newBatchId = await db
-      .insert(batches)
-      .values(input)
-      .returning({ insertedId: batches.id });
-  } catch (error) {
-    console.log('error', error);
-  }
-
-  return newBatchId;
+  //@ts-ignore
+  const newBatch = await db.insert(batches).values(input).returning();
+  return newBatch[0];
 };
 
 export const updateBatch = async (id: string, data: UpdateBatchInput) => {

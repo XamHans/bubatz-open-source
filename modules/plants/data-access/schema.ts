@@ -74,8 +74,8 @@ export const batches = protectedSchema.table('batches', {
   strainId: integer('strain_id').references(() => strains.id),
   startDate: date('start_date')
     .notNull()
-    .default(sql`now()`),
-  endDate: date('end_date').notNull(),
+    .default(sql`CURRENT_DATE`),
+  endDate: date('end_date'),
   currentGrowthStage: text('current_growth_stage').notNull().default('SEEDING'),
   totalYield: numeric('total_yield').default('0'),
   expectedYield: numeric('expected_yield').default('0'),
@@ -132,11 +132,7 @@ export const createBatchInputSchema = createInsertSchema(batches, {
     .transform((date) => date.toISOString())
     .optional(),
   currentGrowthStage: z.string().min(1),
-  strainId: (schema) =>
-    schema.strainId.refine((val) => !Number.isNaN(val), {
-      message: 'Expected number, received a string',
-    }),
-  otherDetails: z.object({}).optional(),
+  strainId: z.number().int(),
 });
 
 export const updateBatchInputSchema = createSelectSchema(batches)
@@ -147,8 +143,9 @@ export const updateBatchInputSchema = createSelectSchema(batches)
 
 export const createPlantInputSchema = createInsertSchema(plants, {
   name: z.string().min(1),
-  batchId: z.string(), // id is coming from context not from form
+  batchId: z.string().min(1), // id is coming from context not from form
   position: z.string().min(1),
+  health: z.string().optional().default('HEALTHY'),
 });
 
 export const updatePlantInputSchema = createSelectSchema(plants)
@@ -168,6 +165,8 @@ export const createStrainInputSchema = createInsertSchema(strains, {
   cbd: z.number().min(0),
   thc: z.number().min(0),
   description: z.string().optional(),
+  currentPricePerGram: z.number().min(0).default(0),
+  amountAvailable: z.number().min(0).default(0).optional(),
 });
 
 export const updateStrainInputSchema = createSelectSchema(strains)

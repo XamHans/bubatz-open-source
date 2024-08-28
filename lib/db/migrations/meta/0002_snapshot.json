@@ -1,6 +1,6 @@
 {
-  "id": "0969e9e9-8420-4889-8ba5-4e9af9ae599f",
-  "prevId": "79a12a66-3a31-4baa-8dc7-9c7533b51ef0",
+  "id": "36504e27-6efb-4b70-8d94-1f9100507ea6",
+  "prevId": "0969e9e9-8420-4889-8ba5-4e9af9ae599f",
   "version": "6",
   "dialect": "postgresql",
   "tables": {
@@ -560,7 +560,7 @@
           "type": "date",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "default": "CURRENT_DATE"
         },
         "end_date": {
           "name": "end_date",

@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import Breadcrumbs from '@/components/generic/BreadCrumbs';
 import { Container } from '@/components/generic/Container';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,7 +11,6 @@ import {
 import { siteConfig } from '@/config/site';
 import { ChevronLeft } from 'lucide-react';
 import { Metadata } from 'next';
-import { SessionProvider } from 'next-auth/react';
 import Link from 'next/link';
 import NewStrainForm from './components/NewStrainForm';
 
@@ -21,7 +20,6 @@ export const metadata: Metadata = {
 };
 
 async function NewStrainPage() {
-  const session = await auth();
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Plants', href: '/plants' },
@@ -29,14 +27,16 @@ async function NewStrainPage() {
   ];
 
   return (
-    <SessionProvider session={session}>
-      <Link href={siteConfig.links.plants.index}>
-        <Button variant="outline" size="icon" className="h-9 w-9">
-          <ChevronLeft className="h-5 w-5" />
-          <span className="sr-only">Back</span>
-        </Button>
-      </Link>
-
+    <>
+      <div className="mb-8 flex items-center justify-center gap-4">
+        <Link href="/members">
+          <Button variant="outline" size="icon" className="h-9 w-9">
+            <ChevronLeft className="h-5 w-5" />
+            <span className="sr-only">Back</span>
+          </Button>
+        </Link>
+        <Breadcrumbs items={breadcrumbs} />
+      </div>
       <Container className="space-y-4">
         <Card>
           <CardHeader className="px-7">
@@ -45,12 +45,12 @@ async function NewStrainPage() {
               {metadata.description?.toString()}
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="bg-transparent">
             <NewStrainForm />
           </CardContent>
         </Card>
       </Container>
-    </SessionProvider>
+    </>
   );
 }
 

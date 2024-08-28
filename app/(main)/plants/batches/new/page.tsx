@@ -1,7 +1,15 @@
 // page.tsx
 
+import Breadcrumbs from '@/components/generic/BreadCrumbs';
+import { Container } from '@/components/generic/Container';
 import { Button } from '@/components/ui/button';
-import { siteConfig } from '@/config/site';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { ChevronLeft } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -9,7 +17,8 @@ import CreateBatchForm from '../../components/CreateBatchForm';
 
 export const metadata: Metadata = {
   title: 'Create a new batch',
-  description: 'Create a new batch of plants',
+  description:
+    'A batch is a group of plants that share the same characteristics. Create a new batch to start tracking your plants.',
 };
 
 const CreateBatchPage = () => {
@@ -20,16 +29,28 @@ const CreateBatchPage = () => {
   ];
   return (
     <>
-      <Link href={siteConfig.links.plants.index}>
-        <Button variant="outline" size="icon" className="h-9 w-9">
-          <ChevronLeft className="h-5 w-5" />
-          <span className="sr-only">Back</span>
-        </Button>
-      </Link>
-      <div className="container  max-w-6xl rounded-xl bg-white p-4 shadow-lg">
-        <h1 className="mb-4 text-2xl font-bold">Create New Batch</h1>
-        <CreateBatchForm />
+      <div className="mb-8 flex items-center justify-center gap-4">
+        <Link href="/members">
+          <Button variant="outline" size="icon" className="h-9 w-9">
+            <ChevronLeft className="h-5 w-5" />
+            <span className="sr-only">Back</span>
+          </Button>
+        </Link>
+        <Breadcrumbs items={breadcrumbs} />
       </div>
+      <Container className="space-y-4">
+        <Card>
+          <CardHeader className="px-7">
+            <CardTitle>{metadata.title?.toString()}</CardTitle>
+            <CardDescription>
+              {metadata.description?.toString()}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="bg-transparent">
+            <CreateBatchForm />
+          </CardContent>
+        </Card>
+      </Container>
     </>
   );
 };

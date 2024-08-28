@@ -17,21 +17,20 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${inter.className} bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]`}
-        // className={` ${inter.className} ${data?.colorScheme ?? "theme-orange"}`}
-      >
+    <html lang="en" suppressHydrationWarning>
+      <body>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
-          <body>
-            <main> {children}</main>
+          <div
+            className={`${inter.className} bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]`}
+          >
+            <main>{children}</main>
             <Toaster />
-          </body>
+          </div>
         </ThemeProvider>
       </body>
     </html>

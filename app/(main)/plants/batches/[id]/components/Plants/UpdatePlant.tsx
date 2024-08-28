@@ -118,7 +118,6 @@ const UpdatePlantForm: React.FC<UpdatePlantFormProps> = ({
                 name="position"
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel>{t('MEMBER.LAST_NAME')}</FormLabel> */}
                     <FormLabel>Position</FormLabel>
                     <FormControl>
                       <Input

@@ -2,12 +2,7 @@
 
 import { unstable_noStore as noStore } from 'next/cache';
 
-import {
-  psGetUserByEmail,
-  psGetUserByEmailVerificationToken,
-  psGetUserById,
-  psGetUserByResetPasswordToken,
-} from '@/lib/db/prepared/statements';
+import { db } from '@/lib/db/db';
 import {
   getUserByEmailSchema,
   getUserByEmailVerificationTokenSchema,
@@ -18,7 +13,14 @@ import {
   type GetUserByIdInput,
   type GetUserByResetPasswordTokenInput,
 } from '@/modules/auth/data-access/user';
-import { UserSchema } from '@/modules/members/data-access/schema';
+import { members, UserSchema } from '@/modules/members/data-access/schema';
+import { sql } from 'drizzle-orm';
+import {
+  psGetUserByEmail,
+  psGetUserByEmailVerificationToken,
+  psGetUserById,
+  psGetUserByResetPasswordToken,
+} from '../data-access/prepared/statements';
 
 export async function getUserById(
   rawInput: GetUserByIdInput,
@@ -53,6 +55,19 @@ export async function getUserByEmail(
   } catch (error) {
     console.error(error);
     throw new Error('Error getting user by email');
+  }
+}
+
+export async function checkIfFirstUser(): Promise<boolean> {
+  try {
+    const result = await db.select({ count: sql`count(*)` }).from(members);
+    console.log('checkIfFirstUser', { result });
+    // If the count is greater than 0, it means there's at least one user
+    //@ts-ignore
+    return Number(result[0].count) == 0;
+  } catch (error) {
+    console.error('Error checking if first user exists:', error);
+    throw new Error('Error checking if first user exists');
   }
 }
 

@@ -8,7 +8,8 @@ export enum GrowPhase {
 }
 
 export enum HealthStatus {
-  healthy = 'healthy',
-  illness = 'illness',
-  nutrition_problem = 'nutrition problem',
+  Healthy = 'healthy',
+  Ill = 'ill',
+  NutritionProblem = 'nutrition problem',
+  Dead = 'dead',
 }

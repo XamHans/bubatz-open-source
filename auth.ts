@@ -1,5 +1,3 @@
-import { linkOAuthAccount } from '@/actions/auth';
-import { getUserById } from '@/actions/user';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import NextAuth from 'next-auth';
 
@@ -13,6 +11,8 @@ import {
   sessions,
   verificationTokens,
 } from './modules/auth/data-access/schema';
+import { linkOAuthAccount } from './modules/auth/use-cases/auth';
+import { getUserById } from './modules/auth/use-cases/user';
 import { members } from './modules/members/data-access/schema';
 
 export const {
@@ -57,7 +57,7 @@ export const {
     authorized: async ({ auth }) => {
       // Logged in users are authenticated, otherwise redirect to login page
       console.log('authorized callback auth', auth);
-      return !!auth
+      return !!auth;
     },
     async signIn({ user, account }) {
       if (!user.id) return false;
@@ -70,9 +70,13 @@ export const {
     },
   },
   adapter: DrizzleAdapter(db, {
+    // @ts-ignore
     usersTable: members,
+    // @ts-ignore
     accountsTable: accounts,
+    // @ts-ignore
     sessionsTable: sessions,
+    // @ts-ignore
     verificationTokensTable: verificationTokens,
   }),
   ...authConfig,

@@ -59,6 +59,7 @@ export default function NewStrainForm() {
       thc: 0,
       cbd: 0,
       currentPricePerGram: '0',
+      amountAvailable: '0',
     },
   });
 
@@ -167,6 +168,28 @@ export default function NewStrainForm() {
               </FormControl>
               <FormDescription>
                 The current price per gram for this strain.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="amountAvailable"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Current Amount</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  step="1"
+                  {...field}
+                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                />
+              </FormControl>
+              <FormDescription>
+                How much of this strain is currently available.
               </FormDescription>
               <FormMessage />
             </FormItem>
