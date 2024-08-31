@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 import { BatchProps } from '@/modules/plants/data-access/schema'
 import ArchiveBatchModal from './ArchiveBatchModal'
-import { GrowthPhasesForm } from './BatchEditForm'
+import { BatchEditForm } from './BatchEditForm'
 import { PlantsContainer } from './Plants/PlantsContainer'
 
 interface EditBatchContainerProps {
@@ -89,11 +89,11 @@ const EditBatchContainer = ({ batch }: EditBatchContainerProps) => {
       <div className="grid auto-rows-max items-start gap-2 lg:gap-8">
         <Card>
           <CardHeader>
-            <CardTitle>Grow Phases</CardTitle>
+            <CardTitle>Batch Details</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Current Grow Phase */}
-            <GrowthPhasesForm batch={batch} />
+            <BatchEditForm batch={batch} />
           </CardContent>
         </Card>
 

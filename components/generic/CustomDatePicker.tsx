@@ -16,7 +16,7 @@ export function CustomDatePicker({ value, onChange }) {
       <PopoverTrigger asChild>
         <Button
           variant={'outline'}
-          className={` w-full justify-start text-left font-normal ${!value && 'text-muted-foreground'}`}
+          className={` w-full min-w-64 justify-start text-left font-normal ${!value && 'text-muted-foreground'}`}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {value ? format(value, 'PPP') : <span>Pick a date</span>}

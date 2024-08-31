@@ -1,4 +1,4 @@
-import { CustomDatePicker } from '@/components/generic/DatePicker'
+import { CustomDatePicker } from '@/components/generic/CustomDatePicker'
 import {
   Form,
   FormControl,

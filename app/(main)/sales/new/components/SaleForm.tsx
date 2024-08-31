@@ -80,7 +80,7 @@ export default function SaleForm({ session }: SaleFormProps) {
 
   const { toast } = useToast()
   const router = useRouter()
-
+  console.log('session', session)
   const form = useForm<CreateSaleWithItemsInput>({
     resolver: zodResolver(createSaleWithItemsInputSchema),
     defaultValues: {
@@ -100,6 +100,7 @@ export default function SaleForm({ session }: SaleFormProps) {
   const createSaleAction = useAction(createSaleUseCase, {
     // @ts-ignore
     onSuccess: ({ data }) => {
+      console.log('success data', data)
       toast({
         title: 'Success',
         duration: 1000,
@@ -107,7 +108,7 @@ export default function SaleForm({ session }: SaleFormProps) {
       })
       setTimeout(() => {
         router.push(
-          `${siteConfig.links.sales.detail.replace(':id', data.success.sale.id)}`,
+          `${siteConfig.links.sales.detail.replace(':id', data?.success)}`,
         )
       }, 2000)
     },
@@ -531,10 +532,6 @@ export default function SaleForm({ session }: SaleFormProps) {
             </div>
           </CardContent>
         </Card>
-
-        <pre>{JSON.stringify(form.getValues(), null, 2)}</pre>
-        <hr />
-        <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
 
         <div className="flex justify-end space-x-4">
           <Button

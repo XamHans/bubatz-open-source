@@ -112,7 +112,6 @@ const CreateMemberPaymentForm = ({
                 <FormControl>
                   <Input
                     type="number"
-                    step="0.01"
                     placeholder="Enter amount"
                     {...field}
                     onChange={(e) => field.onChange(parseFloat(e.target.value))}

@@ -29,7 +29,6 @@ export const members = protectedSchema.table('members', {
   // general info
   firstName: text('first_name'),
   lastName: text('last_name'),
-  fullName: text('full_name'),
   birthday: date('birthday'),
   image: text('image'),
 

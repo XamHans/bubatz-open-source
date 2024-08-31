@@ -15,6 +15,26 @@ import { relations } from 'drizzle-orm/relations'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
+export const postgresDateSchema = z.string().refine(
+  (date) => {
+    // Regular expression to match YYYY-MM-DD format
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+    if (!dateRegex.test(date)) return false
+
+    // Check if it's a valid date
+    const [year, month, day] = date.split('-').map(Number)
+    const dateObj = new Date(year, month - 1, day)
+    return (
+      dateObj.getFullYear() === year &&
+      dateObj.getMonth() === month - 1 &&
+      dateObj.getDate() === day
+    )
+  },
+  {
+    message: 'Invalid date format. Expected YYYY-MM-DD',
+  },
+)
+
 const defaultSeedToSale = {
   seed: {
     date_planted: null,
@@ -139,6 +159,7 @@ export const updateBatchInputSchema = createSelectSchema(batches)
   .partial()
   .extend({
     id: z.string().uuid(),
+    endDate: z.coerce.date().transform((date) => date.toISOString()),
   })
 
 export const createPlantInputSchema = createInsertSchema(plants, {
@@ -156,7 +177,6 @@ export const updatePlantInputSchema = createSelectSchema(plants)
 
 export const deletePlantInputSchema = createPlantInputSchema.pick({
   id: true,
-  batchId: true,
 })
 
 export const createStrainInputSchema = createInsertSchema(strains, {

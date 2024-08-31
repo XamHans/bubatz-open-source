@@ -47,7 +47,7 @@ const PlantsContainer = ({ batch }: PlantsContainerProps) => {
   const { toast } = useToast()
   const batchId = batch.id
 
-  const { execute, status } = useAction(fetchPlantsFromBatchUseCase, {
+  const { execute } = useAction(fetchPlantsFromBatchUseCase, {
     onSuccess: (data) => {
       const { plants } = data?.success as any
       setPlants(plants)
@@ -62,8 +62,12 @@ const PlantsContainer = ({ batch }: PlantsContainerProps) => {
   })
 
   const { execute: createPlantExecute } = useAction(createPlantUseCase, {
-    onSuccess: (data) => {
-      execute({ batchId }) //re-fetch plants
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        duration: 5000,
+        description: `Plant created successfully`,
+      })
     },
     onError: (error) => {
       toast({
@@ -85,7 +89,6 @@ const PlantsContainer = ({ batch }: PlantsContainerProps) => {
   })
 
   const onSubmit = (data: CreatePlantInput) => {
-    console.log('Create Plant ', data)
     createPlantExecute({ ...data, batchId })
     setOpen(false)
   }

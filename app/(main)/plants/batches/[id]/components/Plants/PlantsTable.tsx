@@ -46,7 +46,6 @@ export interface PlantsTableProps {
 
 const PlantsTable = ({batch}: PlantsTableProps) => {
   const { toast } = useToast();
-  const batchId = batch.id;
   
   const { execute, status } = useAction(fetchPlantsFromBatchUseCase, {
     onSuccess: ({data}) => {
@@ -79,21 +78,21 @@ const PlantsTable = ({batch}: PlantsTableProps) => {
   const getPlantTableColumns = () => {
     const columns = [
       {
-        id: 'id',
-        accessorKey: 'id',
+        id: 'position',
+        accessorKey: 'position',
         header: ({ column }) => (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="justify-start text-xs"
           >
-            ID
+            Position
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
         cell: ({ row }) => (
-          <div className="ml-4 w-4 p-0 text-left">
-            {String(row.getValue('id')).slice(-6)}
+          <div className="w-auto p-0 text-left">
+            {row.original.position}
           </div>
         ),
       },
