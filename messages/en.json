@@ -1,0 +1,23 @@
+{
+  "General": {
+    "breadcrumbs": {
+      "dashboard": "Dashboard",
+      "members": "Members",
+      "sales": "Sales",
+      "plants": "Plants"
+    }
+  },
+  "Members": {
+    "pageTitle": "Members",
+    "pageDescription": "Manage your members",
+    "breadcrumbs": {
+      "dashboard": "Dashboard",
+      "members": "Members"
+    }
+  },
+  "LocaleSwitcher": {
+    "de": "Deutsch",
+    "en": "English",
+    "label": "Language"
+  }
+}

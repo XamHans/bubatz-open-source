@@ -1,11 +1,4 @@
-// i18n.ts
-import { UserConfig } from 'next-i18next'
+export type Locale = (typeof locales)[number]
 
-const i18n: UserConfig = {
-  i18n: {
-    defaultLocale: 'en',
-    locales: ['en', 'de'], // Add your supported locales here
-  },
-}
-
-export default i18n
+export const locales = ['en', 'de'] as const
+export const defaultLocale: Locale = 'en'

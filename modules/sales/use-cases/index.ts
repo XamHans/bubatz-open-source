@@ -32,7 +32,6 @@ export const fetchSaleDetailsUseCase = actionClient
   .action(async ({ parsedInput }) => {
     try {
       const saleDetail = await getSaleDetails(parsedInput.saleId)
-      console.log('saleDetail from query', saleDetail)
       return { success: saleDetail }
     } catch (error) {
       logger.error(error)

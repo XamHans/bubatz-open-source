@@ -10,17 +10,21 @@ import {
 } from '@/components/ui/card'
 import { siteConfig } from '@/config/site'
 import { SessionProvider } from 'next-auth/react'
+import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 import MemberTable from './components/MemberTable'
 
 async function MemberListPage() {
-  const breadcrumbs = [
-    { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Members' },
-  ]
-
   const session = await auth()
   if (!session) redirect(siteConfig.links.signIn)
+
+  const t = await getTranslations('Members')
+  const g = await getTranslations('General')
+
+  const breadcrumbs = [
+    { label: g('breadcrumbs.dashboard'), href: '/dashboard' },
+    { label: g('breadcrumbs.members') },
+  ]
 
   return (
     <SessionProvider session={session}>
@@ -30,8 +34,8 @@ async function MemberListPage() {
       <Container className="space-y-12">
         <Card>
           <CardHeader className="px-7">
-            <CardTitle>Members</CardTitle>
-            <CardDescription>Manage your members</CardDescription>
+            <CardTitle>{t('pageTitle')}</CardTitle>
+            <CardDescription>{t('pageDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
             <MemberTable />
