@@ -1,4 +1,5 @@
-import { type NavItem, type NavItemFooter } from '@/types'
+import { type NavItemFooter } from '@/types'
+import { Leaf, LogOut, Package2, Settings, Users2 } from 'lucide-react'
 
 const links = {
   signIn: '/signin',
@@ -39,116 +40,41 @@ export const siteConfig = {
       phoneNumber: false,
       emailLink: false,
       emailOtp: false,
-      oAuth: ['google', 'github'] as Provider[],
+      // oAuth: ['google', 'github'] as Provider[],
     },
   },
   links,
   url: 'https://bubatz.club',
 
-  ogImage: links.openGraphImage,
+  // ogImage: links.openGraphImage,
   keywords: ['SaaS', 'Next.js', 'Template'],
   navItems: [
     {
-      title: 'About',
-      href: '/about',
+      name: 'Sales',
+      href: links.sales.index,
+      icon: Package2,
     },
     {
-      title: 'Features',
-      href: '/features',
+      name: 'Plants',
+      href: links.plants.index,
+      icon: Leaf,
     },
     {
-      title: 'Pricing',
-      href: '/pricing',
+      name: 'Members',
+      href: links.members.index,
+      icon: Users2,
     },
     {
-      title: 'FAQ',
-      href: '/faq',
+      name: 'Settings',
+      href: '/settings',
+      icon: Settings,
     },
     {
-      title: 'Docs',
-      href: '/docs',
+      name: 'Logout',
+      href: links.signOut,
+      icon: LogOut,
     },
-    {
-      title: 'Blog',
-      href: '/blog',
-    },
-  ] satisfies NavItem[],
+  ],
   navItemsMobile: [],
-  navItemsFooter: [
-    {
-      title: 'Company',
-      items: [
-        {
-          title: 'About',
-          href: '/about',
-          external: false,
-        },
-        {
-          title: 'Privacy',
-          href: '/privacy',
-          external: false,
-        },
-        {
-          title: 'Terms',
-          href: '/tos',
-          external: false,
-        },
-        {
-          title: 'Careers',
-          href: '/careers',
-          external: false,
-        },
-      ],
-    },
-    {
-      title: 'Support',
-      items: [
-        {
-          title: 'Docs',
-          href: '/docs',
-          external: false,
-        },
-        {
-          title: 'FAQ',
-          href: '/faq',
-          external: false,
-        },
-        {
-          title: 'Blog',
-          href: '/blog',
-          external: false,
-        },
-        {
-          title: 'Contact',
-          href: '/contact',
-          external: false,
-        },
-      ],
-    },
-    {
-      title: 'Inspiration',
-      items: [
-        {
-          title: 'Shadcn',
-          href: 'https://ui.shadcn.com/',
-          external: true,
-        },
-        {
-          title: 'Taxonomy',
-          href: 'https://tx.shadcn.com/',
-          external: true,
-        },
-        {
-          title: 'Skateshop',
-          href: 'https://skateshop.sadmn.com/',
-          external: true,
-        },
-        {
-          title: 'Acme Corp',
-          href: 'https://acme-corp.jumr.dev/',
-          external: true,
-        },
-      ],
-    },
-  ] satisfies NavItemFooter[],
+  navItemsFooter: [] satisfies NavItemFooter[],
 }

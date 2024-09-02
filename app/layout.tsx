@@ -2,7 +2,7 @@ import { ThemeProvider } from '@/components/generic/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 import type { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
-import { getLocale, getMessages } from 'next-intl/server'
+import { getMessages } from 'next-intl/server'
 import { Inter } from 'next/font/google'
 import './globals.css'
 
@@ -18,13 +18,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const locale = 'de' ?? (await getLocale())
-  console.log('locale set', locale)
   // Providing all messages to the client
   // side is the easiest way to get started
   const messages = await getMessages()
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html suppressHydrationWarning>
       <body>
         <ThemeProvider
           attribute="class"
