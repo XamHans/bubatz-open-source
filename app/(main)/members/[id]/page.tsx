@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { siteConfig } from '@/config/site'
 import { getMemberDetail } from '@/modules/members/data-access'
 import { ChevronLeft, Plus } from 'lucide-react'
+import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
@@ -18,6 +19,7 @@ interface MemberDetailPageProps {
 
 async function MemberContent({ id }: { id: string }) {
   const member = await getMemberDetail(id)
+  const t = await getTranslations('MemberDetail')
 
   if (!member) {
     notFound()
@@ -28,11 +30,11 @@ async function MemberContent({ id }: { id: string }) {
       <div className="space-y-8 lg:col-span-2">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Sales</CardTitle>
+            <CardTitle>{t('sales.title')}</CardTitle>
             <Link href={siteConfig.links.sales.new}>
               <Button size="sm" className="flex items-center gap-2">
                 <Plus className="h-4 w-4" />
-                New Sale
+                {t('sales.newSale')}
               </Button>
             </Link>
           </CardHeader>
@@ -45,13 +47,13 @@ async function MemberContent({ id }: { id: string }) {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Membership Payments</CardTitle>
+            <CardTitle>{t('membershipPayments.title')}</CardTitle>
             <Link
               href={`${siteConfig.links.members.detail.replace(':id', id)}/payments/new`}
             >
               <Button size="sm" className="flex items-center gap-2">
                 <Plus className="h-4 w-4" />
-                New Payment
+                {t('membershipPayments.newPayment')}
               </Button>
             </Link>
           </CardHeader>
@@ -70,13 +72,15 @@ async function MemberContent({ id }: { id: string }) {
   )
 }
 
-export default function MemberDetailPage({
+export default async function MemberDetailPage({
   params: { id },
 }: MemberDetailPageProps) {
+  const t = await getTranslations('MemberDetail')
+
   const breadcrumbs = [
-    { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Members', href: '/members' },
-    { label: 'Member Details' },
+    { label: t('breadcrumbs.dashboard'), href: '/dashboard' },
+    { label: t('breadcrumbs.members'), href: '/members' },
+    { label: t('breadcrumbs.memberDetails') },
   ]
 
   return (
@@ -85,7 +89,7 @@ export default function MemberDetailPage({
         <Link href="/members">
           <Button variant="outline" size="icon" className="h-9 w-9">
             <ChevronLeft className="h-5 w-5" />
-            <span className="sr-only">Back</span>
+            <span className="sr-only">{t('backButton')}</span>
           </Button>
         </Link>
         <Breadcrumbs items={breadcrumbs} />
@@ -98,7 +102,7 @@ export default function MemberDetailPage({
             href={siteConfig.links.members.edit.replace(':id', id)}
           >
             <Button size="sm" className=" md:px-10">
-              Edit
+              {t('editButton')}
             </Button>
           </Link>
         </div>

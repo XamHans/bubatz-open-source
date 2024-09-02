@@ -155,6 +155,12 @@ export const createBatchInputSchema = createInsertSchema(batches, {
   strainId: z.number().int(),
 })
 
+export const fetchBatchesInputSchema = createSelectSchema(batches)
+  .partial()
+  .extend({
+    isArchived: z.boolean().optional(),
+  })
+
 export const updateBatchInputSchema = createSelectSchema(batches)
   .partial()
   .extend({

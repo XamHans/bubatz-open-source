@@ -5,6 +5,42 @@
       "members": "Mitglieder",
       "sales": "Verkäufe",
       "plants": "Pflanzen"
+    },
+    "dataTable": {
+      "noResults": "Keine {{entity}} gefunden"
+    },
+    "form": {
+      "labels": {
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "email": "E-Mail",
+        "phone": "Telefonnummer",
+        "zip": "Postleitzahl",
+        "city": "Stadtname",
+        "street": "Straße",
+        "status": "Status",
+        "birthday": "Geburtstag",
+        "role": "Rolle"
+      },
+      "placeholders": {
+        "street": "Straße eingeben"
+      },
+      "options": {
+        "role": {
+          "member": "Mitglied",
+          "admin": "Administrator"
+        }
+      }
+    },
+    "messages": {
+      "success": {
+        "title": "Erfolg",
+        "memberUpdated": "Mitglied erfolgreich aktualisiert"
+      },
+      "error": {
+        "title": "Fehler",
+        "memberUpdateFailed": "Mitglied konnte nicht aktualisiert werden"
+      }
     }
   },
   "Members": {
@@ -13,6 +49,115 @@
     "breadcrumbs": {
       "dashboard": "Dashboard",
       "members": "Mitglieder"
+    },
+    "form": {
+      "labels": {
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "email": "E-Mail",
+        "phone": "Telefonnummer",
+        "zip": "Postleitzahl",
+        "city": "Stadtname",
+        "street": "Straße",
+        "status": "Status",
+        "birthday": "Geburtstag",
+        "role": "Rolle"
+      },
+      "placeholders": {
+        "street": "Straße eingeben"
+      },
+      "options": {
+        "role": {
+          "member": "Mitglied",
+          "admin": "Administrator"
+        }
+      }
+    },
+    "messages": {
+      "success": {
+        "title": "Erfolg",
+        "memberUpdated": "Mitglied erfolgreich aktualisiert"
+      },
+      "error": {
+        "title": "Fehler",
+        "memberUpdateFailed": "Mitglied konnte nicht aktualisiert werden"
+      }
+    }
+  },
+  "MemberDetail": {
+    "breadcrumbs": {
+      "dashboard": "Dashboard",
+      "members": "Mitglieder",
+      "memberDetails": "Mitgliedsdetails"
+    },
+    "backButton": "Zurück",
+    "editButton": "Bearbeiten",
+    "sales": {
+      "title": "Verkäufe",
+      "newSale": "Neuer Verkauf"
+    },
+    "membershipPayments": {
+      "title": "Mitgliedsbeiträge",
+      "newPayment": "Neue Zahlung"
+    }
+  },
+  "MemberGeneralInfo": {
+    "memberSince": "Mitglied seit",
+    "birthday": "Geburtstag",
+    "age": "Alter",
+    "memberId": "Mitglieds ID",
+    "status": {
+      "ACTIVE": "Aktiv",
+      "PAUSED": "Pausiert",
+      "EXITED": "Ausgetreten",
+      "REQUEST": "Anfrage"
+    },
+
+    "admin": "Admin",
+    "duration": {
+      "year": "Jahr",
+      "years": "Jahre",
+      "month": "Monat",
+      "months": "Monate"
+    }
+  },
+  "Sales": {
+    "pageTitle": "Verkäufe",
+    "pageDescription": "Verwalten Sie Ihre Verkäufe",
+    "actions": {
+      "search": "Verkäufe suchen",
+      "new": "Neuer Verkauf"
+    },
+    "columns": {
+      "strain": "Sorte",
+      "price": "Preis",
+      "quantity": "Menge (g)",
+      "soldBy": "Verkauft von",
+      "saleDate": "Verkaufsdatum"
+    }
+  },
+  "Payments": {
+    "pageTitle": "Zahlungen",
+    "pageDescription": "Verwalten Sie Mitgliederzahlungen",
+    "actions": {
+      "search": "Zahlungen suchen"
+    },
+    "columns": {
+      "year": "Jahr",
+      "amount": "Betrag",
+      "paymentDate": "Zahlungsdatum",
+      "status": "Status",
+      "method": "Zahlungsmethode"
+    },
+    "status": {
+      "paid": "Bezahlt",
+      "pending": "Ausstehend",
+      "overdue": "Überfällig"
+    },
+    "method": {
+      "cash": "Bargeld",
+      "bankTransfer": "Überweisung",
+      "creditCard": "Kreditkarte"
     }
   },
   "LocaleSwitcher": {

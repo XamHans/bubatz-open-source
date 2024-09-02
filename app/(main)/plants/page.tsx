@@ -88,6 +88,9 @@ async function PlantListPage() {
               <TabsContent value="strains">
                 <StrainsTable />
               </TabsContent>
+              <TabsContent value="archived">
+                <BatchesTable isArchived={true} />
+              </TabsContent>
             </Tabs>
           </CardContent>
         </Card>

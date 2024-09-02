@@ -11,6 +11,7 @@ import {
 import { siteConfig } from '@/config/site'
 import { PlusCircle } from 'lucide-react'
 import { Metadata } from 'next'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import SalesTable from './components/SalesTable'
 
@@ -24,6 +25,7 @@ export default function SalesPage() {
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Sales' },
   ]
+  const t = useTranslations('Sales')
 
   return (
     <>
@@ -51,7 +53,7 @@ export default function SalesPage() {
                   <Button size="sm" className="h-8 w-32 gap-1">
                     <PlusCircle className="h-3.5 w-3.5" />
                     <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                      Add Sale
+                      {t('actions.new')}
                     </span>
                   </Button>
                 </Link>

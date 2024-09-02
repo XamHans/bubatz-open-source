@@ -24,8 +24,8 @@ import {
 
 //-------------------------------------------------------------------------
 
-const getBatches = async () => {
-  const allBatches = await db
+const getBatches = async (archived?: boolean) => {
+  const query = db
     .select({
       id: batches.id,
       name: batches.name,
@@ -36,7 +36,12 @@ const getBatches = async () => {
     })
     .from(batches)
     .leftJoin(strains, eq(batches.strainId, strains.id))
-    .where(eq(batches.isArchived, false))
+
+  if (archived !== undefined) {
+    query.where(eq(batches.isArchived, archived))
+  }
+
+  const allBatches = await query
 
   return allBatches
 }

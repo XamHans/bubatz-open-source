@@ -67,7 +67,7 @@ import { Session } from 'next-auth'
 import { useRouter } from 'next/navigation'
 
 export interface SaleFormProps {
-  session: Session
+  session: Session | null
 }
 
 export default function SaleForm({ session }: SaleFormProps) {

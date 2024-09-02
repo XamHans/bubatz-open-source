@@ -167,7 +167,12 @@ const getBatchtesTableColumns = (router: AppRouterInstance) => {
   ]
 }
 
-export default function BatchesTable() {
+export interface BatchesTableProps {
+  isArchived?: boolean
+}
+export default function BatchesTable({
+  isArchived = false,
+}: BatchesTableProps) {
   const { execute, status } = useAction(fetchBatchesUseCase, {
     onSuccess: ({ data }) => {
       setPlants(data?.success ?? [])
@@ -185,8 +190,8 @@ export default function BatchesTable() {
   const router = useRouter()
 
   useEffect(() => {
-    execute(undefined)
-  }, [execute])
+    execute({ isArchived })
+  }, [execute, isArchived])
 
   const table = useReactTable({
     data: plants,

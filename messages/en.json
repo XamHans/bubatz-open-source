@@ -5,6 +5,9 @@
       "members": "Members",
       "sales": "Sales",
       "plants": "Plants"
+    },
+    "dataTable": {
+      "noResults": "No {{entity}} found"
     }
   },
   "Members": {
@@ -13,8 +16,120 @@
     "breadcrumbs": {
       "dashboard": "Dashboard",
       "members": "Members"
+    },
+    "general": {
+      "form": {
+        "labels": {
+          "firstName": "First Name",
+          "lastName": "Last Name",
+          "email": "Email",
+          "phone": "Phone Number",
+          "zip": "Zip Code",
+          "city": "City Name",
+          "street": "Street",
+          "status": "Status",
+          "birthday": "Birthday",
+          "role": "Role"
+        },
+        "placeholders": {
+          "street": "Enter street"
+        },
+        "options": {
+          "role": {
+            "member": "Member",
+            "admin": "Admin"
+          }
+        }
+      },
+      "messages": {
+        "success": {
+          "title": "Success",
+          "memberUpdated": "Member updated successfully"
+        },
+        "error": {
+          "title": "Error",
+          "memberUpdateFailed": "Member could not be updated"
+        }
+      }
     }
   },
+  "MemberDetail": {
+    "breadcrumbs": {
+      "dashboard": "Dashboard",
+      "members": "Members",
+      "memberDetails": "Member Details"
+    },
+    "backButton": "Back",
+    "editButton": "Edit",
+    "sales": {
+      "title": "Sales",
+      "newSale": "New Sale"
+    },
+    "membershipPayments": {
+      "title": "Membership Payments",
+      "newPayment": "New Payment"
+    }
+  },
+  "MemberGeneralInfo": {
+    "memberSince": "Member Since",
+    "birthday": "Birthday",
+    "age": "Age",
+    "memberId": "Member ID",
+    "status": {
+      "ACTIVE": "Active",
+      "PAUSED": "Paused",
+      "EXITED": "Exited",
+      "REQUEST": "Request"
+    },
+
+    "admin": "Admin",
+    "duration": {
+      "year": "year",
+      "years": "years",
+      "month": "month",
+      "months": "months"
+    }
+  },
+  "Sales": {
+    "pageTitle": "Sales",
+    "pageDescription": "Manage your sales",
+    "actions": {
+      "search": "Search sales",
+      "new": "New sale"
+    },
+    "columns": {
+      "strain": "Strain",
+      "price": "Price",
+      "quantity": "Quantity (g)",
+      "soldBy": "Sold By",
+      "saleDate": "Sale Date"
+    }
+  },
+  "Payments": {
+    "pageTitle": "Payments",
+    "pageDescription": "Manage member payments",
+    "actions": {
+      "search": "Search payments"
+    },
+    "columns": {
+      "year": "Year",
+      "amount": "Amount",
+      "paymentDate": "Payment Date",
+      "status": "Status",
+      "method": "Method"
+    },
+    "status": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "overdue": "Overdue"
+    },
+    "method": {
+      "cash": "Cash",
+      "bankTransfer": "Bank Transfer",
+      "creditCard": "Credit Card"
+    }
+  },
+
   "LocaleSwitcher": {
     "de": "Deutsch",
     "en": "English",

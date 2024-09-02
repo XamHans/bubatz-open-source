@@ -25,8 +25,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { t } from 'i18next'
 import { ArrowUpDown, ChevronLeft, ChevronRight, Eye } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
 import Link from 'next/link'
 import * as React from 'react'
@@ -37,6 +37,8 @@ interface MemberSalesTableProps {
 }
 
 export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
+  const t = useTranslations('Sales')
+
   const getMemberSalesTableColumns = () => {
     return [
       {
@@ -47,7 +49,7 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="justify-start text-xs"
           >
-            Strain
+            {t('columns.strain')}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
@@ -61,7 +63,7 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="justify-start text-xs"
           >
-            Price
+            {t('columns.price')}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
@@ -75,7 +77,7 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="justify-start text-xs"
           >
-            Quantity (g)
+            {t('columns.quantity')}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
@@ -89,7 +91,7 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="justify-start text-xs"
           >
-            Sold By
+            {t('columns.soldBy')}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
@@ -103,7 +105,7 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="justify-start text-xs"
           >
-            Sale Date
+            {t('columns.saleDate')}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
@@ -133,7 +135,6 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
 
   const { execute, status } = useAction(fetchMemberSalesUseCase, {
     onSuccess: (data) => {
-      console.info('Fetched member sales', data)
       setSales(data.data?.success ?? [])
     },
     onError: (error) => {
@@ -178,7 +179,7 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between space-x-2">
         <Input
-          placeholder={t('sales:ACTIONS.SEARCH') ?? 'Search sales'}
+          placeholder={t('actions.search')}
           value={
             (table.getColumn('strainName')?.getFilterValue() as string) ?? ''
           }
@@ -232,8 +233,8 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
                   colSpan={getMemberSalesTableColumns().length}
                   className="h-24 text-center"
                 >
-                  {t('GENERAL.DATA_TABLE.NO_RESULTS', {
-                    entity: t('sales:TITLE'),
+                  {t('General.dataTable.noResults', {
+                    entity: t('pageTitle'),
                   })}
                 </TableCell>
               </TableRow>

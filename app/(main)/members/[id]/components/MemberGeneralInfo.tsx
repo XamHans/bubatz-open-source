@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { MemberProps } from '@/modules/members/types'
+import { useTranslations } from 'next-intl'
 import React from 'react'
 import {
   HiCalendar,
@@ -16,15 +17,17 @@ interface MemberGeneralInfoProps {
   member: MemberProps
 }
 
-const formatDate = (date: Date) => {
-  return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }).format(new Date(date))
-}
-
 const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
+  const t = useTranslations('MemberGeneralInfo')
+
+  const formatDate = (date: Date) => {
+    return new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }).format(new Date(date))
+  }
+
   const calculateAge = (birthday: Date) => {
     const ageDifMs = Date.now() - new Date(birthday).getTime()
     const ageDate = new Date(ageDifMs)
@@ -39,9 +42,13 @@ const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
     )
 
     if (years > 0) {
-      return `${years} year${years > 1 ? 's' : ''}${months > 0 ? ` ${months} month${months > 1 ? 's' : ''}` : ''}`
+      return `${years} ${t(`duration.${years > 1 ? 'years' : 'year'}`)}${
+        months > 0
+          ? ` ${months} ${t(`duration.${months > 1 ? 'months' : 'month'}`)}`
+          : ''
+      }`
     } else {
-      return `${months} month${months > 1 ? 's' : ''}`
+      return `${months} ${t(`duration.${months > 1 ? 'months' : 'month'}`)}`
     }
   }
 
@@ -69,9 +76,9 @@ const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
           </CardTitle>
           <div className="mt-2 flex justify-center gap-2">
             {member.status && (
-              <Badge variant="secondary">{member.status}</Badge>
+              <Badge variant="secondary">{t(`status.${member.status}`)}</Badge>
             )}
-            {member.isAdmin && <Badge variant="default">Admin</Badge>}
+            {member.isAdmin && <Badge variant="default">{t('admin')}</Badge>}
           </div>
         </CardHeader>
       )}
@@ -86,17 +93,21 @@ const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
             {member.phone && <InfoItem icon={HiPhone} primary={member.phone} />}
             <InfoItem
               icon={HiCalendar}
-              primary="Birthday"
-              secondary={`${formatDate(member.birthday)} (Age: ${calculateAge(member.birthday)})`}
+              primary={t('birthday')}
+              secondary={`${formatDate(member.birthday)} (${t('age')}: ${calculateAge(
+                member.birthday,
+              )})`}
             />
             <InfoItem
               icon={HiClock}
-              primary="Member Since"
-              secondary={`${formatDate(member.createdAt)} (${calculateMembershipDuration(member.createdAt)})`}
+              primary={t('memberSince')}
+              secondary={`${formatDate(
+                member.createdAt,
+              )} (${calculateMembershipDuration(member.createdAt)})`}
             />
             <InfoItem
               icon={HiShieldCheck}
-              primary="Member ID"
+              primary={t('memberId')}
               secondary={member.id}
             />
           </>

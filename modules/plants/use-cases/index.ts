@@ -30,6 +30,7 @@ import {
   createStrainInputSchema,
   deletePlantInputSchema,
   deleteStrainInputSchema,
+  fetchBatchesInputSchema,
   getBatchDetailSchema,
   getBatchesByStrainIdSchema,
   getStrainDetailSchema,
@@ -42,19 +43,19 @@ import {
 export const createBatchUseCase = actionClient
   .schema(createBatchInputSchema)
   .action(async ({ parsedInput }) => {
-    logger.info(parsedInput, 'Creating batch with data:')
-    console.log('new start date ', parsedInput.startDate)
     const newBatch = await createBatch(parsedInput)
     return { success: newBatch.id }
   })
 
-export const fetchBatchesUseCase = actionClient.action(async () => {
-  const batches = await getBatches()
-  if (!batches) {
-    return { failure: 'Batch not found' }
-  }
-  return { success: batches }
-})
+export const fetchBatchesUseCase = actionClient
+  .schema(fetchBatchesInputSchema)
+  .action(async ({ parsedInput }) => {
+    const batches = await getBatches(parsedInput.isArchived)
+    if (!batches) {
+      return { failure: 'Batch not found' }
+    }
+    return { success: batches }
+  })
 
 export const fetchBatchDetailsUseCase = actionClient
   .schema(getBatchDetailSchema)
