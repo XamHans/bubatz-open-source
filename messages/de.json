@@ -7,7 +7,7 @@
       "plants": "Pflanzen"
     },
     "dataTable": {
-      "noResults": "Keine {{entity}} gefunden"
+      "noResults": "Keine Einträge gefunden"
     },
     "form": {
       "labels": {
@@ -22,24 +22,17 @@
         "birthday": "Geburtstag",
         "role": "Rolle"
       },
-      "placeholders": {
-        "street": "Straße eingeben"
-      },
       "options": {
         "role": {
           "member": "Mitglied",
           "admin": "Administrator"
         }
-      }
-    },
-    "messages": {
-      "success": {
-        "title": "Erfolg",
-        "memberUpdated": "Mitglied erfolgreich aktualisiert"
       },
-      "error": {
-        "title": "Fehler",
-        "memberUpdateFailed": "Mitglied konnte nicht aktualisiert werden"
+      "status": {
+        "ACTIVE": "Aktiv",
+        "PAUSED": "Pausiert",
+        "EXITED": "Ausgetreten",
+        "REQUEST": "Anfrage"
       }
     }
   },
@@ -49,39 +42,6 @@
     "breadcrumbs": {
       "dashboard": "Dashboard",
       "members": "Mitglieder"
-    },
-    "form": {
-      "labels": {
-        "firstName": "Vorname",
-        "lastName": "Nachname",
-        "email": "E-Mail",
-        "phone": "Telefonnummer",
-        "zip": "Postleitzahl",
-        "city": "Stadtname",
-        "street": "Straße",
-        "status": "Status",
-        "birthday": "Geburtstag",
-        "role": "Rolle"
-      },
-      "placeholders": {
-        "street": "Straße eingeben"
-      },
-      "options": {
-        "role": {
-          "member": "Mitglied",
-          "admin": "Administrator"
-        }
-      }
-    },
-    "messages": {
-      "success": {
-        "title": "Erfolg",
-        "memberUpdated": "Mitglied erfolgreich aktualisiert"
-      },
-      "error": {
-        "title": "Fehler",
-        "memberUpdateFailed": "Mitglied konnte nicht aktualisiert werden"
-      }
     }
   },
   "MemberDetail": {
@@ -101,24 +61,22 @@
       "newPayment": "Neue Zahlung"
     }
   },
-  "MemberGeneralInfo": {
-    "memberSince": "Mitglied seit",
-    "birthday": "Geburtstag",
-    "age": "Alter",
-    "memberId": "Mitglieds ID",
-    "status": {
-      "ACTIVE": "Aktiv",
-      "PAUSED": "Pausiert",
-      "EXITED": "Ausgetreten",
-      "REQUEST": "Anfrage"
+  "MembersEdit": {
+    "pageTitle": "Mitglied bearbeiten",
+    "pageDescription": "Bearbeiten Sie Mitgliederdaten",
+    "actions": {
+      "save": "Speichern",
+      "cancel": "Abbrechen"
     },
-
-    "admin": "Admin",
-    "duration": {
-      "year": "Jahr",
-      "years": "Jahre",
-      "month": "Monat",
-      "months": "Monate"
+    "messages:": {
+      "success": {
+        "title": "Erfolg",
+        "description": "Mitglied erfolgreich aktualisiert"
+      },
+      "error": {
+        "title": "Fehler",
+        "description": "Mitglied konnte nicht aktualisiert werden"
+      }
     }
   },
   "Sales": {

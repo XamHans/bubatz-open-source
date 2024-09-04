@@ -26,7 +26,7 @@ export default async function MemberPaymentEditPage({
   console.log(payment)
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen ">
       <div className="mb-8 flex items-center justify-center gap-4">
         <Link href="/members">
           <Button variant="outline" size="icon" className="h-9 w-9">

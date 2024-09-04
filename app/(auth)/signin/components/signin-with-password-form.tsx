@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -119,6 +120,11 @@ export function SignInWithPasswordForm(): JSX.Element {
                   {...field}
                 />
               </FormControl>
+              <FormDescription>
+                <p>
+                  <strong>Email:</strong> demo@bubatz.club
+                </p>
+              </FormDescription>
               <FormMessage className="pt-2 sm:text-sm" />
             </FormItem>
           )}
@@ -133,6 +139,11 @@ export function SignInWithPasswordForm(): JSX.Element {
               <FormControl>
                 <PasswordInput placeholder="********" {...field} />
               </FormControl>
+              <FormDescription>
+                <p>
+                  <strong>Password:</strong> BubatzClubManager123!
+                </p>
+              </FormDescription>
               <FormMessage className="pt-2 sm:text-sm" />
             </FormItem>
           )}

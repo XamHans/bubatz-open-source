@@ -1,10 +1,18 @@
 import { type NavItemFooter } from '@/types'
-import { Leaf, LogOut, Package2, Settings, Users2 } from 'lucide-react'
+import {
+  Leaf,
+  LogOut,
+  Package2,
+  PenSquareIcon,
+  Settings,
+  Users2,
+} from 'lucide-react'
 
 const links = {
   signIn: '/signin',
   signUp: '/signup',
   signOut: '/',
+  gitHub: 'https://github.com/XamHans/bubatz-open-source',
   members: {
     index: '/members',
     new: '/members/new',
@@ -68,6 +76,11 @@ export const siteConfig = {
       name: 'Settings',
       href: '/settings',
       icon: Settings,
+    },
+    {
+      name: 'Jobs',
+      href: 'https://jobs.bubatz.club/',
+      icon: PenSquareIcon,
     },
     {
       name: 'Logout',

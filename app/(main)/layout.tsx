@@ -8,7 +8,7 @@ type Props = {
 const AppLayout = ({ children }: Props) => {
   return (
     <>
-      <main className="flex min-h-screen w-full flex-col bg-muted/40">
+      <main className="flex min-h-screen w-full flex-col ">
         <MobileHeader />
 
         <Sidebar />

@@ -38,6 +38,8 @@ interface PaymentTableProps {
 
 export default function PaymentTable({ memberId }: PaymentTableProps) {
   const t = useTranslations()
+  const g = useTranslations('General')
+
   const getPaymentTableColumns = () => {
     return [
       {
@@ -197,7 +199,7 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
                   colSpan={getPaymentTableColumns().length}
                   className="h-24 text-center"
                 >
-                  {t('General.dataTable.noResults', {
+                  {g('dataTable.noResults', {
                     entity: t('Payments.pageTitle').toLowerCase(),
                   })}
                 </TableCell>

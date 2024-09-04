@@ -262,6 +262,9 @@ export default function SalesTable() {
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      sorting: [{ id: 'createdAt', desc: true }],
+    },
   })
 
   if (status === 'executing') {
@@ -319,7 +322,7 @@ export default function SalesTable() {
                   </TableRow>
                   {expandedRows[row.id] && (
                     <TableRow>
-                      <TableCell colSpan={getSalesTableColumns().length}>
+                      <TableCell colSpan={getSalesTableColumns(router).length}>
                         <div className="rounded-md bg-gray-50 p-4">
                           {renderSaleItems(
                             row.original.items,
@@ -334,7 +337,7 @@ export default function SalesTable() {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={getSalesTableColumns().length}
+                  colSpan={getSalesTableColumns(router).length}
                   className="h-24 text-center"
                 >
                   {t('GENERAL.DATA_TABLE.NO_RESULTS', {

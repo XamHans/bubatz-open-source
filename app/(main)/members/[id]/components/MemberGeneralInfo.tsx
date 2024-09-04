@@ -18,10 +18,10 @@ interface MemberGeneralInfoProps {
 }
 
 const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
-  const t = useTranslations('MemberGeneralInfo')
+  const t = useTranslations('General')
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat('de-DE', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -42,13 +42,11 @@ const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
     )
 
     if (years > 0) {
-      return `${years} ${t(`duration.${years > 1 ? 'years' : 'year'}`)}${
-        months > 0
-          ? ` ${months} ${t(`duration.${months > 1 ? 'months' : 'month'}`)}`
-          : ''
+      return `${years} ${years > 1 ? 'Jahre' : 'Jahr'}${
+        months > 0 ? ` ${months} ${months > 1 ? 'Monate' : 'Monat'}` : ''
       }`
     } else {
-      return `${months} ${t(`duration.${months > 1 ? 'months' : 'month'}`)}`
+      return `${months} ${months > 1 ? 'Monate' : 'Monat'}`
     }
   }
 
@@ -76,9 +74,13 @@ const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
           </CardTitle>
           <div className="mt-2 flex justify-center gap-2">
             {member.status && (
-              <Badge variant="secondary">{t(`status.${member.status}`)}</Badge>
+              <Badge variant="secondary">
+                {t(`form.status.${member.status}`)}
+              </Badge>
             )}
-            {member.isAdmin && <Badge variant="default">{t('admin')}</Badge>}
+            {member.isAdmin && (
+              <Badge variant="default">{t('form.options.role.admin')}</Badge>
+            )}
           </div>
         </CardHeader>
       )}
@@ -93,21 +95,21 @@ const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
             {member.phone && <InfoItem icon={HiPhone} primary={member.phone} />}
             <InfoItem
               icon={HiCalendar}
-              primary={t('birthday')}
-              secondary={`${formatDate(member.birthday)} (${t('age')}: ${calculateAge(
+              primary={t('form.labels.birthday')}
+              secondary={`${formatDate(member.birthday)} (Alter: ${calculateAge(
                 member.birthday,
               )})`}
             />
             <InfoItem
               icon={HiClock}
-              primary={t('memberSince')}
+              primary="Mitglied seit"
               secondary={`${formatDate(
                 member.createdAt,
               )} (${calculateMembershipDuration(member.createdAt)})`}
             />
             <InfoItem
               icon={HiShieldCheck}
-              primary={t('memberId')}
+              primary="Mitgliedsnummer"
               secondary={member.id}
             />
           </>

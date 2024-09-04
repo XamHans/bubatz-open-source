@@ -38,6 +38,7 @@ interface MemberSalesTableProps {
 
 export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
   const t = useTranslations('Sales')
+  const g = useTranslations('General')
 
   const getMemberSalesTableColumns = () => {
     return [
@@ -169,6 +170,9 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      sorting: [{ id: 'createdAt', desc: true }],
+    },
   })
 
   if (status === 'executing') {
@@ -198,6 +202,7 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
                   <TableHead
                     key={header.id}
                     className="text-left text-xs sm:table-cell"
+                    style={{ width: header.getSize() }}
                   >
                     {header.isPlaceholder
                       ? null
@@ -233,7 +238,7 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
                   colSpan={getMemberSalesTableColumns().length}
                   className="h-24 text-center"
                 >
-                  {t('General.dataTable.noResults', {
+                  {g('dataTable.noResults', {
                     entity: t('pageTitle'),
                   })}
                 </TableCell>

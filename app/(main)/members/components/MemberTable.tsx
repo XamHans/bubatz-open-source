@@ -242,6 +242,9 @@ export default function MemberTable() {
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      sorting: [{ id: 'createdAt', desc: true }],
+    },
   })
 
   if (status === 'executing') {

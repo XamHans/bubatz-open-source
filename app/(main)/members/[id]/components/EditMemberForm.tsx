@@ -1,5 +1,3 @@
-/* eslint-disable */
-// @ts-nocheck
 'use client'
 
 import { BirthdayPicker } from '@/components/generic/BirthdayPicker'
@@ -44,7 +42,7 @@ interface EditMemberFormProps {
 export function EditMemberForm({ member, session }: EditMemberFormProps) {
   const { toast } = useToast()
   const t = useTranslations('General')
-  const g = useTranslations('MemberGeneralInfo')
+  const e = useTranslations('MembersEdit')
 
   const form = useForm<UpdateMemberInput>({
     resolver: zodResolver(updateMemberInputSchema),
@@ -56,22 +54,21 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
   const { execute, status } = useAction(updateMemberUseCase, {
     onSuccess: ({ data }) => {
       toast({
-        title: t('messages.success.title'),
+        title: e('messages.success.title'),
         duration: 1000,
-        description: t('messages.success.memberUpdated'),
+        description: e('messages.success.description'),
       })
     },
     onError: ({ error }) => {
       console.log(error)
       toast({
-        title: t('messages.error.title'),
+        title: e('messages.error.title'),
         variant: 'destructive',
-        description: t('messages.error.memberUpdateFailed'),
+        description: e('messages.error.description'),
       })
     },
   })
 
-  // Create a debounced version of the execute function
   const debouncedExecute = useCallback(
     debounce((data: UpdateMemberInput) => {
       execute(data)
@@ -174,7 +171,7 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
             <FormItem>
               <FormLabel>{t('form.labels.street')}</FormLabel>
               <FormControl>
-                <Input placeholder={t('form.placeholders.street')} {...field} />
+                <Input {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -194,7 +191,7 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
                 <SelectContent>
                   {Object.values(ClubMemberStatus).map((status) => (
                     <SelectItem key={status} value={status}>
-                      {g(`status.${status}`)}
+                      {t(`form.status.${status}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>

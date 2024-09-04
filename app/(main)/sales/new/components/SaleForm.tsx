@@ -80,7 +80,6 @@ export default function SaleForm({ session }: SaleFormProps) {
 
   const { toast } = useToast()
   const router = useRouter()
-  console.log('session', session)
   const form = useForm<CreateSaleWithItemsInput>({
     resolver: zodResolver(createSaleWithItemsInputSchema),
     defaultValues: {
@@ -192,6 +191,18 @@ export default function SaleForm({ session }: SaleFormProps) {
       })
     } else {
       form.clearErrors('root')
+    }
+
+    // Check if salesById and memberId are equal
+    const salesById = form.getValues('salesById')
+    const memberId = form.getValues('memberId')
+    if (salesById && memberId && salesById === memberId) {
+      form.setError('memberId', {
+        type: 'manual',
+        message: 'You cannot sell to yourself',
+      })
+    } else {
+      form.clearErrors('memberId')
     }
   }, [fields, form])
 
@@ -317,6 +328,15 @@ export default function SaleForm({ session }: SaleFormProps) {
               {isOverLimit
                 ? `Member has exceeded the monthly limit. Current total: ${(memberMonthlyPurchase + totalWeight).toFixed(2)}g / 50g`
                 : `Member's current monthly purchase: ${memberMonthlyPurchase}g. Remaining allowance: ${remainingAllowance.toFixed(2)}g`}
+            </AlertDescription>
+          </Alert>
+        )}
+        {/* Add this alert for the self-sale error */}
+        {form.formState.errors.memberId && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              {form.formState.errors.memberId.message}
             </AlertDescription>
           </Alert>
         )}

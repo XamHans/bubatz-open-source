@@ -11,33 +11,33 @@ export type Feature = {
 
 export const features: Feature[] = [
   {
-    title: 'Member Management',
+    title: 'Mitgliederverwaltung',
     description:
-      'Bubatz Club Manager provides a comprehensive member management system. Easily add, update, and track club members, including their roles, payment history, and cannabis purchase limits.',
+      'Bubatz Club Manager bietet ein umfassendes Mitgliederverwaltungssystem. Füge Clubmitglieder einfach hinzu, aktualisiere ihre Daten und verfolge ihre Rollen, Zahlungshistorie und Cannabis-Verkäufe.',
     image: 'https://utfs.io/f/43bbc3c8-cf3c-4fae-a0eb-9183f1779489-294m81.png',
     imageDark:
       'https://utfs.io/f/fddea366-51c6-45f4-bd54-84d273ad9fb9-1ly324.png',
   },
   {
-    title: 'Cultivation Tracking',
+    title: 'Anbau-Tracking',
     description:
-      'Our cultivation tracking feature allows you to monitor multiple batches and plants simultaneously. Track key metrics, growth phases, and yields for each batch, ensuring optimal cultivation management and compliance.',
+      'Mit unserem Anbau-Tracking kannst du mehrere Chargen und Pflanzen gleichzeitig überwachen. Verfolge wichtige Kennzahlen, Wachstumsphasen und Erträge für jede Charge, um optimales Anbaumanagement und Compliance sicherzustellen.',
     image: 'https://utfs.io/f/805616c1-22b8-4508-9890-9ba9e2867a41-p24dnn.png',
     imageDark:
       'https://utfs.io/f/9074c0de-d9ea-4c0b-9d49-55dca1253a3f-6ig3yq.png',
   },
   {
-    title: 'Sales and Inventory Management',
+    title: 'Verkaufs- und Bestandsmanagement',
     description:
-      'Bubatz Club Manager offers detailed sales and inventory tracking. Record all transactions, monitor stock levels, and ensure compliance with legal purchase limits for each member.',
+      'Die rechtlichen Regularien zur Cannabis Abgabe sind in der Software integriert. Das heißt du kannst sicher sein, dass du immer im Rahmen des Gesetzes handelst. Bevor ein Verkauf getätigt wird, überprüft die Software aufgrund vorheriger Käufe und Alter des Mitglieds ob ein Kauf erlaubt ist oder nicht. So kannst du sicher sein das Heranwachsender (18-21) kein hohes THC Produkt kaufen und die monatlichen Beschränkungen eingehalten.',
     image: 'https://utfs.io/f/43bbc3c8-cf3c-4fae-a0eb-9183f1779489-294m81.png',
     imageDark:
       'https://utfs.io/f/fddea366-51c6-45f4-bd54-84d273ad9fb9-1ly324.png',
   },
   {
-    title: 'Compliance and Reporting',
+    title: 'Compliance und Berichterstattung',
     description:
-      'Leverage Bubatz Club Manager built-in compliance features to stay within legal boundaries. Generate reports for authorities, track member purchase history, and maintain accurate records of all club activities.',
+      'Nutze die integrierten Compliance-Funktionen von Bubatz Club Manager, um innerhalb der gesetzlichen Grenzen zu bleiben. Erstelle Berichte für Behörden, verfolge die Kaufhistorie der Mitglieder und führe genaue Aufzeichnungen über alle Clubaktivitäten.',
     image: 'https://utfs.io/f/72a2c035-69e0-46ca-84a8-446e4dabf77c-3koi6e.png',
     imageDark:
       'https://utfs.io/f/89099112-4273-4375-9e44-1b3394600e21-c6ikq1.png',
@@ -49,11 +49,12 @@ export default function Features() {
     <section className="flex flex-col items-center justify-center gap-20 py-20">
       <div className="grid gap-3">
         <h2 className="text-center text-2xl font-bold text-foreground sm:text-3xl">
-          Bubatz Club Manager Features
+          Bubatz Club Manager Vorteile
         </h2>
         <Container className="max-w-2xl text-center text-base text-muted-foreground sm:text-xl">
-          Our features are designed to help you manage your cannabis club
-          efficiently and in compliance with German regulations.
+          Unsere Features sind darauf ausgelegt, dir bei der effizienten
+          Verwaltung deines Cannabis-Clubs zu helfen und dabei die deutschen
+          Vorschriften einzuhalten.
         </Container>
       </div>
       <div className="grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2">
