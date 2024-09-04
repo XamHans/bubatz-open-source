@@ -15,14 +15,20 @@
         "lastName": "Nachname",
         "email": "E-Mail",
         "phone": "Telefonnummer",
+        "birthday": "Geburtsdatum",
         "zip": "Postleitzahl",
-        "city": "Stadtname",
+        "city": "Stadt",
         "street": "Straße",
         "status": "Status",
-        "birthday": "Geburtstag",
         "role": "Rolle"
       },
       "options": {
+        "status": {
+          "ACTIVE": "Aktiv",
+          "PAUSED": "Pausiert",
+          "EXITED": "Ausgetreten",
+          "REQUEST": "Anfrage"
+        },
         "role": {
           "member": "Mitglied",
           "admin": "Administrator"

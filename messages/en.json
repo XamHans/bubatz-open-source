@@ -24,31 +24,52 @@
           "lastName": "Last Name",
           "email": "Email",
           "phone": "Phone Number",
+          "birthday": "Date of Birth",
           "zip": "Zip Code",
-          "city": "City Name",
+          "city": "City",
           "street": "Street",
           "status": "Status",
-          "birthday": "Birthday",
           "role": "Role"
         },
         "placeholders": {
+          "firstName": "Enter first name",
+          "lastName": "Enter last name",
+          "email": "Enter email",
+          "phone": "Enter phone number",
+          "birthday": "DD.MM.YYYY",
+          "zip": "Enter zip code",
+          "city": "Enter city's name",
           "street": "Enter street"
         },
         "options": {
+          "status": {
+            "ACTIVE": "Active",
+            "PAUSED": "Paused",
+            "EXITED": "Exited",
+            "REQUEST": "Request"
+          },
           "role": {
             "member": "Member",
             "admin": "Admin"
           }
+        },
+        "buttons": {
+          "save": "Save"
+        },
+        "errors": {
+          "birthdayRequired": "Birthday is required"
         }
       },
       "messages": {
         "success": {
           "title": "Success",
+          "memberCreated": "Member created successfully",
           "memberUpdated": "Member updated successfully"
         },
         "error": {
           "title": "Error",
-          "memberUpdateFailed": "Member could not be updated"
+          "memberCreationFailed": "Member creation failed, {error}",
+          "memberUpdateFailed": "Member update failed, {error}"
         }
       }
     }
@@ -75,12 +96,6 @@
     "birthday": "Birthday",
     "age": "Age",
     "memberId": "Member ID",
-    "status": {
-      "ACTIVE": "Active",
-      "PAUSED": "Paused",
-      "EXITED": "Exited",
-      "REQUEST": "Request"
-    },
 
     "admin": "Admin",
     "duration": {

@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { MemberProps } from '@/modules/members/types'
+import { MemberProps } from '@/modules/members/data-access/schema'
 import { useTranslations } from 'next-intl'
 import React from 'react'
 import {

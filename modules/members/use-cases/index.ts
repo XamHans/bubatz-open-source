@@ -29,6 +29,7 @@ export const addMemberUseCase = actionClient
   .schema(addMemberInputSchema)
   .action(async ({ parsedInput }) => {
     try {
+      console.log('parsedInput', parsedInput)
       const newMemberResult = await createMember(parsedInput)
       return { success: newMemberResult }
     } catch (error) {

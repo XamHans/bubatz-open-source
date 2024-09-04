@@ -26,22 +26,25 @@ import {
 import { ClubMemberRoles, ClubMemberStatus } from '@/modules/members/types'
 import { addMemberUseCase } from '@/modules/members/use-cases'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 
 export default function NewMemberForm() {
+  const t = useTranslations('Members')
+  const g = useTranslations('General')
+
   const router = useRouter()
   const { toast } = useToast()
 
   const { execute, status } = useAction(addMemberUseCase, {
     onSuccess: ({ data }) => {
       toast({
-        title: 'Success',
+        title: t('messages.create.success.title'),
         duration: 1000,
-        description: 'Member created successfully',
+        description: t('messages.create.success.description'),
       })
-      console.log('data success', data)
       setTimeout(() => {
         if (!data?.success?.id) return
         router.push(
@@ -52,10 +55,12 @@ export default function NewMemberForm() {
     onError: (error) => {
       console.warn('error', error)
       toast({
-        title: 'Error',
+        title: t('messages.create.error.title'),
         variant: 'destructive',
         duration: 50000,
-        description: `Member creation failed, ${error.error.serverError}`,
+        description: t('messages.create.error.description', {
+          error: error.error.serverError,
+        }),
       })
     },
   })
@@ -81,7 +86,7 @@ export default function NewMemberForm() {
     if (!data.birthday) {
       form.setError('birthday', {
         type: 'manual',
-        message: 'Birthday is required',
+        message: t('form.errors.birthdayRequired'),
       })
       return
     }
@@ -100,9 +105,9 @@ export default function NewMemberForm() {
           name="firstName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>First Name</FormLabel>
+              <FormLabel>{t('form.labels.firstName')}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter first name" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -114,9 +119,9 @@ export default function NewMemberForm() {
           name="lastName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Last Name</FormLabel>
+              <FormLabel>{t('form.labels.lastName')}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter last name" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -128,9 +133,9 @@ export default function NewMemberForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t('form.labels.email')}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter email" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -142,9 +147,9 @@ export default function NewMemberForm() {
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone Number</FormLabel>
+              <FormLabel>{t('form.labels.phone')}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter phone number" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -156,9 +161,9 @@ export default function NewMemberForm() {
           name="birthday"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Date of Birth</FormLabel>
+              <FormLabel>{t('form.labels.birthday')}</FormLabel>
               <FormControl>
-                <Input placeholder="DD.MM.YYYY" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -170,9 +175,9 @@ export default function NewMemberForm() {
           name="zip"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Zip Code</FormLabel>
+              <FormLabel>{t('form.labels.zip')}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter zip code" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -184,9 +189,9 @@ export default function NewMemberForm() {
           name="city"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>City</FormLabel>
+              <FormLabel>{t('form.labels.city')}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter city's name" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -198,9 +203,9 @@ export default function NewMemberForm() {
           name="street"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Street</FormLabel>
+              <FormLabel>{t('form.labels.street')}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter street" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -212,7 +217,7 @@ export default function NewMemberForm() {
           name="status"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Status</FormLabel>
+              <FormLabel>{t('form.labels.status')}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -221,11 +226,10 @@ export default function NewMemberForm() {
                 </FormControl>
                 <SelectContent>
                   <SelectItem value={ClubMemberStatus.REQUEST}>
-                    Request
+                    {t('form.options.status.REQUEST')}
                   </SelectItem>
-
                   <SelectItem value={ClubMemberStatus.ACTIVE}>
-                    Active
+                    {t('form.options.status.ACTIVE')}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -239,7 +243,7 @@ export default function NewMemberForm() {
           name="role"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Role</FormLabel>
+              <FormLabel>{t('form.labels.role')}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -247,9 +251,12 @@ export default function NewMemberForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="MEMBER">Member</SelectItem>
-
-                  <SelectItem value="ADMIN">Admin</SelectItem>
+                  <SelectItem value="MEMBER">
+                    {t('form.options.role.member')}
+                  </SelectItem>
+                  <SelectItem value="ADMIN">
+                    {t('form.options.role.admin')}
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -258,7 +265,7 @@ export default function NewMemberForm() {
         />
 
         <Button className="md:mt-8" type="submit">
-          Save
+          {g('form.buttons.save')}
         </Button>
       </form>
     </Form>
