@@ -5,6 +5,7 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['pino', 'pino-pretty'],
   },
+
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
@@ -12,8 +13,12 @@ const nextConfig = {
         stream: false,
         crypto: false,
         'cloudflare:sockets': false,
+        fs: false,
+        tls: false,
+        net: false,
       }
     }
+
     return config
   },
   images: {

@@ -61,5 +61,10 @@ export default auth((req) => {
 })
 
 export const config = {
+  unstable_allowDynamic: [
+    '/node_modules/.pnpm/@react-email+tailwind@0.0.17_react@18.3.1/node_modules/@react-email/tailwind/dist/index.mjs',
+    '/node_modules/.pnpm/@react-email/**',
+    '/node_modules/.pnpm/tailwindcss/**',
+  ],
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 }

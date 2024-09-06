@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client'
 
 import {
@@ -54,7 +55,10 @@ const ArchiveBatchModal = ({ id }: ArchiveBatchModalProps) => {
   })
 
   const handleArchive = () => {
-    execute({ id: id, isArchived: true })
+    execute({
+      id: id,
+      isArchived: true,
+    })
   }
 
   return (
