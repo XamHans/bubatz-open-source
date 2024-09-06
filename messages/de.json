@@ -39,6 +39,10 @@
         "PAUSED": "Pausiert",
         "EXITED": "Ausgetreten",
         "REQUEST": "Anfrage"
+      },
+      "actions": {
+        "save": "Speichern",
+        "cancel": "Abbrechen"
       }
     }
   },
@@ -70,11 +74,8 @@
   "MembersEdit": {
     "pageTitle": "Mitglied bearbeiten",
     "pageDescription": "Bearbeiten Sie Mitgliederdaten",
-    "actions": {
-      "save": "Speichern",
-      "cancel": "Abbrechen"
-    },
-    "messages:": {
+
+    "messages": {
       "success": {
         "title": "Erfolg",
         "description": "Mitglied erfolgreich aktualisiert"
@@ -114,14 +115,14 @@
       "method": "Zahlungsmethode"
     },
     "status": {
-      "paid": "Bezahlt",
-      "pending": "Ausstehend",
-      "overdue": "Überfällig"
+      "PAID": "Bezahlt",
+      "PENDING": "Ausstehend",
+      "OVERDUE": "Überfällig"
     },
     "method": {
-      "cash": "Bargeld",
-      "bankTransfer": "Überweisung",
-      "creditCard": "Kreditkarte"
+      "CASH": "Bargeld",
+      "BANKTRANSFER": "Überweisung",
+      "CARD": "Kreditkarte"
     }
   },
   "LocaleSwitcher": {

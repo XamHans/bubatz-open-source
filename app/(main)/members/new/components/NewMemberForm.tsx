@@ -32,8 +32,8 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 
 export default function NewMemberForm() {
-  const t = useTranslations('Members')
-  const g = useTranslations('General')
+  const t = useTranslations('General.form')
+  const m = useTranslations('Members')
 
   const router = useRouter()
   const { toast } = useToast()
@@ -41,9 +41,9 @@ export default function NewMemberForm() {
   const { execute, status } = useAction(addMemberUseCase, {
     onSuccess: ({ data }) => {
       toast({
-        title: t('messages.create.success.title'),
+        title: m('messages.create.success.title'),
         duration: 1000,
-        description: t('messages.create.success.description'),
+        description: m('messages.create.success.description'),
       })
       setTimeout(() => {
         if (!data?.success?.id) return
@@ -55,10 +55,10 @@ export default function NewMemberForm() {
     onError: (error) => {
       console.warn('error', error)
       toast({
-        title: t('messages.create.error.title'),
+        title: m('messages.create.error.title'),
         variant: 'destructive',
-        duration: 50000,
-        description: t('messages.create.error.description', {
+        duration: 5000,
+        description: m('messages.create.error.description', {
           error: error.error.serverError,
         }),
       })
@@ -86,7 +86,7 @@ export default function NewMemberForm() {
     if (!data.birthday) {
       form.setError('birthday', {
         type: 'manual',
-        message: t('form.errors.birthdayRequired'),
+        message: t('errors.birthdayRequired'),
       })
       return
     }
@@ -105,7 +105,7 @@ export default function NewMemberForm() {
           name="firstName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.firstName')}</FormLabel>
+              <FormLabel>{t('labels.firstName')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -119,7 +119,7 @@ export default function NewMemberForm() {
           name="lastName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.lastName')}</FormLabel>
+              <FormLabel>{t('labels.lastName')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -133,7 +133,7 @@ export default function NewMemberForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.email')}</FormLabel>
+              <FormLabel>{t('labels.email')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -147,7 +147,7 @@ export default function NewMemberForm() {
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.phone')}</FormLabel>
+              <FormLabel>{t('labels.phone')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -161,7 +161,7 @@ export default function NewMemberForm() {
           name="birthday"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.birthday')}</FormLabel>
+              <FormLabel>{t('labels.birthday')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -175,7 +175,7 @@ export default function NewMemberForm() {
           name="zip"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.zip')}</FormLabel>
+              <FormLabel>{t('labels.zip')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -189,7 +189,7 @@ export default function NewMemberForm() {
           name="city"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.city')}</FormLabel>
+              <FormLabel>{t('labels.city')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -203,7 +203,7 @@ export default function NewMemberForm() {
           name="street"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.street')}</FormLabel>
+              <FormLabel>{t('labels.street')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -217,7 +217,7 @@ export default function NewMemberForm() {
           name="status"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.status')}</FormLabel>
+              <FormLabel>{t('labels.status')}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -226,10 +226,10 @@ export default function NewMemberForm() {
                 </FormControl>
                 <SelectContent>
                   <SelectItem value={ClubMemberStatus.REQUEST}>
-                    {t('form.options.status.REQUEST')}
+                    {t('options.status.REQUEST')}
                   </SelectItem>
                   <SelectItem value={ClubMemberStatus.ACTIVE}>
-                    {t('form.options.status.ACTIVE')}
+                    {t('options.status.ACTIVE')}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -243,7 +243,7 @@ export default function NewMemberForm() {
           name="role"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.role')}</FormLabel>
+              <FormLabel>{t('labels.role')}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -252,10 +252,10 @@ export default function NewMemberForm() {
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="MEMBER">
-                    {t('form.options.role.member')}
+                    {t('options.role.member')}
                   </SelectItem>
                   <SelectItem value="ADMIN">
-                    {t('form.options.role.admin')}
+                    {t('options.role.admin')}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -265,7 +265,7 @@ export default function NewMemberForm() {
         />
 
         <Button className="md:mt-8" type="submit">
-          {g('form.buttons.save')}
+          {t('actions.save')}
         </Button>
       </form>
     </Form>

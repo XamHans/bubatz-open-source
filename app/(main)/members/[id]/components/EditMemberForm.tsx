@@ -41,8 +41,8 @@ interface EditMemberFormProps {
 
 export function EditMemberForm({ member, session }: EditMemberFormProps) {
   const { toast } = useToast()
-  const t = useTranslations('General')
-  const e = useTranslations('MembersEdit')
+  const t = useTranslations('General.form')
+  const m = useTranslations('MembersEdit')
 
   const form = useForm<UpdateMemberInput>({
     resolver: zodResolver(updateMemberInputSchema),
@@ -54,17 +54,17 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
   const { execute, status } = useAction(updateMemberUseCase, {
     onSuccess: ({ data }) => {
       toast({
-        title: e('messages.success.title'),
+        title: m('messages.success.title'),
         duration: 1000,
-        description: e('messages.success.description'),
+        description: m('messages.success.description'),
       })
     },
     onError: ({ error }) => {
       console.log(error)
       toast({
-        title: e('messages.error.title'),
+        title: m('messages.error.title'),
         variant: 'destructive',
-        description: e('messages.error.description'),
+        description: m('messages.error.description'),
       })
     },
   })
@@ -93,7 +93,7 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
           name="firstName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.firstName')}</FormLabel>
+              <FormLabel>{t('labels.firstName')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -106,7 +106,7 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
           name="lastName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.lastName')}</FormLabel>
+              <FormLabel>{t('labels.lastName')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -119,7 +119,7 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.email')}</FormLabel>
+              <FormLabel>{t('labels.email')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -132,7 +132,7 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.phone')}</FormLabel>
+              <FormLabel>{t('labels.phone')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -145,10 +145,11 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
           name="zip"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.zip')}</FormLabel>
+              <FormLabel>{t('labels.zip')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -157,10 +158,11 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
           name="city"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.city')}</FormLabel>
+              <FormLabel>{t('labels.city')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -169,10 +171,11 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
           name="street"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.street')}</FormLabel>
+              <FormLabel>{t('labels.street')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -181,7 +184,7 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
           name="status"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.status')}</FormLabel>
+              <FormLabel>{t('labels.status')}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -191,11 +194,12 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
                 <SelectContent>
                   {Object.values(ClubMemberStatus).map((status) => (
                     <SelectItem key={status} value={status}>
-                      {t(`form.status.${status}`)}
+                      {t(`options.status.${status}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -205,7 +209,7 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="block py-1">
-                {t('form.labels.birthday')}
+                {t('labels.birthday')}
               </FormLabel>
               <FormControl>
                 <BirthdayPicker
@@ -222,7 +226,7 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
           name="role"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.labels.role')}</FormLabel>
+              <FormLabel>{t('labels.role')}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -231,10 +235,10 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="MEMBER">
-                    {t('form.options.role.member')}
+                    {t('options.role.member')}
                   </SelectItem>
                   <SelectItem value="ADMIN">
-                    {t('form.options.role.admin')}
+                    {t('options.role.admin')}
                   </SelectItem>
                 </SelectContent>
               </Select>

@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/db/db'
 import { members } from '@/modules/members/data-access/schema'
-import { strains } from '@/modules/plants/data-access/schema'; // Import the strains table
+import { strains } from '@/modules/plants/data-access/schema' // Import the strains table
 import { and, eq, gte, lt, sql } from 'drizzle-orm'
 import { cache } from 'react'
 import {

@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { getUserByResetPasswordToken } from '@/actions/user'
 
 import { env } from '@/env.mjs'
 
 import { cn } from '@/lib/utils'
 
+import { Icons } from '@/components/generic/Icons'
 import { buttonVariants } from '@/components/ui/button'
 import {
   Card,
@@ -14,8 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { PasswordUpdateForm } from '@/components/forms/password-update-form'
-import { Icons } from '@/components/icons'
+import { getUserByResetPasswordToken } from '@/modules/auth/use-cases/user'
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -72,9 +71,9 @@ export default async function PasswordUpdatePage({
             <CardDescription>Set your new password</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-2">
-            <PasswordUpdateForm
+            {/* <PasswordUpdateForm
               resetPasswordToken={String(searchParams.token)}
-            />
+            /> */}
             <Link
               aria-label="Cancel password update"
               href="/signin"

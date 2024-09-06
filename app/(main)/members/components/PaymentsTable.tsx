@@ -37,7 +37,7 @@ interface PaymentTableProps {
 }
 
 export default function PaymentTable({ memberId }: PaymentTableProps) {
-  const t = useTranslations()
+  const t = useTranslations('Payments')
   const g = useTranslations('General')
 
   const getPaymentTableColumns = () => {
@@ -50,7 +50,7 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="justify-start text-xs"
           >
-            {t('Payments.columns.year')}
+            {t('columns.year')}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
@@ -64,7 +64,7 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="justify-start text-xs"
           >
-            {t('Payments.columns.amount')}
+            {t('columns.amount')}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
@@ -78,7 +78,7 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="justify-start text-xs"
           >
-            {t('Payments.columns.paymentDate')}
+            {t('columns.paymentDate')}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
@@ -86,16 +86,16 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
       },
       {
         accessorKey: 'paymentStatus',
-        header: t('Payments.columns.status'),
+        header: t('columns.status'),
         cell: ({ row }) => (
-          <Badge>{t(`Payments.status.${row.getValue('paymentStatus')}`)}</Badge>
+          <Badge>{t(`status.${row.getValue('paymentStatus')}`)}</Badge>
         ),
       },
       {
         accessorKey: 'paymentMethod',
-        header: t('Payments.columns.method'),
+        header: t('columns.method'),
         cell: ({ row }) => (
-          <div>{t(`Payments.method.${row.getValue('paymentMethod')}`)}</div>
+          <div>{t(`method.${row.getValue('paymentMethod')}`)}</div>
         ),
       },
     ]
@@ -147,7 +147,7 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between space-x-2">
         <Input
-          placeholder={t('Payments.actions.search')}
+          placeholder={t('actions.search')}
           value={(table.getColumn('year')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
             table.getColumn('year')?.setFilterValue(event.target.value)
@@ -200,7 +200,7 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
                   className="h-24 text-center"
                 >
                   {g('dataTable.noResults', {
-                    entity: t('Payments.pageTitle').toLowerCase(),
+                    entity: t('pageTitle').toLowerCase(),
                   })}
                 </TableCell>
               </TableRow>

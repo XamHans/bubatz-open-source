@@ -1,5 +1,4 @@
 import { markEmailAsVerified } from '@/actions/email'
-import { getUserByEmailVerificationToken } from '@/actions/user'
 import { type Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -17,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { getUserByEmailVerificationToken } from '@/modules/auth/use-cases/user'
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),

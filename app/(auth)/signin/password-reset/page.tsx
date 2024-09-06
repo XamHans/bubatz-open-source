@@ -11,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { PasswordResetForm } from '@/components/forms/password-reset-form'
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -30,7 +29,7 @@ export default function PasswordReset(): JSX.Element {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-2">
-          <PasswordResetForm />
+          {/* <PasswordResetForm /> */}
           <Link
             aria-label="Back to the sign in page"
             href="/signin"

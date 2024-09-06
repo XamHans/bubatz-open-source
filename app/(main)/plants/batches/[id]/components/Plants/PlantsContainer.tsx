@@ -26,12 +26,19 @@ import {
   createPlantInputSchema,
 } from '@/modules/plants/data-access/schema'
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { useToast } from '@/components/ui/use-toast'
 import {
   createPlantUseCase,
   fetchPlantsFromBatchUseCase,
 } from '@/modules/plants/use-cases'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Info } from 'lucide-react'
 import { useAction } from 'next-safe-action/hooks'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -124,10 +131,26 @@ const PlantsContainer = ({ batch }: PlantsContainerProps) => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel className="flex items-center">
+                      Name
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="ml-1 h-4 w-4 cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>
+                              Give the plant a unique name if you'd like. This
+                              is optional but can help identify individual
+                              plants.
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Give the plant a name if you like"
+                        placeholder="Enter a name for the plant (optional)"
                         {...field}
                       />
                     </FormControl>
@@ -141,10 +164,26 @@ const PlantsContainer = ({ batch }: PlantsContainerProps) => {
                 name="position"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Position</FormLabel>
+                    <FormLabel className="flex items-center">
+                      Position
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="ml-1 h-4 w-4 cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>
+                              Enter the physical location of the plant within
+                              the batch, e.g., "Row 1, Column 3" or "Northwest
+                              corner".
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Enter the position of the plant inside of the batch"
+                        placeholder="Enter the position of the plant in the batch"
                         {...field}
                       />
                     </FormControl>
