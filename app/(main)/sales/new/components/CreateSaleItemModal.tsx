@@ -93,7 +93,7 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
                       field.onChange(parseInt(v))
                       form.setValue('price', getPlantPriceFromId(parseInt(v)))
                     }}
-                    // defaultValue={field.value}
+                    //
                   >
                     <SelectTrigger className="w-full">
                       <span>

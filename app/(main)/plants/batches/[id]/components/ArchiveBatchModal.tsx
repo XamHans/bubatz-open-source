@@ -55,6 +55,7 @@ const ArchiveBatchModal = ({ id }: ArchiveBatchModalProps) => {
   })
 
   const handleArchive = () => {
+    // @ts-ignore
     execute({
       id: id,
       isArchived: true,

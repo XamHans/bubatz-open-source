@@ -19,13 +19,20 @@ const growthStageProgress: Record<GrowPhase, number> = {
 const UpcomingYield = ({ batches }: UpcomingYieldProps) => {
   const calculateProgress = (
     startDate: string | number | Date,
-    endDate: string | number | Date,
+    endDate: string | number | Date | undefined,
     currentGrowthStage: GrowPhase,
   ) => {
     const start = new Date(startDate).getTime()
-    const end = new Date(endDate).getTime()
     const now = new Date().getTime()
-    const timeProgress = ((now - start) / (end - start)) * 100
+    let timeProgress = 0
+
+    if (endDate) {
+      const end = new Date(endDate).getTime()
+      timeProgress = ((now - start) / (end - start)) * 100
+    } else {
+      // If no end date, base progress solely on growth stage
+      timeProgress = growthStageProgress[currentGrowthStage] || 0
+    }
 
     // Get the progress based on the current growth stage
     const stageProgress = growthStageProgress[currentGrowthStage] || 0
@@ -46,7 +53,7 @@ const UpcomingYield = ({ batches }: UpcomingYieldProps) => {
           {batches.map((batch) => {
             const progress = calculateProgress(
               batch.startDate,
-              batch.endDate,
+              batch.endDate || undefined,
               batch.currentGrowthStage as GrowPhase,
             )
             return (
@@ -62,16 +69,19 @@ const UpcomingYield = ({ batches }: UpcomingYieldProps) => {
                   <span>
                     Started: {new Date(batch.startDate).toLocaleDateString()}
                   </span>
-                  <span>
-                    Expected End:{' '}
-                    {batch.endDate &&
-                      new Date(batch.endDate).toLocaleDateString()}
-                  </span>
+                  {batch.endDate ? (
+                    <span>
+                      Expected End:{' '}
+                      {new Date(batch.endDate).toLocaleDateString()}
+                    </span>
+                  ) : (
+                    <span>End Date: Not set</span>
+                  )}
                 </div>
                 <div className="mt-2 text-sm font-medium">
                   Progress: {Math.round(progress)}%
                 </div>
-                {batch?.expectedYield && batch?.expectedYield > 0 && (
+                {batch?.expectedYield && Number(batch.expectedYield) > 0 && (
                   <p className="mt-5 text-lg font-bold">
                     Expected Yield: {batch.expectedYield}g
                   </p>

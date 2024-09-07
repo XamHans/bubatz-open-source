@@ -56,7 +56,7 @@ const PlantsContainer = ({ batch }: PlantsContainerProps) => {
   const batchId = batch.id
 
   const { execute } = useAction(fetchPlantsFromBatchUseCase, {
-    onSuccess: (data) => {
+    onSuccess: ({ data }) => {
       const { plants } = data?.success as any
       setPlants(plants)
     },

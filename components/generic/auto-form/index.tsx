@@ -82,6 +82,7 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
     if (parsedValues.success) {
       onParsedValuesChange?.(parsedValues.data)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valuesString])
 
   const renderChildren =

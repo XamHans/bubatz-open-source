@@ -4,12 +4,11 @@ import {
   boolean,
   date,
   integer,
-  jsonb,
   numeric,
   serial,
   text,
   timestamp,
-  uuid,
+  uuid
 } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm/relations'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
@@ -101,7 +100,6 @@ export const batches = protectedSchema.table('batches', {
   expectedYield: numeric('expected_yield').default('0'),
   totalDestroyed: numeric('total_destroyed').default('0'),
   isArchived: boolean('is_archived').default(false),
-  otherDetails: jsonb('other_details').default('{}'),
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
     .defaultNow(),

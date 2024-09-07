@@ -41,11 +41,7 @@ export default function AutoFormEnum({
         isRequired={isRequired}
       />
       <FormControl>
-        <Select
-          onValueChange={field.onChange}
-          defaultValue={field.value}
-          {...fieldProps}
-        >
+        <Select onValueChange={field.onChange} {...fieldProps}>
           <SelectTrigger className={fieldProps.className}>
             <SelectValue placeholder={fieldConfigItem.inputProps?.placeholder}>
               {field.value ? findItem(field.value)?.[1] : 'Select an option'}

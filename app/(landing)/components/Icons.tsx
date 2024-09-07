@@ -1,3 +1,4 @@
+import { siteConfig } from '@/config/site'
 import { cn } from '@/lib/utils'
 import { Loader2Icon } from 'lucide-react'
 import type { ElementType } from 'react'
@@ -28,7 +29,9 @@ export const Icons = {
           className={cn('h-5 w-5 fill-primary', iconProps?.className)}
           {...iconProps}
         />
-        <span className={classNameText}>{siteConfig?.name ?? 'Bubatz'}</span>
+        <span className={classNameText}>
+          {siteConfig?.name ?? 'Bubatz Club Manager'}
+        </span>
       </Comp>
     )
   },

@@ -71,7 +71,7 @@ const UpdatePlantForm: React.FC<UpdatePlantFormProps> = ({
     resolver: zodResolver(updatePlantInputSchema),
     defaultValues: {
       ...plant,
-      yield: plant.yield || 0,
+      yield: plant.yield?.toString() || '0',
     },
   })
 
@@ -100,7 +100,6 @@ const UpdatePlantForm: React.FC<UpdatePlantFormProps> = ({
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel>{t('MEMBER.FIRST_NAME')}</FormLabel> */}
                     <FormLabel>Name</FormLabel>
                     <FormControl>
                       <Input
@@ -140,7 +139,6 @@ const UpdatePlantForm: React.FC<UpdatePlantFormProps> = ({
                       <Select
                         onValueChange={field.onChange}
                         //@ts-ignore
-                        defaultValue={field.value}
                       >
                         <SelectTrigger className="w-full">
                           <span>{field.value || 'Select Health Status'}</span>
@@ -164,14 +162,13 @@ const UpdatePlantForm: React.FC<UpdatePlantFormProps> = ({
                 name="yield"
                 render={({ field }) => (
                   <FormItem className="col-span-2">
-                    {/* <FormLabel>{t('MEMBER.LAST_NAME')}</FormLabel> */}
                     <FormLabel>Yield (rounded in g)</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
-                        value={field.value || 0}
                         placeholder="Enter the yield of the plant in grams"
                         {...field}
+                        value={field.value ?? 0}
                       />
                     </FormControl>
                     <FormMessage />

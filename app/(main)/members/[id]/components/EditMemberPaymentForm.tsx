@@ -40,6 +40,7 @@ export function EditMemberPaymentForm({ payment }: EditMemberPaymentFormProps) {
   console.log('in edit member payment form', payment)
   const form = useForm<UpdateMemberPaymentInput>({
     resolver: zodResolver(updateMemberPaymentInputSchema),
+    //@ts-ignore
     defaultValues: {
       ...payment,
     },
@@ -64,6 +65,7 @@ export function EditMemberPaymentForm({ payment }: EditMemberPaymentFormProps) {
 
   const debouncedExecute = useCallback(
     debounce((data: MembershipPaymentSchema) => {
+      //@ts-ignore
       execute(data)
     }, 500),
     [execute],
@@ -103,7 +105,7 @@ export function EditMemberPaymentForm({ payment }: EditMemberPaymentFormProps) {
             <FormItem>
               <FormLabel>Amount</FormLabel>
               <FormControl>
-                <Input {...field} type="number" step="0.01" />
+                <Input {...field} type="number" value={field.value ?? 0} />
               </FormControl>
               <FormDescription>The payment amount in euros.</FormDescription>
               <FormMessage />
@@ -118,7 +120,7 @@ export function EditMemberPaymentForm({ payment }: EditMemberPaymentFormProps) {
             <FormItem>
               <FormLabel>Payment Date</FormLabel>
               <FormControl>
-                <Input {...field} type="date" />
+                <Input {...field} type="date" value={field.value ?? ''} />
               </FormControl>
               <FormDescription>The date the payment was made.</FormDescription>
               <FormMessage />
@@ -132,7 +134,7 @@ export function EditMemberPaymentForm({ payment }: EditMemberPaymentFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Payment Status</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a status" />
@@ -158,7 +160,7 @@ export function EditMemberPaymentForm({ payment }: EditMemberPaymentFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Payment Method</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a status" />
@@ -182,7 +184,11 @@ export function EditMemberPaymentForm({ payment }: EditMemberPaymentFormProps) {
             <FormItem>
               <FormLabel>Notes</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Any additional notes" />
+                <Input
+                  {...field}
+                  placeholder="Any additional notes"
+                  value={field.value ?? ''}
+                />
               </FormControl>
               <FormDescription>
                 Any additional information about the payment.

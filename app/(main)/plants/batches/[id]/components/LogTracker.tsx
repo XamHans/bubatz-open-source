@@ -18,12 +18,12 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   CreatePlantInput,
   createPlantInputSchema,
 } from '@/modules/plants/data-access/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Input } from 'postcss'
 import { useState } from 'react'
 import { Button } from 'react-day-picker'
 import { Form, useForm } from 'react-hook-form'
@@ -128,13 +128,9 @@ const LogTracker: React.FC = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel>{t('MEMBER.FIRST_NAME')}</FormLabel> */}
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Give the plant a name if you like"
-                        {...field}
-                      />
+                      <Input {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -146,13 +142,9 @@ const LogTracker: React.FC = () => {
                 name="position"
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel>{t('MEMBER.LAST_NAME')}</FormLabel> */}
                     <FormLabel>Position</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Enter the position of the plant inside of the batch"
-                        {...field}
-                      />
+                      <Input {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

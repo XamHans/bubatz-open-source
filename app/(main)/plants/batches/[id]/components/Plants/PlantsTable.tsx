@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import SkeletonLoader from '@/app/components/SkeletonLoader';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import SkeletonLoader from '@/app/components/SkeletonLoader'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -10,19 +10,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@/components/ui/table'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { useToast } from '@/components/ui/use-toast';
-import { BatchProps } from '@/modules/plants/data-access/schema';
+} from '@/components/ui/tooltip'
+import { useToast } from '@/components/ui/use-toast'
+import { BatchProps, PlantProps } from '@/modules/plants/data-access/schema'
 import {
   deletePlantUseCase,
   fetchPlantsFromBatchUseCase,
-} from '@/modules/plants/use-cases';
+} from '@/modules/plants/use-cases'
 import {
   ColumnFiltersState,
   SortingState,
@@ -33,28 +33,27 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table';
-import { ArrowUpDown, Trash2 } from 'lucide-react';
-import { useAction } from 'next-safe-action/hooks';
-import { useEffect, useState } from 'react';
-import { UpdatePlantForm } from './UpdatePlant';
-
+} from '@tanstack/react-table'
+import { ArrowUpDown, Trash2 } from 'lucide-react'
+import { useAction } from 'next-safe-action/hooks'
+import { useEffect, useState } from 'react'
+import { UpdatePlantForm } from './UpdatePlant'
 
 export interface PlantsTableProps {
   batch: BatchProps
 }
 
-const PlantsTable = ({batch}: PlantsTableProps) => {
-  const { toast } = useToast();
-  
+const PlantsTable = ({ batch }: PlantsTableProps) => {
+  const { toast } = useToast()
+
   const { execute, status } = useAction(fetchPlantsFromBatchUseCase, {
-    onSuccess: ({data}) => {
-      setPlants(data?.success?.plants);
+    onSuccess: ({ data }) => {
+      setPlants(data?.success.plants ?? [])
     },
     onError: (error) => {
-      console.log('Error fetching plants', error);
+      console.log('Error fetching plants', error)
     },
-  });
+  })
 
   const { execute: delExecute, status: delStatus } = useAction(
     deletePlantUseCase,
@@ -63,17 +62,17 @@ const PlantsTable = ({batch}: PlantsTableProps) => {
         toast({
           title: 'Success',
           description: `Plant deleted successfully.`,
-        });
-        execute({ batchId: batch.id }); //re-fetch plants
+        })
+        execute({ batchId: batch.id }) //re-fetch plants
       },
       onError: (error) => {
         toast({
           title: 'Error',
           description: `Plant  could not be deleted due to an error. ${error}`,
-        });
+        })
       },
     },
-  );
+  )
 
   const getPlantTableColumns = () => {
     const columns = [
@@ -91,9 +90,7 @@ const PlantsTable = ({batch}: PlantsTableProps) => {
           </Button>
         ),
         cell: ({ row }) => (
-          <div className="w-auto p-0 text-left">
-            {row.original.position}
-          </div>
+          <div className="w-auto p-0 text-left">{row.original.position}</div>
         ),
       },
       {
@@ -155,7 +152,7 @@ const PlantsTable = ({batch}: PlantsTableProps) => {
           </Button>
         ),
         cell: ({ row }) => {
-          const plant = row.original;
+          const plant = row.original
           return (
             <div className="flex justify-start">
               <Button
@@ -180,7 +177,7 @@ const PlantsTable = ({batch}: PlantsTableProps) => {
                 variant="ghost"
                 className="hover:bg-inherit"
                 onClick={() => {
-                  delExecute({ id: plant.id });
+                  delExecute({ id: plant.id })
                 }}
               >
                 <TooltipProvider>
@@ -193,23 +190,23 @@ const PlantsTable = ({batch}: PlantsTableProps) => {
                 </TooltipProvider>
               </Button>
             </div>
-          );
+          )
         },
       },
-    ];
+    ]
 
-    return columns;
-  };
+    return columns
+  }
 
-  const [plants, setPlants] = useState([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
+  const [plants, setPlants] = useState<PlantProps[]>([])
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
 
   useEffect(() => {
-    execute({ batchId: batch.id });
-  }, []);
+    execute({ batchId: batch.id })
+  }, [])
 
   const table = useReactTable({
     data: plants,
@@ -228,12 +225,11 @@ const PlantsTable = ({batch}: PlantsTableProps) => {
       columnVisibility,
       rowSelection,
     },
-  });
+  })
 
   if (status === 'executing') {
-    return <SkeletonLoader />;
+    return <SkeletonLoader />
   }
-  
 
   return (
     <Table className="rounded-md bg-white">
@@ -257,38 +253,36 @@ const PlantsTable = ({batch}: PlantsTableProps) => {
         ))}
       </TableHeader>
       <TableBody>
-        {status === 'hasSucceeded' &&
-          plants &&
-          (
-              <>
-                {table.getRowModel()?.rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && 'selected'}
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell className="text-left" key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell className="col-span-3 h-24 text-center">
-                      No plants found in this batch.
+        {status === 'hasSucceeded' && plants && (
+          <>
+            {table.getRowModel()?.rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell className="text-left" key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </TableCell>
-                  </TableRow>
-                )}
-              </>,
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell className="col-span-3 h-24 text-center">
+                  No plants found in this batch.
+                </TableCell>
+              </TableRow>
             )}
+          </>
+        )}
       </TableBody>
     </Table>
-  );
-};
+  )
+}
 
-export { PlantsTable };
+export { PlantsTable }

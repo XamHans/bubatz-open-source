@@ -7,6 +7,8 @@
   "plugins": ["prettier"],
   "rules": {
     "semi": ["error", "never"],
+    "react/no-unescaped-entities": "off",
     "prettier/prettier": ["error", { "semi": false }]
-  }
+  },
+  "ignorePatterns": ["jest.config.mjs"]
 }

@@ -37,11 +37,7 @@ export default function AutoFormRadioGroup({
           isRequired={isRequired}
         />
         <FormControl>
-          <RadioGroup
-            onValueChange={field.onChange}
-            defaultValue={field.value}
-            {...fieldProps}
-          >
+          <RadioGroup onValueChange={field.onChange} {...fieldProps}>
             {values?.map((value: any) => (
               <FormItem
                 key={value}

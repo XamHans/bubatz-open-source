@@ -175,6 +175,7 @@ export default function BatchesTable({
 }: BatchesTableProps) {
   const { execute, status } = useAction(fetchBatchesUseCase, {
     onSuccess: ({ data }) => {
+      //@ts-ignore
       setPlants(data?.success ?? [])
     },
     onError: (error) => {

@@ -10,6 +10,7 @@ export const env = createEnv({
     NODE_ENV: z.enum(['development', 'test', 'production']),
     DATABASE_URL: z.string(),
     AUTH_SECRET: z.string(),
+    RESEND_EMAIL_FROM: z.string(),
   },
 
   /**
@@ -30,5 +31,6 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     DATABASE_URL: process.env.DATABASE_URL,
     AUTH_SECRET: process.env.AUTH_SECRET,
+    RESEND_EMAIL_FROM: process.env.RESEND_EMAIL_FROM,
   },
 })

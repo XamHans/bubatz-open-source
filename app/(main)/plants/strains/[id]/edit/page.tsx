@@ -47,7 +47,7 @@ export default async function StrainEditPage({
                 <CardTitle>Edit Strain</CardTitle>
               </CardHeader>
               <CardContent>
-                <EditStrainForm strain={strain} />
+                <EditStrainForm strain={strain as any} />
               </CardContent>
             </Card>{' '}
           </div>

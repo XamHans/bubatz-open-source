@@ -151,6 +151,7 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
 
   useEffect(() => {
     execute({ memberId })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberId])
 
   const table = useReactTable({

@@ -1,5 +1,6 @@
 import { EmailVerificationEmail } from '@/components/emails/email-verification-email'
 import { resend } from '@/config/email'
+import { env } from '@/env.mjs'
 import { db } from '@/lib/db/db'
 import { members } from '@/modules/members/data-access/schema'
 import {
@@ -33,6 +34,14 @@ export async function markEmailAsVerified(
   }
 }
 
+function generateToken(length: number = 32): string {
+  const array = new Uint8Array(length)
+  crypto.getRandomValues(array)
+  return Array.from(array)
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('')
+}
+
 export async function resendEmailVerificationLink(
   rawInput: EmailVerificationFormInput,
 ): Promise<'invalid-input' | 'not-found' | 'error' | 'success'> {
@@ -43,7 +52,7 @@ export async function resendEmailVerificationLink(
     const user = await getUserByEmail({ email: validatedInput.data.email })
     if (!user) return 'not-found'
 
-    const emailVerificationToken = crypto.randomBytes(32).toString('base64url')
+    const emailVerificationToken = generateToken()
 
     const userUpdated = await db
       .update(members)

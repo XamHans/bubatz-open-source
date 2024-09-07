@@ -62,7 +62,6 @@ async function seedDatabase() {
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
         currentGrowthStage: faker.helpers.arrayElement(growthStages),
-        otherDetails: {},
       })
 
       console.log('Batch:', batch)

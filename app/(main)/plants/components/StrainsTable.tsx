@@ -18,6 +18,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { siteConfig } from '@/config/site'
+import { StrainProps } from '@/modules/plants/data-access/schema'
 import { fetchStrainsUseCase } from '@/modules/plants/use-cases'
 import { Pencil1Icon } from '@radix-ui/react-icons'
 import {
@@ -177,14 +178,17 @@ const getStrainsTableColumns = (router: AppRouterInstance) => {
 export default function StrainsTable() {
   const { execute, status } = useAction(fetchStrainsUseCase, {
     onSuccess: ({ data }) => {
-      setStrains(data?.success ?? [])
+      if (data?.success) {
+        //@ts-ignore
+        setStrains(data.success)
+      }
     },
     onError: (error) => {
       console.log('Error fetching strains', error)
     },
   })
 
-  const [strains, setStrains] = useState([])
+  const [strains, setStrains] = useState<StrainProps[]>([])
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})

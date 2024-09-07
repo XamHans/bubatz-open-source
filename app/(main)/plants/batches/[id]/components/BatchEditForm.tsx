@@ -61,7 +61,7 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
       expectedYield: batch.expectedYield,
       totalDestroyed: batch.totalDestroyed,
       totalYield: batch.totalYield,
-      endDate: batch.endDate,
+      endDate: batch.endDate || undefined,
     },
   })
 
@@ -69,6 +69,7 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedExecute = useCallback(
     debounce((data: UpdateBatchInput) => {
+      // @ts-ignore
       execute(data)
     }, 500), // 500ms delay
     [execute],
@@ -94,10 +95,7 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
               <FormItem className="col-span-2">
                 <FormLabel>Select Grow Phase</FormLabel>
                 <FormControl>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange}>
                     <SelectTrigger className="w-full">
                       <span>{field.value || 'Select Grow Phase'}</span>
                     </SelectTrigger>
@@ -144,6 +142,7 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
                   <Input
                     placeholder="Enter expected yield total in grams"
                     {...field}
+                    value={field.value ?? ''}
                   />
                 </FormControl>
                 <FormMessage />
@@ -158,7 +157,11 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
               <FormItem className="col-span-2">
                 <FormLabel>Yield Total (grams)</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter yield total in grams" {...field} />
+                  <Input
+                    placeholder="Enter yield total in grams"
+                    {...field}
+                    value={field.value ?? ''}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -175,6 +178,7 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
                   <Input
                     placeholder="Enter destroyed total in grams"
                     {...field}
+                    value={field.value ?? ''}
                   />
                 </FormControl>
                 <FormMessage />

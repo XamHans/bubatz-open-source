@@ -4,7 +4,7 @@ import { Container } from '@/components/generic/Container'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { siteConfig } from '@/config/site'
-import { fetchBatchDetailsUseCase } from '@/modules/plants/use-cases'
+import { getBatchById } from '@/modules/plants/data-access'
 import { ChevronLeft } from 'lucide-react'
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -22,9 +22,7 @@ interface BatchDetailPageProps {
 }
 
 async function BatchContent({ id }: { id: string }) {
-  const { data } = await fetchBatchDetailsUseCase({ id })
-  const batch = data?.success?.batch
-  const strain = data?.success?.strain
+  const { batches: batch, strains: strain } = await getBatchById(id)
 
   if (!batch) {
     notFound()

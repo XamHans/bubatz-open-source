@@ -33,6 +33,7 @@ export function EditStrainForm({ strain }: EditStrainFormProps) {
 
   const form = useForm<UpdateStrainInput>({
     resolver: zodResolver(updateStrainInputSchema),
+    //@ts-ignore
     defaultValues: {
       ...strain,
     },
@@ -65,8 +66,9 @@ export function EditStrainForm({ strain }: EditStrainFormProps) {
   )
 
   useEffect(() => {
-    const subscription = form.watch((value, { name, type }) => {
+    const subscription = form.watch(() => {
       const formData = form.getValues()
+      //@ts-ignore
       debouncedExecute({ ...strain, ...formData })
     })
 
@@ -130,7 +132,7 @@ export function EditStrainForm({ strain }: EditStrainFormProps) {
             <FormItem>
               <FormLabel>Current Amount (in g)</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} value={field.value ?? ''} />
               </FormControl>
               <FormDescription>
                 The current amount of the strain available in grams.
@@ -146,7 +148,11 @@ export function EditStrainForm({ strain }: EditStrainFormProps) {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea placeholder="Strain description" {...field} />
+                <Textarea
+                  placeholder="Strain description"
+                  {...field}
+                  value={field.value ?? ''}
+                />
               </FormControl>
               <FormDescription>
                 A brief description of the strain.

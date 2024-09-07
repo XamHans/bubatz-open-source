@@ -107,7 +107,7 @@ export default function NewMemberForm() {
             <FormItem>
               <FormLabel>{t('labels.firstName')}</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -121,7 +121,7 @@ export default function NewMemberForm() {
             <FormItem>
               <FormLabel>{t('labels.lastName')}</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -135,7 +135,7 @@ export default function NewMemberForm() {
             <FormItem>
               <FormLabel>{t('labels.email')}</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -149,7 +149,7 @@ export default function NewMemberForm() {
             <FormItem>
               <FormLabel>{t('labels.phone')}</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -163,7 +163,7 @@ export default function NewMemberForm() {
             <FormItem>
               <FormLabel>{t('labels.birthday')}</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -177,7 +177,7 @@ export default function NewMemberForm() {
             <FormItem>
               <FormLabel>{t('labels.zip')}</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -191,7 +191,7 @@ export default function NewMemberForm() {
             <FormItem>
               <FormLabel>{t('labels.city')}</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -205,7 +205,7 @@ export default function NewMemberForm() {
             <FormItem>
               <FormLabel>{t('labels.street')}</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -218,7 +218,10 @@ export default function NewMemberForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t('labels.status')}</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value ?? 'REQUEST'}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue />
@@ -244,7 +247,10 @@ export default function NewMemberForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t('labels.role')}</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value ?? 'MEMBER'}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue />

@@ -74,6 +74,7 @@ const CreateBatchForm = () => {
 
   useEffect(() => {
     fetchStrains.execute()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const form = useForm<CreateBatchInput>({
@@ -174,10 +175,7 @@ const CreateBatchForm = () => {
             <FormItem>
               <FormLabel>Select Grow Phase</FormLabel>
               <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange}>
                   <SelectTrigger className="w-full">
                     <span>{field.value || 'Select Grow Phase'}</span>
                   </SelectTrigger>

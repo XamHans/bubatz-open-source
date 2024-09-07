@@ -19,7 +19,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { addMemberPaymentUseCase } from '@/modules/members/use-cases'
+import { addPaymentUseCase } from '@/modules/members/use-cases'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useAction } from 'next-safe-action/hooks'
 import { useForm } from 'react-hook-form'
@@ -47,7 +47,7 @@ export function AddMemberPaymentModal({
     },
   })
 
-  const { execute, status } = useAction(addMemberPaymentUseCase, {
+  const { execute, status } = useAction(addPaymentUseCase, {
     onSuccess: () => {
       form.reset()
       onSuccess?.()
@@ -55,6 +55,7 @@ export function AddMemberPaymentModal({
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    //@ts-ignore
     execute({ ...values, memberId })
   }
 

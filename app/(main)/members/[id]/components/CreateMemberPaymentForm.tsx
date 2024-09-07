@@ -83,6 +83,7 @@ const CreateMemberPaymentForm = ({
 
   const onSubmit = (data: AddMembershipPaymentInput) => {
     logger.info('Creating payment', data)
+    //@ts-ignore
     execute(data)
   }
 
@@ -145,10 +146,7 @@ const CreateMemberPaymentForm = ({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Payment Status</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select status" />
@@ -172,10 +170,7 @@ const CreateMemberPaymentForm = ({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Payment Method</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select payment method" />
@@ -201,18 +196,18 @@ const CreateMemberPaymentForm = ({
             <FormItem>
               <FormLabel>Notes</FormLabel>
               <FormControl>
-                <Textarea placeholder="Enter any additional notes" {...field} />
+                <Textarea
+                  placeholder="Enter any additional notes"
+                  {...field}
+                  value={field.value ?? ''}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          disabled={status === 'loading'}
-          className="w-full"
-        >
-          {status === 'loading' ? 'Creating Payment...' : 'Create Payment'}
+        <Button type="submit" className="w-full">
+          Create Payment
         </Button>
       </form>
     </Form>

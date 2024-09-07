@@ -28,7 +28,7 @@ import { t } from 'i18next'
 import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useAction } from 'next-safe-action/hooks'
 import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 interface StrainMemberTableProps {
   strainId: string
@@ -130,9 +130,10 @@ export default function StrainMemberTable({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
 
-  useEffect(() => {
-    execute({ memberId })
-  }, [memberId])
+  //@TODO: Implement member sales fetching
+  // useEffect(() => {
+  //   execute({ memberId })
+  // }, [memberId])
 
   const table = useReactTable({
     data: sales,
