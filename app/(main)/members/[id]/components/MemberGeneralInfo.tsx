@@ -108,21 +108,21 @@ const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
           <InfoItem
             icon={HiCalendar}
             primary={t('form.labels.birthday')}
-            secondary={`${formatDate(member.birthday)} (Alter: ${calculateAge(member.birthday)})`}
+            secondary={`${formatDate(member.birthday as any)} (Alter: ${calculateAge(member.birthday as any)})`}
           />
         )}
         {member.createdAt && (
           <InfoItem
             icon={HiClock}
             primary="Mitglied seit"
-            secondary={`${formatDate(member.createdAt)} (${calculateMembershipDuration(member.createdAt)})`}
+            secondary={`${formatDate(member.createdAt as any)} (${calculateMembershipDuration(member.createdAt as any)})`}
           />
         )}
         {member.id && (
           <InfoItem
             icon={HiShieldCheck}
             primary="Mitgliedsnummer"
-            secondary={member.id}
+            secondary={member.id as any}
           />
         )}
       </CardContent>

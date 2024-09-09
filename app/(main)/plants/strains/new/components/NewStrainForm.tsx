@@ -58,8 +58,8 @@ export default function NewStrainForm() {
       description: '',
       thc: 0,
       cbd: 0,
-      currentPricePerGram: '0',
-      amountAvailable: '0',
+      currentPricePerGram: 0,
+      amountAvailable: 0,
     },
   })
 

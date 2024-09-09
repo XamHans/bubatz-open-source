@@ -91,7 +91,7 @@ const PlantsContainer = ({ batch }: PlantsContainerProps) => {
     defaultValues: {
       name: '',
       position: '',
-      batchId,
+      batchId: batchId,
       health: 'HEALTHY',
     },
   })

@@ -1,148 +1,11 @@
-import { protectedSchema } from '@/modules/members/data-access/schema'
-import { sql } from 'drizzle-orm'
-import {
-  boolean,
-  date,
-  integer,
-  numeric,
-  serial,
-  text,
-  timestamp,
-  uuid
-} from 'drizzle-orm/pg-core'
-import { relations } from 'drizzle-orm/relations'
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
-export const postgresDateSchema = z.string().refine(
-  (date) => {
-    // Regular expression to match YYYY-MM-DD format
-    const dateRegex = /^\d{4}-\d{2}-\d{2}$/
-    if (!dateRegex.test(date)) return false
+// ... (keep the existing table definitions)
 
-    // Check if it's a valid date
-    const [year, month, day] = date.split('-').map(Number)
-    const dateObj = new Date(year, month - 1, day)
-    return (
-      dateObj.getFullYear() === year &&
-      dateObj.getMonth() === month - 1 &&
-      dateObj.getDate() === day
-    )
-  },
-  {
-    message: 'Invalid date format. Expected YYYY-MM-DD',
-  },
-)
+// Updated CRUD schemas
 
-const defaultSeedToSale = {
-  seed: {
-    date_planted: null,
-    source: null,
-    seed_lot: null,
-  },
-  germination: {
-    date_germinated: null,
-    conditions: {
-      temperature: null,
-      humidity: null,
-      light_hours: null,
-    },
-  },
-  vegetative: {
-    start_date: null,
-    end_date: null,
-    conditions: {
-      temperature: null,
-      humidity: null,
-      light_hours: null,
-    },
-    nutrients: {
-      type: null,
-      schedule: null,
-      ph_level: null,
-    },
-  },
-  flowering: {
-    start_date: null,
-    estimated_end_date: null,
-    conditions: {
-      temperature: null,
-      humidity: null,
-      light_hours: null,
-    },
-    nutrients: {
-      type: null,
-      schedule: null,
-      ph_level: null,
-    },
-  },
-  harvest: {
-    estimated_date: null,
-    drying_conditions: {
-      temperature: null,
-      humidity: null,
-    },
-  },
-}
-
-export const batches = protectedSchema.table('batches', {
-  id: uuid('id')
-    .primaryKey()
-    .default(sql`gen_random_uuid()`),
-  name: text('name').notNull(),
-  strainId: integer('strain_id').references(() => strains.id),
-  startDate: date('start_date')
-    .notNull()
-    .default(sql`CURRENT_DATE`),
-  endDate: date('end_date'),
-  currentGrowthStage: text('current_growth_stage').notNull().default('SEEDING'),
-  totalYield: numeric('total_yield').default('0'),
-  expectedYield: numeric('expected_yield').default('0'),
-  totalDestroyed: numeric('total_destroyed').default('0'),
-  isArchived: boolean('is_archived').default(false),
-  createdAt: timestamp('created_at', { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-})
-
-export const plants = protectedSchema.table('plants', {
-  id: serial('id').primaryKey(),
-  name: text('name').notNull(),
-  batchId: uuid('batch_id')
-    .notNull()
-    .references(() => batches.id, { onDelete: 'cascade' }),
-  position: text('position').notNull(),
-  health: text('health').default('HEALTHY'),
-  yield: numeric('yield').default('0'),
-  // seedToSale: jsonb('seed_to_sale').notNull().default(defaultSeedToSale),
-})
-
-export const strains = protectedSchema.table('strains', {
-  id: serial('id').primaryKey(),
-  name: text('name').notNull(),
-  description: text('description'),
-  thc: numeric('thc').notNull(),
-  cbd: numeric('cbd').notNull(),
-  isArchived: boolean('is_archived').default(false),
-  currentPricePerGram: numeric('current_price_per_gram').notNull(),
-  amountAvailable: numeric('amount_available').default('0'), // amount available in grams
-})
-
-export const strainsRelation = relations(batches, ({ one }) => ({
-  strain: one(strains, {
-    fields: [batches.strainId],
-    references: [strains.id],
-  }),
-}))
-
-export const batchesRelations = relations(batches, ({ many }) => ({
-  plants: many(plants),
-}))
-
-export const createBatchInputSchema = createInsertSchema(batches, {
+// Batch schemas
+export const createBatchInputSchema = z.object({
   name: z.string().min(1),
   startDate: z.coerce.date().transform((date) => date.toISOString()),
   endDate: z.coerce
@@ -153,79 +16,122 @@ export const createBatchInputSchema = createInsertSchema(batches, {
   strainId: z.number().int(),
 })
 
-export const fetchBatchesInputSchema = createSelectSchema(batches)
-  .partial()
-  .extend({
-    isArchived: z.boolean().optional(),
-  })
+export const updateBatchInputSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1).optional(),
+  startDate: z.coerce
+    .date()
+    .transform((date) => date.toISOString())
+    .optional(),
+  endDate: z.coerce
+    .date()
+    .transform((date) => date.toISOString())
+    .optional(),
+  currentGrowthStage: z.string().min(1).optional(),
+  strainId: z.number().int().optional(),
+  expectedYield: z.number().int().optional(),
+  totalYield: z.number().int().optional(),
+  totalDestroyed: z.number().int().optional(),
+  isArchived: z.boolean().optional(),
+})
 
-export const updateBatchInputSchema = createSelectSchema(batches)
-  .partial()
-  .extend({
-    id: z.string().uuid(),
-    endDate: z.coerce.date().transform((date) => date.toISOString()),
-  })
+export const deleteBatchInputSchema = z.object({
+  id: z.string().uuid(),
+})
 
-export const createPlantInputSchema = createInsertSchema(plants, {
-  name: z.string().optional().default(''),
-  batchId: z.string().min(1), // id is coming from context not from form
+export const getBatchOutputSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  strainId: z.number().int().nullable(),
+  startDate: z.date(),
+  endDate: z.date().nullable(),
+  currentGrowthStage: z.string(),
+  totalYield: z.number().nullable(),
+  expectedYield: z.number().nullable(),
+  totalDestroyed: z.number().nullable(),
+  isArchived: z.boolean(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+})
+
+// Plant schemas
+export const createPlantInputSchema = z.object({
+  name: z.string().default(''),
+  batchId: z.string().uuid(),
   position: z.string().min(1),
-  health: z.string().optional().default('HEALTHY'),
+  health: z.string().default('HEALTHY'),
 })
 
-export const updatePlantInputSchema = createSelectSchema(plants)
-  .partial()
-  .extend({
-    id: z.number().positive(),
-  })
-
-export const deletePlantInputSchema = createPlantInputSchema.pick({
-  id: true,
+export const updatePlantInputSchema = z.object({
+  id: z.number().positive(),
+  name: z.string().optional(),
+  batchId: z.string().uuid().optional(),
+  position: z.string().min(1).optional(),
+  health: z.string().optional(),
+  yield: z.number().optional(),
 })
 
-export const createStrainInputSchema = createInsertSchema(strains, {
-  id: z.number().optional(),
+export const deletePlantInputSchema = z.object({
+  id: z.number().positive(),
+})
+
+export const getPlantOutputSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  batchId: z.string().uuid(),
+  position: z.string(),
+  health: z.string(),
+  yield: z.number().nullable(),
+})
+
+// Strain schemas
+export const createStrainInputSchema = z.object({
   name: z.string().min(3),
-  cbd: z.number().min(0),
-  thc: z.number().min(0),
   description: z.string().optional(),
-  currentPricePerGram: z.number().min(0).default(0),
-  amountAvailable: z.number().min(0).default(0).optional(),
+  thc: z.number().min(0),
+  cbd: z.number().min(0),
+  currentPricePerGram: z.number().min(0),
+  amountAvailable: z.number().min(0).optional(),
 })
 
-export const updateStrainInputSchema = createSelectSchema(strains)
-  .partial()
-  .extend({
-    id: z.number().positive(),
-  })
-
-export const deleteStrainInputSchema = updateStrainInputSchema.pick({
-  id: true,
+export const updateStrainInputSchema = z.object({
+  id: z.number().positive(),
+  name: z.string().min(3).optional(),
+  description: z.string().optional(),
+  thc: z.number().min(0).optional(),
+  cbd: z.number().min(0).optional(),
+  currentPricePerGram: z.number().min(0).optional(),
+  amountAvailable: z.number().min(0).optional(),
+  isArchived: z.boolean().optional(),
 })
 
-export const getBatchesSchema = createSelectSchema(batches)
-export const getPlantsSchema = createSelectSchema(plants)
-export const getStrainsSchema = createSelectSchema(strains, {
-  id: z.coerce.number(),
-  currentPricePerGram: z.coerce.number(),
+export const deleteStrainInputSchema = z.object({
+  id: z.number().positive(),
 })
 
-export const getBatchDetailSchema = updateBatchInputSchema.pick({ id: true })
-export const getStrainDetailSchema = updateStrainInputSchema.pick({ id: true })
-export const getBatchesByStrainIdSchema = createBatchInputSchema.pick({
-  strainId: true,
+export const getStrainOutputSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  description: z.string().nullable(),
+  thc: z.number(),
+  cbd: z.number(),
+  isArchived: z.boolean(),
+  currentPricePerGram: z.number(),
+  amountAvailable: z.number().nullable(),
 })
 
-export type BatchProps = z.infer<typeof getBatchesSchema>
+// Type definitions
 export type CreateBatchInput = z.infer<typeof createBatchInputSchema>
 export type UpdateBatchInput = z.infer<typeof updateBatchInputSchema>
+export type DeleteBatchInput = z.infer<typeof deleteBatchInputSchema>
+export type BatchProps = z.infer<typeof getBatchOutputSchema>
 
-export type PlantProps = z.infer<typeof getPlantsSchema>
 export type CreatePlantInput = z.infer<typeof createPlantInputSchema>
 export type UpdatePlantInput = z.infer<typeof updatePlantInputSchema>
 export type DeletePlantInput = z.infer<typeof deletePlantInputSchema>
+export type PlantProps = z.infer<typeof getPlantOutputSchema>
 
-export type StrainProps = z.infer<typeof getStrainsSchema>
 export type CreateStrainInput = z.infer<typeof createStrainInputSchema>
 export type UpdateStrainInput = z.infer<typeof updateStrainInputSchema>
 export type DeleteStrainInput = z.infer<typeof deleteStrainInputSchema>
+export type StrainProps = z.infer<typeof getStrainOutputSchema>

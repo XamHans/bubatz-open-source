@@ -164,12 +164,29 @@ export const createMemberPaymentInputSchema = createInsertSchema(
   },
 )
 
-export const updateMemberPaymentInputSchema = createSelectSchema(
+export const updateMemberPaymentInputSchema = createInsertSchema(
   membershipPayments,
 )
   .partial()
   .extend({
     id: z.string().uuid(),
+    amount: z
+      .union([z.string(), z.number()])
+      .transform((val) => {
+        if (typeof val === 'string') {
+          const parsed = parseFloat(val)
+          if (isNaN(parsed)) {
+            throw new Error('Invalid price format')
+          }
+          return parsed
+        }
+        return val
+      })
+      .refine((val) => val > 0, {
+        message: 'Payment amount must be a positive number',
+      }),
+    paymentDate: z.coerce.date().transform((date) => date.toISOString()),
+    paymentStatus: z.enum(['PAID', 'PENDING', 'OVERDUE']),
   })
 
 export const getMemberPaymentsSchema = createSelectSchema(membershipPayments)

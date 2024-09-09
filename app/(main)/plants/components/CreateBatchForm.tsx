@@ -73,7 +73,7 @@ const CreateBatchForm = () => {
   })
 
   useEffect(() => {
-    fetchStrains.execute()
+    fetchStrains.execute({})
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

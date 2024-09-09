@@ -222,7 +222,8 @@ export default function MemberTable() {
   const router = useRouter()
 
   useEffect(() => {
-    execute()
+    execute({})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const table = useReactTable({

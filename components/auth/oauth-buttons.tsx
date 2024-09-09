@@ -15,7 +15,7 @@ export function OAuthButtons(): JSX.Element {
   ): Promise<void> {
     try {
       await signIn(provider, {
-        callbackUrl: siteConfig.links.signIn,
+        callbackUrl: '',
       })
 
       toast({

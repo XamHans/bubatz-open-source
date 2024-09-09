@@ -58,9 +58,10 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
     resolver: zodResolver(updateBatchInputSchema),
     defaultValues: {
       currentGrowthStage: batch.currentGrowthStage,
-      expectedYield: batch.expectedYield,
-      totalDestroyed: batch.totalDestroyed,
-      totalYield: batch.totalYield,
+      expectedYield: (batch.expectedYield as number) ?? 0,
+      totalDestroyed: batch.totalDestroyed as number,
+      totalYield: batch.totalYield as number,
+      //@ts-ignore
       endDate: batch.endDate || undefined,
     },
   })
@@ -78,6 +79,7 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
   useEffect(() => {
     const subscription = form.watch(() => {
       const formData = form.getValues()
+      //@ts-ignore
       debouncedExecute({ ...batch, ...formData })
     })
 

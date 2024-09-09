@@ -71,7 +71,7 @@ const UpdatePlantForm: React.FC<UpdatePlantFormProps> = ({
     resolver: zodResolver(updatePlantInputSchema),
     defaultValues: {
       ...plant,
-      yield: plant.yield?.toString() || '0',
+      yield: plant.yield ?? 0,
     },
   })
 

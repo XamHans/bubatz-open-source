@@ -66,7 +66,8 @@ export default function SalesTable() {
   })
 
   useEffect(() => {
-    execute()
+    execute({})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const toggleRowExpanded = (rowId: string) => {

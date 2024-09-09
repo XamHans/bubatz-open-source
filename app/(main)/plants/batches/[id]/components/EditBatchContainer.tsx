@@ -97,7 +97,7 @@ const EditBatchContainer = ({ batch }: EditBatchContainerProps) => {
           </CardContent>
         </Card>
 
-        <ArchiveBatchModal id={batch.id} />
+        <ArchiveBatchModal id={batch.id as string} />
       </div>
     </div>
   )

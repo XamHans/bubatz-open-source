@@ -19,8 +19,8 @@ import {
 } from '@/components/ui/select'
 import { StrainProps } from '@/modules/plants/data-access/schema'
 import {
-  SaleItem,
-  SaleItemFormInputSchema,
+  CreateSaleInput,
+  createSaleItemInputSchema,
 } from '@/modules/sales/data-access/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
@@ -37,9 +37,9 @@ export default function CreateSaleItemModal(props: CreateSaleItemModalProps) {
   const [open, setOpen] = useState(false)
   const [errors, setErrors] = useState<{ field: string; message: string }[]>([])
 
-  const form = useForm<SaleItem>({
+  const form = useForm<CreateSaleInput>({
     mode: 'onSubmit',
-    resolver: zodResolver(SaleItemFormInputSchema),
+    resolver: zodResolver(createSaleItemInputSchema),
   })
 
   const handleSave = (data: SaleItem) => {
