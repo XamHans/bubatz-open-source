@@ -34,12 +34,12 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { StrainProps } from '@/modules/plants/data-access/schema'
-import { SaleItem } from '@/modules/sales/data-access/schema'
+import { SaleItemProps } from '@/modules/sales/data-access/schema'
 import { Trash } from 'lucide-react'
 
 interface SaleItemsTableProps {
-  saleItems: SaleItem[]
-  deleteItem: (item: SaleItem) => void
+  saleItems: SaleItemProps[]
+  deleteItem: (item: SaleItemProps) => void
   strains: StrainProps[]
 }
 
@@ -55,7 +55,7 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
     return [
       {
         accessorKey: 'strainId',
-        accessorFn: (item: SaleItem) => item.strainId,
+        accessorFn: (item: SaleItemProps) => item.strainId,
         header: (
           <div className="text-s justify-start font-semibold">STRAIN</div>
         ),
@@ -70,7 +70,7 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
       },
       {
         accessorKey: 'amount',
-        accessorFn: (item: SaleItem) => item.amount,
+        accessorFn: (item: SaleItemProps) => item.amount,
         header: (
           <div className="text-s justify-start font-semibold">WEIGHT</div>
         ),
@@ -82,7 +82,7 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
       },
       {
         accessorKey: 'price',
-        accessorFn: (item: SaleItem) => item.price,
+        accessorFn: (item: SaleItemProps) => item.price,
         header: (
           <div className="text-s justify-start font-semibold">GRAM PRICE</div>
         ),
@@ -92,7 +92,7 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
       },
       {
         accessorKey: 'totalPrice',
-        accessorFn: (item: SaleItem) => item.price * item.amount,
+        accessorFn: (item: SaleItemProps) => item.price * item.amount,
         header: (
           <div className="text-s justify-start font-semibold">TOTAL PRICE</div>
         ),
@@ -108,7 +108,7 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
           <div className="text-s justify-start font-semibold">ACTIONS</div>
         ),
         cell: ({ row }) => {
-          const item: SaleItem = row.original
+          const item: SaleItemProps = row.original
           return (
             <div className=" ">
               <Button
@@ -136,6 +136,7 @@ export default function SaleItemsTable(props: SaleItemsTableProps) {
 
   const table = useReactTable({
     data: saleItems,
+    //@ts-ignore
     columns: getItemSalesTableColumns(router),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

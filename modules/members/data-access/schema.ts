@@ -10,41 +10,34 @@ import {
   timestamp,
   uuid,
 } from 'drizzle-orm/pg-core'
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
 export const protectedSchema = pgSchema('protected')
 
+// Enums
 export const memberRoleEnum = pgEnum('member_role', ['MEMBER', 'ADMIN'])
-// Enum for payment status
 export const paymentStatusEnum = pgEnum('payment_status', [
   'PAID',
   'PENDING',
   'OVERDUE',
 ])
 
+// Table Definitions
 export const members = protectedSchema.table('members', {
   id: uuid('id').primaryKey().defaultRandom(),
-
-  // general info
   firstName: text('first_name'),
   lastName: text('last_name'),
   birthday: date('birthday'),
   image: text('image'),
-
-  // contact
   email: text('email').unique(),
   phone: text('phone'),
-  // address
   street: text('street'),
   city: text('city'),
   zip: text('zip'),
-  //club info
   status: text('status').default('PENDING'),
   role: memberRoleEnum('role').default('MEMBER'),
   currentYearPaid: boolean('current_year_paid').default(false),
   lastPaymentDate: date('last_payment_date'),
-  // auth stuff
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
   emailVerificationToken: text('emailVerificationToken').unique(),
   passwordHash: text('passwordHash'),
@@ -52,71 +45,16 @@ export const members = protectedSchema.table('members', {
   resetPasswordTokenExpiry: timestamp('resetPasswordTokenExpiry', {
     mode: 'date',
   }),
-
-  // timestamps
   createdAt: timestamp('createdAt', { mode: 'date' }).defaultNow(),
   updatedAt: timestamp('updatedAt', { mode: 'date' }).defaultNow(),
 })
 
-/**
- * * Relations
- */
-export const membersRelations = relations(members, ({ many }) => ({
-  buyer: many(members),
-}))
-
-// Schema for inserting a user - can be used to validate API requests
-export const addMemberInputSchema = createInsertSchema(members, {
-  firstName: (schema) => schema.firstName.min(2),
-  lastName: (schema) => schema.lastName.min(2),
-  email: (schema) => schema.email.email(),
-  phone: (schema) => schema.phone.min(9),
-  street: (schema) => schema.street.min(1),
-  city: (schema) => schema.city.min(1),
-  zip: (schema) => schema.zip.min(4),
-  birthday: () =>
-    z
-      .string()
-      .min(1)
-      .regex(/^\d{2}\.\d{2}\.\d{4}$/, 'Birthday must be in DD.MM.YYYY format'),
-  status: (schema) => schema.status.default('PENDING'),
-  role: (schema) => schema.role.default('MEMBER'),
-})
-export type AddMemberInput = z.infer<typeof addMemberInputSchema>
-
-// Schema for selecting a user - can be used to validate API responses
-export const selectUserSchema = createSelectSchema(members)
-export const selectMultipleUsersSchema = z.array(selectUserSchema)
-export type UserSchema = z.infer<typeof selectUserSchema>
-
-// Schema for updating a user
-export const updateMemberInputSchema = createInsertSchema(members)
-  .partial()
-  .extend({
-    id: z.string().uuid(),
-    birthday: z.string().transform((date) => new Date(date).toISOString()),
-  })
-export type UpdateMemberInput = z.infer<typeof updateMemberInputSchema>
-
-// Schema for deleting a user
-export const deleteMemberInputSchema = z.object({
-  id: z.string(),
-})
-
-export type deleteMemberInput = { id: UUID }
-
-export const getMemberSchemaInput = createSelectSchema(members)
-export type MemberProps = z.infer<typeof getMemberSchemaInput>
-
-//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-// Membership payments table
 export const membershipPayments = protectedSchema.table('membership_payments', {
   id: uuid('id').primaryKey().defaultRandom(),
   memberId: uuid('member_id')
     .references(() => members.id)
     .notNull(),
-  year: text('year').notNull(), // Store as text for flexibility, e.g., "2023-2024"
+  year: text('year').notNull(),
   amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
   paymentDate: date('payment_date'),
   paymentStatus: paymentStatusEnum('payment_status').default('PENDING'),
@@ -126,7 +64,11 @@ export const membershipPayments = protectedSchema.table('membership_payments', {
   updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow(),
 })
 
-// Relation between members and membership payments
+// Relations
+export const membersRelations = relations(members, ({ many }) => ({
+  buyer: many(members),
+}))
+
 export const membershipPaymentsRelations = relations(
   membershipPayments,
   ({ one }) => ({
@@ -137,81 +79,164 @@ export const membershipPaymentsRelations = relations(
   }),
 )
 
-export const createMemberPaymentInputSchema = createInsertSchema(
-  membershipPayments,
-  {
-    memberId: (schema) => schema.memberId.uuid(),
-    year: (schema) => schema.year.min(4).max(9), // Allows for academic years like "2023-2024"
-    amount: z
-      .union([z.string(), z.number()])
-      .transform((val) => {
-        if (typeof val === 'string') {
-          const parsed = parseFloat(val)
-          if (isNaN(parsed)) {
-            throw new Error('Invalid price format')
-          }
-          return parsed
-        }
-        return val
-      })
-      .refine((val) => val > 0, {
-        message: 'Payment amount must be a positive number',
-      }),
-    paymentDate: z.coerce.date().transform((date) => date.toISOString()),
-    paymentStatus: (schema) => schema.paymentStatus.default('PENDING'),
-    paymentMethod: (schema) => schema.paymentMethod.default('CASH'),
-    notes: (schema) => schema.notes.optional(),
-  },
-)
+// Schemas
+// Members Schemas
+export const addMemberInputSchema = z.object({
+  firstName: z.string().min(2),
+  lastName: z.string().min(2),
+  email: z.string().email(),
+  phone: z.string().min(9),
+  street: z.string().min(1),
+  city: z.string().min(1),
+  zip: z.string().min(4),
+  birthday: z
+    .string()
+    .regex(/^\d{2}\.\d{2}\.\d{4}$/, 'Birthday must be in DD.MM.YYYY format'),
+  status: z.string().default('PENDING'),
+  role: z.enum(memberRoleEnum.enumValues).default('MEMBER'),
+})
 
-export const updateMemberPaymentInputSchema = createInsertSchema(
-  membershipPayments,
-)
-  .partial()
-  .extend({
-    id: z.string().uuid(),
-    amount: z
-      .union([z.string(), z.number()])
-      .transform((val) => {
-        if (typeof val === 'string') {
-          const parsed = parseFloat(val)
-          if (isNaN(parsed)) {
-            throw new Error('Invalid price format')
-          }
-          return parsed
-        }
-        return val
-      })
-      .refine((val) => val > 0, {
-        message: 'Payment amount must be a positive number',
-      }),
-    paymentDate: z.coerce.date().transform((date) => date.toISOString()),
-    paymentStatus: z.enum(['PAID', 'PENDING', 'OVERDUE']),
-  })
+export const selectUserSchema = z.object({
+  id: z.string().uuid(),
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
+  birthday: z.date().nullable(),
+  image: z.string().nullable(),
+  email: z.string().email(),
+  phone: z.string().nullable(),
+  street: z.string().nullable(),
+  city: z.string().nullable(),
+  passwordHash: z.string().optional(),
+  zip: z.string().nullable(),
+  status: z.string(),
+  role: z.enum(memberRoleEnum.enumValues),
+  currentYearPaid: z.boolean(),
+  lastPaymentDate: z.date().nullable(),
+  emailVerified: z.date().nullable(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+})
 
-export const getMemberPaymentsSchema = createSelectSchema(membershipPayments)
+export const selectMultipleUsersSchema = z.array(selectUserSchema)
+
+export const updateMemberInputSchema = selectUserSchema.partial().extend({
+  id: z.string().uuid(),
+  birthday: z.string().transform((date) => new Date(date).toISOString()),
+})
+
+export const deleteMemberInputSchema = z.object({
+  id: z.string().uuid(),
+})
+
+export const getMemberSchemaInput = z.object({
+  id: z.string().uuid().optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  birthday: z.any().optional(), // Changed from Date to string
+  image: z.string().optional(),
+  email: z.string().email().optional(),
+  phone: z.string().optional(),
+  street: z.string().optional(),
+  city: z.string().optional(),
+  zip: z.string().optional(),
+  status: z.string().optional(),
+  role: z.enum(memberRoleEnum.enumValues).optional(),
+  currentYearPaid: z.boolean().optional(),
+  lastPaymentDate: z.string().optional(), // Changed from Date to string
+  createdAt: z.string().optional(), // Changed from Date to string
+  updatedAt: z.string().optional(), // Changed from Date to string
+})
+
+// Membership Payments Schemas
+export const createMemberPaymentInputSchema = z.object({
+  memberId: z.string().uuid(),
+  year: z.string().min(4).max(9),
+  amount: z
+    .union([z.string(), z.number()])
+    .transform((val) => {
+      if (typeof val === 'string') {
+        const parsed = parseFloat(val)
+        if (isNaN(parsed)) {
+          throw new Error('Invalid price format')
+        }
+        return parsed
+      }
+      return val
+    })
+    .refine((val) => val > 0, {
+      message: 'Payment amount must be a positive number',
+    }),
+  paymentDate: z.coerce.date().transform((date) => date.toISOString()),
+  paymentStatus: z.enum(paymentStatusEnum.enumValues).default('PENDING'),
+  paymentMethod: z.string().default('CASH'),
+  notes: z.string().optional(),
+})
+
+export const updateMemberPaymentInputSchema = z.object({
+  id: z.string().uuid(),
+  memberId: z.string().uuid().optional(),
+  year: z.string().min(4).max(9).optional(),
+  amount: z
+    .union([z.string(), z.number()])
+    .transform((val) => {
+      if (typeof val === 'string') {
+        const parsed = parseFloat(val)
+        if (isNaN(parsed)) {
+          throw new Error('Invalid price format')
+        }
+        return parsed
+      }
+      return val
+    })
+    .refine((val) => val > 0, {
+      message: 'Payment amount must be a positive number',
+    })
+    .optional(),
+  paymentDate: z.coerce
+    .date()
+    .transform((date) => date.toISOString())
+    .optional(),
+  paymentStatus: z.enum(paymentStatusEnum.enumValues).optional(),
+  paymentMethod: z.string().optional(),
+  notes: z.string().optional(),
+})
+
+export const getMemberPaymentsSchema = z.object({
+  id: z.string().uuid(),
+  memberId: z.string().uuid(),
+  year: z.string(),
+  amount: z.number(),
+  paymentDate: z.date().nullable(),
+  paymentStatus: z.enum(paymentStatusEnum.enumValues),
+  paymentMethod: z.string().nullable(),
+  notes: z.string().nullable(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+})
+
+export const selectMembershipPaymentSchema = getMemberPaymentsSchema
+
+export const deleteMemberPaymentInputSchema = z.object({
+  id: z.string().uuid(),
+})
+
+// Types
+export type AddMemberInput = z.infer<typeof addMemberInputSchema>
+export type UserSchema = z.infer<typeof selectUserSchema>
+export type UpdateMemberInput = z.infer<typeof updateMemberInputSchema>
+export type DeleteMemberInput = { id: UUID }
+export type MemberProps = z.infer<typeof getMemberSchemaInput>
 
 export type MemberPaymentProps = z.infer<typeof getMemberPaymentsSchema>
-
 export type AddMembershipPaymentInput = z.infer<
   typeof createMemberPaymentInputSchema
 >
-
-// Schema for selecting a membership payment
-export const selectMembershipPaymentSchema =
-  createSelectSchema(membershipPayments)
 export type MembershipPaymentSchema = z.infer<
   typeof selectMembershipPaymentSchema
 >
-
 export type UpdateMemberPaymentInput = z.infer<
   typeof updateMemberPaymentInputSchema
 >
-
-export const deleteMemberPaymentInputSchema = z.object({
-  id: z.string(),
-})
-
 export type DeleteMembershipPaymentInput = z.infer<
   typeof deleteMemberPaymentInputSchema
 >

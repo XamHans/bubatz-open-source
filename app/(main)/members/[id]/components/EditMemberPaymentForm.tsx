@@ -32,7 +32,7 @@ import { useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
 interface EditMemberPaymentFormProps {
-  payment: MemberPaymentProps
+  payment: MemberPaymentProps | any
 }
 
 export function EditMemberPaymentForm({ payment }: EditMemberPaymentFormProps) {
@@ -77,6 +77,7 @@ export function EditMemberPaymentForm({ payment }: EditMemberPaymentFormProps) {
   useEffect(() => {
     const subscription = form.watch(() => {
       const formData = form.getValues()
+      //@ts-ignore
       debouncedExecute({ ...payment, ...formData })
     })
 

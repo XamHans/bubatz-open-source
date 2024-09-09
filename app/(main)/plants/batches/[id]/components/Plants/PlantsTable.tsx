@@ -48,7 +48,7 @@ const PlantsTable = ({ batch }: PlantsTableProps) => {
 
   const { execute, status } = useAction(fetchPlantsFromBatchUseCase, {
     onSuccess: ({ data }) => {
-      setPlants(data?.success.plants ?? [])
+      setPlants((data?.success.plants as any) ?? [])
     },
     onError: (error) => {
       console.log('Error fetching plants', error)

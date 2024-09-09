@@ -21,7 +21,7 @@ interface MemberGeneralInfoProps {
 const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
   const t = useTranslations('General')
 
-  const formatDate = (date: Date | string | undefined) => {
+  const formatDate = (date: string | undefined) => {
     if (!date) return ''
     return new Intl.DateTimeFormat('de-DE', {
       year: 'numeric',
@@ -30,16 +30,14 @@ const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
     }).format(new Date(date))
   }
 
-  const calculateAge = (birthday: Date | string | undefined) => {
+  const calculateAge = (birthday: string | undefined) => {
     if (!birthday) return ''
     const ageDifMs = Date.now() - new Date(birthday).getTime()
     const ageDate = new Date(ageDifMs)
     return Math.abs(ageDate.getUTCFullYear() - 1970)
   }
 
-  const calculateMembershipDuration = (
-    createdAt: Date | string | undefined,
-  ) => {
+  const calculateMembershipDuration = (createdAt: string | undefined) => {
     if (!createdAt) return ''
     const diffMs = Date.now() - new Date(createdAt).getTime()
     const years = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 365))
@@ -108,21 +106,21 @@ const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
           <InfoItem
             icon={HiCalendar}
             primary={t('form.labels.birthday')}
-            secondary={`${formatDate(member.birthday as any)} (Alter: ${calculateAge(member.birthday as any)})`}
+            secondary={`${formatDate(member.birthday)} (Alter: ${calculateAge(member.birthday)})`}
           />
         )}
         {member.createdAt && (
           <InfoItem
             icon={HiClock}
             primary="Mitglied seit"
-            secondary={`${formatDate(member.createdAt as any)} (${calculateMembershipDuration(member.createdAt as any)})`}
+            secondary={`${formatDate(member.createdAt)} (${calculateMembershipDuration(member.createdAt)})`}
           />
         )}
         {member.id && (
           <InfoItem
             icon={HiShieldCheck}
             primary="Mitgliedsnummer"
-            secondary={member.id as any}
+            secondary={member.id}
           />
         )}
       </CardContent>

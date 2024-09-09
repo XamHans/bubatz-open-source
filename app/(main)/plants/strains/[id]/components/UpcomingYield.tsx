@@ -4,7 +4,7 @@ import { BatchProps } from '@/modules/plants/data-access/schema'
 import { GrowPhase } from '@/modules/plants/types'
 
 export interface UpcomingYieldProps {
-  batches: BatchProps[]
+  batches: BatchProps[] | any
 }
 
 const growthStageProgress: Record<GrowPhase, number> = {

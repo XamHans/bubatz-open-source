@@ -184,7 +184,7 @@ export async function updatePassword(
       token: validatedInput.data.resetPasswordToken,
     })
     if (!member) return 'not-found'
-
+    //@ts-ignore
     const resetPasswordExpiry = member.resetPasswordTokenExpiry
     if (!resetPasswordExpiry || resetPasswordExpiry < new Date())
       return 'expired'

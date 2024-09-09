@@ -108,7 +108,7 @@ export default function SaleForm({ session }: SaleFormProps) {
       })
       setTimeout(() => {
         router.push(
-          `${siteConfig.links.sales.detail.replace(':id', data?.success)}`,
+          `${siteConfig.links.sales.detail.replace(':id', data?.success as any)}`,
         )
       }, 2000)
     },
@@ -174,8 +174,8 @@ export default function SaleForm({ session }: SaleFormProps) {
   })
 
   useEffect(() => {
-    fetchMembers.execute()
-    fetchStrains.execute()
+    fetchMembers.execute({})
+    fetchStrains.execute({})
   }, [])
 
   useEffect(() => {
@@ -240,6 +240,7 @@ export default function SaleForm({ session }: SaleFormProps) {
     update(index, {
       ...currentItem,
       amount: weight,
+      //@ts-ignore
       totalPrice: totalPrice,
     })
   }

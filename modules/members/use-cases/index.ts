@@ -29,7 +29,6 @@ export const addMemberUseCase = actionClient
   .schema(addMemberInputSchema)
   .action(async ({ parsedInput }) => {
     try {
-      console.log('parsedInput', parsedInput)
       const newMemberResult = await createMember(parsedInput)
       return { success: newMemberResult }
     } catch (error) {
@@ -38,7 +37,7 @@ export const addMemberUseCase = actionClient
   })
 
 export const fetchMembersUseCase = actionClient.action(async () => {
-  const members: UserSchema[] = await getMembers()
+  const members: UserSchema[] = (await getMembers()) as any
 
   return { success: members }
 })
@@ -67,9 +66,9 @@ export const fetchAllPaymentsUseCase = actionClient.action(async () => {
 export const fetchPaymentsFromMemberUseCase = actionClient
   .schema(z.object({ memberId: z.string().uuid() }))
   .action(async ({ parsedInput }) => {
-    const payments: MembershipPaymentSchema[] = await getMemberPayments(
+    const payments: MembershipPaymentSchema[] = (await getMemberPayments(
       parsedInput.memberId,
-    )
+    )) as any
 
     return { success: payments }
   })

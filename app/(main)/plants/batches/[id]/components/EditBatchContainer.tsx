@@ -8,7 +8,7 @@ import { BatchEditForm } from './BatchEditForm'
 import { PlantsContainer } from './Plants/PlantsContainer'
 
 interface EditBatchContainerProps {
-  batch: BatchProps
+  batch: BatchProps | any
 }
 const initialData = {
   germination: {

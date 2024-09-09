@@ -1,5 +1,8 @@
-import { members, protectedSchema } from '@/modules/members/data-access/schema'
-import { MemberProps } from '@/modules/members/types'
+import {
+  MemberProps,
+  members,
+  protectedSchema,
+} from '@/modules/members/data-access/schema'
 import { strains } from '@/modules/plants/data-access/schema'
 import {
   integer,
@@ -10,11 +13,12 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm/relations'
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
+// Enums
 export const paymentMethods = pgEnum('paymentMethods', ['CASH', 'CARD'])
 
+// Table Definitions
 export const sales = protectedSchema.table('sales', {
   id: serial('id').primaryKey(),
   totalPrice: real('total_price').default(0).notNull(),
@@ -38,15 +42,13 @@ export const salesItems = protectedSchema.table('sales_items', {
   id: serial('id').primaryKey(),
   amount: real('amount').notNull(),
   price: real('price').notNull(),
-  strainId: integer('strain_id').notNull(), // Removed the foreign key constraint
+  strainId: integer('strain_id').notNull(),
   saleId: integer('sale_id')
     .notNull()
     .references(() => sales.id),
 })
 
-/**
- * * Relations
- */
+// Relations
 export const salesMemberRelations = relations(sales, ({ many, one }) => ({
   user: one(members, {
     fields: [sales.memberId],
@@ -70,7 +72,9 @@ export const salesStrainsRelations = relations(salesItems, ({ one }) => ({
   }),
 }))
 
-export const createSaleInputSchema = createInsertSchema(sales, {
+// Schemas
+// Sales Schemas
+export const createSaleInputSchema = z.object({
   totalAmount: z.number().positive(),
   totalPrice: z.number().positive(),
   paidVia: z.enum(paymentMethods.enumValues),
@@ -78,22 +82,36 @@ export const createSaleInputSchema = createInsertSchema(sales, {
   salesById: z.string().uuid(),
 })
 
-export const updateSaleInputSchema = createSelectSchema(sales)
-  .partial()
-  .extend({
-    id: z.number().positive(),
-  })
-
-export const deleteSaleInputSchema = createSelectSchema(sales).pick({
-  id: true,
+export const updateSaleInputSchema = z.object({
+  id: z.number().positive(),
+  totalAmount: z.number().positive().optional(),
+  totalPrice: z.number().positive().optional(),
+  paidVia: z.enum(paymentMethods.enumValues).optional(),
+  memberId: z.string().uuid().optional(),
+  salesById: z.string().uuid().optional(),
 })
 
-export const getSalesSchema = createSelectSchema(sales)
+export const deleteSaleInputSchema = z.object({
+  id: z.number().positive(),
+})
 
-export const getSaleDetailSchema = updateSaleInputSchema.pick({ id: true })
+export const getSalesSchema = z.object({
+  id: z.number(),
+  totalPrice: z.number(),
+  totalAmount: z.number(),
+  paidVia: z.enum(paymentMethods.enumValues),
+  memberId: z.string().uuid(),
+  salesById: z.string().uuid(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+})
+
+export const getSaleDetailSchema = z.object({
+  id: z.number().positive(),
+})
 
 // Sales Items Schemas
-export const createSaleItemInputSchema = createInsertSchema(salesItems, {
+export const createSaleItemInputSchema = z.object({
   amount: z.number().positive(),
   price: z
     .union([z.string(), z.number()])
@@ -114,20 +132,28 @@ export const createSaleItemInputSchema = createInsertSchema(salesItems, {
   saleId: z.number().positive(),
 })
 
-export const updateSaleItemInputSchema = createSelectSchema(salesItems)
-  .partial()
-  .extend({
-    id: z.number().positive(),
-  })
-
-export const deleteSaleItemInputSchema = createSelectSchema(salesItems).pick({
-  id: true,
+export const updateSaleItemInputSchema = z.object({
+  id: z.number().positive(),
+  amount: z.number().positive().optional(),
+  price: z.number().positive().optional(),
+  strainId: z.number().optional(),
+  saleId: z.number().positive().optional(),
 })
 
-export const getSalesItemsSchema = createSelectSchema(salesItems)
+export const deleteSaleItemInputSchema = z.object({
+  id: z.number().positive(),
+})
 
-export const getSaleItemDetailSchema = updateSaleItemInputSchema.pick({
-  id: true,
+export const getSalesItemsSchema = z.object({
+  id: z.number(),
+  amount: z.number(),
+  price: z.number(),
+  strainId: z.number(),
+  saleId: z.number(),
+})
+
+export const getSaleItemDetailSchema = z.object({
+  id: z.number().positive(),
 })
 
 // Combined Schema for Creating a Sale with Items
@@ -135,6 +161,7 @@ export const createSaleWithItemsInputSchema = createSaleInputSchema.extend({
   items: z.array(createSaleItemInputSchema.omit({ saleId: true })).min(1),
 })
 
+// Additional Schemas
 export const fetchMembersStrainAmountInputSchema = z.object({
   memberId: z.string().uuid(),
   month: z.number().int().optional(),

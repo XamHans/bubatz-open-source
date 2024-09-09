@@ -19,7 +19,6 @@ import {
 } from '@/components/ui/select'
 import { useToast } from '@/components/ui/use-toast'
 import {
-  MemberProps,
   UpdateMemberInput,
   updateMemberInputSchema,
 } from '@/modules/members/data-access/schema'
@@ -34,7 +33,7 @@ import { useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
 interface EditMemberFormProps {
-  member: MemberProps
+  member: any
   session: Session | null
 }
 

@@ -55,7 +55,7 @@ export const createBatch = async (input: CreateBatchInput) => {
 export const updateBatch = async (id: string, data: UpdateBatchInput) => {
   return await db
     .update(batches)
-    .set(data)
+    .set(data as any)
     .where(eq(batches.id, id))
     .returning()
 }
@@ -98,7 +98,7 @@ export const getPlantsByBatchId = async (batchId: string) => {
 }
 
 export const createPlant = async (input: CreatePlantInput) => {
-  return await db.insert(plants).values(input)
+  return await db.insert(plants).values(input as any)
 }
 
 export const deletePlant = async (input: DeletePlantInput) => {
@@ -106,7 +106,10 @@ export const deletePlant = async (input: DeletePlantInput) => {
 }
 
 export const updatePlant = async (id: number, data: UpdatePlantInput) => {
-  return await db.update(plants).set(data).where(eq(plants.id, id))
+  return await db
+    .update(plants)
+    .set(data as any)
+    .where(eq(plants.id, id))
 }
 
 export type BatchDetailsData = AsyncReturnType<typeof getBatchDetail>
@@ -129,7 +132,10 @@ export const getStrainById = async (id: number) => {
 }
 
 export const createStrain = async (input: CreateStrainInput) => {
-  const newStrain = await db.insert(strains).values(input).returning()
+  const newStrain = await db
+    .insert(strains)
+    .values(input as any)
+    .returning()
   console.info('newStrain', newStrain)
   return newStrain[0]
 }
@@ -137,7 +143,7 @@ export const createStrain = async (input: CreateStrainInput) => {
 export const updateStrain = async (input: UpdateStrainInput) => {
   return await db
     .update(strains)
-    .set(input)
+    .set(input as any)
     .where(eq(strains.id, input.id))
     .returning()
 }

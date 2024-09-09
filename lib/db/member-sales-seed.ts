@@ -58,10 +58,8 @@ async function seedDatabase() {
                 RETURNING id
             `,
         [
-          member.id,
           member.firstName,
           member.lastName,
-          member.fullName,
           member.email,
           member.phone,
           member.street,

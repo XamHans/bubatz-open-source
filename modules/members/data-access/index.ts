@@ -65,6 +65,7 @@ const updateMember = async (data: UpdateMemberInput) => {
     console.log('data', data)
     const updatedMemberResult = await db
       .update(members)
+      //@ts-ignore
       .set({ ...data, birthday: data.birthday?.toString() }) // Added nullish coalescing operator
       .where(eq(members.id, data.id ?? ''))
       .returning()
@@ -96,7 +97,7 @@ export const createMemberPayment = async (input: AddMembershipPaymentInput) => {
   // logger.debug('Creating new member', input);
   const newPaymentId = await db
     .insert(membershipPayments)
-    .values(input)
+    .values(input as any)
     .returning()
   return newPaymentId
 }

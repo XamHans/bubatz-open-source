@@ -33,6 +33,7 @@ export async function getUserById(
     const [user] = await psGetUserById.execute({
       id: validatedInput.data.id,
     })
+    //@ts-ignore
     return user || null
   } catch (error) {
     console.error(error)
@@ -51,6 +52,7 @@ export async function getUserByEmail(
     const [user] = await psGetUserByEmail.execute({
       email: validatedInput.data.email,
     })
+    //@ts-ignore
     return user || null
   } catch (error) {
     console.error(error)
@@ -82,6 +84,7 @@ export async function getUserByResetPasswordToken(
     const [user] = await psGetUserByResetPasswordToken.execute({
       token: validatedInput.data.token,
     })
+    //@ts-ignore
     return user || null
   } catch (error) {
     console.error(error)
@@ -101,6 +104,7 @@ export async function getUserByEmailVerificationToken(
     const [user] = await psGetUserByEmailVerificationToken.execute({
       token: validatedInput.data.token,
     })
+    //@ts-ignore
     return user || null
   } catch (error) {
     console.error(error)

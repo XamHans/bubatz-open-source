@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/db/db'
 import { members } from '@/modules/members/data-access/schema'
-import { strains } from '@/modules/plants/data-access/schema' // Import the strains table
+import { strains } from '@/modules/plants/data-access/schema'; // Import the strains table
 import { and, eq, gte, lt, sql } from 'drizzle-orm'
 import { cache } from 'react'
 import {
@@ -222,7 +222,10 @@ export async function createSaleWithItems(input: CreateSaleWithItemsInput) {
 
   const saleTransactionResult = await db.transaction(async (tx) => {
     // Create the sale record
-    const [createdSale] = await tx.insert(sales).values(saleData).returning()
+    const [createdSale] = await tx
+      .insert(sales)
+      .values(saleData as any)
+      .returning()
 
     if (!createdSale) {
       throw new Error('Failed to create sale record')
@@ -236,6 +239,7 @@ export async function createSaleWithItems(input: CreateSaleWithItemsInput) {
 
     const createdSaleItems = await tx
       .insert(salesItems)
+      //@ts-ignore
       .values(saleItemsData)
       .returning()
 
@@ -261,6 +265,7 @@ export async function createSaleWithItems(input: CreateSaleWithItemsInput) {
 
       await tx
         .update(strains)
+        //@ts-ignore
         .set({ amountAvailable: strain.amountAvailable - item.amount })
         .where(eq(strains.id, item.strainId))
     }

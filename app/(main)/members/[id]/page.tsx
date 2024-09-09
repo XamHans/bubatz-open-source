@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { siteConfig } from '@/config/site'
 import { getMemberDetail } from '@/modules/members/data-access'
+import { MemberProps } from '@/modules/members/data-access/schema'
 import { ChevronLeft, Plus } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
@@ -18,11 +19,20 @@ interface MemberDetailPageProps {
 }
 
 async function MemberContent({ id }: { id: string }) {
-  const member = await getMemberDetail(id)
+  const memberData = await getMemberDetail(id)
   const t = await getTranslations('MemberDetail')
 
-  if (!member) {
+  if (!memberData) {
     notFound()
+  }
+
+  // Transform Date fields to strings
+  const member: MemberProps = {
+    ...memberData,
+    birthday: memberData.birthday?.toString(),
+    lastPaymentDate: memberData.lastPaymentDate?.toString(),
+    createdAt: memberData.createdAt?.toISOString(),
+    updatedAt: memberData.updatedAt?.toISOString(),
   }
 
   return (
