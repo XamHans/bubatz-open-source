@@ -41,9 +41,8 @@ export const {
   callbacks: {
     jwt({ token, user }) {
       console.log('jwt callback user', user)
-      console.log('jwt callback token', token)
       if (user) {
-        token.role = user.is_admin ? 'ADMIN' : 'MEMBER'
+        token.role = user.role
         token.id = user.id as UUID
       }
       return token

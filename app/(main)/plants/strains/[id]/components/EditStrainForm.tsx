@@ -40,7 +40,7 @@ export function EditStrainForm({ strain }: EditStrainFormProps) {
   })
 
   const { execute, status } = useAction(updateStrainUseCase, {
-    onSuccess: ({ data }) => {
+    onSuccess: ({}) => {
       toast({
         title: 'Success',
         duration: 1000,
@@ -60,6 +60,7 @@ export function EditStrainForm({ strain }: EditStrainFormProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedExecute = useCallback(
     debounce((data: UpdateStrainInput) => {
+      console.log('debounced execute', data)
       execute(data)
     }, 500),
     [execute],

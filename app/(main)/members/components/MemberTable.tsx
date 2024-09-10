@@ -15,7 +15,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { t } from 'i18next'
 import {
   ArrowUpDown,
   ChevronLeft,
@@ -25,6 +24,7 @@ import {
   ShieldIcon,
   UserIcon,
 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import Link from 'next/link'
@@ -56,11 +56,13 @@ import {
 import { fetchMembersUseCase } from '../../../../modules/members/use-cases'
 
 export default function MemberTable() {
+  const t = useTranslations('')
+
   const getUserTableColumns = (router: AppRouterInstance) => {
     return [
       {
         id: 'role',
-        header: 'Role',
+        header: t('labels.role'),
         cell: ({ row }) => {
           const isAdmin = row.original.role === 'ADMIN'
           return (
@@ -74,7 +76,11 @@ export default function MemberTable() {
                   )}
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{isAdmin ? 'Admin' : 'Member'}</p>
+                  <p>
+                    {isAdmin
+                      ? t('options.role.admin')
+                      : t('options.role.member')}
+                  </p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -98,7 +104,7 @@ export default function MemberTable() {
               }
               className="justify-start text-xs"
             >
-              Name
+              {t('labels.firstName')}
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           )
@@ -122,7 +128,7 @@ export default function MemberTable() {
               }
               className="justify-start text-xs"
             >
-              Status
+              {t('labels.status')}
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           )
@@ -134,7 +140,7 @@ export default function MemberTable() {
             <Badge
               className={`bg-${bgColor} border-none	  text-gray-950/75 hover:text-gray-400`}
             >
-              {status}
+              {t(`status.${status}`)}
             </Badge>
           )
         },
@@ -145,7 +151,7 @@ export default function MemberTable() {
         header: ({ column }) => {
           return (
             <Button variant="ghost" className="justify-center text-xs">
-              Actions
+              {t('actions.save')}
             </Button>
           )
         },
@@ -169,7 +175,7 @@ export default function MemberTable() {
                     </TooltipTrigger>
                     <TooltipContent align="end">
                       <Badge className="bg-inherit text-black hover:bg-inherit">
-                        Detail
+                        {t('General.breadcrumbs.memberDetails')}
                       </Badge>
                     </TooltipContent>
                   </Tooltip>
@@ -192,7 +198,7 @@ export default function MemberTable() {
                     </TooltipTrigger>
                     <TooltipContent align="end">
                       <Badge className="bg-inherit text-black hover:bg-inherit">
-                        Edit
+                        {t('editButton')}
                       </Badge>
                     </TooltipContent>
                   </Tooltip>
@@ -256,7 +262,7 @@ export default function MemberTable() {
     <div className="space-y-4 ">
       <div className="flex items-center justify-between space-x-2">
         <Input
-          placeholder={t('member:ACTIONS.SEARCH') ?? 'Search members'}
+          placeholder={t('Members.actions.search')}
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
             table.getColumn('name')?.setFilterValue(event.target.value)
@@ -264,10 +270,10 @@ export default function MemberTable() {
           className="max-w-sm"
         />
         <Link href={siteConfig.links.members.new}>
-          <Button size="sm" className="h-8 w-32 gap-1">
+          <Button className="w-38 h-8 gap-1">
             <PlusCircle className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-              Add Member
+              {t('Members.actions.new')}
             </span>
           </Button>
         </Link>
@@ -314,7 +320,9 @@ export default function MemberTable() {
               ))
             ) : (
               <TableRow>
-                <TableCell className="h-24 text-center">No data</TableCell>
+                <TableCell className="h-24 text-center">
+                  {t('General.dataTable.noResults')}
+                </TableCell>
               </TableRow>
             )}
           </TableBody>

@@ -118,9 +118,9 @@ export const updateBatchInputSchema = z.object({
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
   currentGrowthStage: z.string().optional(),
-  totalYield: z.number().optional(),
-  expectedYield: z.number().optional(),
-  totalDestroyed: z.number().optional(),
+  totalYield: z.coerce.number().optional(),
+  expectedYield: z.coerce.number().optional(),
+  totalDestroyed: z.coerce.number().optional(),
   isArchived: z.boolean().optional(),
 })
 
@@ -160,11 +160,11 @@ export const updateStrainInputSchema = z.object({
   id: z.number().positive(),
   name: z.string().optional(),
   description: z.string().optional(),
-  thc: z.number().optional(),
-  cbd: z.number().optional(),
+  thc: z.string().optional(),
+  cbd: z.string().optional(),
   isArchived: z.boolean().optional(),
-  currentPricePerGram: z.number().optional(),
-  amountAvailable: z.number().optional(),
+  currentPricePerGram: z.string().optional(),
+  amountAvailable: z.string().optional(),
 })
 
 export const deleteStrainInputSchema = z.object({

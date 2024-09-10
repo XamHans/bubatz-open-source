@@ -46,6 +46,7 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
       })
     },
     onError: (error) => {
+      console.log('Batch could not be updated', error)
       toast({
         title: 'Error',
         variant: 'destructive',
@@ -58,10 +59,9 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
     resolver: zodResolver(updateBatchInputSchema),
     defaultValues: {
       currentGrowthStage: batch.currentGrowthStage,
-      expectedYield: (batch.expectedYield as number) ?? 0,
-      totalDestroyed: batch.totalDestroyed as number,
-      totalYield: batch.totalYield as number,
-      //@ts-ignore
+      expectedYield: batch.expectedYield,
+      totalDestroyed: batch.totalDestroyed,
+      totalYield: batch.totalYield,
       endDate: batch.endDate || undefined,
     },
   })
@@ -80,6 +80,7 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
     const subscription = form.watch(() => {
       const formData = form.getValues()
       //@ts-ignore
+
       debouncedExecute({ ...batch, ...formData })
     })
 
@@ -142,9 +143,11 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
                 <FormLabel>Expected Yield Total (grams)</FormLabel>
                 <FormControl>
                   <Input
+                    type="number"
                     placeholder="Enter expected yield total in grams"
                     {...field}
                     value={field.value ?? ''}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -160,9 +163,11 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
                 <FormLabel>Yield Total (grams)</FormLabel>
                 <FormControl>
                   <Input
+                    type="number"
                     placeholder="Enter yield total in grams"
                     {...field}
                     value={field.value ?? ''}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -178,9 +183,11 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
                 <FormLabel>Destroyed Total (grams)</FormLabel>
                 <FormControl>
                   <Input
+                    type="number"
                     placeholder="Enter destroyed total in grams"
                     {...field}
                     value={field.value ?? ''}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
                   />
                 </FormControl>
                 <FormMessage />

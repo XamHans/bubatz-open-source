@@ -31,6 +31,11 @@ export function SignInWithPasswordForm(): JSX.Element {
   const router = useRouter()
   const { toast } = useToast()
   const [isPending, startTransition] = React.useTransition()
+  const [isClient, setIsClient] = React.useState(false)
+
+  React.useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const form = useForm<SignInWithPasswordFormInput>({
     resolver: zodResolver(signInWithPasswordSchema),
@@ -120,11 +125,13 @@ export function SignInWithPasswordForm(): JSX.Element {
                   {...field}
                 />
               </FormControl>
-              <FormDescription>
-                <p>
-                  <strong>Email:</strong> demo@bubatz.club
-                </p>
-              </FormDescription>
+              {isClient && (
+                <FormDescription>
+                  <p>
+                    <strong>Email:</strong> demo@bubatz.club
+                  </p>
+                </FormDescription>
+              )}
               <FormMessage className="pt-2 sm:text-sm" />
             </FormItem>
           )}
@@ -139,11 +146,13 @@ export function SignInWithPasswordForm(): JSX.Element {
               <FormControl>
                 <PasswordInput placeholder="********" {...field} />
               </FormControl>
-              <FormDescription>
-                <p>
-                  <strong>Password:</strong> BubatzClubManager123!
-                </p>
-              </FormDescription>
+              {isClient && (
+                <FormDescription>
+                  <p>
+                    <strong>Password:</strong> BubatzClubManager123!
+                  </p>
+                </FormDescription>
+              )}
               <FormMessage className="pt-2 sm:text-sm" />
             </FormItem>
           )}

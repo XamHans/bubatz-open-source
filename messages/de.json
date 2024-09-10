@@ -4,7 +4,8 @@
       "dashboard": "Dashboard",
       "members": "Mitglieder",
       "sales": "Verkäufe",
-      "plants": "Pflanzen"
+      "plants": "Pflanzen",
+      "memberDetails": "Mitgliedsdetails"
     },
     "dataTable": {
       "noResults": "Keine Einträge gefunden"
@@ -52,6 +53,16 @@
     "breadcrumbs": {
       "dashboard": "Dashboard",
       "members": "Mitglieder"
+    },
+    "actions": {
+      "new": "Neues Mitglied anlegen",
+      "cancel": "Abbrechen",
+      "search": "Mitglieder suchen"
+    },
+    "labels": {
+      "role": "Rolle",
+      "firstName": "Vorname",
+      "status": "Status"
     }
   },
   "MemberDetail": {
@@ -74,7 +85,6 @@
   "MembersEdit": {
     "pageTitle": "Mitglied bearbeiten",
     "pageDescription": "Bearbeiten Sie Mitgliederdaten",
-
     "messages": {
       "success": {
         "title": "Erfolg",
@@ -129,5 +139,26 @@
     "de": "Deutsch",
     "en": "English",
     "label": "Sprache"
-  }
+  },
+  "actions": {
+    "save": "Speichern"
+  },
+  "labels": {
+    "role": "Rolle",
+    "firstName": "Vorname",
+    "status": "Status"
+  },
+  "options": {
+    "role": {
+      "admin": "Administrator",
+      "member": "Mitglied"
+    }
+  },
+  "status": {
+    "ACTIVE": "Aktiv",
+    "PAUSED": "Pausiert",
+    "EXITED": "Ausgetreten",
+    "REQUEST": "Anfrage"
+  },
+  "editButton": "Bearbeiten"
 }

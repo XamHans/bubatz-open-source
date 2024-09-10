@@ -44,9 +44,10 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
 
   const form = useForm<UpdateMemberInput>({
     resolver: zodResolver(updateMemberInputSchema),
-    //@ts-ignore
     defaultValues: {
       ...member,
+      status: member.status ?? 'REQUEST',
+      role: member.role ?? 'MEMBER',
     },
   })
 
@@ -70,6 +71,7 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
 
   const debouncedExecute = useCallback(
     debounce((data: UpdateMemberInput) => {
+      console.log('data to execute ', data)
       execute(data)
     }, 500),
     [execute],
@@ -78,7 +80,6 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
   useEffect(() => {
     const subscription = form.watch((value, { name, type }) => {
       const formData = form.getValues()
-      //@ts-ignore
       debouncedExecute({ ...member, ...formData })
     })
 
@@ -185,15 +186,26 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t('labels.status')}</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value ?? undefined}
-              >
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                 </FormControl>
+                <SelectContent>
+                  <SelectItem value="ACTIVE">
+                    {t('options.status.ACTIVE')}
+                  </SelectItem>
+                  <SelectItem value="PAUSED">
+                    {t('options.status.PAUSED')}
+                  </SelectItem>
+                  <SelectItem value="EXITED">
+                    {t('options.status.EXITED')}
+                  </SelectItem>
+                  <SelectItem value="REQUEST">
+                    {t('options.status.REQUEST')}
+                  </SelectItem>
+                </SelectContent>
               </Select>
               <FormMessage />
             </FormItem>
@@ -223,7 +235,7 @@ export function EditMemberForm({ member, session }: EditMemberFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t('labels.role')}</FormLabel>
-              <Select onValueChange={field.onChange}>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue />

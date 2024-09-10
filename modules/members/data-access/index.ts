@@ -62,14 +62,12 @@ export type GetMemberDetailQueryData = AsyncReturnType<typeof getMemberDetail>
 
 const updateMember = async (data: UpdateMemberInput) => {
   try {
-    console.log('data', data)
     const updatedMemberResult = await db
       .update(members)
       //@ts-ignore
       .set({ ...data, birthday: data.birthday?.toString() }) // Added nullish coalescing operator
       .where(eq(members.id, data.id ?? ''))
       .returning()
-    console.log('updatedMemberResult', updatedMemberResult)
     return updatedMemberResult
   } catch (error) {
     console.error('Error updating member:', error)

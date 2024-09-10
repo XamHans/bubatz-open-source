@@ -106,7 +106,7 @@ export const selectUserSchema = z.object({
   phone: z.string().nullable(),
   street: z.string().nullable(),
   city: z.string().nullable(),
-  passwordHash: z.string().optional(),
+  passwordHash: z.string().nullable(),
   zip: z.string().nullable(),
   status: z.string(),
   role: z.enum(memberRoleEnum.enumValues),
