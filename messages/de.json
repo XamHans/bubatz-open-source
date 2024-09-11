@@ -131,8 +131,59 @@
       "priceValue": "{price} €",
       "totalPrice": "Gesamtpreis",
       "totalPriceValue": "{price} €"
+    },
+    "newSale": {
+      "title": "Neuen Verkauf erstellen",
+      "description": "Füllen Sie die Details aus, um einen neuen Verkauf zu erstellen."
+    },
+    "selectMember": "Mitglied auswählen",
+    "selectMemberPlaceholder": "Mitglied auswählen...",
+    "searchMember": "Mitglied suchen...",
+    "noMemberFound": "Kein Mitglied gefunden.",
+    "selectStrains": "Sorten auswählen",
+    "strain": "Sorte",
+    "available": "Verfügbar (g)",
+    "weight": "Gewicht (g)",
+    "pricePerGram": "Preis/g",
+    "totalPrice": "Gesamtpreis",
+    "addItem": "Artikel hinzufügen",
+    "paymentDetails": {
+      "title": "Zahlungsdetails",
+      "method": "Zahlungsmethode",
+      "selectMethod": "Zahlungsmethode auswählen",
+      "totalPrice": "Gesamtpreis",
+      "methods": {
+        "CASH": "Bargeld",
+        "BANKTRANSFER": "Überweisung",
+        "CARD": "Kreditkarte"
+      }
+    },
+    "createSale": "Verkauf erstellen",
+    "noSession": "Keine Sitzung gefunden",
+    "messages": {
+      "success": {
+        "title": "Erfolg",
+        "description": "Verkauf erfolgreich erstellt"
+      },
+      "error": {
+        "title": "Fehler",
+        "description": "Verkauf konnte nicht erstellt werden: {error}"
+      }
+    },
+    "alerts": {
+      "monthlyLimit": {
+        "exceeded": "Mitglied hat das monatliche Limit überschritten. Aktueller Gesamtwert: {total}g / 50g",
+        "remaining": "Aktueller monatlicher Kauf des Mitglieds: {current}g. Verbleibendes Kontingent: {remaining}g"
+      },
+      "selfSale": "Sie können nicht an sich selbst verkaufen",
+      "weightLimit": {
+        "exceeded": "Gesamtgewicht darf 30g nicht überschreiten. Aktueller Gesamtwert: {total}g",
+        "current": "Aktuelles Gesamtgewicht: {total}g"
+      },
+      "ageRestriction": "Mitglied ist zwischen 18 - 21 Jahre alt und darf keine Sorte mit hohem THC-Gehalt konsumieren"
     }
   },
+
   "Payments": {
     "pageTitle": "Zahlungen",
     "pageDescription": "Verwalten Sie Mitgliederzahlungen",

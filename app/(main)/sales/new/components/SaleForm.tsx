@@ -1,6 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-
 import { useToast } from '@/components/ui/use-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -11,6 +9,7 @@ import {
   Plus,
   Trash2,
 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
 import { useEffect, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
@@ -72,6 +71,8 @@ export interface SaleFormProps {
 }
 
 export default function SaleForm({ session }: SaleFormProps) {
+  const t = useTranslations('Sales')
+  const tGeneral = useTranslations('General')
   const [members, setMembers] = useState<UserSchema[]>([])
   const [strains, setStrains] = useState<StrainProps[]>([])
   const [open, setOpen] = useState(false)
@@ -98,13 +99,12 @@ export default function SaleForm({ session }: SaleFormProps) {
   })
 
   const createSaleAction = useAction(createSaleUseCase, {
-    // @ts-ignore
     onSuccess: ({ data }) => {
       console.log('success data', data)
       toast({
-        title: 'Success',
+        title: t('messages.success.title'),
         duration: 1000,
-        description: 'Sale created successfully',
+        description: t('messages.success.description'),
       })
       setTimeout(() => {
         router.push(
@@ -112,15 +112,16 @@ export default function SaleForm({ session }: SaleFormProps) {
         )
       }, 2000)
     },
-    // @ts-ignore
     onError: ({ error }) => {
       console.log('error data', error)
 
       toast({
-        title: 'Error',
+        title: t('messages.error.title'),
         duration: 10000,
         variant: 'destructive',
-        description: `Sale could not be created: ${error.fetchError}`,
+        description: t('messages.error.description', {
+          error: error.fetchError,
+        }),
       })
     },
   })
@@ -128,11 +129,9 @@ export default function SaleForm({ session }: SaleFormProps) {
   const fetchMemberPurchasesForCurrentMonth = useAction(
     fetchMembersStrainAmountUseCase,
     {
-      // @ts-ignore
       onSuccess: ({ data }) => {
         setMemberMonthlyPurchase(data?.success || 0)
       },
-      // @ts-ignore
       onError: (error) =>
         logger.error('Error fetching member purchases:', error),
     },
@@ -141,23 +140,19 @@ export default function SaleForm({ session }: SaleFormProps) {
   const checkIfMemberIsAllowedForStrain = useAction(
     checkIfMemberIsAllowedForStrainUseCase,
     {
-      // @ts-ignore
       onSuccess: ({ data }) => {
         setIsMemberAllowedForStrain(data?.success)
       },
-      // @ts-ignore
       onError: (error) =>
         logger.error(
           error,
-          'Error happend while checking if member is allowed for strain:',
+          'Error happened while checking if member is allowed for strain:',
         ),
     },
   )
 
   const fetchMembers = useAction(fetchMembersUseCase, {
-    // @ts-ignore
     onSuccess: ({ data }) => {
-      // @ts-ignore
       const sortedMembers = [...data?.success].sort((a, b) =>
         `${a.firstName} ${a.lastName}`.localeCompare(
           `${b.firstName} ${b.lastName}`,
@@ -168,9 +163,7 @@ export default function SaleForm({ session }: SaleFormProps) {
   })
 
   const fetchStrains = useAction(fetchStrainsUseCase, {
-    // @ts-ignore
     onSuccess: ({ data }) => {
-      // @ts-ignore
       setStrains(data?.success ?? [])
     },
   })
@@ -192,24 +185,23 @@ export default function SaleForm({ session }: SaleFormProps) {
     if (weight > 30) {
       form.setError('root', {
         type: 'manual',
-        message: 'Total weight cannot exceed 30g per day',
+        message: t('alerts.weightLimit.exceeded', { total: weight.toFixed(2) }),
       })
     } else {
       form.clearErrors('root')
     }
 
-    // Check if salesById and memberId are equal
     const salesById = form.getValues('salesById')
     const memberId = form.getValues('memberId')
     if (salesById && memberId && salesById === memberId) {
       form.setError('memberId', {
         type: 'manual',
-        message: 'You cannot sell to yourself',
+        message: t('alerts.selfSale'),
       })
     } else {
       form.clearErrors('memberId')
     }
-  }, [fields, form])
+  }, [fields, form, t])
 
   const handleMemberChange = (memberId: string) => {
     form.setValue('memberId', memberId)
@@ -223,7 +215,6 @@ export default function SaleForm({ session }: SaleFormProps) {
   const handleStrainChange = (index: number, strainId: number) => {
     const selectedStrain = strains.find((strain) => strain.id === strainId)
     if (selectedStrain) {
-      // Update the form field with the new strain and its default price
       update(index, {
         strainId,
         amount: form.getValues(`items.${index}.amount`) || 0,
@@ -242,7 +233,6 @@ export default function SaleForm({ session }: SaleFormProps) {
     update(index, {
       ...currentItem,
       amount: weight,
-      //@ts-ignore
       totalPrice: totalPrice,
     })
   }
@@ -255,7 +245,7 @@ export default function SaleForm({ session }: SaleFormProps) {
   const isOverLimit = memberMonthlyPurchase + totalWeight > 50
 
   if (!session) {
-    return <>No session found</>
+    return <>{t('noSession')}</>
   }
 
   return (
@@ -263,14 +253,14 @@ export default function SaleForm({ session }: SaleFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Select Member</CardTitle>
+            <CardTitle>{t('selectMember')}</CardTitle>
           </CardHeader>
           <CardContent>
             <FormField
               control={form.control}
               name="memberId"
               render={({ field }) => (
-                <FormItem className=" flex-col">
+                <FormItem className="flex-col">
                   <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -288,16 +278,16 @@ export default function SaleForm({ session }: SaleFormProps) {
                               members.find(
                                 (member) => member.id === field.value,
                               )?.lastName
-                            : 'Select member...'}
+                            : t('selectMemberPlaceholder')}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-full p-0">
                       <Command className="flex w-[500px]">
-                        <CommandInput placeholder="Search member..." />
+                        <CommandInput placeholder={t('searchMember')} />
                         <CommandList>
-                          <CommandEmpty>No member found.</CommandEmpty>
+                          <CommandEmpty>{t('noMemberFound')}</CommandEmpty>
                           <CommandGroup>
                             {members.map((member) => (
                               <CommandItem
@@ -336,12 +326,16 @@ export default function SaleForm({ session }: SaleFormProps) {
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
               {isOverLimit
-                ? `Member has exceeded the monthly limit. Current total: ${(memberMonthlyPurchase + totalWeight).toFixed(2)}g / 50g`
-                : `Member's current monthly purchase: ${memberMonthlyPurchase}g. Remaining allowance: ${remainingAllowance.toFixed(2)}g`}
+                ? t('alerts.monthlyLimit.exceeded', {
+                    total: (memberMonthlyPurchase + totalWeight).toFixed(2),
+                  })
+                : t('alerts.monthlyLimit.remaining', {
+                    current: memberMonthlyPurchase,
+                    remaining: remainingAllowance.toFixed(2),
+                  })}
             </AlertDescription>
           </Alert>
         )}
-        {/* Add this alert for the self-sale error */}
         {form.formState.errors.memberId && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
@@ -353,7 +347,7 @@ export default function SaleForm({ session }: SaleFormProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle>Select Strains</CardTitle>
+            <CardTitle>{t('selectStrains')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -367,7 +361,7 @@ export default function SaleForm({ session }: SaleFormProps) {
                     name={`items.${index}.strainId`}
                     render={({ field }) => (
                       <FormItem className="col-span-2">
-                        <FormLabel>Strain</FormLabel>
+                        <FormLabel>{t('strain')}</FormLabel>
                         <Select
                           onValueChange={(value) => {
                             field.onChange(parseInt(value))
@@ -377,7 +371,9 @@ export default function SaleForm({ session }: SaleFormProps) {
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select strain" />
+                              <SelectValue
+                                placeholder={t('selectStrainPlaceholder')}
+                              />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -396,7 +392,7 @@ export default function SaleForm({ session }: SaleFormProps) {
                     )}
                   />
                   <FormItem>
-                    <FormLabel>Available (g)</FormLabel>
+                    <FormLabel>{t('available')}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -413,7 +409,7 @@ export default function SaleForm({ session }: SaleFormProps) {
                     name={`items.${index}.amount`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Weight (g)</FormLabel>
+                        <FormLabel>{t('weight')}</FormLabel>
                         <FormControl>
                           <Input
                             type="number"
@@ -435,19 +431,19 @@ export default function SaleForm({ session }: SaleFormProps) {
                     name={`items.${index}.price`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Price/g</FormLabel>
+                        <FormLabel>{t('pricePerGram')}</FormLabel>
                         <FormControl>
                           <Input
                             type="number"
-                            step="1"
+                            step="0.01"
                             {...field}
-                            value={field.value || ''} // Ensure empty string if value is 0 or null
+                            value={field.value || ''}
                             onChange={(e) => {
                               const value =
                                 e.target.value === ''
                                   ? 0
                                   : parseFloat(e.target.value)
-                              field.onChange(value) // Pass the number directly, not as a string
+                              field.onChange(value)
                               handleWeightChange(
                                 index,
                                 form.getValues(`items.${index}.amount`),
@@ -460,7 +456,7 @@ export default function SaleForm({ session }: SaleFormProps) {
                     )}
                   />
                   <FormItem>
-                    <FormLabel>Total Price</FormLabel>
+                    <FormLabel>{t('totalPrice')}</FormLabel>
                     <FormControl>
                       <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background">
                         {(
@@ -487,7 +483,7 @@ export default function SaleForm({ session }: SaleFormProps) {
                 variant="outline"
                 onClick={() => append({ strainId: 0, amount: 0, price: 0 })}
               >
-                <Plus className="mr-2 h-4 w-4" /> Add Item
+                <Plus className="mr-2 h-4 w-4" /> {t('addItem')}
               </Button>
             </div>
           </CardContent>
@@ -496,10 +492,7 @@ export default function SaleForm({ session }: SaleFormProps) {
         {!isMemberAllowedForStrain && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              Member is between 18 - 21 years old and not allowed to consume a
-              high THC strain
-            </AlertDescription>
+            <AlertDescription>{t('alerts.ageRestriction')}</AlertDescription>
           </Alert>
         )}
 
@@ -508,15 +501,19 @@ export default function SaleForm({ session }: SaleFormProps) {
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
               {totalWeight > 30
-                ? `Total weight cannot exceed 30g. Current total: ${totalWeight.toFixed(2)}g`
-                : `Current total weight: ${totalWeight.toFixed(2)}g`}
+                ? t('alerts.weightLimit.exceeded', {
+                    total: totalWeight.toFixed(2),
+                  })
+                : t('alerts.weightLimit.current', {
+                    total: totalWeight.toFixed(2),
+                  })}
             </AlertDescription>
           </Alert>
         )}
 
         <Card>
           <CardHeader>
-            <CardTitle>Payment Details</CardTitle>
+            <CardTitle>{t('paymentDetails.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -525,18 +522,20 @@ export default function SaleForm({ session }: SaleFormProps) {
                 name="paidVia"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Payment Method</FormLabel>
+                    <FormLabel>{t('paymentDetails.method')}</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select payment method" />
+                          <SelectValue
+                            placeholder={t('paymentDetails.selectMethod')}
+                          />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {Object.values(paymentMethods.enumValues).map(
                           (method) => (
                             <SelectItem key={method} value={method}>
-                              {method}
+                              {t(`paymentDetails.methods.${method}`)}
                             </SelectItem>
                           ),
                         )}
@@ -551,7 +550,7 @@ export default function SaleForm({ session }: SaleFormProps) {
                 name="totalPrice"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Total Price</FormLabel>
+                    <FormLabel>{t('paymentDetails.totalPrice')}</FormLabel>
                     <FormControl>
                       <Input {...field} disabled />
                     </FormControl>
@@ -572,7 +571,7 @@ export default function SaleForm({ session }: SaleFormProps) {
               totalWeight > 30 || isOverLimit || !form.formState.isDirty
             }
           >
-            <PackageCheck className="mr-2 h-4 w-4" /> Create Sale
+            <PackageCheck className="mr-2 h-4 w-4" /> {t('createSale')}
           </Button>
         </div>
       </form>
