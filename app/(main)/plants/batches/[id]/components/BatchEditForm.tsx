@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { useToast } from '@/components/ui/use-toast'
+import { toDateString } from '@/lib/utils'
 import {
   BatchProps,
   UpdateBatchInput,
@@ -25,6 +26,7 @@ import { GrowPhase } from '@/modules/plants/types'
 import { updateBatchUseCase } from '@/modules/plants/use-cases'
 import { zodResolver } from '@hookform/resolvers/zod'
 import debounce from 'lodash/debounce'
+import { useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
 import { useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -34,23 +36,24 @@ export interface GrowthPhasesFormProps {
 }
 
 const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
+  const t = useTranslations()
   const { toast } = useToast()
 
   const { execute } = useAction(updateBatchUseCase, {
     onSuccess: (data) => {
       console.log('Batch updated successfully', data)
       toast({
-        title: 'Success',
+        title: t('BatchEdit.messages.success.title'),
         duration: 1000,
-        description: 'Batch updated successfully',
+        description: t('BatchEdit.messages.success.description'),
       })
     },
     onError: (error) => {
       console.log('Batch could not be updated', error)
       toast({
-        title: 'Error',
+        title: t('BatchEdit.messages.error.title'),
         variant: 'destructive',
-        description: `Batch could not be updated ${error}`,
+        description: `${t('BatchEdit.messages.error.description')} ${error}`,
       })
     },
   })
@@ -59,29 +62,32 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
     resolver: zodResolver(updateBatchInputSchema),
     defaultValues: {
       currentGrowthStage: batch.currentGrowthStage,
-      expectedYield: batch.expectedYield,
-      totalDestroyed: batch.totalDestroyed,
-      totalYield: batch.totalYield,
-      endDate: batch.endDate || undefined,
+      expectedYield: batch.expectedYield?.toString(),
+      totalDestroyed: batch.totalDestroyed?.toString(),
+      totalYield: batch.totalYield?.toString(),
+      endDate: toDateString(batch.endDate),
+      startDate: toDateString(batch.startDate),
     },
   })
 
-  // Create a debounced version of the execute function
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedExecute = useCallback(
     debounce((data: UpdateBatchInput) => {
-      // @ts-ignore
-      execute(data)
-    }, 500), // 500ms delay
+      const formattedData = {
+        ...data,
+        startDate: toDateString(data.startDate),
+        endDate: toDateString(data.endDate),
+      }
+      execute(formattedData)
+    }, 500),
     [execute],
   )
 
   useEffect(() => {
-    const subscription = form.watch(() => {
-      const formData = form.getValues()
-      //@ts-ignore
-
-      debouncedExecute({ ...batch, ...formData })
+    const subscription = form.watch((value, { name, type }) => {
+      if (type === 'change') {
+        const formData = form.getValues()
+        debouncedExecute({ ...batch, ...formData })
+      }
     })
 
     return () => subscription.unsubscribe()
@@ -96,16 +102,20 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
             name="currentGrowthStage"
             render={({ field }) => (
               <FormItem className="col-span-2">
-                <FormLabel>Select Grow Phase</FormLabel>
+                <FormLabel>{t('BatchEdit.formLabels.growPhase')}</FormLabel>
                 <FormControl>
-                  <Select onValueChange={field.onChange}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <SelectTrigger className="w-full">
-                      <span>{field.value || 'Select Grow Phase'}</span>
+                      <span>
+                        {field.value
+                          ? t(`BatchEdit.growPhases.${field.value}`)
+                          : t('BatchEdit.placeholders.selectGrowPhase')}
+                      </span>
                     </SelectTrigger>
                     <SelectContent>
                       {Object.values(GrowPhase).map((phase) => (
                         <SelectItem key={phase} value={phase}>
-                          {phase}
+                          {t(`BatchEdit.growPhases.${phase}`)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -121,11 +131,13 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
             name="endDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="pr-5">(Estimated) End Date</FormLabel>
+                <FormLabel className="pr-5">
+                  {t('BatchEdit.formLabels.endDate')}
+                </FormLabel>
                 <FormControl>
                   <CustomDatePicker
                     value={field.value}
-                    onChange={field.onChange}
+                    onChange={(date: Date | null) => field.onChange(date)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -140,14 +152,12 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
             name="expectedYield"
             render={({ field }) => (
               <FormItem className="col-span-2">
-                <FormLabel>Expected Yield Total (grams)</FormLabel>
+                <FormLabel>{t('BatchEdit.formLabels.expectedYield')}</FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
-                    placeholder="Enter expected yield total in grams"
+                    type="text"
+                    placeholder={t('BatchEdit.placeholders.expectedYield')}
                     {...field}
-                    value={field.value ?? ''}
-                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -160,14 +170,12 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
             name="totalYield"
             render={({ field }) => (
               <FormItem className="col-span-2">
-                <FormLabel>Yield Total (grams)</FormLabel>
+                <FormLabel>{t('BatchEdit.formLabels.totalYield')}</FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
-                    placeholder="Enter yield total in grams"
+                    type="text"
+                    placeholder={t('BatchEdit.placeholders.totalYield')}
                     {...field}
-                    value={field.value ?? ''}
-                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -180,14 +188,14 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
             name="totalDestroyed"
             render={({ field }) => (
               <FormItem className="col-span-2">
-                <FormLabel>Destroyed Total (grams)</FormLabel>
+                <FormLabel>
+                  {t('BatchEdit.formLabels.totalDestroyed')}
+                </FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
-                    placeholder="Enter destroyed total in grams"
+                    type="text"
+                    placeholder={t('BatchEdit.placeholders.totalDestroyed')}
                     {...field}
-                    value={field.value ?? ''}
-                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
                   />
                 </FormControl>
                 <FormMessage />

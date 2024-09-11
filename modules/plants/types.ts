@@ -1,4 +1,5 @@
 export enum GrowPhase {
+  Seedling = 'Seedling',
   Vegetative = 'Vegetative',
   Flowering = 'Flowering',
   Harvesting = 'Harvesting',

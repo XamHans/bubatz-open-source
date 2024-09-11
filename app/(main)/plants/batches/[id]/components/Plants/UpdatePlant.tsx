@@ -169,6 +169,9 @@ const UpdatePlantForm: React.FC<UpdatePlantFormProps> = ({
                         placeholder="Enter the yield of the plant in grams"
                         {...field}
                         value={field.value ?? 0}
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value))
+                        }
                       />
                     </FormControl>
                     <FormMessage />

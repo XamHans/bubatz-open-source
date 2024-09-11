@@ -115,12 +115,12 @@ export const updateBatchInputSchema = z.object({
   id: z.string().uuid(),
   name: z.string().optional(),
   strainId: z.number().int().optional(),
-  startDate: z.coerce.date().optional(),
-  endDate: z.coerce.date().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
   currentGrowthStage: z.string().optional(),
-  totalYield: z.coerce.number().optional(),
-  expectedYield: z.coerce.number().optional(),
-  totalDestroyed: z.coerce.number().optional(),
+  totalYield: z.string().optional(),
+  expectedYield: z.string().optional(),
+  totalDestroyed: z.string().optional(),
   isArchived: z.boolean().optional(),
 })
 

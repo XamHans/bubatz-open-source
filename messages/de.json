@@ -43,6 +43,7 @@
       },
       "actions": {
         "save": "Speichern",
+        "edit": "Bearbeiten",
         "cancel": "Abbrechen"
       }
     }
@@ -135,30 +136,74 @@
       "CARD": "Kreditkarte"
     }
   },
+  "BatchEdit": {
+    "formLabels": {
+      "growPhase": "Wachstumsphase auswählen",
+      "endDate": "(Geschätztes) Enddatum",
+      "expectedYield": "Erwarteter Gesamtertrag (Gramm)",
+      "totalYield": "Gesamtertrag (Gramm)",
+      "totalDestroyed": "Gesamtmenge vernichtet (Gramm)"
+    },
+    "placeholders": {
+      "selectGrowPhase": "Wachstumsphase auswählen",
+      "expectedYield": "Erwarteten Gesamtertrag in Gramm eingeben",
+      "totalYield": "Gesamtertrag in Gramm eingeben",
+      "totalDestroyed": "Vernichtete Gesamtmenge in Gramm eingeben"
+    },
+    "growPhases": {
+      "Seedling": "Sämling",
+      "Vegetative": "Vegetation",
+      "Flowering": "Blüte",
+      "Harvesting": "Ernte",
+      "Drying": "Trocknung",
+      "Curing": "Aushärtung",
+      "Completed": "Abgeschlossen"
+    },
+    "messages": {
+      "success": {
+        "title": "Erfolg",
+        "description": "Batch erfolgreich aktualisiert"
+      },
+      "error": {
+        "title": "Fehler",
+        "description": "Batch konnte nicht aktualisiert werden"
+      }
+    }
+  },
+  "Plants": {
+    "title": "Pflanzen",
+    "description": "Verwalten Sie die Pflanzen in dieser Partie",
+    "table": {
+      "headers": {
+        "id": "ID",
+        "position": "Position",
+        "name": "Name",
+        "yield": "Ertrag",
+        "health": "Gesundheit",
+        "actions": "Aktionen"
+      },
+      "noPlants": "Keine Pflanzen in dieser Partie gefunden.",
+      "tooltips": {
+        "edit": "Pflanze bearbeiten",
+        "delete": "Pflanze löschen"
+      }
+    },
+    "messages": {
+      "deleteSuccess": "Pflanze erfolgreich gelöscht.",
+      "deleteError": "Pflanze konnte nicht gelöscht werden."
+    },
+    "addNewPlant": "Neue Pflanze hinzufügen",
+    "addNewPlantDescription": "Füllen Sie die Details unten aus, um eine neue Pflanze zur Partie hinzuzufügen.",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Geben Sie der Pflanze einen Namen, wenn Sie möchten",
+      "position": "Position",
+      "positionPlaceholder": "Geben Sie die Position der Pflanze innerhalb der Partie ein"
+    }
+  },
   "LocaleSwitcher": {
     "de": "Deutsch",
     "en": "English",
     "label": "Sprache"
-  },
-  "actions": {
-    "save": "Speichern"
-  },
-  "labels": {
-    "role": "Rolle",
-    "firstName": "Vorname",
-    "status": "Status"
-  },
-  "options": {
-    "role": {
-      "admin": "Administrator",
-      "member": "Mitglied"
-    }
-  },
-  "status": {
-    "ACTIVE": "Aktiv",
-    "PAUSED": "Pausiert",
-    "EXITED": "Ausgetreten",
-    "REQUEST": "Anfrage"
-  },
-  "editButton": "Bearbeiten"
+  }
 }

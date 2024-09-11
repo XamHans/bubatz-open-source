@@ -35,6 +35,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { ArrowUpDown, Trash2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
 import { useEffect, useState } from 'react'
 import { UpdatePlantForm } from './UpdatePlant'
@@ -44,6 +45,7 @@ export interface PlantsTableProps {
 }
 
 const PlantsTable = ({ batch }: PlantsTableProps) => {
+  const t = useTranslations()
   const { toast } = useToast()
 
   const { execute, status } = useAction(fetchPlantsFromBatchUseCase, {
@@ -60,15 +62,18 @@ const PlantsTable = ({ batch }: PlantsTableProps) => {
     {
       onSuccess: (data) => {
         toast({
-          title: 'Success',
-          description: `Plant deleted successfully.`,
+          title: t('General.messages.success.title'),
+          description: t('Plants.messages.deleteSuccess'),
         })
         execute({ batchId: batch.id }) //re-fetch plants
       },
       onError: (error) => {
         toast({
-          title: 'Error',
-          description: `Plant  could not be deleted due to an error. ${error}`,
+          title: t('General.messages.error.title'),
+          description: t('General.messages.error.deleteDescription', {
+            item: 'Plant',
+            error,
+          }),
         })
       },
     },
@@ -85,7 +90,7 @@ const PlantsTable = ({ batch }: PlantsTableProps) => {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="justify-start text-xs"
           >
-            Position
+            {t('Plants.table.headers.position')}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
@@ -102,7 +107,7 @@ const PlantsTable = ({ batch }: PlantsTableProps) => {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="justify-start text-xs"
           >
-            Name
+            {t('Plants.table.headers.name')}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
@@ -115,7 +120,7 @@ const PlantsTable = ({ batch }: PlantsTableProps) => {
         accessorKey: 'health',
         header: ({ column }) => (
           <Button variant="ghost" className="justify-start text-xs">
-            Health
+            {t('Plants.table.headers.health')}
           </Button>
         ),
         cell: ({ row }) => (
@@ -133,7 +138,7 @@ const PlantsTable = ({ batch }: PlantsTableProps) => {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="justify-start text-xs"
           >
-            Yield
+            {t('Plants.table.headers.yield')}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
@@ -148,7 +153,7 @@ const PlantsTable = ({ batch }: PlantsTableProps) => {
         enableHiding: false,
         header: () => (
           <Button variant="ghost" className="justify-start text-xs">
-            Actions
+            {t('Plants.table.headers.actions')}
           </Button>
         ),
         cell: ({ row }) => {
@@ -168,7 +173,9 @@ const PlantsTable = ({ batch }: PlantsTableProps) => {
                         onClose={() => execute({ batchId: batch.id })}
                       />
                     </TooltipTrigger>
-                    <TooltipContent align="end">Edit Plant</TooltipContent>
+                    <TooltipContent align="end">
+                      {t('Plants.table.tooltips.edit')}
+                    </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </Button>
@@ -185,7 +192,9 @@ const PlantsTable = ({ batch }: PlantsTableProps) => {
                     <TooltipTrigger>
                       <Trash2 className="h-4 w-4 cursor-pointer" />
                     </TooltipTrigger>
-                    <TooltipContent align="end">Delete Plant</TooltipContent>
+                    <TooltipContent align="end">
+                      {t('Plants.table.tooltips.delete')}
+                    </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </Button>
@@ -274,7 +283,7 @@ const PlantsTable = ({ batch }: PlantsTableProps) => {
             ) : (
               <TableRow>
                 <TableCell className="col-span-3 h-24 text-center">
-                  No plants found in this batch.
+                  {t('Plants.table.noPlants')}
                 </TableCell>
               </TableRow>
             )}

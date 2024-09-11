@@ -60,7 +60,6 @@ export function EditStrainForm({ strain }: EditStrainFormProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedExecute = useCallback(
     debounce((data: UpdateStrainInput) => {
-      console.log('debounced execute', data)
       execute(data)
     }, 500),
     [execute],
