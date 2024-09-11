@@ -1,3 +1,4 @@
+import Footer from '@/components/generic/footer'
 import { ThemeProvider } from '@/components/generic/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 import type { Metadata } from 'next'
@@ -40,6 +41,7 @@ export default async function RootLayout({
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>
+      <Footer />
     </html>
   )
 }

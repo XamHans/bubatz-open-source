@@ -1,7 +1,7 @@
 import { Icons } from '@/app/(landing)/components/Icons'
+import { siteConfig } from '@/config/site'
 import Link from 'next/link'
 import { buttonVariants } from '../ui/button'
-import { ThemeToggle } from './Themetoggle'
 
 export async function Navbar() {
   // const user = await getUser();
@@ -16,16 +16,16 @@ export async function Navbar() {
         </Link>
 
         <div className="flex items-center gap-x-5">
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
 
           <Link
-            href="#"
+            href={siteConfig.links.gitHub}
             className={buttonVariants({
               className: 'flex items-center',
             })}
           >
             <Icons.gitHub className="mr-2 h-4 w-4" />
-            View on GitHub
+            GitHub
           </Link>
 
           {/* {(await isAuthenticated()) ? (
