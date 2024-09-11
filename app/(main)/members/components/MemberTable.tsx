@@ -62,7 +62,7 @@ export default function MemberTable() {
     return [
       {
         id: 'role',
-        header: t('labels.role'),
+        header: t('General.form.labels.role'),
         cell: ({ row }) => {
           const isAdmin = row.original.role === 'ADMIN'
           return (
@@ -78,8 +78,8 @@ export default function MemberTable() {
                 <TooltipContent>
                   <p>
                     {isAdmin
-                      ? t('options.role.admin')
-                      : t('options.role.member')}
+                      ? t('General.form.options.role.admin')
+                      : t('General.form.options.role.member')}
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -104,7 +104,7 @@ export default function MemberTable() {
               }
               className="justify-start text-xs"
             >
-              {t('labels.firstName')}
+              {t('General.form.labels.firstName')}
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           )
@@ -128,7 +128,7 @@ export default function MemberTable() {
               }
               className="justify-start text-xs"
             >
-              {t('labels.status')}
+              {t('General.form.labels.status')}
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           )
@@ -140,7 +140,7 @@ export default function MemberTable() {
             <Badge
               className={`bg-${bgColor} border-none	  text-gray-950/75 hover:text-gray-400`}
             >
-              {t(`status.${status}`)}
+              {t(`General.form.status.${status}`)}
             </Badge>
           )
         },
@@ -151,7 +151,7 @@ export default function MemberTable() {
         header: ({ column }) => {
           return (
             <Button variant="ghost" className="justify-center text-xs">
-              {t('actions.save')}
+              {t('General.form.actions.save')}
             </Button>
           )
         },
@@ -198,7 +198,7 @@ export default function MemberTable() {
                     </TooltipTrigger>
                     <TooltipContent align="end">
                       <Badge className="bg-inherit text-black hover:bg-inherit">
-                        {t('editButton')}
+                        {t('General.form.actions.edit')}
                       </Badge>
                     </TooltipContent>
                   </Tooltip>

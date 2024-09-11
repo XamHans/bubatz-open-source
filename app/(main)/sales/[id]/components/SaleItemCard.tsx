@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
+import { useTranslations } from 'next-intl'
 import React from 'react'
 
 interface SaleItemsCardsProps {
@@ -7,6 +8,8 @@ interface SaleItemsCardsProps {
 }
 
 const SaleItemsCards: React.FC<SaleItemsCardsProps> = ({ items }) => {
+  const t = useTranslations('Sales')
+
   return (
     <div className="space-y-4">
       {items.map((item) => (
@@ -16,12 +19,12 @@ const SaleItemsCards: React.FC<SaleItemsCardsProps> = ({ items }) => {
               <div className="flex-grow bg-secondary p-4 md:w-1/3">
                 <h3 className="text-lg font-semibold">{item.strainName}</h3>
                 <Badge variant="outline" className="mt-2">
-                  Strain ID: {item.strainId}
+                  {t('saleItems.strainId', { id: item.strainId })}
                 </Badge>
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-muted-foreground">
-                      THC
+                      {t('saleItems.thc')}
                     </span>
                     <Badge variant="secondary" className="text-xs font-bold">
                       {item.thc}%
@@ -29,7 +32,7 @@ const SaleItemsCards: React.FC<SaleItemsCardsProps> = ({ items }) => {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-muted-foreground">
-                      CBD
+                      {t('saleItems.cbd')}
                     </span>
                     <Badge variant="secondary" className="text-xs font-bold">
                       {item.cbd}%
@@ -40,26 +43,34 @@ const SaleItemsCards: React.FC<SaleItemsCardsProps> = ({ items }) => {
               <div className="flex flex-grow flex-col justify-between p-4 md:w-2/3">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">Amount</p>
+                    <p className="text-sm text-muted-foreground">
+                      {t('saleItems.amount')}
+                    </p>
                     <p className="text-lg font-medium">
-                      {item.amount.toFixed(2)}g
+                      {t('saleItems.amountValue', {
+                        amount: item.amount.toFixed(2),
+                      })}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">
-                      Price per gram
+                      {t('saleItems.pricePerGram')}
                     </p>
                     <p className="text-lg font-medium">
-                      €{item.price.toFixed(2)}
+                      {t('saleItems.priceValue', {
+                        price: item.price.toFixed(2),
+                      })}
                     </p>
                   </div>
                 </div>
                 <div className="mt-4 flex items-center justify-between border-t pt-4">
                   <span className="text-sm font-medium text-muted-foreground">
-                    Total Price
+                    {t('saleItems.totalPrice')}
                   </span>
                   <span className="text-xl font-bold">
-                    €{(item.amount * item.price).toFixed(2)}
+                    {t('saleItems.totalPriceValue', {
+                      price: (item.amount * item.price).toFixed(2),
+                    })}
                   </span>
                 </div>
               </div>

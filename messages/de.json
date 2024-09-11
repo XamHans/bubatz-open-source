@@ -110,6 +110,27 @@
       "quantity": "Menge (g)",
       "soldBy": "Verkauft von",
       "saleDate": "Verkaufsdatum"
+    },
+    "saleInfo": {
+      "title": "Verkauf #{id}",
+      "member": "Mitglied",
+      "soldBy": "Verkauft von",
+      "saleDate": "Verkaufsdatum",
+      "totalPrice": "Gesamtpreis",
+      "totalAmount": "Gesamtmenge",
+      "paymentMethod": "Zahlungsmethode",
+      "saleId": "Verkaufs-ID"
+    },
+    "saleItems": {
+      "strainId": "Sorten-ID: {id}",
+      "thc": "THC",
+      "cbd": "CBD",
+      "amount": "Menge",
+      "amountValue": "{amount}g",
+      "pricePerGram": "Preis pro Gramm",
+      "priceValue": "{price} €",
+      "totalPrice": "Gesamtpreis",
+      "totalPriceValue": "{price} €"
     }
   },
   "Payments": {

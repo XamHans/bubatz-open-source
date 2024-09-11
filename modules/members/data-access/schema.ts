@@ -29,7 +29,7 @@ export const members = protectedSchema.table('members', {
   lastName: text('last_name'),
   birthday: date('birthday'),
   image: text('image'),
-  email: text('email').unique(),
+  email: text('email'),
   phone: text('phone'),
   street: text('street'),
   city: text('city'),

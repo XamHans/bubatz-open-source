@@ -114,6 +114,8 @@ export default function SaleForm({ session }: SaleFormProps) {
     },
     // @ts-ignore
     onError: ({ error }) => {
+      console.log('error data', error)
+
       toast({
         title: 'Error',
         duration: 10000,
@@ -560,6 +562,8 @@ export default function SaleForm({ session }: SaleFormProps) {
             </div>
           </CardContent>
         </Card>
+
+        <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
 
         <div className="flex justify-end space-x-4">
           <Button

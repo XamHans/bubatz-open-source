@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useTranslations } from 'next-intl'
 import React from 'react'
 import {
   HiCalendar,
@@ -14,6 +15,8 @@ interface SaleGeneralInfoProps {
 }
 
 const SaleGeneralInfo: React.FC<SaleGeneralInfoProps> = ({ sale }) => {
+  const t = useTranslations('Sales')
+
   console.log('sale in SaleGeneralInfo', sale.buyer)
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('de-DE', {
@@ -28,42 +31,44 @@ const SaleGeneralInfo: React.FC<SaleGeneralInfoProps> = ({ sale }) => {
   return (
     <Card className="w-full">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold">Sale #{sale.id}</CardTitle>
+        <CardTitle className="text-2xl font-bold">
+          {t('saleInfo.title', { id: sale.id })}
+        </CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4">
         <InfoItem
           icon={HiUser}
-          primary="Member"
+          primary={t('saleInfo.member')}
           secondary={`${sale.buyer.fullName}`}
         />
         <InfoItem
           icon={HiUser}
-          primary="Sold By"
+          primary={t('saleInfo.soldBy')}
           secondary={`${sale.seller.fullName} `}
         />
         <InfoItem
           icon={HiCalendar}
-          primary="Sale Date"
+          primary={t('saleInfo.saleDate')}
           secondary={formatDate(sale.createdAt)}
         />
         <InfoItem
           icon={HiCurrencyDollar}
-          primary="Total Price"
+          primary={t('saleInfo.totalPrice')}
           secondary={`€${sale.totalPrice.toFixed(2)}`}
         />
         <InfoItem
           icon={HiScale}
-          primary="Total Amount"
+          primary={t('saleInfo.totalAmount')}
           secondary={`${sale.totalAmount.toFixed(2)}g`}
         />
         <InfoItem
           icon={HiCash}
-          primary="Payment Method"
+          primary={t('saleInfo.paymentMethod')}
           secondary={sale.paidVia}
         />
         <InfoItem
           icon={HiShieldCheck}
-          primary="Sale ID"
+          primary={t('saleInfo.saleId')}
           secondary={sale.id.toString()}
         />
       </CardContent>

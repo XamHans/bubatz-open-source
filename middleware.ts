@@ -30,6 +30,11 @@ export default auth((req) => {
     return NextResponse.redirect(signInUrl)
   }
 
+  if (isLoggedIn && isAuthRoute) {
+    const membersUrl = new URL('/members', nextUrl.origin)
+    return NextResponse.redirect(membersUrl)
+  }
+
   // Allow admin access to everything
   // if (isAdminUser) {
   //   console.log('Middleware - Allowing admin access')

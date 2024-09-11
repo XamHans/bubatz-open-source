@@ -1,10 +1,10 @@
 'use server'
 
-import { db } from '@/lib/db/db'
-import { members } from '@/modules/members/data-access/schema'
+import { db } from '@/lib/db/db';
+import { members } from '@/modules/members/data-access/schema';
 import { strains } from '@/modules/plants/data-access/schema'; // Import the strains table
-import { and, eq, gte, lt, sql } from 'drizzle-orm'
-import { cache } from 'react'
+import { and, eq, gte, lt, sql } from 'drizzle-orm';
+import { cache } from 'react';
 import {
   CheckIfMemberIsAllowedForStrainInput,
   CreateSaleInput,
@@ -13,7 +13,7 @@ import {
   FetchMembersStrainAmountInput,
   sales,
   salesItems,
-} from './schema'
+} from './schema';
 
 export const getSales = cache(async () => {
   const allSales = await db
@@ -263,6 +263,7 @@ export async function createSaleWithItems(input: CreateSaleWithItemsInput) {
         throw new Error(`Not enough ${strain.name} available`)
       }
 
+      // Update the amount available in the strains table
       await tx
         .update(strains)
         //@ts-ignore
@@ -276,9 +277,11 @@ export async function createSaleWithItems(input: CreateSaleWithItemsInput) {
       0,
     )
     const totalPrice = createdSaleItems.reduce(
-      (sum, item) => sum + item.price,
+      (sum, item) =>
+        sum + item.price * item.amount,
       0,
     )
+
 
     const [updatedSale] = await tx
       .update(sales)

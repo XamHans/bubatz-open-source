@@ -75,7 +75,6 @@ export const salesStrainsRelations = relations(salesItems, ({ one }) => ({
 // Schemas
 // Sales Schemas
 export const createSaleInputSchema = z.object({
-  totalAmount: z.number().positive(),
   totalPrice: z.number().positive(),
   paidVia: z.enum(paymentMethods.enumValues),
   memberId: z.string().uuid(),

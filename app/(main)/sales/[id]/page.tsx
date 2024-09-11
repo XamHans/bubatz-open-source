@@ -3,6 +3,7 @@ import Breadcrumbs from '@/components/generic/BreadCrumbs'
 import { Button } from '@/components/ui/button'
 import { fetchSaleDetailsUseCase } from '@/modules/sales/use-cases'
 import { ChevronLeft } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
@@ -35,10 +36,13 @@ async function SaleContent({ id }: { id: string }) {
 export default function SaleDetailPage({
   params: { id },
 }: SaleDetailPageProps) {
+  const t = useTranslations('General')
+  const tSales = useTranslations('Sales')
+
   const breadcrumbs = [
-    { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Sales', href: '/sales' },
-    { label: 'Sale Details' },
+    { label: t('breadcrumbs.dashboard'), href: '/dashboard' },
+    { label: t('breadcrumbs.sales'), href: '/sales' },
+    { label: tSales('saleInfo.title', { id }) },
   ]
 
   return (
@@ -47,7 +51,7 @@ export default function SaleDetailPage({
         <Link href="/sales">
           <Button variant="outline" size="icon" className="h-9 w-9">
             <ChevronLeft className="h-5 w-5" />
-            <span className="sr-only">Back</span>
+            <span className="sr-only">{t('form.actions.cancel')}</span>
           </Button>
         </Link>
         <Breadcrumbs items={breadcrumbs} />

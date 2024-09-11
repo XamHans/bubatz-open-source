@@ -45,7 +45,6 @@ export async function signUpWithPassword(
 
     // check if first user ever, then make them an admin
     const firstMember = await checkIfFirstUser()
-    console.log({ firstMember })
     const passwordHash = await bcryptjs.hash(validatedInput.data.password, 10)
     const emailVerificationToken = crypto.randomBytes(32).toString('base64url')
     console.log({ passwordHash, emailVerificationToken })
@@ -60,6 +59,7 @@ export async function signUpWithPassword(
         status: firstMember
           ? ClubMemberStatus.ACTIVE
           : ClubMemberStatus.REQUEST,
+        birthday: '2000-01-01',
       })
       .returning()
     // console.log({ newUser })
