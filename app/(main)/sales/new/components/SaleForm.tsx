@@ -164,6 +164,7 @@ export default function SaleForm({ session }: SaleFormProps) {
 
   const fetchStrains = useAction(fetchStrainsUseCase, {
     onSuccess: ({ data }) => {
+      //@ts-ignore
       setStrains(data?.success ?? [])
     },
   })
@@ -233,6 +234,7 @@ export default function SaleForm({ session }: SaleFormProps) {
     update(index, {
       ...currentItem,
       amount: weight,
+      //@ts-ignore
       totalPrice: totalPrice,
     })
   }
@@ -562,7 +564,7 @@ export default function SaleForm({ session }: SaleFormProps) {
           </CardContent>
         </Card>
 
-        <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
+        {/* <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre> */}
 
         <div className="flex justify-end space-x-4">
           <Button

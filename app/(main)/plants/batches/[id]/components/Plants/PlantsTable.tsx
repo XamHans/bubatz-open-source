@@ -67,12 +67,12 @@ const PlantsTable = ({ batch }: PlantsTableProps) => {
         })
         execute({ batchId: batch.id }) //re-fetch plants
       },
-      onError: (error) => {
+      onError: (error: any) => {
         toast({
           title: t('General.messages.error.title'),
           description: t('General.messages.error.deleteDescription', {
             item: 'Plant',
-            error,
+            error: error.serverError ?? error.validationError,
           }),
         })
       },

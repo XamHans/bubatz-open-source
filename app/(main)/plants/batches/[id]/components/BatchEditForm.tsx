@@ -86,6 +86,7 @@ const BatchEditForm = ({ batch }: GrowthPhasesFormProps) => {
     const subscription = form.watch((value, { name, type }) => {
       if (type === 'change') {
         const formData = form.getValues()
+        //@ts-ignore
         debouncedExecute({ ...batch, ...formData })
       }
     })

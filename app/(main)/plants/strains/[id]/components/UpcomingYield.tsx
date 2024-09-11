@@ -14,6 +14,7 @@ const growthStageProgress: Record<GrowPhase, number> = {
   [GrowPhase.Drying]: 80,
   [GrowPhase.Curing]: 90,
   [GrowPhase.Completed]: 100,
+  [GrowPhase.Seedling]: 0,
 }
 
 const UpcomingYield = ({ batches }: UpcomingYieldProps) => {
