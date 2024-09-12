@@ -1,5 +1,4 @@
 import Footer from '@/components/generic/footer'
-import { ThemeProvider } from '@/components/generic/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 import type { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
@@ -25,21 +24,14 @@ export default async function RootLayout({
   return (
     <html suppressHydrationWarning>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <NextIntlClientProvider messages={messages}>
-            <div
-              className={`${inter.className} bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]`}
-            >
-              <main>{children}</main>
-              <Toaster />
-            </div>
-          </NextIntlClientProvider>
-        </ThemeProvider>
+        <NextIntlClientProvider messages={messages}>
+          <div
+            className={`${inter.className} bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]`}
+          >
+            <main>{children}</main>
+            <Toaster />
+          </div>
+        </NextIntlClientProvider>
       </body>
       <Footer />
     </html>
