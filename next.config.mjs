@@ -8,7 +8,7 @@ const nextConfig = {
 
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      config.resolve.fallback = {
+      ;(config.resolve.fallback = {
         ...config.resolve.fallback,
         stream: false,
         crypto: false,
@@ -16,7 +16,8 @@ const nextConfig = {
         fs: false,
         tls: false,
         net: false,
-      }
+      }),
+        config.externals.push('pino-pretty', 'encoding')
     }
 
     return config
