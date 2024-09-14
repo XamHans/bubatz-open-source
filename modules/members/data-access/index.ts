@@ -92,7 +92,7 @@ export { deleteMember, getMemberDetail, getMembers, updateMember }
 
 //------------------------PAYMENTS
 export const createMemberPayment = async (input: AddMembershipPaymentInput) => {
-  // logger.debug('Creating new member', input);
+  // console.debug('Creating new member', input);
   const newPaymentId = await db
     .insert(membershipPayments)
     .values(input as any)

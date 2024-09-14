@@ -42,7 +42,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { siteConfig } from '@/config/site'
-import { logger } from '@/lib/logger'
 import { fetchAllSalesUseCase } from '@/modules/sales/use-cases'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { useRouter } from 'next/navigation'
@@ -60,7 +59,7 @@ export default function SalesTable() {
       setSales(data.data?.success ?? [])
     },
     onError: (error) => {
-      logger.error('Error fetching sales', error)
+      console.error('Error fetching sales', error)
     },
   })
 

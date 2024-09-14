@@ -12,7 +12,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { siteConfig } from '@/config/site'
-import { logger } from '@/lib/logger'
 import { fetchMemberSalesUseCase } from '@/modules/sales/use-cases'
 import {
   ColumnFiltersState,
@@ -139,7 +138,7 @@ export default function MemberSalesTable({ memberId }: MemberSalesTableProps) {
       setSales(data.data?.success ?? [])
     },
     onError: (error) => {
-      logger.error('Error fetching member sales', error)
+      console.error('Error fetching member sales', error)
     },
   })
 

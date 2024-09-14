@@ -11,7 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { logger } from '@/lib/logger'
 import { fetchMemberSalesUseCase } from '@/modules/sales/use-cases'
 import {
   ColumnFiltersState,
@@ -120,7 +119,7 @@ export default function StrainMemberTable({
       setSales(data.data?.success ?? [])
     },
     onError: (error) => {
-      logger.error('Error fetching member sales', error)
+      console.error('Error fetching member sales', error)
     },
   })
 

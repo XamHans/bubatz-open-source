@@ -2,7 +2,6 @@
 
 import SkeletonLoader from '@/app/components/SkeletonLoader'
 import { siteConfig } from '@/config/site'
-import { logger } from '@/lib/logger'
 import { Pencil1Icon } from '@radix-ui/react-icons'
 import {
   ColumnFiltersState,
@@ -216,7 +215,7 @@ export default function MemberTable() {
       setMembers(data?.success ?? [])
     },
     onError: (error) => {
-      logger.error('Error fetching member', error)
+      console.error('Error fetching member', error)
     },
   })
 
