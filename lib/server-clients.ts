@@ -2,7 +2,6 @@ import {
   createSafeActionClient,
   DEFAULT_SERVER_ERROR_MESSAGE,
 } from 'next-safe-action'
-import { logger } from './logger'
 
 export const actionClient = createSafeActionClient({
   handleReturnedServerError(e) {
@@ -18,6 +17,6 @@ export const actionClient = createSafeActionClient({
   // Can also be an async function.
   handleServerErrorLog(originalError, utils) {
     // And also log it to the console.
-    logger.error(originalError, 'Server  error:')
+    console.error(originalError, 'Server  error:')
   },
 })

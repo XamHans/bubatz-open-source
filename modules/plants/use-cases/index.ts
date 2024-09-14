@@ -1,6 +1,5 @@
 'use server'
 
-import { logger } from '@/lib/logger'
 import { actionClient } from '@/lib/server-clients'
 import { SuccessResponse } from '@/types'
 import { z } from 'zod'
@@ -60,7 +59,7 @@ export const fetchBatchesUseCase = actionClient
 export const fetchBatchDetailsUseCase = actionClient
   .schema(getBatchDetailSchema)
   .action(async ({ parsedInput }) => {
-    logger.info('fetching batch details for id:', parsedInput.id)
+    console.info('fetching batch details for id:', parsedInput.id)
     const res = await getBatchById(parsedInput.id)
     if (!res) {
       return { failure: 'Batch not found' }
@@ -113,9 +112,9 @@ export const fetchPlantsUseCase = actionClient.action(async () => {
 export const createPlantUseCase = actionClient
   .schema(createPlantInputSchema)
   .action(async ({ parsedInput }) => {
-    logger.info(parsedInput, 'Creating plant with data:')
+    console.info(parsedInput, 'Creating plant with data:')
     const newPlantId = await createPlant(parsedInput)
-    logger.info(newPlantId, 'Creating plant id:')
+    console.info(newPlantId, 'Creating plant id:')
     if (!newPlantId) {
       return { failure: 'Failed to create plant' }
     }
@@ -125,11 +124,11 @@ export const createPlantUseCase = actionClient
 export const deletePlantUseCase = actionClient
   .schema(deletePlantInputSchema)
   .action(async ({ parsedInput }) => {
-    logger.info('Deleting plant with id:', parsedInput.id)
+    console.info('Deleting plant with id:', parsedInput.id)
     try {
       await deletePlant(parsedInput)
     } catch (error) {
-      logger.error('Error deleting plant', error)
+      console.error('Error deleting plant', error)
       return { failure: 'Failed to delete plant' }
     }
     return { success: 'Plant deleted successfully' }
@@ -138,7 +137,7 @@ export const deletePlantUseCase = actionClient
 export const updatePlantUseCase = actionClient
   .schema(updatePlantInputSchema)
   .action(async ({ parsedInput }) => {
-    logger.info('Updating plant with:', parsedInput)
+    console.info('Updating plant with:', parsedInput)
     await updatePlant(parsedInput.id!, parsedInput)
     return { success: 'Plant updated successfully' }
   })
@@ -171,7 +170,7 @@ export const fetchStrainDetailsUseCase = actionClient
 export const createStrainUseCase = actionClient
   .schema(createStrainInputSchema)
   .action(async ({ parsedInput }) => {
-    logger.info('Creating strain with data:', parsedInput)
+    console.info('Creating strain with data:', parsedInput)
     const newStrainId = await createStrain(parsedInput)
     if (!newStrainId) {
       return { failure: 'Failed to create strain' }
@@ -195,7 +194,7 @@ export const deleteStrainUseCase = actionClient
     try {
       const res = await deleteStrain({ id: parsedInput.id })
     } catch (error) {
-      logger.error(error, 'Error deleting Strain')
+      console.error(error, 'Error deleting Strain')
       return { failure: 'Failed to delete Strain' }
     }
     return { success: 'Strain deleted successfully' }

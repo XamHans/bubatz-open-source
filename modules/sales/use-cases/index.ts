@@ -1,6 +1,5 @@
 'use server'
 
-import { logger } from '@/lib/logger'
 import { actionClient } from '@/lib/server-clients'
 import { z } from 'zod'
 import {
@@ -34,7 +33,7 @@ export const fetchSaleDetailsUseCase = actionClient
       const saleDetail = await getSaleDetails(parsedInput.saleId)
       return { success: saleDetail }
     } catch (error) {
-      logger.error(error)
+      console.error(error)
       return {
         failure: `Failed to fetch sales details for sale id ${parsedInput.saleId}`,
       }

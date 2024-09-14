@@ -12,7 +12,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { logger } from '@/lib/logger'
 import { MembershipPaymentSchema } from '@/modules/members/data-access/schema'
 import { fetchPaymentsFromMemberUseCase } from '@/modules/members/use-cases'
 import {
@@ -106,7 +105,7 @@ export default function PaymentTable({ memberId }: PaymentTableProps) {
       setPayments(data.data?.success ?? [])
     },
     onError: (error) => {
-      logger.error('Error fetching member payments', error)
+      console.error('Error fetching member payments', error)
     },
   })
 

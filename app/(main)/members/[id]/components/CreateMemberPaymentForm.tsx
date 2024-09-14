@@ -24,7 +24,6 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
 import { siteConfig } from '@/config/site'
-import { logger } from '@/lib/logger'
 import {
   AddMembershipPaymentInput,
   createMemberPaymentInputSchema,
@@ -61,7 +60,6 @@ const CreateMemberPaymentForm = ({
     },
     onError: (error) => {
       console.error('Error creating payment', error)
-      logger.debug('Error creating payment', error)
       toast({
         title: 'Error',
         variant: 'destructive',
@@ -82,7 +80,7 @@ const CreateMemberPaymentForm = ({
   })
 
   const onSubmit = (data: AddMembershipPaymentInput) => {
-    logger.info('Creating payment', data)
+    console.info('Creating payment', data)
     //@ts-ignore
     execute(data)
   }

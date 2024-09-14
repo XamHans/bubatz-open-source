@@ -7,7 +7,6 @@ import ResendProvider from 'next-auth/providers/resend'
 import { MagicLinkEmail } from '@/components/emails/magic-link-email'
 import { resend } from '@/config/email'
 import { siteConfig } from '@/config/site'
-import { logger } from '@/lib/logger'
 import { signInWithPasswordSchema } from '@/modules/auth/data-access/auth'
 import { getUserByEmail } from '@/modules/auth/use-cases/user'
 
@@ -63,7 +62,7 @@ export default {
             react: MagicLinkEmail({ identifier, url }),
           })
 
-          logger.info(identifier, 'Verification email sent')
+          console.info(identifier, 'Verification email sent')
         } catch (error) {
           throw new Error('Failed to send verification email')
         }

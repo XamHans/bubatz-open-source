@@ -47,7 +47,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { siteConfig } from '@/config/site'
-import { logger } from '@/lib/logger'
 import { cn } from '@/lib/utils'
 import { UserSchema } from '@/modules/members/data-access/schema'
 import { fetchMembersUseCase } from '@/modules/members/use-cases'
@@ -133,7 +132,7 @@ export default function SaleForm({ session }: SaleFormProps) {
         setMemberMonthlyPurchase(data?.success || 0)
       },
       onError: (error) =>
-        logger.error('Error fetching member purchases:', error),
+        console.error('Error fetching member purchases:', error),
     },
   )
 
@@ -144,7 +143,7 @@ export default function SaleForm({ session }: SaleFormProps) {
         setIsMemberAllowedForStrain(data?.success)
       },
       onError: (error) =>
-        logger.error(
+        console.error(
           error,
           'Error happened while checking if member is allowed for strain:',
         ),
