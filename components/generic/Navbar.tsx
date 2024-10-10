@@ -1,52 +1,45 @@
-import { Icons } from '@/app/(landing)/components/Icons'
-import { siteConfig } from '@/config/site'
+import Image from 'next/image'
 import Link from 'next/link'
-import { buttonVariants } from '../ui/button'
 
-export async function Navbar() {
-  // const user = await getUser();
-
+const Navbar = () => {
   return (
-    <nav className="flex h-[5vh] items-center border-b bg-background">
-      <div className="container flex items-center justify-between">
-        <Link href="/">
-          <h1 className="text-md font-bold">
-            Bubatz Club <span className="text-primary">Manager</span>
-          </h1>
+    <nav className="flex items-center justify-between bg-white px-8 py-12">
+      <div className="flex items-center">
+        <Image
+          src="/bubatz.svg"
+          alt="Bubatz Logo"
+          width={284}
+          height={84}
+          className="ml-24"
+        />
+      </div>
+
+      <div className="flex items-center space-x-12">
+        <Link
+          href="#features"
+          className="font-nunito text-lg text-black hover:text-gray-700"
+        >
+          Funktionen
+        </Link>
+        <Link
+          href="#pricing"
+          className="font-nunito text-lg text-black hover:text-gray-700"
+        >
+          Pakete
         </Link>
 
-        <div className="flex items-center gap-x-5">
-          {/* <ThemeToggle /> */}
-
-          <Link
-            href={siteConfig.links.gitHub}
-            className={buttonVariants({
-              className: 'flex items-center',
-            })}
-          >
-            <Icons.gitHub className="mr-2 h-4 w-4" />
-            GitHub
-          </Link>
-
-          {/* {(await isAuthenticated()) ? (
-            <UserNav
-              email={user?.email as string}
-              image={user?.picture as string}
-              name={user?.given_name as string}
-            />
-          ) : (
-            <div className="flex items-center gap-x-5">
-              <LoginLink>
-                <Button>Sign In</Button>
-              </LoginLink>
-
-              <RegisterLink>
-                <Button variant="secondary">Sign Up</Button>
-              </RegisterLink>
-            </div>
-          )} */}
-        </div>
+        <Link
+          href="#team"
+          className="font-nunito text-lg text-black hover:text-gray-700"
+        >
+          Über bubatz
+        </Link>
+        <button className="rounded-full bg-[#b6f36e] px-6 py-3 font-nunito text-lg font-bold text-black transition-colors hover:bg-[#a5e45d]">
+          Kostenlos registrieren
+        </button>
       </div>
     </nav>
   )
 }
+
+export { Navbar }

@@ -1,4 +1,5 @@
 import { auth } from '@/auth'
+import { locales } from '@/config/i18n'; // Assuming you have this file
 import { NextResponse } from 'next/server'
 
 export default auth((req) => {
@@ -14,6 +15,25 @@ export default auth((req) => {
     nextUrl.pathname === '/dsgvo' ||
     nextUrl.pathname === '/impressum'
 
+  // Check if the request is for a static asset
+  const isStaticAsset = nextUrl.pathname.match(
+    /\.(png|jpg|jpeg|gif|svg|ico|css|js)$/i,
+  )
+
+  // Allow access to static assets without further processing
+  if (isStaticAsset) {
+    return NextResponse.next()
+  }
+
+  // i18n routing logic
+  const locale = nextUrl.locale || 'de' // Default to German if no locale
+  const pathname = nextUrl.pathname
+
+  // Redirect if locale is missing from URL
+  if (!locales.includes(locale)) {
+    return NextResponse.redirect(new URL(`/de${pathname}`, nextUrl.origin))
+  }
+
   // Allow access to public routes, auth routes, and API routes
   if (isPublicRoute || isAuthRoute || isApiRoute) {
     return NextResponse.next()
@@ -21,12 +41,12 @@ export default auth((req) => {
 
   // Redirect to login if not authenticated
   if (!isLoggedIn) {
-    const signInUrl = new URL('/signin', nextUrl.origin)
+    const signInUrl = new URL(`/${locale}/signin`, nextUrl.origin)
     return NextResponse.redirect(signInUrl)
   }
 
   if (isLoggedIn && isAuthRoute) {
-    const membersUrl = new URL('/members', nextUrl.origin)
+    const membersUrl = new URL(`/${locale}/members`, nextUrl.origin)
     return NextResponse.redirect(membersUrl)
   }
 
@@ -40,5 +60,9 @@ export const config = {
     '/node_modules/.pnpm/@react-email/**',
     '/node_modules/.pnpm/tailwindcss/**',
   ],
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/', // Include root path
+    '/(de|en)/:path*', // Add other locales as needed
+  ],
 }

@@ -30,6 +30,7 @@ const nextConfig = {
       },
     ],
   },
+  ignoreRoutes: ['/public'], // Add any other static asset paths you want to ignore
 }
 
 const withNextIntl = createNextIntlPlugin()
