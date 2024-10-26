@@ -14,7 +14,7 @@ export default function NewsSection() {
             <h2 className="text-2xl font-bold">News</h2>
           </div>
           <p className="text-xl text-muted-foreground">
-            Bleiben Sie auf dem Laufenden mit unseren neuesten Blogbeiträgen und
+            Bleiben auf dem Laufenden mit unseren neuesten Blogbeiträgen und
             Ankündigungen
           </p>
         </div>
