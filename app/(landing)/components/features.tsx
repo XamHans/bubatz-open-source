@@ -34,7 +34,7 @@ export default function Features() {
   return (
     <section className="w-full py-20">
       <div className="container mb-8 flex flex-col items-start space-y-4 sm:flex-row sm:items-center sm:space-x-8 sm:space-y-0">
-        <div className="rounded-xl bg-[#c5f467] px-6 py-3">
+        <div className="rounded-lg bg-[#c5f467] px-6 py-3">
           <h2 className="text-4xl font-bold">Funktionen</h2>
         </div>
         <p className="text-xl text-muted-foreground">
@@ -56,6 +56,7 @@ export default function Features() {
 
 function FeatureCard({ title, icon, bgColor = 'bg-background' }: Feature) {
   const titleParts = title.split('-')
+  const isDarkBg = bgColor === 'bg-[#18181B]'
 
   return (
     <div
@@ -88,8 +89,12 @@ function FeatureCard({ title, icon, bgColor = 'bg-background' }: Feature) {
         </div>
 
         <div className="relative z-10 mb-8 flex items-center gap-2">
-          <span className="text-lg font-medium">Erfahre mehr</span>
-          <ArrowRight className="h-5 w-5" />
+          <span
+            className={`text-lg font-medium ${isDarkBg ? 'text-white' : ''}`}
+          >
+            Erfahre mehr
+          </span>
+          <ArrowRight className={`h-5 w-5 ${isDarkBg ? 'text-white' : ''}`} />
         </div>
 
         <div className="absolute right-8 top-1/2 -translate-y-1/2">
