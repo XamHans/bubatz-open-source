@@ -18,7 +18,7 @@ export default function NewsSection() {
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
-          {recentPosts.map((post) => (
+          {recentPosts.map((post: any) => (
             <BlogPostCard
               key={post.slug}
               title={post.title}

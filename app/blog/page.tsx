@@ -66,7 +66,7 @@ export default function BlogPage() {
         </div>
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((post: Post) => (
-            <Link key={post.slug} href={`/blog/${post.slug}`} className="group">
+            <Link key={post.slug} href={`/${post.slug}`} className="group">
               <article className="overflow-hidden rounded-3xl border-2 border-black transition-all duration-300 hover:shadow-xl">
                 {post.coverImage && (
                   <Image
