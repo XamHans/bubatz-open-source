@@ -33,6 +33,16 @@ const features: Feature[] = [
 export default function Features() {
   return (
     <section className="w-full py-20">
+      <div className="container mb-8 flex flex-col items-start space-y-4 sm:flex-row sm:items-center sm:space-x-8 sm:space-y-0">
+        <div className="rounded-xl bg-[#c5f467] px-6 py-3">
+          <h2 className="text-4xl font-bold">Funktionen</h2>
+        </div>
+        <p className="text-xl text-muted-foreground">
+          Nutze unsere neuesten Funktionen und erlebe, wie wir dir deinen
+          Club-Alltag erleichtern. Du sparst Zeit & Kosten und kannst dich auf
+          das Wesentliche konzentrieren.
+        </p>
+      </div>
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {features.map((feature, idx) => (
@@ -55,15 +65,19 @@ function FeatureCard({ title, icon, bgColor = 'bg-background' }: Feature) {
         w-[600px] 
         flex-col 
         justify-between 
-        rounded-tl-[45px] border-t pt-[50px] 
+        rounded-tl-[45px] 
+        border-2 border-black
+        pt-[50px]
+        shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] 
         ${bgColor}
         transition-all duration-300 
         hover:scale-[0.98]
+        hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
       `}
     >
       <div className="flex h-full flex-col justify-between px-8">
         <div className="relative z-10">
-          <span className="inline-block rounded-lg bg-[#DCFBB0] px-4 py-2 text-lg font-medium">
+          <span className="inline-block rounded-lg bg-[#c5f467] px-4 py-2 text-lg font-medium">
             {titleParts.map((part, index) => (
               <React.Fragment key={part}>
                 {part}
