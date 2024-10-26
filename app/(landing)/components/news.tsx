@@ -14,7 +14,8 @@ export default function NewsSection() {
             <h2 className="text-2xl font-bold">News</h2>
           </div>
           <p className="text-xl text-muted-foreground">
-            Stay updated with our latest blog posts and announcements
+            Bleiben Sie auf dem Laufenden mit unseren neuesten Blogbeiträgen und
+            Ankündigungen
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
@@ -34,7 +35,7 @@ export default function NewsSection() {
             href="/blog"
             className="inline-flex items-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            View all posts
+            Alle Beiträge ansehen
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </div>
@@ -53,7 +54,7 @@ function BlogPostCard({ title, date, excerpt, slug, tags }) {
             dateTime={date}
             className="mb-2 block text-sm text-muted-foreground"
           >
-            {new Date(date).toLocaleDateString('en-US', {
+            {new Date(date).toLocaleDateString('de-DE', {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
@@ -72,7 +73,7 @@ function BlogPostCard({ title, date, excerpt, slug, tags }) {
           </div>
         </div>
         <div className="inline-flex items-center text-sm font-semibold text-primary hover:underline">
-          Read more
+          Weiterlesen
           <ArrowRight className="ml-1 h-4 w-4" />
         </div>
       </article>
