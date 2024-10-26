@@ -1,19 +1,19 @@
 import { auth } from '@/auth'
-import { locales } from '@/config/i18n'; // Assuming you have this file
 import { NextResponse } from 'next/server'
 
 export default auth((req) => {
   const { auth, nextUrl } = req
-  const isLoggedIn = !!auth
-  const isAdminUser = auth?.user?.role === 'ADMIN'
-  const isApiRoute = nextUrl.pathname.startsWith('/api')
-  const isAuthRoute =
-    nextUrl.pathname.startsWith('/signin') ||
-    nextUrl.pathname.startsWith('/signup')
-  const isPublicRoute =
-    nextUrl.pathname === '/' ||
-    nextUrl.pathname === '/dsgvo' ||
-    nextUrl.pathname === '/impressum'
+  // const isLoggedIn = !!auth
+  // const isAdminUser = auth?.user?.role === 'ADMIN'
+  // const isApiRoute = nextUrl.pathname.startsWith('/api')
+  // const isAuthRoute =
+  //   nextUrl.pathname.startsWith('/signin') ||
+  //   nextUrl.pathname.startsWith('/signup')
+  // const isPublicRoute =
+  //   nextUrl.pathname === '/' ||
+  //   nextUrl.pathname === '/dsgvo' ||
+  //   nextUrl.pathname === '/blog' ||
+  //   nextUrl.pathname === '/impressum'
 
   // Check if the request is for a static asset
   const isStaticAsset = nextUrl.pathname.match(
@@ -26,32 +26,32 @@ export default auth((req) => {
   }
 
   // i18n routing logic
-  const locale = nextUrl.locale || 'de' // Default to German if no locale
-  const pathname = nextUrl.pathname
+  // const locale = nextUrl.locale || 'de' // Default to German if no locale
+  // const pathname = nextUrl.pathname
 
-  // Redirect if locale is missing from URL
-  if (!locales.includes(locale)) {
-    return NextResponse.redirect(new URL(`/de${pathname}`, nextUrl.origin))
-  }
+  // // Redirect if locale is missing from URL
+  // if (!locales.includes(locale)) {
+  //   return NextResponse.redirect(new URL(`/de${pathname}`, nextUrl.origin))
+  // }
 
-  // Allow access to public routes, auth routes, and API routes
-  if (isPublicRoute || isAuthRoute || isApiRoute) {
-    return NextResponse.next()
-  }
+  // // Allow access to public routes, auth routes, and API routes
+  // if (isPublicRoute || isAuthRoute || isApiRoute) {
+  //   return NextResponse.next()
+  // }
 
-  // Redirect to login if not authenticated
-  if (!isLoggedIn) {
-    const signInUrl = new URL(`/${locale}/signin`, nextUrl.origin)
-    return NextResponse.redirect(signInUrl)
-  }
+  // // Redirect to login if not authenticated
+  // if (!isLoggedIn) {
+  //   const signInUrl = new URL(`/${locale}/signin`, nextUrl.origin)
+  //   return NextResponse.redirect(signInUrl)
+  // }
 
-  if (isLoggedIn && isAuthRoute) {
-    const membersUrl = new URL(`/${locale}/members`, nextUrl.origin)
-    return NextResponse.redirect(membersUrl)
-  }
+  // if (isLoggedIn && isAuthRoute) {
+  //   const membersUrl = new URL(`/${locale}/members`, nextUrl.origin)
+  //   return NextResponse.redirect(membersUrl)
+  // }
 
-  // Allow access for authenticated users
-  return NextResponse.next()
+  // // Allow access for authenticated users
+  // return NextResponse.next()
 })
 
 export const config = {

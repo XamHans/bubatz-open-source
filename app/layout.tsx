@@ -1,4 +1,3 @@
-import Footer from '@/components/generic/footer'
 import { Toaster } from '@/components/ui/sonner'
 import type { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
@@ -25,7 +24,6 @@ export default async function RootLayout({
             <Toaster />
           </div>
         </NextIntlClientProvider>
-        <Footer />
       </body>
     </html>
   )

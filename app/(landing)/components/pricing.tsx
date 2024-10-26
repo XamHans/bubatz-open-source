@@ -14,20 +14,16 @@ export default function Pricing() {
               Pakete
             </h2>
             <p className="max-w-[900px] text-zinc-500 dark:text-zinc-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Experience how we simplify your club routine. Save time & costs
-              and focus on what really matters.
+              Nutze unsere neuesten Funktionen und erlebe, wie wir dir deinen
+              Club-Alltag erleichtern. Du sparst Zeit & Kosten und kannst dich
+              auf das Wesentliche konzentrieren.
             </p>
           </div>
         </div>
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-1">
             <div className="flex h-[647px] flex-col rounded-3xl bg-[#c5f467] p-6">
-              <div className="flex-grow">
-                <p className="mb-4 text-lg">
-                  Nutze unsere neuesten Funktionen und erlebe, wie wir dir
-                  deinen Club-Alltag erleichtern. Du sparst Zeit & Kosten und
-                  kannst dich auf das Wesentliche konzentrieren.
-                </p>
+              <div>
                 <h3 className="mb-2 text-2xl font-bold">
                   Alles was du brauchst mit{' '}
                   <Image
@@ -44,7 +40,14 @@ export default function Pricing() {
                   Lösung.
                 </p>
               </div>
-              <div className="relative h-64 w-full overflow-hidden rounded-xl">
+              <div
+                className="relative mx-auto w-full overflow-hidden rounded-xl"
+                style={{
+                  width: '320px',
+                  height: '450px',
+                  bottom: '-23px',
+                }}
+              >
                 <Image
                   src="/landing/smiling-woman.png"
                   alt="Smiling woman with sunglasses"
@@ -56,7 +59,7 @@ export default function Pricing() {
             </div>
           </div>
           <div className="lg:col-span-1">
-            <div className="flex h-[647px] flex-col rounded-3xl border-2 border-black p-6">
+            <div className="flex h-[647px] flex-col rounded-3xl border-2 border-black p-6 ">
               <div className="mb-4 flex items-center">
                 <Github className="mr-2 h-8 w-8" />
                 <h3 className="text-2xl font-bold">Selbsthosting</h3>

@@ -1,21 +1,42 @@
+import AnimatedSection from '@/components/generic/animated-section'
+import ContactForm from './components/contact-form'
 import FAQ from './components/faq'
-import Features from './components/feat'
+import Features from './components/features'
 import Hero from './components/hero'
+import NewsSection from './components/news'
 import Pricing from './components/pricing'
 import Team from './components/team'
 
 export default async function HomePage() {
   return (
     <>
-      <Hero />
+      <AnimatedSection>
+        <Hero />
+      </AnimatedSection>
 
-      <Features />
+      <AnimatedSection>
+        <Features />
+      </AnimatedSection>
 
-      <Pricing />
+      <AnimatedSection>
+        <Pricing />
+      </AnimatedSection>
 
-      <Team />
+      <AnimatedSection>
+        <Team />
+      </AnimatedSection>
 
-      <FAQ />
+      <AnimatedSection>
+        <NewsSection />
+      </AnimatedSection>
+
+      <AnimatedSection>
+        <FAQ />
+      </AnimatedSection>
+
+      <AnimatedSection>
+        <ContactForm />
+      </AnimatedSection>
     </>
   )
 }

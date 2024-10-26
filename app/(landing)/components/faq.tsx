@@ -48,7 +48,7 @@ export default function FAQ() {
   const [openItem, setOpenItem] = useState('01')
 
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32">
+    <section className="w-full py-12 md:py-24 lg:py-16">
       <div className="container px-4 md:px-6">
         <div className="mb-8 flex flex-col items-start space-y-4">
           <div className="inline-block rounded-lg bg-[#c5f467] px-3 py-1 text-sm font-semibold">
