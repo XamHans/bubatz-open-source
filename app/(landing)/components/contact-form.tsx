@@ -41,7 +41,7 @@ export default function ContactForm() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl rounded-xl bg-[#F3F3F3] p-8">
+    <div className="mx-auto w-full max-w-6xl rounded-xl bg-[#F3F3F3] ">
       {showSuccess && (
         <Alert className="mb-6 bg-green-50 text-green-800">
           <CheckCircle className="h-4 w-4" />

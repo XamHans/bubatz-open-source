@@ -32,19 +32,23 @@ const features: Feature[] = [
 
 export default function Features() {
   return (
-    <section className="w-full py-20">
-      <div className="container mb-8 flex flex-col items-start space-y-4 sm:flex-row sm:items-center sm:space-x-8 sm:space-y-0">
-        <div className="rounded-lg bg-[#c5f467] px-6 py-3">
-          <h2 className="text-4xl font-bold">Funktionen</h2>
+    <section className="w-full px-4 md:px-0">
+      <div className="mb-8 flex flex-col space-y-4">
+        <div className="flex flex-col items-start space-y-4 sm:flex-row sm:items-center sm:space-x-8 sm:space-y-0">
+          <div className="rounded-lg bg-[#c5f467] px-4 py-2 sm:px-6 sm:py-3">
+            <h2 className="text-2xl font-bold sm:text-3xl md:text-4xl">
+              Funktionen
+            </h2>
+          </div>
+          <p className="text-base text-muted-foreground sm:text-lg md:text-xl">
+            Nutze unsere neuesten Funktionen und erlebe, wie wir dir deinen
+            Club-Alltag erleichtern. Du sparst Zeit & Kosten und kannst dich auf
+            das Wesentliche konzentrieren.
+          </p>
         </div>
-        <p className="text-xl text-muted-foreground">
-          Nutze unsere neuesten Funktionen und erlebe, wie wir dir deinen
-          Club-Alltag erleichtern. Du sparst Zeit & Kosten und kannst dich auf
-          das Wesentliche konzentrieren.
-        </p>
       </div>
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="max-w-7xl">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
           {features.map((feature, idx) => (
             <FeatureCard key={feature.title + idx} {...feature} />
           ))}
@@ -62,23 +66,29 @@ function FeatureCard({ title, icon, bgColor = 'bg-background' }: Feature) {
     <div
       className={`
         relative 
-        flex h-[316px] 
-        w-[600px] 
+        flex
+        h-[250px] 
+        w-full
         flex-col 
         justify-between 
-        rounded-tl-[45px] 
-        border-2 border-black
-        pt-[50px]
-        shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] 
+        rounded-tl-[30px]
+        border-2 
+        border-black 
+        pt-[30px]
+        shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
+        sm:rounded-tl-[45px]
+        sm:pt-[50px] 
         ${bgColor}
-        transition-all duration-300 
+        transition-all 
+        duration-300 
         hover:scale-[0.98]
         hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
+        sm:h-[316px]
       `}
     >
-      <div className="flex h-full flex-col justify-between px-8">
+      <div className="flex h-full flex-col justify-between px-4 sm:px-8">
         <div className="relative z-10">
-          <span className="inline-block rounded-lg bg-[#c5f467] px-4 py-2 text-lg font-medium">
+          <span className="inline-block rounded-lg bg-[#c5f467] px-3 py-1.5 text-base font-medium sm:px-4 sm:py-2 sm:text-lg">
             {titleParts.map((part, index) => (
               <React.Fragment key={part}>
                 {part}
@@ -88,20 +98,24 @@ function FeatureCard({ title, icon, bgColor = 'bg-background' }: Feature) {
           </span>
         </div>
 
-        <div className="relative z-10 mb-8 flex items-center gap-2">
+        <div className="relative z-10 mb-4 flex items-center gap-2 sm:mb-8">
           <span
-            className={`text-lg font-medium ${isDarkBg ? 'text-white' : ''}`}
+            className={`text-base font-medium sm:text-lg ${
+              isDarkBg ? 'text-white' : ''
+            }`}
           >
             Erfahre mehr
           </span>
-          <ArrowRight className={`h-5 w-5 ${isDarkBg ? 'text-white' : ''}`} />
+          <ArrowRight
+            className={`h-4 w-4 sm:h-5 sm:w-5 ${isDarkBg ? 'text-white' : ''}`}
+          />
         </div>
 
-        <div className="absolute right-8 top-1/2 -translate-y-1/2">
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 sm:right-8">
           <img
             src={icon}
             alt={title}
-            className="h-[200px] w-[200px] object-contain"
+            className="h-[150px] w-[150px] object-contain sm:h-[200px] sm:w-[200px]"
           />
         </div>
       </div>

@@ -28,6 +28,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'utfs.io',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
     ],
   },
   ignoreRoutes: ['/public'], // Add any other static asset paths you want to ignore

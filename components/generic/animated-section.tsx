@@ -35,7 +35,7 @@ const fadeVariants = {
 
 const AnimatedSection = ({
   children,
-  className = 'w-full py-12 md:py-14 lg:py-16', // default className
+  className = 'w-full container py-12 md:py-14 lg:py-16 ', // default className
   variant = 'fadeUp',
   delay = 0,
   duration = 1,
@@ -45,7 +45,7 @@ const AnimatedSection = ({
   const ref = React.useRef(null)
   const isInView = useInView(ref, {
     once,
-    margin: '0px 0px -200px 0px',
+    margin: '0px 0px -50px 0px',
     amount: threshold,
   })
 

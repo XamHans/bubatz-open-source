@@ -45,14 +45,12 @@ export default async function BlogPostPage({ params }: BlogPostProps) {
   return (
     <>
       <div className={`min-h-screen ${inter.className}`}>
-        <main className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
-          <article className="mx-auto max-w-3xl">
-            <DocsPageHeader heading={post.title} text={post.description} />
-            <div className="prose prose-gray prose-lg mt-8 max-w-none">
-              <Mdx code={post.body} />
-            </div>
-          </article>
-        </main>
+        <article className="mx-auto max-w-3xl">
+          <DocsPageHeader heading={post.title} text={post.description} />
+          <div className="prose prose-gray prose-lg mt-8 max-w-none">
+            <Mdx code={post.body} />
+          </div>
+        </article>
       </div>
     </>
   )

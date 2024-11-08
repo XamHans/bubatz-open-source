@@ -1,50 +1,45 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ChevronRight, Linkedin } from 'lucide-react'
+import { Linkedin } from 'lucide-react'
 import Image from 'next/image'
-import { useState } from 'react'
 
 export default function TeamSection() {
   return (
-    <section id="team" className="w-full bg-white py-12 md:py-24 lg:py-16">
-      <div className="container px-4 md:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-12 flex flex-col items-start space-y-2 sm:flex-row sm:items-center sm:space-x-4 sm:space-y-0"
-        >
-          <div className="rounded-lg bg-[#c5f467] px-3 py-1">
-            <h2 className="text-2xl font-bold">Unser Team</h2>
-          </div>
-          <p className="max-w-2xl text-xl">
-            Lernen Sie das erfahrene Team hinter unserem erfolgreichen
-            Open-Source-Projekt kennen
-          </p>
-        </motion.div>
-        <div className="grid gap-8 md:grid-cols-2">
-          <TeamMemberCard
-            name="Johannes Hayer"
-            position="CTO & Mitgründer"
-            description="Bringt die technische Seite unseres Open-Source-Projekts voran. Schreibt Code, verbessert bestehende Funktionen und unterstützt aktiv unsere Community-Mitglieder bei ihren Beiträgen. Ist immer auf der Suche nach Wegen, unser Projekt noch besser zu machen."
-            imageSrc="/landing/team/hans.png"
-          />
-          <TeamMemberCard
-            name="Thomas Wiedmayer"
-            position="CMO & Mitgründer"
-            description="Sorgt dafür, dass unser Open-Source-Projekt die Menschen erreicht, die es brauchen. Steht im engen Austausch mit der Community, sammelt Feedback und hilft neuen Nutzern beim Einstieg. Plant außerdem unsere Events und Community-Treffen."
-            imageSrc="/landing/team/tom.png"
-          />
+    <section id="team" className="w-full  ">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-12 flex flex-col items-start space-y-2 sm:flex-row sm:items-center sm:space-x-4 sm:space-y-0"
+      >
+        <div className="rounded-lg bg-[#c5f467] px-3 py-1">
+          <h2 className="text-2xl font-bold">Unser Team</h2>
         </div>
+        <p className="max-w-2xl text-xl">
+          Lernen Sie das erfahrene Team hinter unserem erfolgreichen
+          Open-Source-Projekt kennen
+        </p>
+      </motion.div>
+      <div className="grid gap-8 md:grid-cols-2">
+        <TeamMemberCard
+          name="Johannes Hayer"
+          position="CTO & Mitgründer"
+          description="Bringt die technische Seite unseres Open-Source-Projekts voran. Schreibt Code, verbessert bestehende Funktionen und unterstützt aktiv unsere Community-Mitglieder bei ihren Beiträgen. Ist immer auf der Suche nach Wegen, unser Projekt noch besser zu machen."
+          imageSrc="/landing/team/hans.png"
+        />
+        <TeamMemberCard
+          name="Thomas Wiedmayer"
+          position="CMO & Mitgründer"
+          description="Sorgt dafür, dass unser Open-Source-Projekt die Menschen erreicht, die es brauchen. Steht im engen Austausch mit der Community, sammelt Feedback und hilft neuen Nutzern beim Einstieg. Plant außerdem unsere Events und Community-Treffen."
+          imageSrc="/landing/team/tom.png"
+        />
       </div>
     </section>
   )
 }
 
 function TeamMemberCard({ name, position, description, imageSrc }) {
-  const [isExpanded, setIsExpanded] = useState(false)
-
   return (
     <motion.div
       whileHover={{ scale: 1.03 }}
@@ -75,19 +70,7 @@ function TeamMemberCard({ name, position, description, imageSrc }) {
           <p className="text-md text-gray-600">{position}</p>
         </div>
       </div>
-      <p className="mb-4 text-sm">
-        {isExpanded ? description : `${description.slice(0, 100)}...`}
-      </p>
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="inline-flex items-center rounded text-sm font-semibold text-black hover:underline focus:outline-none focus:ring-2 focus:ring-[#c5f467] focus:ring-offset-2"
-        aria-expanded={isExpanded}
-      >
-        {isExpanded ? 'Weniger anzeigen' : 'Mehr lesen'}
-        <ChevronRight
-          className={`ml-1 h-4 w-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
-        />
-      </button>
+      <p className="text-sm">{description}</p>
     </motion.div>
   )
 }

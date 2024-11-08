@@ -3,9 +3,11 @@ import Link from 'next/link'
 
 const Navbar = () => {
   return (
-    <nav className="container flex items-center justify-between bg-white px-8 py-12">
+    <nav className="container sticky top-0 z-50 flex items-center justify-between  bg-white px-8 py-8 ">
       <div className="flex items-center">
-        <Image src="/bubatz.svg" alt="Bubatz Logo" width={284} height={84} />
+        <Link href="/">
+          <Image src="/bubatz.svg" alt="Bubatz Logo" width={200} height={54} />
+        </Link>
       </div>
 
       <div className="flex items-center space-x-12">

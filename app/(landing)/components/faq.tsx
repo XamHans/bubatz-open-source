@@ -48,49 +48,49 @@ export default function FAQ() {
   const [openItem, setOpenItem] = useState('01')
 
   return (
-    <section className="w-full py-12 md:py-24 lg:py-16">
-      <div className="container px-4 md:px-6">
-        <div className="mb-8 flex flex-col items-start space-y-4">
-          <div className="inline-block rounded-lg bg-[#c5f467] px-3 py-1 text-sm font-semibold">
-            Häufig gestellte Fragen
-          </div>
-          <p className="text-zinc-500 dark:text-zinc-400">
-            Unsere FAQs beantworten die meisten deiner Fragen. Für weitere
-            Informationen erreichst du uns jederzeit unter info@bubatz.club.
-          </p>
+    <section className="w-full px-4 md:px-0">
+      <div className="mb-6 flex flex-col items-start space-y-3 md:mb-8 md:space-y-4">
+        <div className="inline-block rounded-lg bg-[#c5f467] px-3 py-1 text-sm font-semibold">
+          Häufig gestellte Fragen
         </div>
-        <div className="space-y-4">
-          {faqs.map((faq) => (
-            <div
-              key={faq.id}
-              className={`overflow-hidden rounded-3xl  transition-all duration-200 ${
-                openItem === faq.id ? 'bg-[#c5f467]' : 'bg-[#f0f0f0]'
-              }`}
+        <p className="text-sm text-zinc-500 dark:text-zinc-400 sm:text-base">
+          Unsere FAQs beantworten die meisten deiner Fragen. Für weitere
+          Informationen erreichst du uns jederzeit unter info@bubatz.club.
+        </p>
+      </div>
+      <div className="space-y-3 md:space-y-4">
+        {faqs.map((faq) => (
+          <div
+            key={faq.id}
+            className={`overflow-hidden rounded-2xl transition-all duration-200 md:rounded-3xl ${
+              openItem === faq.id ? 'bg-[#c5f467]' : 'bg-[#f0f0f0]'
+            }`}
+          >
+            <button
+              className="flex w-full items-start justify-between p-4 text-left md:items-center md:p-6"
+              onClick={() => setOpenItem(openItem === faq.id ? '' : faq.id)}
             >
-              <button
-                className="flex w-full items-center justify-between p-6 text-left"
-                onClick={() => setOpenItem(openItem === faq.id ? '' : faq.id)}
-              >
-                <div className="flex items-center">
-                  <span className="mr-4 font-ingrafts text-4xl font-bold">
-                    {faq.id}
-                  </span>
-                  <h3 className="text-xl font-semibold">{faq.question}</h3>
-                </div>
-                {openItem === faq.id ? (
-                  <Minus className="ml-4 flex-shrink-0" />
-                ) : (
-                  <Plus className="ml-4 flex-shrink-0" />
-                )}
-              </button>
-              {openItem === faq.id && (
-                <div className="px-6 pb-6">
-                  <p>{faq.answer}</p>
-                </div>
+              <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0">
+                <span className="font-ingrafts text-2xl font-bold sm:mr-4 sm:text-3xl md:text-4xl">
+                  {faq.id}
+                </span>
+                <h3 className="text-base font-semibold sm:text-lg md:text-xl">
+                  {faq.question}
+                </h3>
+              </div>
+              {openItem === faq.id ? (
+                <Minus className="ml-4 h-5 w-5 flex-shrink-0 md:h-6 md:w-6" />
+              ) : (
+                <Plus className="ml-4 h-5 w-5 flex-shrink-0 md:h-6 md:w-6" />
               )}
-            </div>
-          ))}
-        </div>
+            </button>
+            {openItem === faq.id && (
+              <div className="px-4 pb-4 md:px-6 md:pb-6">
+                <p className="text-sm sm:text-base">{faq.answer}</p>
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </section>
   )
