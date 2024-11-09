@@ -36,7 +36,7 @@ export default function Footer() {
           </nav>
 
           <div className="flex items-center justify-end space-x-4">
-            {['LinkedIn', 'Twitter', 'Instagram'].map((platform) => (
+            {['LinkedIn', 'Instagram'].map((platform) => (
               <Link
                 key={platform}
                 href="#"
@@ -68,7 +68,7 @@ export default function Footer() {
 
           <div className="flex items-center md:justify-end">
             <Image
-              src="/placeholder.svg?height=60&width=60"
+              src="/dsgvo.svg"
               alt="DSGVO compliance"
               width={60}
               height={60}

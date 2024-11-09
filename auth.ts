@@ -55,7 +55,7 @@ export const {
     },
     authorized: async ({ auth }) => {
       // Logged in users are authenticated, otherwise redirect to login page
-      console.log('authorized callback auth', auth)
+      // console.log('authorized callback auth', auth)
       return !!auth
     },
     async signIn({ user, account }) {

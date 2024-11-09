@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { posts } from '../../../.velite'
 
 export default function NewsSection() {
-  // Get the 3 most recent posts
   const recentPosts = posts.slice(0, 3)
   return (
     <section id="news" className="w-full ">
@@ -13,8 +12,7 @@ export default function NewsSection() {
           <h2 className="text-2xl font-bold">News</h2>
         </div>
         <p className="text-xl text-muted-foreground">
-          Bleiben auf dem Laufenden mit unseren neuesten Blogbeiträgen und
-          Ankündigungen
+          Bleib auf dem Laufenden, mit unseren Blogbeiträgen
         </p>
       </div>
       <div className="grid gap-6 md:grid-cols-3">
@@ -53,13 +51,7 @@ function BlogPostCard({ title, date, excerpt, slug, tags }) {
           >
             {title}
           </CardItem>
-          <CardItem
-            as="p"
-            translateZ="60"
-            className="mt-2 max-w-sm text-sm text-neutral-500 dark:text-neutral-300"
-          >
-            {date}
-          </CardItem>
+
           <CardItem translateZ="100" className="mt-4 w-full">
             <img
               src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop"
