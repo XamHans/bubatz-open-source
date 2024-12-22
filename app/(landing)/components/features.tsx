@@ -1,4 +1,3 @@
-import { ArrowRight } from 'lucide-react'
 import React from 'react'
 
 export type Feature = {
@@ -42,8 +41,8 @@ export default function Features() {
           </div>
           <p className="text-base text-muted-foreground sm:text-lg md:text-xl">
             Nutze unsere neuesten Funktionen und erlebe, wie wir dir deinen
-            Club-Alltag erleichtern. Du sparst Zeit & Kosten und kannst dich auf
-            das Wesentliche konzentrieren.
+            Club-Alltag erleichtern. Du sparst Zeit & Kosten <br />
+            und kannst dich auf das Wesentliche konzentrieren.
           </p>
         </div>
       </div>
@@ -99,7 +98,7 @@ function FeatureCard({ title, icon, bgColor = 'bg-background' }: Feature) {
         </div>
 
         <div className="relative z-10 mb-4 flex items-center gap-2 sm:mb-8">
-          <span
+          {/* <span
             className={`text-base font-medium sm:text-lg ${
               isDarkBg ? 'text-white' : ''
             }`}
@@ -108,7 +107,7 @@ function FeatureCard({ title, icon, bgColor = 'bg-background' }: Feature) {
           </span>
           <ArrowRight
             className={`h-4 w-4 sm:h-5 sm:w-5 ${isDarkBg ? 'text-white' : ''}`}
-          />
+          /> */}
         </div>
 
         <div className="absolute right-4 top-1/2 -translate-y-1/2 sm:right-8">

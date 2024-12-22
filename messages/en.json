@@ -4,10 +4,48 @@
       "dashboard": "Dashboard",
       "members": "Members",
       "sales": "Sales",
-      "plants": "Plants"
+      "plants": "Plants",
+      "memberDetails": "Member Details"
     },
     "dataTable": {
-      "noResults": "No {{entity}} found"
+      "noResults": "No entries found"
+    },
+    "form": {
+      "labels": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phone": "Phone Number",
+        "birthday": "Date of Birth",
+        "zip": "Zip Code",
+        "city": "City",
+        "street": "Street",
+        "status": "Status",
+        "role": "Role"
+      },
+      "options": {
+        "status": {
+          "ACTIVE": "Active",
+          "PAUSED": "Paused",
+          "EXITED": "Exited",
+          "REQUEST": "Request"
+        },
+        "role": {
+          "member": "Member",
+          "admin": "Administrator"
+        }
+      },
+      "status": {
+        "ACTIVE": "Active",
+        "PAUSED": "Paused",
+        "EXITED": "Exited",
+        "REQUEST": "Request"
+      },
+      "actions": {
+        "save": "Save",
+        "edit": "Edit",
+        "cancel": "Cancel"
+      }
     }
   },
   "Members": {
@@ -17,61 +55,15 @@
       "dashboard": "Dashboard",
       "members": "Members"
     },
-    "general": {
-      "form": {
-        "labels": {
-          "firstName": "First Name",
-          "lastName": "Last Name",
-          "email": "Email",
-          "phone": "Phone Number",
-          "birthday": "Date of Birth",
-          "zip": "Zip Code",
-          "city": "City",
-          "street": "Street",
-          "status": "Status",
-          "role": "Role"
-        },
-        "placeholders": {
-          "firstName": "Enter first name",
-          "lastName": "Enter last name",
-          "email": "Enter email",
-          "phone": "Enter phone number",
-          "birthday": "DD.MM.YYYY",
-          "zip": "Enter zip code",
-          "city": "Enter city's name",
-          "street": "Enter street"
-        },
-        "options": {
-          "status": {
-            "ACTIVE": "Active",
-            "PAUSED": "Paused",
-            "EXITED": "Exited",
-            "REQUEST": "Request"
-          },
-          "role": {
-            "member": "Member",
-            "admin": "Admin"
-          }
-        },
-        "buttons": {
-          "save": "Save"
-        },
-        "errors": {
-          "birthdayRequired": "Birthday is required"
-        }
-      },
-      "messages": {
-        "success": {
-          "title": "Success",
-          "memberCreated": "Member created successfully",
-          "memberUpdated": "Member updated successfully"
-        },
-        "error": {
-          "title": "Error",
-          "memberCreationFailed": "Member creation failed, {error}",
-          "memberUpdateFailed": "Member update failed, {error}"
-        }
-      }
+    "actions": {
+      "new": "Create New Member",
+      "cancel": "Cancel",
+      "search": "Search members"
+    },
+    "labels": {
+      "role": "Role",
+      "firstName": "First Name",
+      "status": "Status"
     }
   },
   "MemberDetail": {
@@ -91,18 +83,18 @@
       "newPayment": "New Payment"
     }
   },
-  "MemberGeneralInfo": {
-    "memberSince": "Member Since",
-    "birthday": "Birthday",
-    "age": "Age",
-    "memberId": "Member ID",
-
-    "admin": "Admin",
-    "duration": {
-      "year": "year",
-      "years": "years",
-      "month": "month",
-      "months": "months"
+  "MembersEdit": {
+    "pageTitle": "Edit Member",
+    "pageDescription": "Edit member data",
+    "messages": {
+      "success": {
+        "title": "Success",
+        "description": "Member successfully updated"
+      },
+      "error": {
+        "title": "Error",
+        "description": "Failed to update member"
+      }
     }
   },
   "Sales": {
@@ -110,7 +102,7 @@
     "pageDescription": "Manage your sales",
     "actions": {
       "search": "Search sales",
-      "new": "New sale"
+      "new": "New Sale"
     },
     "columns": {
       "strain": "Strain",
@@ -118,6 +110,77 @@
       "quantity": "Quantity (g)",
       "soldBy": "Sold By",
       "saleDate": "Sale Date"
+    },
+    "saleInfo": {
+      "title": "Sale #{id}",
+      "member": "Member",
+      "soldBy": "Sold By",
+      "saleDate": "Sale Date",
+      "totalPrice": "Total Price",
+      "totalAmount": "Total Amount",
+      "paymentMethod": "Payment Method",
+      "saleId": "Sale ID"
+    },
+    "saleItems": {
+      "strainId": "Strain ID: {id}",
+      "thc": "THC",
+      "cbd": "CBD",
+      "amount": "Amount",
+      "amountValue": "{amount}g",
+      "pricePerGram": "Price per Gram",
+      "priceValue": "{price} €",
+      "totalPrice": "Total Price",
+      "totalPriceValue": "{price} €"
+    },
+    "newSale": {
+      "title": "Create New Sale",
+      "description": "Fill in the details to create a new sale."
+    },
+    "selectMember": "Select Member",
+    "selectMemberPlaceholder": "Select member...",
+    "searchMember": "Search member...",
+    "noMemberFound": "No member found.",
+    "selectStrains": "Select Strains",
+    "strain": "Strain",
+    "available": "Available (g)",
+    "weight": "Weight (g)",
+    "pricePerGram": "Price/g",
+    "totalPrice": "Total Price",
+    "addItem": "Add Item",
+    "paymentDetails": {
+      "title": "Payment Details",
+      "method": "Payment Method",
+      "selectMethod": "Select Payment Method",
+      "totalPrice": "Total Price",
+      "methods": {
+        "CASH": "Cash",
+        "BANKTRANSFER": "Bank Transfer",
+        "CARD": "Credit Card"
+      }
+    },
+    "createSale": "Create Sale",
+    "noSession": "No session found",
+    "messages": {
+      "success": {
+        "title": "Success",
+        "description": "Sale successfully created"
+      },
+      "error": {
+        "title": "Error",
+        "description": "Failed to create sale: {error}"
+      }
+    },
+    "alerts": {
+      "monthlyLimit": {
+        "exceeded": "Member has exceeded monthly limit. Current total: {total}g / 50g",
+        "remaining": "Member's current monthly purchase: {current}g. Remaining quota: {remaining}g"
+      },
+      "selfSale": "You cannot sell to yourself",
+      "weightLimit": {
+        "exceeded": "Total weight cannot exceed 30g. Current total: {total}g",
+        "current": "Current total weight: {total}g"
+      },
+      "ageRestriction": "Member is between 18 - 21 years old and cannot consume high THC strains"
     }
   },
   "Payments": {
@@ -131,20 +194,176 @@
       "amount": "Amount",
       "paymentDate": "Payment Date",
       "status": "Status",
-      "method": "Method"
+      "method": "Payment Method"
     },
     "status": {
-      "paid": "Paid",
-      "pending": "Pending",
-      "overdue": "Overdue"
+      "PAID": "Paid",
+      "PENDING": "Pending",
+      "OVERDUE": "Overdue"
     },
     "method": {
-      "cash": "Cash",
-      "bankTransfer": "Bank Transfer",
-      "creditCard": "Credit Card"
+      "CASH": "Cash",
+      "BANKTRANSFER": "Bank Transfer",
+      "CARD": "Credit Card"
     }
   },
-
+  "BatchEdit": {
+    "formLabels": {
+      "growPhase": "Select Growth Phase",
+      "endDate": "(Estimated) End Date",
+      "expectedYield": "Expected Total Yield (Grams)",
+      "totalYield": "Total Yield (Grams)",
+      "totalDestroyed": "Total Amount Destroyed (Grams)"
+    },
+    "placeholders": {
+      "selectGrowPhase": "Select Growth Phase",
+      "expectedYield": "Enter expected total yield in grams",
+      "totalYield": "Enter total yield in grams",
+      "totalDestroyed": "Enter total amount destroyed in grams"
+    },
+    "growPhases": {
+      "Seedling": "Seedling",
+      "Vegetative": "Vegetative",
+      "Flowering": "Flowering",
+      "Harvesting": "Harvesting",
+      "Drying": "Drying",
+      "Curing": "Curing",
+      "Completed": "Completed"
+    },
+    "messages": {
+      "success": {
+        "title": "Success",
+        "description": "Batch successfully updated"
+      },
+      "error": {
+        "title": "Error",
+        "description": "Failed to update batch"
+      }
+    }
+  },
+  "Plants": {
+    "title": "Plants",
+    "description": "Manage the plants in this batch",
+    "table": {
+      "headers": {
+        "id": "ID",
+        "position": "Position",
+        "name": "Name",
+        "yield": "Yield",
+        "health": "Health",
+        "actions": "Actions"
+      },
+      "noPlants": "No plants found in this batch.",
+      "tooltips": {
+        "edit": "Edit Plant",
+        "delete": "Delete Plant"
+      }
+    },
+    "messages": {
+      "deleteSuccess": "Plant successfully deleted.",
+      "deleteError": "Failed to delete plant."
+    },
+    "addNewPlant": "Add New Plant",
+    "addNewPlantDescription": "Fill in the details below to add a new plant to the batch.",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Give the plant a name if you'd like",
+      "position": "Position",
+      "positionPlaceholder": "Enter the plant's position within the batch"
+    }
+  },
+  "Auth": {
+    "signUp": {
+      "title": "Sign Up",
+      "metadata": {
+        "title": "Sign Up",
+        "description": "Sign up for an account"
+      },
+      "page": {
+        "title": "Sign up",
+        "description": "Enter your details to create an account",
+        "haveAccount": "Already have an account?",
+        "signInLink": "Sign in",
+        "srOnly": {
+          "close": "Close",
+          "signIn": "Sign in"
+        }
+      },
+      "legal": {
+        "agreement": "By continuing, you agree to our",
+        "tos": "ToS",
+        "and": "and",
+        "privacy": "Privacy Policy"
+      }
+    },
+    "signIn": {
+      "title": "Sign In",
+      "metadata": {
+        "title": "Sign In",
+        "description": "Sign in to your account"
+      },
+      "page": {
+        "title": "Sign in",
+        "description": "Choose your preferred sign in method",
+        "noAccount": "Don't have an account?",
+        "signUpLink": "Sign up",
+        "forgotPassword": "Forgot your password?",
+        "resetLink": "Reset now",
+        "srOnly": {
+          "close": "Close",
+          "signUp": "Sign up",
+          "resetPassword": "Reset Password"
+        }
+      },
+      "form": {
+        "email": {
+          "label": "Email",
+          "placeholder": "johnsmith@gmail.com",
+          "demo": "Email: demo@bubatz.club"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "********",
+          "demo": "Password: BubatzClubManager123!"
+        },
+        "button": {
+          "signIn": "Sign in",
+          "signingIn": "Signing in...",
+          "srOnly": "Sign in with email and password"
+        }
+      },
+      "messages": {
+        "notRegistered": {
+          "title": "First things first",
+          "description": "Please make sure you are signed up before signing in"
+        },
+        "incorrectProvider": {
+          "title": "Email already in use with another provider",
+          "description": "Perhaps you signed up with a different method?"
+        },
+        "unverifiedEmail": {
+          "title": "First things first",
+          "description": "Please verify your email address before signing in"
+        },
+        "invalidCredentials": {
+          "title": "Invalid email or Password",
+          "description": "Double-check your credentials and try again"
+        },
+        "success": {
+          "title": "Success!",
+          "description": "You are now signed in"
+        },
+        "error": {
+          "title": "Error signing in with password",
+          "description": "Please try again"
+        },
+        "generic": {
+          "title": "Something went wrong",
+          "description": "Please try again"
+        }
+      }
+    }
+  },
   "LocaleSwitcher": {
     "de": "Deutsch",
     "en": "English",

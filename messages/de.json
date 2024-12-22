@@ -273,6 +273,98 @@
       "positionPlaceholder": "Geben Sie die Position der Pflanze innerhalb der Partie ein"
     }
   },
+  "Auth": {
+    "signUp": {
+      "title": "Registrieren",
+      "metadata": {
+        "title": "Registrieren",
+        "description": "Registrieren Sie sich für ein Konto"
+      },
+      "page": {
+        "title": "Registrieren",
+        "description": "Geben Sie Ihre Daten ein, um ein Konto zu erstellen",
+        "haveAccount": "Bereits ein Konto?",
+        "signInLink": "Anmelden",
+        "srOnly": {
+          "close": "Schließen",
+          "signIn": "Anmelden"
+        }
+      },
+      "legal": {
+        "agreement": "Durch die weitere Nutzung stimmen Sie unseren",
+        "tos": "Nutzungsbedingungen",
+        "and": "und der",
+        "privacy": "Datenschutzerklärung"
+      }
+    },
+    "signIn": {
+      "title": "Anmelden",
+      "metadata": {
+        "title": "Anmelden",
+        "description": "Melden Sie sich in Ihrem Konto an"
+      },
+      "page": {
+        "title": "Anmelden",
+        "description": "Wählen Sie Ihre bevorzugte Anmeldemethode",
+        "noAccount": "Noch kein Konto?",
+        "signUpLink": "Registrieren",
+        "forgotPassword": "Passwort vergessen?",
+        "resetLink": "Jetzt zurücksetzen",
+        "srOnly": {
+          "close": "Schließen",
+          "signUp": "Registrieren",
+          "resetPassword": "Passwort zurücksetzen"
+        }
+      },
+      "form": {
+        "email": {
+          "label": "E-Mail",
+          "placeholder": "johnsmith@gmail.com",
+          "demo": "E-Mail: demo@bubatz.club"
+        },
+        "password": {
+          "label": "Passwort",
+          "placeholder": "********",
+          "demo": "Passwort: BubatzClubManager123!"
+        },
+        "button": {
+          "signIn": "Anmelden",
+          "signingIn": "Anmeldung läuft...",
+          "srOnly": "Mit E-Mail und Passwort anmelden"
+        }
+      },
+      "messages": {
+        "notRegistered": {
+          "title": "Erst das Erste",
+          "description": "Bitte stellen Sie sicher, dass Sie sich registriert haben, bevor Sie sich anmelden"
+        },
+        "incorrectProvider": {
+          "title": "E-Mail wird bereits mit einem anderen Anbieter verwendet",
+          "description": "Vielleicht haben Sie sich mit einer anderen Methode registriert?"
+        },
+        "unverifiedEmail": {
+          "title": "Erst das Erste",
+          "description": "Bitte bestätigen Sie Ihre E-Mail-Adresse vor der Anmeldung"
+        },
+        "invalidCredentials": {
+          "title": "Ungültige E-Mail oder Passwort",
+          "description": "Überprüfen Sie Ihre Anmeldedaten und versuchen Sie es erneut"
+        },
+        "success": {
+          "title": "Erfolg!",
+          "description": "Sie sind jetzt angemeldet"
+        },
+        "error": {
+          "title": "Fehler bei der Anmeldung mit Passwort",
+          "description": "Bitte versuchen Sie es erneut"
+        },
+        "generic": {
+          "title": "Etwas ist schief gelaufen",
+          "description": "Bitte versuchen Sie es erneut"
+        }
+      }
+    }
+  },
   "LocaleSwitcher": {
     "de": "Deutsch",
     "en": "English",

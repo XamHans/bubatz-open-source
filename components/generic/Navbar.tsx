@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { Button } from '../ui/button'
 
 const Navbar = () => {
   return (
@@ -37,9 +38,11 @@ const Navbar = () => {
         >
           Über bubatz
         </Link>
-        <button className="font-nunito rounded-full bg-[#b6f36e] px-6 py-3 text-lg font-bold text-black transition-colors hover:bg-[#a5e45d]">
-          Kostenlos registrieren
-        </button>
+        <Link href="/signin">
+          <Button className="w-full bg-[#b6f36e] p-4 text-lg font-bold text-black hover:bg-[#a5e45d] min-[400px]:w-auto md:p-6 md:text-xl">
+            Kostenlos testen
+          </Button>
+        </Link>
       </div>
     </nav>
   )

@@ -1,5 +1,4 @@
 'use client'
-import { useToast } from '@/components/ui/use-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   AlertCircle,
@@ -46,6 +45,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { useToast } from '@/components/ui/use-toast'
 import { siteConfig } from '@/config/site'
 import { logger } from '@/lib/logger'
 import { cn } from '@/lib/utils'
@@ -113,15 +113,13 @@ export default function SaleForm({ session }: SaleFormProps) {
       }, 2000)
     },
     onError: ({ error }) => {
-      console.log('error data', error)
+      console.log('error data', error.serverError)
 
       toast({
         title: t('messages.error.title'),
         duration: 10000,
         variant: 'destructive',
-        description: t('messages.error.description', {
-          error: error.fetchError,
-        }),
+        description: error.serverError,
       })
     },
   })
@@ -132,8 +130,15 @@ export default function SaleForm({ session }: SaleFormProps) {
       onSuccess: ({ data }) => {
         setMemberMonthlyPurchase(data?.success || 0)
       },
-      onError: (error) =>
-        logger.error('Error fetching member purchases:', error),
+      onError: ({ error }) => {
+        logger.error('Error fetching member purchases:', error)
+        toast({
+          title: t('messages.error.title'),
+          duration: 10000,
+          variant: 'destructive',
+          description: error.serverError,
+        })
+      },
     },
   )
 
@@ -143,11 +148,18 @@ export default function SaleForm({ session }: SaleFormProps) {
       onSuccess: ({ data }) => {
         setIsMemberAllowedForStrain(data?.success)
       },
-      onError: (error) =>
+      onError: ({ error }) => {
         logger.error(
           error,
           'Error happened while checking if member is allowed for strain:',
-        ),
+        )
+        toast({
+          title: t('messages.error.title'),
+          duration: 10000,
+          variant: 'destructive',
+          description: error.serverError,
+        })
+      },
     },
   )
 
@@ -160,12 +172,30 @@ export default function SaleForm({ session }: SaleFormProps) {
       )
       setMembers(sortedMembers)
     },
+    onError: ({ error }) => {
+      logger.error('Error fetching members:', error)
+      toast({
+        title: t('messages.error.title'),
+        duration: 10000,
+        variant: 'destructive',
+        description: error.serverError,
+      })
+    },
   })
 
   const fetchStrains = useAction(fetchStrainsUseCase, {
     onSuccess: ({ data }) => {
       //@ts-ignore
       setStrains(data?.success ?? [])
+    },
+    onError: ({ error }) => {
+      logger.error('Error fetching strains:', error)
+      toast({
+        title: t('messages.error.title'),
+        duration: 10000,
+        variant: 'destructive',
+        description: error.serverError,
+      })
     },
   })
 
@@ -286,7 +316,20 @@ export default function SaleForm({ session }: SaleFormProps) {
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-full p-0">
-                      <Command className="flex w-[500px]">
+                      <Command
+                        className="flex w-[500px]"
+                        filter={(value, search) => {
+                          const member = members.find((m) => m.id === value)
+                          if (!member) {
+                            return 0
+                          }
+                          const memberName =
+                            `${member.firstName} ${member.lastName}`.toLowerCase()
+                          return memberName.includes(search.toLowerCase())
+                            ? 1
+                            : 0
+                        }}
+                      >
                         <CommandInput placeholder={t('searchMember')} />
                         <CommandList>
                           <CommandEmpty>{t('noMemberFound')}</CommandEmpty>
@@ -294,7 +337,7 @@ export default function SaleForm({ session }: SaleFormProps) {
                             {members.map((member) => (
                               <CommandItem
                                 key={member.id}
-                                value={`${member.firstName} ${member.lastName}`}
+                                value={member.id}
                                 onSelect={() => {
                                   handleMemberChange(member.id)
                                   setOpen(false)
@@ -308,7 +351,11 @@ export default function SaleForm({ session }: SaleFormProps) {
                                       : 'opacity-0',
                                   )}
                                 />
-                                {member.firstName} {member.lastName}
+                                {member.firstName} {member.lastName} (
+                                {new Date(member.birthday).toLocaleDateString(
+                                  'de-DE',
+                                )}
+                                )
                               </CommandItem>
                             ))}
                           </CommandGroup>

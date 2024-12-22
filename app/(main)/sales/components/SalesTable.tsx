@@ -57,7 +57,6 @@ export default function SalesTable() {
 
   const { execute, status } = useAction(fetchAllSalesUseCase, {
     onSuccess: (data) => {
-      console.info('Fetched sales', data)
       setSales(data.data?.success ?? [])
     },
     onError: (error) => {

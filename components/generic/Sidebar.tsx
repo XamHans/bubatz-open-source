@@ -33,7 +33,7 @@ const Sidebar = ({ className }: Props) => {
                     className={cn(
                       'group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full text-lg font-semibold text-muted-foreground hover:text-foreground md:h-8 md:w-8 md:text-base',
                       isActive(item.href) &&
-                        'bg-black text-primary-foreground hover:text-primary-foreground',
+                        'bg-slate-400 text-primary-foreground hover:text-primary-foreground',
                     )}
                   >
                     <item.icon className="h-4 w-4 transition-all" />

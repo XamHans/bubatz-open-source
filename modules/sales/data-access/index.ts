@@ -208,91 +208,232 @@ export const getMemberStrainAmount = cache(
     return totalAmountOfStrain[0]?.totalAmount || 0
   },
 )
+class ValidationError extends Error {
+  code: string
+
+  constructor({ code, message }: { code: string; message: string }) {
+    super(message)
+    this.code = code
+    this.name = 'ValidationError'
+  }
+}
 
 async function validateSale(
   saleData: CreateSaleInput,
   items: CreateSaleItemInput[],
-) {
-  // ... (keep the existing validation logic)
-}
+): Promise<void> {
+  // Get member details
+  const [member] = await db
+    .select()
+    .from(members)
+    .where(eq(members.id, saleData.memberId))
+    .limit(1)
 
-export async function createSaleWithItems(input: CreateSaleWithItemsInput) {
-  const { items, ...saleData } = input
-  await validateSale(saleData, items)
+  if (!member) {
+    throw new ValidationError({
+      code: 'MEMBER_NOT_FOUND',
+      message: 'Only members are allowed to receive cannabis',
+    })
+  }
 
-  const saleTransactionResult = await db.transaction(async (tx) => {
-    // Create the sale record
-    const [createdSale] = await tx
-      .insert(sales)
-      .values(saleData as any)
-      .returning()
+  // Check age
+  const age = calculateAge(new Date(member.birthday))
+  if (age < 18) {
+    throw new ValidationError({
+      code: 'UNDERAGE',
+      message: 'Cannabis can only be distributed to adults',
+    })
+  }
 
-    if (!createdSale) {
-      throw new Error('Failed to create sale record')
-    }
+  // Calculate total amount for this sale
+  const totalAmount = items.reduce((sum, item) => sum + item.amount, 0)
 
-    // Create sale items
-    const saleItemsData = items.map((item) => ({
-      ...item,
-      saleId: createdSale.id,
-    }))
+  // Check daily limit (25g)
+  const todaysSales = await getTodaysSales(member.id)
+  const todaysTotal = todaysSales.reduce(
+    (sum, sale) => sum + sale.totalAmount,
+    0,
+  )
 
-    const createdSaleItems = await tx
-      .insert(salesItems)
-      //@ts-ignore
-      .values(saleItemsData)
-      .returning()
+  if (todaysTotal + totalAmount > 25) {
+    throw new ValidationError({
+      code: 'DAILY_LIMIT_EXCEEDED',
+      message: 'Daily limit of 25g would be exceeded',
+    })
+  }
 
-    if (createdSaleItems.length !== items.length) {
-      throw new Error('Failed to create all sale items')
-    }
+  // Check monthly limit (50g for 21+, 30g for 18-20)
+  const monthlyLimit = age >= 21 ? 50 : 30
+  const monthSales = await getMonthSales(member.id)
+  const monthTotal = monthSales.reduce((sum, sale) => sum + sale.totalAmount, 0)
 
-    // Update strain amounts
-    for (const item of createdSaleItems) {
-      const [strain] = await tx
+  if (monthTotal + totalAmount > monthlyLimit) {
+    throw new ValidationError({
+      code: 'MONTHLY_LIMIT_EXCEEDED',
+      message: `Monthly limit of ${monthlyLimit}g would be exceeded`,
+    })
+  }
+
+  // Check THC content for young adults (18-20)
+  if (age < 21) {
+    for (const item of items) {
+      const [strain] = await db
         .select()
         .from(strains)
         .where(eq(strains.id, item.strainId))
         .limit(1)
 
-      if (!strain) {
-        throw new Error(`Strain with id ${item.strainId} not found`)
+      if (+strain.thc > 10) {
+        throw new ValidationError({
+          code: 'THC_CONTENT_TOO_HIGH',
+          message: 'THC content too high for members under 21',
+        })
       }
+    }
+  }
 
-      if (strain && Number(strain.amountAvailable) < item.amount) {
-        throw new Error(`Not enough ${strain.name} available`)
-      }
+  // Validate strains availability
+  for (const item of items) {
+    const [strain] = await db
+      .select()
+      .from(strains)
+      .where(eq(strains.id, item.strainId))
+      .limit(1)
 
-      // Update the amount available in the strains table
-      await tx
-        .update(strains)
-        //@ts-ignore
-        .set({ amountAvailable: strain.amountAvailable - item.amount })
-        .where(eq(strains.id, item.strainId))
+    if (!strain) {
+      throw new ValidationError({
+        code: 'STRAIN_NOT_FOUND',
+        message: `Strain with id ${item.strainId} not found`,
+      })
     }
 
-    // Update the total amount and price in the sale record
-    const totalAmount = createdSaleItems.reduce(
-      (sum, item) => sum + item.amount,
-      0,
-    )
-    const totalPrice = createdSaleItems.reduce(
-      (sum, item) => sum + item.price * item.amount,
-      0,
-    )
-
-    const [updatedSale] = await tx
-      .update(sales)
-      .set({ totalAmount, totalPrice })
-      .where(eq(sales.id, createdSale.id))
-      .returning()
-
-    return {
-      sale: updatedSale,
-      saleItems: createdSaleItems,
+    if (Number(strain.amountAvailable) < item.amount) {
+      throw new ValidationError({
+        code: 'INSUFFICIENT_STOCK',
+        message: `Not enough ${strain.name} available`,
+      })
     }
-  })
+  }
+}
 
-  console.log('Sale created:', saleTransactionResult)
-  return saleTransactionResult.sale.id
+export async function createSaleWithItems(input: CreateSaleWithItemsInput) {
+  const { items, ...saleData } = input
+
+  try {
+    await validateSale(saleData, items)
+
+    const saleTransactionResult = await db.transaction(async (tx) => {
+      // Create the sale record
+      const [createdSale] = await tx
+        .insert(sales)
+        .values(saleData as any)
+        .returning()
+
+      if (!createdSale) {
+        throw new ValidationError({
+          code: 'SALE_CREATION_FAILED',
+          message: 'Failed to create sale record',
+        })
+      }
+
+      // Create sale items
+      const saleItemsData = items.map((item) => ({
+        ...item,
+        saleId: createdSale.id,
+      }))
+
+      const createdSaleItems = await tx
+        .insert(salesItems)
+        .values(saleItemsData as any)
+        .returning()
+
+      if (createdSaleItems.length !== items.length) {
+        throw new ValidationError({
+          code: 'SALE_ITEMS_CREATION_FAILED',
+          message: 'Failed to create all sale items',
+        })
+      }
+
+      // Update strain amounts
+      for (const item of createdSaleItems) {
+        await tx
+          .update(strains)
+          .set({
+            amountAvailable: sql`${strains.amountAvailable} - ${item.amount}`,
+          })
+          .where(eq(strains.id, item.strainId))
+      }
+
+      // Update the total amount and price in the sale record
+      const totalAmount = createdSaleItems.reduce(
+        (sum, item) => sum + item.amount,
+        0,
+      )
+      const totalPrice = createdSaleItems.reduce(
+        (sum, item) => sum + item.price * item.amount,
+        0,
+      )
+
+      const [updatedSale] = await tx
+        .update(sales)
+        .set({ totalAmount, totalPrice })
+        .where(eq(sales.id, createdSale.id))
+        .returning()
+
+      return {
+        sale: updatedSale,
+        saleItems: createdSaleItems,
+      }
+    })
+
+    return saleTransactionResult.sale.id
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      throw error
+    }
+    throw new ValidationError({
+      code: 'UNKNOWN_ERROR',
+      message: `Failed to process sale: ${error.message}`,
+    })
+  }
+}
+
+// Helper functions
+async function getTodaysSales(memberId: string) {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  return db
+    .select()
+    .from(sales)
+    .where(and(eq(sales.memberId, memberId), gte(sales.createdAt, today)))
+}
+
+async function getMonthSales(memberId: string) {
+  const firstDayOfMonth = new Date()
+  firstDayOfMonth.setDate(1)
+  firstDayOfMonth.setHours(0, 0, 0, 0)
+
+  return db
+    .select()
+    .from(sales)
+    .where(
+      and(eq(sales.memberId, memberId), gte(sales.createdAt, firstDayOfMonth)),
+    )
+}
+
+function calculateAge(dateOfBirth: Date): number {
+  const today = new Date()
+  const birthDate = new Date(dateOfBirth)
+  let age = today.getFullYear() - birthDate.getFullYear()
+  const monthDiff = today.getMonth() - birthDate.getMonth()
+
+  if (
+    monthDiff < 0 ||
+    (monthDiff === 0 && today.getDate() < birthDate.getDate())
+  ) {
+    age--
+  }
+
+  return age
 }

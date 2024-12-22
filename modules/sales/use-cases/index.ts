@@ -23,7 +23,7 @@ export const fetchAllSalesUseCase = actionClient.action(async () => {
     return { success: sales }
   } catch (error) {
     console.log('Error fetching sales', error)
-    return { failure: 'Failed to fetch sales' }
+    throw new Error('Failed to fetch sales')
   }
 })
 
@@ -35,9 +35,9 @@ export const fetchSaleDetailsUseCase = actionClient
       return { success: saleDetail }
     } catch (error) {
       logger.error(error)
-      return {
-        failure: `Failed to fetch sales details for sale id ${parsedInput.saleId}`,
-      }
+      throw new Error(
+        `Failed to fetch sales details for sale id ${parsedInput.saleId}`,
+      )
     }
   })
 
@@ -45,16 +45,16 @@ export const fetchMemberSalesUseCase = actionClient
   .schema(z.object({ memberId: z.string().uuid() }))
   .action(async ({ parsedInput }) => {
     if (!parsedInput?.memberId) {
-      return { failure: 'No member ID provided, cannot fetch sales' }
+      throw new Error('No member ID provided, cannot fetch sales')
     }
     try {
       const sales = await getMemberSales(parsedInput.memberId)
 
       return { success: sales }
     } catch (error) {
-      return {
-        failure: `Failed to fetch sales for member ${parsedInput.memberId}`,
-      }
+      throw new Error(
+        `Failed to fetch sales for member ${parsedInput.memberId}`,
+      )
     }
   })
 
@@ -67,9 +67,9 @@ export const fetchMembersStrainAmountUseCase = actionClient
 
       return { success: totalAmountOfStrainPerMonth }
     } catch (error) {
-      return {
-        failure: `Failed to fetch sales for member ${parsedInput.memberId}`,
-      }
+      throw new Error(
+        `Failed to fetch sales for member ${parsedInput.memberId}`,
+      )
     }
   })
 
@@ -82,9 +82,9 @@ export const checkIfMemberIsAllowedForStrainUseCase = actionClient
       return { success: isAllowed }
     } catch (error) {
       console.log(error)
-      return {
-        failure: `Failed to check if member is allowed for strain ${error}`,
-      }
+      throw new Error(
+        `Failed to check if member is allowed for strain ${error}`,
+      )
     }
   })
 

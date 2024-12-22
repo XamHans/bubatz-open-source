@@ -32,61 +32,87 @@ export const addMemberUseCase = actionClient
       const newMemberResult = await createMember(parsedInput)
       return { success: newMemberResult }
     } catch (error) {
-      return { failure: `Failed to create new member ${error}` }
+      throw new Error(`Failed to create new member ${error}`)
     }
   })
 
 export const fetchMembersUseCase = actionClient.action(async () => {
-  const members: UserSchema[] = (await getMembers()) as any
-
-  return { success: members }
+  try {
+    const members: UserSchema[] = (await getMembers()) as any
+    return { success: members }
+  } catch (error) {
+    throw new Error(`Failed to fetch members: ${error}`)
+  }
 })
 
 export const updateMemberUseCase = actionClient
   .schema(updateMemberInputSchema)
   .action(async ({ parsedInput }) => {
-    const updatedMember = await updateMember(parsedInput)
-    return { success: updatedMember }
+    try {
+      const updatedMember = await updateMember(parsedInput)
+      return { success: updatedMember }
+    } catch (error) {
+      throw new Error(`Failed to update member: ${error}`)
+    }
   })
 
 export const deleteMemberUseCase = actionClient
   .schema(deleteMemberInputSchema)
   .action(async ({ parsedInput }) => {
-    const deletedMember = await deleteMember(parsedInput.id)
-    return { success: deletedMember }
+    try {
+      const deletedMember = await deleteMember(parsedInput.id)
+      return { success: deletedMember }
+    } catch (error) {
+      throw new Error(`Failed to delete member: ${error}`)
+    }
   })
 
 //--------PAYMENTS
 
 export const fetchAllPaymentsUseCase = actionClient.action(async () => {
-  const payments = await getAllPayments()
-  return { success: payments }
+  try {
+    const payments = await getAllPayments()
+    return { success: payments }
+  } catch (error) {
+    throw new Error(`Failed to fetch all payments: ${error}`)
+  }
 })
 
 export const fetchPaymentsFromMemberUseCase = actionClient
   .schema(z.object({ memberId: z.string().uuid() }))
   .action(async ({ parsedInput }) => {
-    const payments: MembershipPaymentSchema[] = (await getMemberPayments(
-      parsedInput.memberId,
-    )) as any
-
-    return { success: payments }
+    try {
+      const payments: MembershipPaymentSchema[] = (await getMemberPayments(
+        parsedInput.memberId,
+      )) as any
+      return { success: payments }
+    } catch (error) {
+      throw new Error(`Failed to fetch member payments: ${error}`)
+    }
   })
 
 export const addPaymentUseCase = actionClient
   .schema(createMemberPaymentInputSchema)
   .action(async ({ parsedInput }) => {
-    const newPaymentId = await createMemberPayment({
-      ...parsedInput,
-    })
-    return { success: newPaymentId }
+    try {
+      const newPaymentId = await createMemberPayment({
+        ...parsedInput,
+      })
+      return { success: newPaymentId }
+    } catch (error) {
+      throw new Error(`Failed to create payment: ${error}`)
+    }
   })
 
 export const updatePaymentUseCase = actionClient
   .schema(updateMemberPaymentInputSchema)
   .action(async ({ parsedInput }) => {
-    const updatedPayment = await updateMemberPayment(parsedInput)
-    return { success: updatedPayment }
+    try {
+      const updatedPayment = await updateMemberPayment(parsedInput)
+      return { success: updatedPayment }
+    } catch (error) {
+      throw new Error(`Failed to update payment: ${error}`)
+    }
   })
 
 export const fetchPaymentDetailsUseCase = actionClient
@@ -96,14 +122,24 @@ export const fetchPaymentDetailsUseCase = actionClient
     }),
   )
   .action(async ({ parsedInput }) => {
-    const paymentDetails = await getMemberPaymentDetails(parsedInput.id)
-
-    return { success: paymentDetails }
+    try {
+      const paymentDetails = await getMemberPaymentDetails(parsedInput.id)
+      if (!paymentDetails) {
+        throw new Error(`Payment details not found for id: ${parsedInput.id}`)
+      }
+      return { success: paymentDetails }
+    } catch (error) {
+      throw new Error(`Failed to fetch payment details: ${error}`)
+    }
   })
 
 export const deleteMemberPaymentUseCase = actionClient
   .schema(deleteMemberInputSchema)
   .action(async ({ parsedInput }) => {
-    const deletedPayment = await deleteMemberPayment(parsedInput.id)
-    return { success: deletedPayment }
+    try {
+      const deletedPayment = await deleteMemberPayment(parsedInput.id)
+      return { success: deletedPayment }
+    } catch (error) {
+      throw new Error(`Failed to delete payment: ${error}`)
+    }
   })

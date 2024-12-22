@@ -40,7 +40,6 @@ export const {
   },
   callbacks: {
     jwt({ token, user }) {
-      console.log('jwt callback user', user)
       if (user) {
         token.role = user.role
         token.id = user.id as UUID

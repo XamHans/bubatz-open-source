@@ -52,7 +52,7 @@ export const fetchBatchesUseCase = actionClient
   .action(async ({ parsedInput }) => {
     const batches = await getBatches(parsedInput.isArchived)
     if (!batches) {
-      return { failure: 'Batch not found' }
+      throw new Error('Batch not found')
     }
     return { success: batches }
   })
@@ -63,7 +63,7 @@ export const fetchBatchDetailsUseCase = actionClient
     logger.info('fetching batch details for id:', parsedInput.id)
     const res = await getBatchById(parsedInput.id)
     if (!res) {
-      return { failure: 'Batch not found' }
+      throw new Error('Batch not found')
     }
     return { success: { batch: res.batches, strain: res.strains } }
   })
@@ -74,7 +74,7 @@ export const updateBatchUseCase = actionClient
     const existingBatch = await getBatchById(parsedInput.id)
 
     if (!existingBatch) {
-      return { failure: "Batch not found, can't update batch" }
+      throw new Error("Batch not found, can't update batch")
     }
     if (parsedInput.totalYield && Number(parsedInput.totalYield) > 0) {
       // yield changed we need to update strain values as well
@@ -85,7 +85,7 @@ export const updateBatchUseCase = actionClient
       console.log('res yield total update strain', res)
 
       if (!res) {
-        return { failure: 'Failed to update amountAvailable of strain ' }
+        throw new Error('Failed to update amountAvailable of strain')
       }
     }
     const result = await updateBatch(parsedInput.id, parsedInput)
@@ -117,7 +117,7 @@ export const createPlantUseCase = actionClient
     const newPlantId = await createPlant(parsedInput)
     logger.info(newPlantId, 'Creating plant id:')
     if (!newPlantId) {
-      return { failure: 'Failed to create plant' }
+      throw new Error('Failed to create plant')
     }
     return { success: newPlantId }
   })
@@ -130,7 +130,7 @@ export const deletePlantUseCase = actionClient
       await deletePlant(parsedInput)
     } catch (error) {
       logger.error('Error deleting plant', error)
-      return { failure: 'Failed to delete plant' }
+      throw new Error('Failed to delete plant')
     }
     return { success: 'Plant deleted successfully' }
   })
@@ -163,7 +163,7 @@ export const fetchStrainDetailsUseCase = actionClient
   .action(async ({ parsedInput }) => {
     const strain = await getStrainById(parsedInput.id)
     if (!strain) {
-      return { failure: 'Strain not found' }
+      throw new Error('Strain not found')
     }
     return { success: strain }
   })
@@ -174,7 +174,7 @@ export const createStrainUseCase = actionClient
     logger.info('Creating strain with data:', parsedInput)
     const newStrainId = await createStrain(parsedInput)
     if (!newStrainId) {
-      return { failure: 'Failed to create strain' }
+      throw new Error('Failed to create strain')
     }
     return { success: newStrainId }
   })
@@ -184,7 +184,7 @@ export const updateStrainUseCase = actionClient
   .action(async ({ parsedInput }) => {
     const updatedStrain = await updateStrain(parsedInput)
     if (!updatedStrain) {
-      return { failure: 'Failed to create strain' }
+      throw new Error('Failed to update strain')
     }
     return { success: updatedStrain }
   })
@@ -194,11 +194,11 @@ export const deleteStrainUseCase = actionClient
   .action(async ({ parsedInput }) => {
     try {
       const res = await deleteStrain({ id: parsedInput.id })
+      return { success: '' }
     } catch (error) {
       logger.error(error, 'Error deleting Strain')
-      return { failure: 'Failed to delete Strain' }
+      throw new Error('Failed to delete Strain')
     }
-    return { success: 'Strain deleted successfully' }
   })
 
 type FetchBatchDetailsSuccess = {

@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import * as React from 'react'
 import { useForm } from 'react-hook-form'
@@ -32,6 +33,7 @@ export function SignInWithPasswordForm(): JSX.Element {
   const { toast } = useToast()
   const [isPending, startTransition] = React.useTransition()
   const [isClient, setIsClient] = React.useState(false)
+  const t = useTranslations('Auth.signIn')
 
   React.useEffect(() => {
     setIsClient(true)
@@ -53,36 +55,17 @@ export function SignInWithPasswordForm(): JSX.Element {
           password: formData.password,
         })
         switch (loginResult) {
-          case 'not-registered':
-            toast({
-              title: 'First things first',
-              description:
-                'Please make sure you are signed up before signing in',
-            })
-            break
-          case 'incorrect-provider':
-            toast({
-              title: 'Email already in use with another provider',
-              description: 'Perhaps you signed up with a different method?',
-            })
-            break
-          case 'unverified-email':
-            toast({
-              title: 'First things first',
-              description: 'Please verify your email address before signing in',
-            })
-            break
           case 'invalid-credentials':
             toast({
-              title: 'Invalid email or Password',
-              description: 'Double-check your credentials and try again',
+              title: t('messages.invalidCredentials.title'),
+              description: t('messages.invalidCredentials.description'),
               variant: 'destructive',
             })
             break
           case 'success':
             toast({
-              title: 'Success!',
-              description: 'You are now signed in',
+              title: t('messages.success.title'),
+              description: t('messages.success.description'),
             })
             setTimeout(() => {
               router.push(siteConfig.links.members.index)
@@ -90,16 +73,16 @@ export function SignInWithPasswordForm(): JSX.Element {
             break
           default:
             toast({
-              title: 'Error signing in with password',
-              description: 'Please try again',
+              title: t('messages.error.title'),
+              description: t('messages.error.description'),
               variant: 'destructive',
             })
         }
       } catch (error) {
         console.error(error)
         toast({
-          title: 'Something went wrong',
-          description: 'Please try again',
+          title: t('messages.generic.title'),
+          description: t('messages.generic.description'),
           variant: 'destructive',
         })
       }
@@ -117,19 +100,17 @@ export function SignInWithPasswordForm(): JSX.Element {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t('form.email.label')}</FormLabel>
               <FormControl>
                 <Input
                   type="text"
-                  placeholder="johnsmith@gmail.com"
+                  placeholder={t('form.email.placeholder')}
                   {...field}
                 />
               </FormControl>
               {isClient && (
                 <FormDescription>
-                  <p>
-                    <strong>Email:</strong> demo@bubatz.club
-                  </p>
+                  <p>{t('form.email.demo')}</p>
                 </FormDescription>
               )}
               <FormMessage className="pt-2 sm:text-sm" />
@@ -142,15 +123,16 @@ export function SignInWithPasswordForm(): JSX.Element {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{t('form.password.label')}</FormLabel>
               <FormControl>
-                <PasswordInput placeholder="********" {...field} />
+                <PasswordInput
+                  placeholder={t('form.password.placeholder')}
+                  {...field}
+                />
               </FormControl>
               {isClient && (
                 <FormDescription>
-                  <p>
-                    <strong>Password:</strong> BubatzClubManager123!
-                  </p>
+                  <p>{t('form.password.demo')}</p>
                 </FormDescription>
               )}
               <FormMessage className="pt-2 sm:text-sm" />
@@ -164,12 +146,12 @@ export function SignInWithPasswordForm(): JSX.Element {
                 className="mr-2 size-4 animate-spin"
                 aria-hidden="true"
               />
-              <span>Signing in...</span>
+              <span>{t('form.button.signingIn')}</span>
             </>
           ) : (
-            <span>Sign in</span>
+            <span>{t('form.button.signIn')}</span>
           )}
-          <span className="sr-only">Sign in with email and password</span>
+          <span className="sr-only">{t('form.button.srOnly')}</span>
         </Button>
       </form>
     </Form>

@@ -1,5 +1,6 @@
 import { Gift, Github } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Pricing() {
   return (
@@ -58,8 +59,10 @@ export default function Pricing() {
         <div className="lg:col-span-1">
           <div className="flex h-[647px] flex-col rounded-3xl border-2 border-black p-6 ">
             <div className="mb-4 flex items-center">
-              <Github className="mr-2 h-8 w-8" />
-              <h3 className="text-2xl font-bold">Selbsthosting</h3>
+              <Link href="https://github.com/XamHans/bubatz-open-source/">
+                <Github className="mr-2 h-8 w-8" />
+                <h3 className="text-2xl font-bold">Selbsthosting</h3>
+              </Link>
             </div>
             <p className="mb-4 text-gray-500">
               Perfekt für technikbegeisterte, die volle Kontrolle wollen.
@@ -112,9 +115,14 @@ export default function Pricing() {
               <div className="mb-6 border-t border-gray-200 pt-4">
                 <h4 className="text-3xl font-bold">Kostenlos</h4>
               </div>
-              <button className="w-full rounded-xl bg-[#1c1c1c] py-3 font-semibold text-white">
-                Starte auf GitHub
-              </button>
+              <Link
+                href="https://github.com/XamHans/bubatz-open-source/"
+                className="block"
+              >
+                <button className="w-full rounded-xl bg-[#1c1c1c] py-3 font-semibold text-white">
+                  Starte auf GitHub
+                </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -205,9 +213,14 @@ export default function Pricing() {
                   €24.5<span className="text-lg font-normal">/Monat</span>
                 </h4>
               </div>
-              <button className="w-full rounded-xl bg-[#c5f467] py-3 font-semibold text-black">
-                Jetzt starten
-              </button>
+              <Link
+                href="https://calendly.com/muellerjohannes/bubatz-club-manager"
+                className="block"
+              >
+                <button className="w-full rounded-xl bg-[#c5f467] py-3 font-semibold text-black">
+                  Jetzt starten
+                </button>
+              </Link>
             </div>
           </div>
         </div>

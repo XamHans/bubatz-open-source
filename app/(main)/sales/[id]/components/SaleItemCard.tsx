@@ -26,7 +26,10 @@ const SaleItemsCards: React.FC<SaleItemsCardsProps> = ({ items }) => {
                     <span className="text-sm font-medium text-muted-foreground">
                       {t('saleItems.thc')}
                     </span>
-                    <Badge variant="secondary" className="text-xs font-bold">
+                    <Badge
+                      variant="secondary"
+                      className="text-xs font-extrabold text-black"
+                    >
                       {item.thc}%
                     </Badge>
                   </div>
@@ -34,7 +37,10 @@ const SaleItemsCards: React.FC<SaleItemsCardsProps> = ({ items }) => {
                     <span className="text-sm font-medium text-muted-foreground">
                       {t('saleItems.cbd')}
                     </span>
-                    <Badge variant="secondary" className="text-xs font-bold">
+                    <Badge
+                      variant="secondary"
+                      className="text-xs font-extrabold text-black"
+                    >
                       {item.cbd}%
                     </Badge>
                   </div>

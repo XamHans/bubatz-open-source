@@ -45,7 +45,7 @@ const AnimatedSection = ({
   const ref = React.useRef(null)
   const isInView = useInView(ref, {
     once,
-    margin: '0px 0px -50px 0px',
+    margin: '0px 0px -20px 0px',
     amount: threshold,
   })
 

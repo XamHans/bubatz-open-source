@@ -34,14 +34,17 @@ import {
 
 export async function signUpWithPassword(
   rawInput: SignUpWithPasswordFormInput,
-): Promise<'invalid-input' | 'exists' | 'error' | 'success'> {
+): Promise<'success'> {
   try {
     const validatedInput = signUpWithPasswordSchema.safeParse(rawInput)
-
-    if (!validatedInput.success) return 'invalid-input'
+    if (!validatedInput.success) {
+      throw new Error('Invalid input')
+    }
 
     const user = await getUserByEmail({ email: validatedInput.data.email })
-    if (user) return 'exists'
+    if (user) {
+      throw new Error('User already exists')
+    }
 
     // check if first user ever, then make them an admin
     const firstMember = await checkIfFirstUser()
@@ -62,47 +65,38 @@ export async function signUpWithPassword(
         birthday: '2000-01-01',
       })
       .returning()
-    // console.log({ newUser })
-    // const emailSent = await resend.emails.send({
-    //   from: process.env.RESEND_EMAIL_FROM as string,
-    //   to: [validatedInput.data.email],
-    //   subject: 'Verify your email address',
-    //   react: EmailVerificationEmail({
-    //     email: validatedInput.data.email,
-    //     emailVerificationToken,
-    //   }),
-    // });
 
-    // const result = newUser && !emailSent.error ? 'success' : 'error';
+    if (!newUser) {
+      throw new Error('Failed to create user')
+    }
+
     return 'success'
   } catch (error) {
     console.error(error)
-    return 'error'
+    throw error instanceof Error ? error : new Error('Error signing up')
   }
 }
 
 export async function signInWithPassword(
   rawInput: SignInWithPasswordFormInput,
-): Promise<
-  | 'invalid-input'
-  | 'invalid-credentials'
-  | 'not-registered'
-  | 'unverified-email'
-  | 'incorrect-provider'
-  | 'success'
-> {
+): Promise<'success' | 'invalid-credentials'> {
   try {
     const validatedInput = signInWithPasswordSchema.safeParse(rawInput)
-    if (!validatedInput.success) return 'invalid-input'
+    if (!validatedInput.success) {
+      throw new Error('Invalid input')
+    }
     const existingUser = await getUserByEmail({
       email: validatedInput.data.email,
     })
-    if (!existingUser) return 'not-registered'
+    if (!existingUser) {
+      throw new Error('User not registered')
+    }
 
-    if (!existingUser.email || !existingUser.passwordHash)
-      return 'incorrect-provider'
+    if (!existingUser.email || !existingUser.passwordHash) {
+      throw new Error('Incorrect provider')
+    }
 
-    // if (!existingUser.emailVerified) return 'unverified-email';
+    // if (!existingUser.emailVerified) throw new Error('Email not verified');
 
     const signInResult = await signIn('credentials', {
       email: validatedInput.data.email,
@@ -130,13 +124,17 @@ export async function signInWithPassword(
 
 export async function resetPassword(
   rawInput: PasswordResetFormInput,
-): Promise<'invalid-input' | 'not-found' | 'error' | 'success'> {
+): Promise<'success'> {
   try {
     const validatedInput = passwordResetSchema.safeParse(rawInput)
-    if (!validatedInput.success) return 'invalid-input'
+    if (!validatedInput.success) {
+      throw new Error('Invalid input')
+    }
 
     const member = await getUserByEmail({ email: validatedInput.data.email })
-    if (!member) return 'not-found'
+    if (!member) {
+      throw new Error('User not found')
+    }
 
     const today = new Date()
     const resetPasswordToken = crypto.randomBytes(32).toString('base64url')
@@ -144,9 +142,6 @@ export async function resetPassword(
       today.setDate(today.getDate() + 1),
     ) // 24 hours from now
 
-    /**
-     * TODO: Switch to using a use case
-     */
     const memberUpdated = await db
       .update(members)
       .set({
@@ -155,6 +150,10 @@ export async function resetPassword(
       })
       .where(eq(members.id, member.id))
       .returning()
+
+    if (!memberUpdated) {
+      throw new Error('Failed to update member with reset token')
+    }
 
     const emailSent = await resend.emails.send({
       from: process.env.RESEND_EMAIL_FROM,
@@ -166,28 +165,37 @@ export async function resetPassword(
       }),
     })
 
-    return memberUpdated && emailSent ? 'success' : 'error'
+    if (!emailSent) {
+      throw new Error('Failed to send reset password email')
+    }
+
+    return 'success'
   } catch (error) {
     console.error(error)
-    return 'error'
+    throw error instanceof Error ? error : new Error('Error resetting password')
   }
 }
 
 export async function updatePassword(
   rawInput: PasswordUpdateFormInputExtended,
-): Promise<'invalid-input' | 'not-found' | 'expired' | 'error' | 'success'> {
+): Promise<'success'> {
   try {
     const validatedInput = passwordUpdateSchemaExtended.safeParse(rawInput)
-    if (!validatedInput.success) return 'invalid-input'
+    if (!validatedInput.success) {
+      throw new Error('Invalid input')
+    }
 
     const member = await getUserByResetPasswordToken({
       token: validatedInput.data.resetPasswordToken,
     })
-    if (!member) return 'not-found'
+    if (!member) {
+      throw new Error('User not found')
+    }
     //@ts-ignore
     const resetPasswordExpiry = member.resetPasswordTokenExpiry
-    if (!resetPasswordExpiry || resetPasswordExpiry < new Date())
-      return 'expired'
+    if (!resetPasswordExpiry || resetPasswordExpiry < new Date()) {
+      throw new Error('Reset token has expired')
+    }
 
     const passwordHash = await bcryptjs.hash(validatedInput.data.password, 10)
 
@@ -201,10 +209,14 @@ export async function updatePassword(
       .where(eq(members.id, member.id))
       .returning()
 
-    return memberUpdated ? 'success' : 'error'
+    if (!memberUpdated) {
+      throw new Error('Failed to update password')
+    }
+
+    return 'success'
   } catch (error) {
     console.error(error)
-    throw new Error('Error updating password')
+    throw error instanceof Error ? error : new Error('Error updating password')
   }
 }
 

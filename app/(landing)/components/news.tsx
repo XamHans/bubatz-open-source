@@ -1,4 +1,7 @@
+'use client'
+
 import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card'
+import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { posts } from '../../../.velite'
@@ -6,16 +9,21 @@ import { posts } from '../../../.velite'
 export default function NewsSection() {
   const recentPosts = posts.slice(0, 3)
   return (
-    <section id="news" className="w-full ">
-      <div className="mb-8 flex flex-col items-start space-y-2 sm:flex-row sm:items-center sm:space-x-2 sm:space-y-0">
+    <section id="news" className="w-full">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className=" flex flex-col items-start space-y-2 sm:flex-row sm:items-center sm:space-x-4 sm:space-y-0"
+      >
         <div className="rounded-lg bg-[#c5f467] px-3 py-1">
           <h2 className="text-2xl font-bold">News</h2>
         </div>
-        <p className="text-xl text-muted-foreground">
+        <p className="max-w-2xl text-xl">
           Bleib auf dem Laufenden, mit unseren Blogbeiträgen
         </p>
-      </div>
-      <div className="grid gap-6 md:grid-cols-3">
+      </motion.div>
+      <div className="grid gap-8 px-12 md:grid-cols-3">
         {recentPosts.map((post: any) => (
           <BlogPostCard
             key={post.slug}
@@ -30,7 +38,7 @@ export default function NewsSection() {
       <div className="mt-8 flex justify-center">
         <Link
           href="/blog"
-          className="inline-flex items-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+          className="text-black-foreground inline-flex items-center rounded-full bg-primary px-6 py-3 text-sm font-semibold transition-colors hover:bg-primary/90"
         >
           Alle Beiträge ansehen
           <ArrowRight className="ml-2 h-4 w-4" />
@@ -73,36 +81,6 @@ function BlogPostCard({ title, date, excerpt, slug, tags }) {
           </div>
         </CardBody>
       </CardContainer>
-      {/* <article className="relative flex h-full flex-col justify-between rounded-[2rem] border-2 border-black bg-card p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
-        <div className="mb-4">
-          <h3 className="mb-2 text-xl font-semibold">{title}</h3>
-          <time
-            dateTime={date}
-            className="mb-2 block text-sm text-muted-foreground"
-          >
-            {new Date(date).toLocaleDateString('de-DE', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </time>
-          <p className="text-sm text-muted-foreground">{excerpt}</p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {tags?.map((tag) => (
-              <span
-                key={tag}
-                className="inline-block rounded-full bg-primary/10 px-3 py-1 text-xs text-primary"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
-        <div className="inline-flex items-center text-sm font-semibold text-primary hover:underline">
-          Weiterlesen
-          <ArrowRight className="ml-1 h-4 w-4" />
-        </div>
-      </article> */}
     </Link>
   )
 }

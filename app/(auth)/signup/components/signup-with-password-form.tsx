@@ -49,14 +49,6 @@ export function SignUpWithPasswordForm(): JSX.Element {
         })
 
         switch (message) {
-          case 'exists':
-            toast({
-              title: 'User with this email address already exists',
-              description: 'If this is you, please sign in instead',
-              variant: 'destructive',
-            })
-            form.reset()
-            break
           case 'success':
             toast({
               title: 'Success!',
