@@ -26,6 +26,11 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Nunito', 'sans-serif'],
+        ingrafts: ['Ingrafts', 'sans-serif'],
+      },
+
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -33,12 +38,12 @@ const config = {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
+          DEFAULT: '#F3F3F3',
+          foreground: '#313131',
         },
         secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
+          DEFAULT: '#E6FFE1',
+          foreground: '#F64D42',
         },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',

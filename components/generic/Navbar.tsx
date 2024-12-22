@@ -1,52 +1,51 @@
-import { Icons } from '@/app/(landing)/components/Icons'
-import { siteConfig } from '@/config/site'
+import Image from 'next/image'
 import Link from 'next/link'
-import { buttonVariants } from '../ui/button'
+import { Button } from '../ui/button'
 
-export async function Navbar() {
-  // const user = await getUser();
-
+const Navbar = () => {
   return (
-    <nav className="flex h-[5vh] items-center border-b bg-background">
-      <div className="container flex items-center justify-between">
+    <nav className="container sticky top-0 z-50 flex items-center justify-between  bg-white px-8 py-8 ">
+      <div className="flex items-center">
         <Link href="/">
-          <h1 className="text-md font-bold">
-            Bubatz Club <span className="text-primary">Manager</span>
-          </h1>
+          <Image src="/bubatz.svg" alt="Bubatz Logo" width={200} height={54} />
+        </Link>
+      </div>
+
+      <div className="flex items-center space-x-12">
+        <Link
+          href="/#features"
+          className="font-nunito text-lg text-black hover:text-gray-700"
+        >
+          Funktionen
+        </Link>
+        <Link
+          href="/#pricing"
+          className="font-nunito text-lg text-black hover:text-gray-700"
+        >
+          Pakete
         </Link>
 
-        <div className="flex items-center gap-x-5">
-          {/* <ThemeToggle /> */}
+        <Link
+          href="/blog"
+          className="font-nunito text-lg text-black hover:text-gray-700"
+        >
+          News
+        </Link>
 
-          <Link
-            href={siteConfig.links.gitHub}
-            className={buttonVariants({
-              className: 'flex items-center',
-            })}
-          >
-            <Icons.gitHub className="mr-2 h-4 w-4" />
-            GitHub
-          </Link>
-
-          {/* {(await isAuthenticated()) ? (
-            <UserNav
-              email={user?.email as string}
-              image={user?.picture as string}
-              name={user?.given_name as string}
-            />
-          ) : (
-            <div className="flex items-center gap-x-5">
-              <LoginLink>
-                <Button>Sign In</Button>
-              </LoginLink>
-
-              <RegisterLink>
-                <Button variant="secondary">Sign Up</Button>
-              </RegisterLink>
-            </div>
-          )} */}
-        </div>
+        <Link
+          href="/#team"
+          className="font-nunito text-lg text-black hover:text-gray-700"
+        >
+          Über bubatz
+        </Link>
+        <Link href="/signin">
+          <Button className="w-full bg-[#b6f36e] p-4 text-lg font-bold text-black hover:bg-[#a5e45d] min-[400px]:w-auto md:p-6 md:text-xl">
+            Kostenlos testen
+          </Button>
+        </Link>
       </div>
     </nav>
   )
 }
+
+export { Navbar }

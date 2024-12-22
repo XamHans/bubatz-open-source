@@ -9,6 +9,8 @@
     "start": "next start",
     "test": "jest --config jest.config.mjs",
     "test:watch": "jest --config jest.config.mjs --watch",
+    "dev:content": "velite --watch",
+    "build:content": "velite --clean",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
@@ -42,7 +44,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-tabs": "^1.0.4",
-    "@radix-ui/react-toast": "^1.1.5",
+    "@radix-ui/react-toast": "^1.2.1",
     "@radix-ui/react-toggle": "^1.0.3",
     "@radix-ui/react-toggle-group": "^1.0.4",
     "@radix-ui/react-tooltip": "^1.0.7",
@@ -68,7 +70,7 @@
     "drizzle-orm": "^0.30.10",
     "drizzle-zod": "^0.5.1",
     "extend-expect": "link:@testing-library/jest-dom/extend-expect",
-    "framer-motion": "^11.2.6",
+    "framer-motion": "^11.3.30",
     "i18next": "^23.11.5",
     "i18next-resources-to-backend": "^1.2.0",
     "json-edit-react": "^1.12.0-rc1",
@@ -95,6 +97,7 @@
     "react-hook-form": "^7.52.0",
     "react-i18next": "^14.1.2",
     "react-icons": "^5.2.1",
+    "rehype-slug": "^6.0.0",
     "resend": "^3.2.0",
     "sonner": "^1.5.0",
     "stream-browserify": "^3.0.0",
@@ -127,6 +130,7 @@
     "prettier": "^3.2.5",
     "tailwindcss": "^3.3.0",
     "ts-jest": "^29.2.5",
-    "typescript": "^5"
+    "typescript": "^5",
+    "velite": "^0.1.1"
   }
 }

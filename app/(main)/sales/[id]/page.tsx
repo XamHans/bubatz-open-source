@@ -5,7 +5,6 @@ import { fetchSaleDetailsUseCase } from '@/modules/sales/use-cases'
 import { ChevronLeft } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import SaleGeneralInfo from './components/SaleGeneralInfo'
 import SaleItemsCards from './components/SaleItemCard'
@@ -17,9 +16,6 @@ interface SaleDetailPageProps {
 // This component will handle data fetching and rendering
 async function SaleContent({ id }: { id: string }) {
   const { data } = await fetchSaleDetailsUseCase({ saleId: +id })
-  if (data.failure) {
-    notFound()
-  }
 
   return (
     <div className="grid gap-8 lg:grid-cols-3">

@@ -8,7 +8,6 @@ import {
 } from '@/modules/plants/use-cases'
 import { ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import ArchiveStrainModal from './components/ArchiveStrainModal'
 import StrainGeneralInfo from './components/StrainGeneralInfo'
@@ -28,9 +27,6 @@ export default async function StrainDetailPage({
     { label: id.toString(), href: '/' },
   ]
   const { data: strainData } = await fetchStrainDetailsUseCase({ id: +id })
-  if (strainData.failure) {
-    notFound()
-  }
 
   const { data: batchesData } = await fetchBatchesByStrainIdUseCase({
     strainId: +id,

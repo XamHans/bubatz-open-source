@@ -76,7 +76,7 @@ const MemberGeneralInfo: React.FC<MemberGeneralInfoProps> = ({ member }) => {
             ? `${member.firstName} ${member.lastName}`
             : 'Neues Mitglied'}
         </CardTitle>
-        <div className="mt-2 flex justify-center gap-2">
+        <div className="mt-2 flex justify-center gap-2 font-extrabold text-black">
           {member.status && (
             <Badge variant="secondary">
               {t(`form.status.${member.status}`)}
