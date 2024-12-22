@@ -183,7 +183,6 @@
       "ageRestriction": "Mitglied ist zwischen 18 - 21 Jahre alt und darf keine Sorte mit hohem THC-Gehalt konsumieren"
     }
   },
-
   "Payments": {
     "pageTitle": "Zahlungen",
     "pageDescription": "Verwalten Sie Mitgliederzahlungen",
@@ -243,8 +242,61 @@
     }
   },
   "Plants": {
-    "title": "Pflanzen",
-    "description": "Verwalten Sie die Pflanzen in dieser Partie",
+    "pageTitle": "Pflanzen verwalten",
+    "pageDescription": "Verwalten Sie Ihre Pflanzen & Partien",
+    "newStrain": {
+      "form": {
+        "name": {
+          "label": "Sortenname",
+          "placeholder": "Sortennamen eingeben",
+          "description": "Der Name der Cannabis-Sorte."
+        },
+        "description": {
+          "label": "Beschreibung",
+          "placeholder": "Sortenbeschreibung eingeben",
+          "description": "Eine kurze Beschreibung der Sorte (optional)."
+        },
+        "thc": {
+          "label": "THC-Gehalt (%)",
+          "description": "Der THC-Gehalt der Sorte in Prozent."
+        },
+        "cbd": {
+          "label": "CBD-Gehalt (%)",
+          "description": "Der CBD-Gehalt der Sorte in Prozent."
+        },
+        "price": {
+          "label": "Aktueller Preis pro Gramm",
+          "description": "Der aktuelle Preis pro Gramm für diese Sorte."
+        },
+        "amount": {
+          "label": "Aktuelle Menge",
+          "description": "Wie viel von dieser Sorte aktuell verfügbar ist."
+        },
+        "submit": {
+          "creating": "Sorte wird erstellt...",
+          "create": "Sorte erstellen"
+        }
+      },
+      "messages": {
+        "success": {
+          "title": "Erfolg",
+          "description": "Sorte erfolgreich erstellt"
+        },
+        "error": {
+          "title": "Fehler",
+          "description": "Sorte konnte nicht erstellt werden: {error}"
+        }
+      }
+    },
+    "actions": {
+      "newBatch": "Partie hinzufügen",
+      "newStrain": "Sorte hinzufügen"
+    },
+    "tabs": {
+      "batches": "Partien",
+      "strains": "Sorten",
+      "archived": "Archiviert"
+    },
     "table": {
       "headers": {
         "id": "ID",

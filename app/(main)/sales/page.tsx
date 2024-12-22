@@ -10,22 +10,18 @@ import {
 } from '@/components/ui/card'
 import { siteConfig } from '@/config/site'
 import { PlusCircle } from 'lucide-react'
-import { Metadata } from 'next'
-import { useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import SalesTable from './components/SalesTable'
 
-export default function SalesPage() {
-  const metadata: Metadata = {
-    title: 'Manage Sales',
-    description: 'Add a new sale or see the details of an existing one.',
-  }
+export default async function SalesPage() {
+  const t = await getTranslations('Sales')
+  const g = await getTranslations('General')
 
   const breadcrumbs = [
-    { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Sales' },
+    { label: g('breadcrumbs.dashboard'), href: '/dashboard' },
+    { label: g('breadcrumbs.sales') },
   ]
-  const t = useTranslations('Sales')
 
   return (
     <>
@@ -37,16 +33,8 @@ export default function SalesPage() {
           <CardHeader className="px-7">
             <div className="grid grid-cols-2">
               <div>
-                <CardTitle>
-                  {metadata.title
-                    ? metadata.title.toString()
-                    : 'Error getting title'}
-                </CardTitle>
-                <CardDescription>
-                  {metadata.description
-                    ? metadata.description.toString()
-                    : 'Error getting description'}
-                </CardDescription>
+                <CardTitle>{t('pageTitle')}</CardTitle>
+                <CardDescription>{t('pageDescription')}</CardDescription>
               </div>
               <div className="flex justify-end">
                 <Link href={siteConfig.links.sales.new}>

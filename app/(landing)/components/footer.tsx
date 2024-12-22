@@ -1,4 +1,4 @@
-import { Instagram, Linkedin, Twitter } from 'lucide-react'
+import { Instagram, Twitter } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -36,16 +36,13 @@ export default function Footer() {
           </nav>
 
           <div className="flex items-center justify-end space-x-4">
-            {['LinkedIn', 'Instagram'].map((platform) => (
+            {['Instagram'].map((platform) => (
               <Link
                 key={platform}
                 href="#"
                 aria-label={platform}
                 className="rounded-full bg-white p-2 transition-colors hover:bg-gray-200"
               >
-                {platform === 'LinkedIn' && (
-                  <Linkedin className="h-5 w-5 text-[#1e1b4b]" />
-                )}
                 {platform === 'Twitter' && (
                   <Twitter className="h-5 w-5 text-[#1e1b4b]" />
                 )}
@@ -81,20 +78,18 @@ export default function Footer() {
 
         {/* Bottom Section: Copyright and Legal Links */}
         <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
-          <p className="text-sm">&copy; 2024 bubatz</p>
+          <p className="text-sm">&copy; 2024 - 2025 bubatz</p>
 
           <nav className="flex flex-wrap justify-center gap-4 text-sm">
-            <Link href="#" className="transition-colors hover:underline">
+            <Link
+              href="/impressum"
+              className="transition-colors hover:underline"
+            >
               Impressum
             </Link>
-            <Link href="#" className="transition-colors hover:underline">
-              AGB
-            </Link>
-            <Link href="#" className="transition-colors hover:underline">
+
+            <Link href="/privacy" className="transition-colors hover:underline">
               Datenschutzerklärung
-            </Link>
-            <Link href="#" className="transition-colors hover:underline">
-              Cookie-Einstellungen
             </Link>
           </nav>
         </div>

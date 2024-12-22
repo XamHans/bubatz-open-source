@@ -113,9 +113,7 @@ export const fetchPlantsUseCase = actionClient.action(async () => {
 export const createPlantUseCase = actionClient
   .schema(createPlantInputSchema)
   .action(async ({ parsedInput }) => {
-    console.info(parsedInput, 'Creating plant with data:')
     const newPlantId = await createPlant(parsedInput)
-    console.info(newPlantId, 'Creating plant id:')
     if (!newPlantId) {
       throw new Error('Failed to create plant')
     }
@@ -125,7 +123,6 @@ export const createPlantUseCase = actionClient
 export const deletePlantUseCase = actionClient
   .schema(deletePlantInputSchema)
   .action(async ({ parsedInput }) => {
-    console.info('Deleting plant with id:', parsedInput.id)
     try {
       await deletePlant(parsedInput)
     } catch (error) {
@@ -138,7 +135,6 @@ export const deletePlantUseCase = actionClient
 export const updatePlantUseCase = actionClient
   .schema(updatePlantInputSchema)
   .action(async ({ parsedInput }) => {
-    console.info('Updating plant with:', parsedInput)
     await updatePlant(parsedInput.id!, parsedInput)
     return { success: 'Plant updated successfully' }
   })
@@ -171,7 +167,6 @@ export const fetchStrainDetailsUseCase = actionClient
 export const createStrainUseCase = actionClient
   .schema(createStrainInputSchema)
   .action(async ({ parsedInput }) => {
-    console.info('Creating strain with data:', parsedInput)
     const newStrainId = await createStrain(parsedInput)
     if (!newStrainId) {
       throw new Error('Failed to create strain')

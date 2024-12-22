@@ -1,3 +1,5 @@
+'use client'
+import { motion } from 'framer-motion'
 import React from 'react'
 
 export type Feature = {
@@ -32,20 +34,22 @@ const features: Feature[] = [
 export default function Features() {
   return (
     <section className="w-full px-4 md:px-0">
-      <div className="mb-8 flex flex-col space-y-4">
-        <div className="flex flex-col items-start space-y-4 sm:flex-row sm:items-center sm:space-x-8 sm:space-y-0">
-          <div className="rounded-lg bg-[#c5f467] px-4 py-2 sm:px-6 sm:py-3">
-            <h2 className="text-2xl font-bold sm:text-3xl md:text-4xl">
-              Funktionen
-            </h2>
-          </div>
-          <p className="text-base text-muted-foreground sm:text-lg md:text-xl">
-            Nutze unsere neuesten Funktionen und erlebe, wie wir dir deinen
-            Club-Alltag erleichtern. Du sparst Zeit & Kosten <br />
-            und kannst dich auf das Wesentliche konzentrieren.
-          </p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-12 flex flex-col items-start space-y-2 sm:flex-row sm:items-start sm:space-x-4 sm:space-y-0"
+      >
+        <div className="rounded-lg bg-[#c5f467] px-3 py-1">
+          <h2 className="text-2xl font-bold">Funktionen</h2>
         </div>
-      </div>
+        <p className="max-w-6xl text-xl">
+          Nutze unsere neuesten Funktionen und erlebe, wie wir dir deinen
+          Club-Alltag erleichtern. Du sparst Zeit & Kosten und kannst dich auf
+          das Wesentliche konzentrieren.
+        </p>
+      </motion.div>
+
       <div className="max-w-7xl">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
           {features.map((feature, idx) => (

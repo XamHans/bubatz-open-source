@@ -242,8 +242,61 @@
     }
   },
   "Plants": {
-    "title": "Plants",
-    "description": "Manage the plants in this batch",
+    "pageTitle": "Manage Plants",
+    "pageDescription": "Manage your plants & batches",
+    "newStrain": {
+      "form": {
+        "name": {
+          "label": "Strain Name",
+          "placeholder": "Enter strain name",
+          "description": "The name of the cannabis strain."
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "Enter strain description",
+          "description": "A brief description of the strain (optional)."
+        },
+        "thc": {
+          "label": "THC Content (%)",
+          "description": "The THC content of the strain as a percentage."
+        },
+        "cbd": {
+          "label": "CBD Content (%)",
+          "description": "The CBD content of the strain as a percentage."
+        },
+        "price": {
+          "label": "Current Price per Gram",
+          "description": "The current price per gram for this strain."
+        },
+        "amount": {
+          "label": "Current Amount",
+          "description": "How much of this strain is currently available."
+        },
+        "submit": {
+          "creating": "Creating Strain...",
+          "create": "Create Strain"
+        }
+      },
+      "messages": {
+        "success": {
+          "title": "Success",
+          "description": "Strain created successfully"
+        },
+        "error": {
+          "title": "Error",
+          "description": "Strain creation failed, {error}"
+        }
+      }
+    },
+    "actions": {
+      "newBatch": "Add Batch",
+      "newStrain": "Add Strain"
+    },
+    "tabs": {
+      "batches": "Batches",
+      "strains": "Strains",
+      "archived": "Archived"
+    },
     "table": {
       "headers": {
         "id": "ID",

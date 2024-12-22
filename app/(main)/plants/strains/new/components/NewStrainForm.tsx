@@ -21,19 +21,21 @@ import {
 import { createStrainUseCase } from '@/modules/plants/use-cases'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useAction } from 'next-safe-action/hooks'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 
 export default function NewStrainForm() {
   const router = useRouter()
   const { toast } = useToast()
+  const t = useTranslations('Plants.newStrain')
 
   const { execute, status } = useAction(createStrainUseCase, {
     onSuccess: (data) => {
       toast({
-        title: 'Success',
+        title: t('messages.success.title'),
         duration: 1000,
-        description: 'Strain created successfully',
+        description: t('messages.success.description'),
       })
       setTimeout(() => {
         router.push(`${siteConfig.links.plants.index}`)
@@ -41,10 +43,10 @@ export default function NewStrainForm() {
     },
     onError: (error) => {
       toast({
-        title: 'Error',
+        title: t('messages.error.title'),
         variant: 'destructive',
         duration: 1000,
-        description: `Strain creation failed, ${error}`,
+        description: t.raw('messages.error.description')({ error }),
       })
     },
   })
@@ -73,13 +75,11 @@ export default function NewStrainForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Strain Name</FormLabel>
+              <FormLabel>{t('form.name.label')}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter strain name" {...field} />
+                <Input placeholder={t('form.name.placeholder')} {...field} />
               </FormControl>
-              <FormDescription>
-                The name of the cannabis strain.
-              </FormDescription>
+              <FormDescription>{t('form.name.description')}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -90,16 +90,16 @@ export default function NewStrainForm() {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>{t('form.description.label')}</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Enter strain description"
+                  placeholder={t('form.description.placeholder')}
                   value={field.value ?? ''}
                   onChange={field.onChange}
                 />
               </FormControl>
               <FormDescription>
-                A brief description of the strain (optional).
+                {t('form.description.description')}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -111,7 +111,7 @@ export default function NewStrainForm() {
           name="thc"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>THC Content (%)</FormLabel>
+              <FormLabel>{t('form.thc.label')}</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -120,9 +120,7 @@ export default function NewStrainForm() {
                   onChange={(e) => field.onChange(parseFloat(e.target.value))}
                 />
               </FormControl>
-              <FormDescription>
-                The THC content of the strain as a percentage.
-              </FormDescription>
+              <FormDescription>{t('form.thc.description')}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -133,7 +131,7 @@ export default function NewStrainForm() {
           name="cbd"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>CBD Content (%)</FormLabel>
+              <FormLabel>{t('form.cbd.label')}</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -142,9 +140,7 @@ export default function NewStrainForm() {
                   onChange={(e) => field.onChange(parseFloat(e.target.value))}
                 />
               </FormControl>
-              <FormDescription>
-                The CBD content of the strain as a percentage.
-              </FormDescription>
+              <FormDescription>{t('form.cbd.description')}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -155,7 +151,7 @@ export default function NewStrainForm() {
           name="currentPricePerGram"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Current Price per Gram</FormLabel>
+              <FormLabel>{t('form.price.label')}</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -164,9 +160,7 @@ export default function NewStrainForm() {
                   onChange={(e) => field.onChange(parseFloat(e.target.value))}
                 />
               </FormControl>
-              <FormDescription>
-                The current price per gram for this strain.
-              </FormDescription>
+              <FormDescription>{t('form.price.description')}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -177,7 +171,7 @@ export default function NewStrainForm() {
           name="amountAvailable"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Current Amount</FormLabel>
+              <FormLabel>{t('form.amount.label')}</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -186,16 +180,16 @@ export default function NewStrainForm() {
                   onChange={(e) => field.onChange(parseFloat(e.target.value))}
                 />
               </FormControl>
-              <FormDescription>
-                How much of this strain is currently available.
-              </FormDescription>
+              <FormDescription>{t('form.amount.description')}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
         <Button type="submit" disabled={status === 'executing'}>
-          {status === 'executing' ? 'Creating Strain...' : 'Create Strain'}
+          {status === 'executing'
+            ? t('form.submit.creating')
+            : t('form.submit.create')}
         </Button>
       </form>
     </Form>

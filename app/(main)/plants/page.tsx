@@ -12,22 +12,20 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { siteConfig } from '@/config/site'
 import { PlusCircle } from 'lucide-react'
-import { Metadata } from 'next'
 import { SessionProvider } from 'next-auth/react'
+import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import BatchesTable from './components/BatchesTable'
 import StrainsTable from './components/StrainsTable'
 
-export const metadata: Metadata = {
-  title: 'Manage Plants',
-  description: 'Manage your plants & batches',
-}
-
 async function PlantListPage() {
   const session = await auth()
+  const t = await getTranslations('Plants')
+  const g = await getTranslations('General')
+
   const breadcrumbs = [
-    { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Plants', href: '/plants' },
+    { label: g('breadcrumbs.dashboard'), href: '/dashboard' },
+    { label: g('breadcrumbs.plants'), href: '/plants' },
   ]
   return (
     <SessionProvider session={session}>
@@ -40,23 +38,15 @@ async function PlantListPage() {
           <CardHeader className="px-7">
             <div className="grid grid-cols-2">
               <div>
-                <CardTitle>
-                  {metadata.title
-                    ? metadata.title.toString()
-                    : 'Error getting title'}
-                </CardTitle>
-                <CardDescription>
-                  {metadata.description
-                    ? metadata.description.toString()
-                    : 'Error getting description'}
-                </CardDescription>
+                <CardTitle>{t('pageTitle')}</CardTitle>
+                <CardDescription>{t('pageDescription')}</CardDescription>
               </div>
               <div className="flex justify-end gap-2">
                 <Link href={siteConfig.links.plants.batches.new}>
                   <Button size="sm" className="h-8 w-32 gap-1">
                     <PlusCircle className="h-3.5 w-3.5" />
                     <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                      Add Batch
+                      {t('actions.newBatch')}
                     </span>
                   </Button>
                 </Link>
@@ -64,7 +54,7 @@ async function PlantListPage() {
                   <Button size="sm" className="h-8 w-32 gap-1">
                     <PlusCircle className="h-3.5 w-3.5" />
                     <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                      Add Strain
+                      {t('actions.newStrain')}
                     </span>
                   </Button>
                 </Link>
@@ -75,10 +65,10 @@ async function PlantListPage() {
             <Tabs defaultValue="batches">
               <div className="flex items-center">
                 <TabsList>
-                  <TabsTrigger value="batches">Batches</TabsTrigger>
-                  <TabsTrigger value="strains">Strains</TabsTrigger>
+                  <TabsTrigger value="batches">{t('tabs.batches')}</TabsTrigger>
+                  <TabsTrigger value="strains">{t('tabs.strains')}</TabsTrigger>
                   <TabsTrigger value="archived" className="hidden sm:flex">
-                    Archived
+                    {t('tabs.archived')}
                   </TabsTrigger>
                 </TabsList>
               </div>
