@@ -13,9 +13,7 @@ const LandingLayout = ({ children }: Props) => {
       <div className="hidden lg:block">
         <Navbar />
       </div>
-      <main className="flex flex-1 flex-col items-center justify-center  lg:mt-0">
-        {children}
-      </main>
+      <main className="w-full flex-1">{children}</main>
       <Footer />
     </div>
   )
