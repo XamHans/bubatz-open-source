@@ -33,49 +33,46 @@ export async function generateMetadata({
   return {
     title: post.title,
     description: post.description,
-    openGraph: post.image
-      ? {
-          images: [
-            {
-              url: post.image,
-              width: 1200,
-              height: 630,
-              alt: post.title,
-            },
-          ],
-        }
-      : null,
   }
 }
 
-export default async function BlogPostPage({ params }: BlogPostProps) {
+export default function BlogPostPage({ params }) {
   const post = getPostBySlug(params.slug)
 
   if (!post) {
     notFound()
   }
 
+  // Ensure the image path is absolute and exists
+  const imageUrl = post.image?.startsWith('/') ? post.image : `/${post.image}`
+  console.log('Image URL:', imageUrl) // Debug log
+
   return (
-    <>
-      <div className={`min-h-screen ${inter.className}`}>
-        <article className="mx-auto max-w-3xl">
+    <div className={`my-4 min-h-screen ${inter.className}`}>
+      <article className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl">
           <DocsPageHeader heading={post.title} text={post.description} />
+
           {post.image && (
-            <div className="relative mb-8 h-[400px] w-full overflow-hidden rounded-lg">
-              <Image
-                src={post.image}
-                alt={post.title}
-                fill
-                className="object-cover"
-                priority
-              />
+            <div className="relative mb-6 w-full overflow-hidden rounded-lg">
+              <div className="relative h-64 w-full sm:h-72 md:h-96">
+                <Image
+                  src={imageUrl}
+                  alt={post.title || 'Blog post image'}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority
+                />
+              </div>
             </div>
           )}
-          <div className="prose prose-gray prose-lg mt-8 max-w-none">
+
+          <div className="prose prose-gray lg:prose-lg prose-img:rounded-lg prose-headings:font-bold prose-a:text-blue-600 hover:prose-a:text-blue-500 max-w-none">
             <Mdx code={post.body} />
           </div>
-        </article>
-      </div>
-    </>
+        </div>
+      </article>
+    </div>
   )
 }
