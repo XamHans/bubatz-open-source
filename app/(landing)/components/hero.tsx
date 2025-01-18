@@ -17,6 +17,7 @@ export default function Hero() {
                 className="text-[#B9FF66]"
                 style={{
                   WebkitTextStroke: '1px black',
+                  //@ts-ignore
                   textStroke: '1px black',
                 }}
               >
@@ -27,6 +28,7 @@ export default function Hero() {
                 className="text-[#B9FF66]"
                 style={{
                   WebkitTextStroke: '1px black',
+                  //@ts-ignore
                   textStroke: '1px black',
                 }}
               >

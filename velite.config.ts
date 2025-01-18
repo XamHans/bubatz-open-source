@@ -50,9 +50,5 @@ export default defineConfig({
   collections: { authors, posts },
   mdx: {
     rehypePlugins: [rehypeSlug as any],
-    imageOptions: {
-      quality: 80,
-      formats: ['webp'],
-    },
   },
 })
