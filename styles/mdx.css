@@ -3,7 +3,7 @@
 }
 
 [data-rehype-pretty-code-figure] code {
-  @apply border-0 p-0 text-sm !leading-loose md:text-base;
+  @apply border-0 p-0  !leading-loose md:text-base;
 }
 
 [data-rehype-pretty-code-figure] code[data-line-numbers] {

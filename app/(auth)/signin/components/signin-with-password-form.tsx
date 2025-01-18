@@ -113,7 +113,7 @@ export function SignInWithPasswordForm(): JSX.Element {
                   <p>{t('form.email.demo')}</p>
                 </FormDescription>
               )}
-              <FormMessage className="pt-2 sm:text-sm" />
+              <FormMessage className="pt-2 " />
             </FormItem>
           )}
         />
@@ -135,7 +135,7 @@ export function SignInWithPasswordForm(): JSX.Element {
                   <p>{t('form.password.demo')}</p>
                 </FormDescription>
               )}
-              <FormMessage className="pt-2 sm:text-sm" />
+              <FormMessage className="pt-2 " />
             </FormItem>
           )}
         />

@@ -56,7 +56,7 @@ export default function Footer() {
 
         {/* Middle Section: Contact Info and Compliance */}
         <div className="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2">
-          <div className="space-y-2 text-sm">
+          <div className="space-y-2 ">
             <p>E-Mail: info@bubatz.club</p>
             <p>Tel: +49 17657682144</p>
             <p>Adresse: Schwabelweiß 69</p>
@@ -78,9 +78,9 @@ export default function Footer() {
 
         {/* Bottom Section: Copyright and Legal Links */}
         <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
-          <p className="text-sm">&copy; 2024 - 2025 bubatz</p>
+          <p className="">&copy; 2024 - 2025 bubatz</p>
 
-          <nav className="flex flex-wrap justify-center gap-4 text-sm">
+          <nav className="flex flex-wrap justify-center gap-4 ">
             <Link
               href="/impressum"
               className="transition-colors hover:underline"
@@ -88,7 +88,7 @@ export default function Footer() {
               Impressum
             </Link>
 
-            <Link href="/privacy" className="transition-colors hover:underline">
+            <Link href="/dsgvo" className="transition-colors hover:underline">
               Datenschutzerklärung
             </Link>
           </nav>

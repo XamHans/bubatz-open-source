@@ -1,122 +1,125 @@
-import { Icons } from '@/components/generic/Icons'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { env } from '@/env.mjs'
-import { type Metadata } from 'next'
-import { useTranslations } from 'next-intl'
-import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
-import { SignUpWithPasswordForm } from './components/signup-with-password-form'
+'use client'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('Auth.signUp')
-  return {
-    metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-    title: t('metadata.title'),
-    description: t('metadata.description'),
-  }
+import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card'
+import { motion } from 'framer-motion'
+import { ArrowRight } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { posts } from '../../../.velite'
+
+export default function NewsSection() {
+  const recentPosts = posts.slice(0, 3)
+  return (
+    <section
+      id="news"
+      className="w-full px-4 py-6 sm:px-6 sm:py-8 md:px-8 lg:px-12"
+    >
+      <div className="mx-auto max-w-7xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-center sm:gap-6"
+        >
+          <div className="w-fit rounded-lg bg-[#c5f467] px-3 py-1.5">
+            <h2 className="text-lg font-bold sm:text-xl md:text-2xl">News</h2>
+          </div>
+          <p className=" max-w-2xl  md:text-lg">
+            Bleib auf dem Laufenden, mit unseren Blogbeiträgen
+          </p>
+        </motion.div>
+
+        <div className="mx-2  max-w-screen-lg ">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {recentPosts.map((post: any) => (
+              <div key={post.slug} className="mx-auto w-full max-w-sm px-3">
+                <BlogPostCard
+                  title={post.title}
+                  date={post.date}
+                  excerpt={post.description}
+                  slug={post.slug}
+                  image={post.image}
+                  tags={post.tags}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-6 flex justify-center sm:mt-8">
+          <Link
+            href="/blog"
+            className="text-black-foreground inline-flex items-center rounded-full bg-primary px-3 py-2  font-semibold transition-colors hover:bg-primary/90 sm:px-4"
+          >
+            Alle Beiträge ansehen
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
+        </div>
+      </div>
+    </section>
+  )
 }
 
-export default function SignUpPage(): JSX.Element {
-  const t = useTranslations('Auth.signUp')
+function BlogPostCard({ title, date, excerpt, slug, image, tags }) {
+  const fallbackImage = '/images/default-blog-image.jpg'
 
   return (
-    <div className="flex h-auto min-h-screen w-full items-center justify-center md:flex">
-      <Card className="max-sm:flex max-sm:w-full max-sm:flex-col max-sm:items-center max-sm:justify-center max-sm:rounded-none max-sm:border-none sm:min-w-[370px] sm:max-w-[368px]">
-        <CardHeader className="space-y-1">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-2xl">{t('page.title')}</CardTitle>
-            <Link href="/">
-              <Icons.close
-                className="size-4"
-                aria-label={t('page.srOnly.close')}
-              />
-            </Link>
-          </div>
-          <CardDescription>{t('page.description')}</CardDescription>
-        </CardHeader>
-        <CardContent className="max-sm:w-full max-sm:max-w-[340px] max-sm:px-10">
-          {/* <OAuthButtons />
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative mb-3 mt-6 flex justify-center text-xs uppercase">
-              <span className="bg-background px-2">
-                Or continue with magic link
-              </span>
-            </div>
-          </div>
-          <SignInWithEmailForm />
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative mb-3 mt-6 flex justify-center text-xs uppercase">
-              <span className="bg-background px-2">
-                Or continue with password
-              </span>
-            </div>
-          </div> */}
-          <SignUpWithPasswordForm />
-        </CardContent>
-        <CardFooter className="grid w-full gap-4 text-sm text-muted-foreground max-sm:max-w-[340px] max-sm:px-10">
-          <div>
-            <div>
-              <span>{t('page.haveAccount')} </span>
-              <Link
-                aria-label={t('page.srOnly.signIn')}
-                href="/signin"
-                className="font-bold tracking-wide text-black underline-offset-4 transition-all hover:underline"
-              >
-                {t('page.signInLink')}
-                <span className="sr-only">{t('page.srOnly.signIn')}</span>
-              </Link>
-              .
-            </div>
-            {/* <div>
-              <span>Lost email verification link? </span>
-              <Link
-                aria-label="Resend email verification link"
-                href="/signup/reverify-email"
-                className="text-sm font-normal text-black underline-offset-4 transition-colors hover:underline"
-              >
-                Resend
-                <span className="sr-only">Resend email verification link</span>
-              </Link>
-              .
-            </div> */}
-          </div>
+    <Link href={`/${slug}`} className="block">
+      <CardContainer className="inter-var">
+        <CardBody className="group/card relative h-full rounded-xl border border-black/[0.1] p-3 transition-colors dark:border-white/[0.2] dark:bg-black dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] sm:p-4">
+          <CardItem
+            translateZ="50"
+            className="text-base font-bold text-neutral-600 dark:text-white sm:text-lg"
+          >
+            {title}
+          </CardItem>
 
-          <div className="text-sm text-muted-foreground md:text-xs">
-            {t('legal.agreement')}{' '}
-            <Link
-              aria-label={t('legal.tos')}
-              href="/tos"
-              className="font-semibold underline-offset-4 transition-all hover:underline"
+          <CardItem translateZ="100" className="mt-3 w-full">
+            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl">
+              <Image
+                src={image || fallbackImage}
+                alt={title}
+                fill
+                className="object-cover transition-transform duration-300 group-hover/card:scale-105"
+                sizes="(max-width: 640px) 90vw, (max-width: 768px) 45vw, 30vw"
+                priority
+              />
+            </div>
+          </CardItem>
+
+          {excerpt && (
+            <CardItem
+              translateZ="60"
+              className="mt-3 text-xs text-neutral-500 dark:text-neutral-300 "
             >
-              {t('legal.tos')}
-            </Link>{' '}
-            <br className="xs:hidden sm:block md:hidden" />
-            {t('legal.and')}
-            <Link
-              aria-label={t('legal.privacy')}
-              href="/privacy"
-              className="font-semibold underline-offset-4 transition-all hover:underline"
+              {excerpt}
+            </CardItem>
+          )}
+
+          <div className="mt-4 flex items-center justify-between sm:mt-6">
+            <CardItem
+              translateZ={20}
+              as="button"
+              className="rounded-xl bg-black px-2 py-1 text-xs font-bold text-white transition-colors hover:bg-neutral-800 dark:bg-white dark:text-black sm:px-3 sm:py-1.5"
             >
-              {' '}
-              {t('legal.privacy')}
-            </Link>
-            .
+              Jetzt lesen
+            </CardItem>
+
+            {date && (
+              <CardItem
+                translateZ={20}
+                className="text-xs text-neutral-500 dark:text-neutral-400"
+              >
+                {new Date(date).toLocaleDateString('de-DE', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </CardItem>
+            )}
           </div>
-        </CardFooter>
-      </Card>
-    </div>
+        </CardBody>
+      </CardContainer>
+    </Link>
   )
 }

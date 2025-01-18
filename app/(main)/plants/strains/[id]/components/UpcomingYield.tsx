@@ -60,13 +60,13 @@ const UpcomingYield = ({ batches }: UpcomingYieldProps) => {
             return (
               <div key={batch.id} className="p-4">
                 <div className="mb-2 flex items-center justify-between">
-                  <h4 className="text-sm font-medium">{batch.name}</h4>
-                  <span className="text-sm text-gray-500">
+                  <h4 className=" font-medium">{batch.name}</h4>
+                  <span className=" text-gray-500">
                     {batch.currentGrowthStage}
                   </span>
                 </div>
                 <Progress value={progress} className="mb-2" />
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between ">
                   <span>
                     Started: {new Date(batch.startDate).toLocaleDateString()}
                   </span>
@@ -79,7 +79,7 @@ const UpcomingYield = ({ batches }: UpcomingYieldProps) => {
                     <span>End Date: Not set</span>
                   )}
                 </div>
-                <div className="mt-2 text-sm font-medium">
+                <div className="mt-2  font-medium">
                   Progress: {Math.round(progress)}%
                 </div>
                 {batch?.expectedYield && Number(batch.expectedYield) > 0 && (

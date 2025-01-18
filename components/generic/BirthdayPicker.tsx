@@ -69,7 +69,7 @@ export function BirthdayPicker({ initialDate, onChange }: Props) {
           }}
         />
         {errorMessage !== '' && (
-          <div className="absolute bottom-[-1.75rem] left-0 text-sm text-red-400">
+          <div className="absolute bottom-[-1.75rem] left-0  text-red-400">
             {errorMessage}
           </div>
         )}

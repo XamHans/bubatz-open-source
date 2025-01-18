@@ -23,7 +23,7 @@ const SaleItemsCards: React.FC<SaleItemsCardsProps> = ({ items }) => {
                 </Badge>
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-muted-foreground">
+                    <span className=" font-medium text-muted-foreground">
                       {t('saleItems.thc')}
                     </span>
                     <Badge
@@ -34,7 +34,7 @@ const SaleItemsCards: React.FC<SaleItemsCardsProps> = ({ items }) => {
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-muted-foreground">
+                    <span className=" font-medium text-muted-foreground">
                       {t('saleItems.cbd')}
                     </span>
                     <Badge
@@ -49,7 +49,7 @@ const SaleItemsCards: React.FC<SaleItemsCardsProps> = ({ items }) => {
               <div className="flex flex-grow flex-col justify-between p-4 md:w-2/3">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className=" text-muted-foreground">
                       {t('saleItems.amount')}
                     </p>
                     <p className="text-lg font-medium">
@@ -59,7 +59,7 @@ const SaleItemsCards: React.FC<SaleItemsCardsProps> = ({ items }) => {
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className=" text-muted-foreground">
                       {t('saleItems.pricePerGram')}
                     </p>
                     <p className="text-lg font-medium">
@@ -70,7 +70,7 @@ const SaleItemsCards: React.FC<SaleItemsCardsProps> = ({ items }) => {
                   </div>
                 </div>
                 <div className="mt-4 flex items-center justify-between border-t pt-4">
-                  <span className="text-sm font-medium text-muted-foreground">
+                  <span className=" font-medium text-muted-foreground">
                     {t('saleItems.totalPrice')}
                   </span>
                   <span className="text-xl font-bold">

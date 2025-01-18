@@ -57,14 +57,12 @@ export const HoverInfoButton: React.FC<HoverInfoButtonProps> = ({
           >
             <Card className="w-64 border-2 border-[#b6f36e] bg-white/95 shadow-xl backdrop-blur-sm">
               <CardContent className="p-4">
-                <p className="mb-3 text-sm font-extrabold  text-gray-800">
+                <p className="mb-3  font-extrabold  text-gray-800">
                   {infoText}
                 </p>
                 <div className="flex items-center text-primary">
                   <Calendar className="mr-2 h-4 w-4 text-[#b6f36e]" />
-                  <span className="text-sm font-medium text-black">
-                    {ctaText}
-                  </span>
+                  <span className=" font-medium text-black">{ctaText}</span>
                 </div>
               </CardContent>
             </Card>

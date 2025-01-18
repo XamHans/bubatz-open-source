@@ -17,6 +17,7 @@ const posts = defineCollection({
       date: s.isodate(),
       published: s.boolean().default(true),
       authors: s.array(s.string()),
+      image: s.string().optional(), // Add image field
       body: s.mdx(),
     })
     .transform(computedFields),
@@ -49,5 +50,9 @@ export default defineConfig({
   collections: { authors, posts },
   mdx: {
     rehypePlugins: [rehypeSlug as any],
+    imageOptions: {
+      quality: 80,
+      formats: ['webp'],
+    },
   },
 })

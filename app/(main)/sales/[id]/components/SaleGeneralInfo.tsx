@@ -90,10 +90,8 @@ const InfoItem: React.FC<InfoItemProps> = ({
   <div className="flex items-center space-x-3 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
     <Icon className="h-5 w-5 flex-shrink-0" />
     <div>
-      <p className="text-sm font-medium">{primary}</p>
-      {secondary && (
-        <p className="text-sm text-muted-foreground">{secondary}</p>
-      )}
+      <p className=" font-medium">{primary}</p>
+      {secondary && <p className=" text-muted-foreground">{secondary}</p>}
     </div>
   </div>
 )

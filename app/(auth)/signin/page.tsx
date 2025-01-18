@@ -43,7 +43,7 @@ export default function SignInPage(): JSX.Element {
           <SignInWithPasswordForm />
         </CardContent>
 
-        <CardFooter className="grid w-full text-sm text-muted-foreground max-sm:max-w-[340px] max-sm:px-10">
+        <CardFooter className="grid w-full  text-muted-foreground max-sm:max-w-[340px] max-sm:px-10">
           <div>
             <span>{t('noAccount')} </span>
             <Link
@@ -61,7 +61,7 @@ export default function SignInPage(): JSX.Element {
             <Link
               aria-label={t('srOnly.resetPassword')}
               href="/signin/password-reset"
-              className="text-sm font-normal text-black underline-offset-4 transition-colors hover:underline"
+              className=" font-normal text-black underline-offset-4 transition-colors hover:underline"
             >
               {t('resetLink')}
               <span className="sr-only">{t('srOnly.resetPassword')}</span>

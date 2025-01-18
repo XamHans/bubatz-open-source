@@ -1,5 +1,3 @@
-'use client'
-import { motion } from 'framer-motion'
 import React from 'react'
 
 export type Feature = {
@@ -33,25 +31,25 @@ const features: Feature[] = [
 
 export default function Features() {
   return (
-    <section className="w-full px-4 md:px-0">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mb-12 flex flex-col items-start space-y-2 sm:flex-row sm:items-start sm:space-x-4 sm:space-y-0"
-      >
-        <div className="rounded-lg bg-[#c5f467] px-3 py-1">
-          <h2 className="text-2xl font-bold">Funktionen</h2>
-        </div>
-        <p className="max-w-6xl text-xl">
-          Nutze unsere neuesten Funktionen und erlebe, wie wir dir deinen
-          Club-Alltag erleichtern. Du sparst Zeit & Kosten und kannst dich auf
-          das Wesentliche konzentrieren.
-        </p>
-      </motion.div>
+    <section className="w-full px-4 py-8 sm:px-6 md:px-8 lg:px-12">
+      <div className="mx-auto max-w-7xl">
+        <div className="flex flex-col space-y-4">
+          <div className="inline-block w-fit rounded-lg bg-[#c5f467] px-3 py-1.5">
+            <span className="font-semibold">Funktionen</span>
+          </div>
 
-      <div className="max-w-7xl">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl lg:text-5xl">
+            Features
+          </h2>
+
+          <p className="max-w-[900px] text-xl text-zinc-500 md:text-lg lg:text-xl">
+            Nutze unsere neuesten Funktionen und erlebe, wie wir dir deinen
+            Club-Alltag erleichtern. Du sparst Zeit & Kosten und kannst dich auf
+            das Wesentliche konzentrieren.
+          </p>
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 gap-6 sm:gap-8 md:mt-12 md:grid-cols-2">
           {features.map((feature, idx) => (
             <FeatureCard key={feature.title + idx} {...feature} />
           ))}
@@ -70,28 +68,27 @@ function FeatureCard({ title, icon, bgColor = 'bg-background' }: Feature) {
       className={`
         relative 
         flex
-        h-[250px] 
-        w-full
+        h-48
         flex-col 
         justify-between 
-        rounded-tl-[30px]
+        rounded-tl-2xl
         border-2 
         border-black 
-        pt-[30px]
-        shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
-        sm:rounded-tl-[45px]
-        sm:pt-[50px] 
-        ${bgColor}
+        pt-6
+        shadow-md
         transition-all 
         duration-300 
         hover:scale-[0.98]
-        hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
-        sm:h-[316px]
+        hover:shadow-sm
+        sm:h-64
+        md:h-72
+        lg:h-80
+        ${bgColor}
       `}
     >
-      <div className="flex h-full flex-col justify-between px-4 sm:px-8">
+      <div className="flex h-full flex-col justify-between p-4 sm:p-6 md:p-8">
         <div className="relative z-10">
-          <span className="inline-block rounded-lg bg-[#c5f467] px-3 py-1.5 text-base font-medium sm:px-4 sm:py-2 sm:text-lg">
+          <span className="inline-block rounded-lg bg-[#c5f467] px-3 py-1.5 font-medium sm:px-4 sm:py-2 md:text-lg">
             {titleParts.map((part, index) => (
               <React.Fragment key={part}>
                 {part}
@@ -101,24 +98,11 @@ function FeatureCard({ title, icon, bgColor = 'bg-background' }: Feature) {
           </span>
         </div>
 
-        <div className="relative z-10 mb-4 flex items-center gap-2 sm:mb-8">
-          {/* <span
-            className={`text-base font-medium sm:text-lg ${
-              isDarkBg ? 'text-white' : ''
-            }`}
-          >
-            Erfahre mehr
-          </span>
-          <ArrowRight
-            className={`h-4 w-4 sm:h-5 sm:w-5 ${isDarkBg ? 'text-white' : ''}`}
-          /> */}
-        </div>
-
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 sm:right-8">
+        <div className="absolute bottom-0 right-0 top-1/2 -translate-y-1/2 p-4 sm:p-6 md:p-8">
           <img
             src={icon}
             alt={title}
-            className="h-[150px] w-[150px] object-contain sm:h-[200px] sm:w-[200px]"
+            className="h-24 w-24 object-contain sm:h-32 sm:w-32 md:h-40 md:w-40 lg:h-48 lg:w-48"
           />
         </div>
       </div>

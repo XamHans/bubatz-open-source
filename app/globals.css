@@ -93,7 +93,6 @@
   body {
     @apply bg-background text-foreground;
   }
-
 }
 
 .scrollbar-w-2::-webkit-scrollbar {

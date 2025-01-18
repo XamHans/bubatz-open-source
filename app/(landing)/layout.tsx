@@ -1,3 +1,4 @@
+import { MobileHeader } from '@/components/generic/Mobile-Header'
 import { Navbar } from '@/components/generic/Navbar'
 import Footer from './components/footer'
 
@@ -8,8 +9,11 @@ type Props = {
 const LandingLayout = ({ children }: Props) => {
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar />
-      <main className="flex flex-1 flex-col items-center justify-center">
+      <MobileHeader />
+      <div className="hidden lg:block">
+        <Navbar />
+      </div>
+      <main className="flex flex-1 flex-col items-center justify-center  lg:mt-0">
         {children}
       </main>
       <Footer />

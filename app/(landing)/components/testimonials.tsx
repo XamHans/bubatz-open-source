@@ -108,7 +108,7 @@ export function Testimonials() {
         </p>
       </div>
 
-      <div className="mx-auto grid max-w-2xl grid-cols-1 grid-rows-1 gap-8 text-sm leading-6 text-foreground sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-flow-col xl:grid-cols-4">
+      <div className="mx-auto grid max-w-2xl grid-cols-1 grid-rows-1 gap-8  leading-6 text-foreground sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-flow-col xl:grid-cols-4">
         <figure className="rounded-2xl bg-background shadow-lg ring-1 ring-border sm:col-span-2 xl:col-start-2 xl:row-end-1">
           <blockquote className="p-6 text-lg font-semibold leading-7 tracking-tight text-foreground sm:p-12 sm:text-xl sm:leading-8">
             <p>{`“${featuredTestimonial.body}”`}</p>

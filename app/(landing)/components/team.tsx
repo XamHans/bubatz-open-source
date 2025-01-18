@@ -1,51 +1,59 @@
-'use client'
-
-import { motion } from 'framer-motion'
 import { Linkedin } from 'lucide-react'
 import Image from 'next/image'
 
 export default function TeamSection() {
   return (
-    <section id="team" className="w-full  ">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mb-12 flex flex-col items-start space-y-2 sm:flex-row sm:items-center sm:space-x-4 sm:space-y-0"
-      >
-        <div className="rounded-lg bg-[#c5f467] px-3 py-1">
-          <h2 className="text-2xl font-bold">Unser Team</h2>
+    <section id="team" className="w-full px-4 py-8 sm:px-6 md:px-8 lg:px-12">
+      <div className="mx-auto max-w-7xl">
+        <div className="flex flex-col space-y-4">
+          <div className="inline-block w-fit rounded-lg bg-[#c5f467] px-3 py-1.5">
+            <span className="font-semibold">Team</span>
+          </div>
+
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl lg:text-5xl">
+            Unser Team
+          </h2>
+
+          <p className="max-w-[900px] text-xl text-zinc-500 md:text-lg lg:text-xl">
+            Lernen Sie das erfahrene Team hinter unserem erfolgreichen
+            Open-Source-Projekt kennen
+          </p>
         </div>
-        <p className="max-w-2xl text-xl">
-          Lernen Sie das erfahrene Team hinter unserem erfolgreichen
-          Open-Source-Projekt kennen
-        </p>
-      </motion.div>
-      <div className="grid gap-8 md:grid-cols-2">
-        <TeamMemberCard
-          name="Johannes Hayer"
-          position="CTO & Mitgründer"
-          description="Bringt die technische Seite unseres Open-Source-Projekts voran. Schreibt Code, verbessert bestehende Funktionen und unterstützt aktiv unsere Community-Mitglieder bei ihren Beiträgen. Ist immer auf der Suche nach Wegen, unser Projekt noch besser zu machen."
-          imageSrc="/landing/team/hans.png"
-        />
-        <TeamMemberCard
-          name="Thomas Wiedmayer"
-          position="CMO & Mitgründer"
-          description="Sorgt dafür, dass unser Open-Source-Projekt die Menschen erreicht, die es brauchen. Steht im engen Austausch mit der Community, sammelt Feedback und hilft neuen Nutzern beim Einstieg. Plant außerdem unsere Events und Community-Treffen."
-          imageSrc="/landing/team/tom.png"
-        />
+
+        <div className="mt-8 grid gap-8 md:mt-12 md:grid-cols-2">
+          <TeamMemberCard
+            name="Johannes Hayer"
+            position="CTO & Mitgründer"
+            description="Bringt die technische Seite unseres Open-Source-Projekts voran. Schreibt Code, verbessert bestehende Funktionen und unterstützt aktiv unsere Community-Mitglieder bei ihren Beiträgen. Ist immer auf der Suche nach Wegen, unser Projekt noch besser zu machen."
+            imageSrc="/landing/team/hans.png"
+          />
+          <TeamMemberCard
+            name="Thomas Wiedmayer"
+            position="CMO & Mitgründer"
+            description="Sorgt dafür, dass unser Open-Source-Projekt die Menschen erreicht, die es brauchen. Steht im engen Austausch mit der Community, sammelt Feedback und hilft neuen Nutzern beim Einstieg. Plant außerdem unsere Events und Community-Treffen."
+            imageSrc="/landing/team/tom.png"
+          />
+        </div>
       </div>
     </section>
   )
 }
 
-function TeamMemberCard({ name, position, description, imageSrc }) {
+interface TeamMemberCardProps {
+  name: string
+  position: string
+  description: string
+  imageSrc: string
+}
+
+function TeamMemberCard({
+  name,
+  position,
+  description,
+  imageSrc,
+}: TeamMemberCardProps) {
   return (
-    <motion.div
-      whileHover={{ scale: 1.03 }}
-      transition={{ type: 'spring', stiffness: 300 }}
-      className="relative flex flex-col justify-between rounded-[2rem] border-2 border-black bg-white p-6 shadow-lg"
-    >
+    <div className="relative flex flex-col justify-between rounded-[2rem] border-2 border-black bg-white p-6 shadow-lg transition-transform duration-300 hover:scale-[1.02]">
       <div className="absolute right-4 top-4">
         <a href="#" aria-label={`${name}'s LinkedIn profile`}>
           <Linkedin className="h-6 w-6 rounded-full bg-[#c5f467] p-1 text-black transition-colors hover:bg-[#b1e049]" />
@@ -70,7 +78,7 @@ function TeamMemberCard({ name, position, description, imageSrc }) {
           <p className="text-md text-gray-600">{position}</p>
         </div>
       </div>
-      <p className="text-sm">{description}</p>
-    </motion.div>
+      <p className="">{description}</p>
+    </div>
   )
 }

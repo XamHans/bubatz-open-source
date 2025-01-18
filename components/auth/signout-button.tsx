@@ -11,7 +11,7 @@ export function SignOutButton(): JSX.Element {
     <Button
       aria-label="Sign Out"
       variant="ghost"
-      className="w-full justify-start text-sm"
+      className="w-full justify-start "
       onClick={() =>
         void signOut({
           callbackUrl: siteConfig.links.signIn,

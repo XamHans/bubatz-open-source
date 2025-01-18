@@ -90,7 +90,7 @@ export function SignUpWithPasswordForm(): JSX.Element {
               <FormControl>
                 <Input placeholder="johnsmith@gmail.com" {...field} />
               </FormControl>
-              <FormMessage className="pt-2 sm:text-sm" />
+              <FormMessage className="pt-2 " />
             </FormItem>
           )}
         />
@@ -104,7 +104,7 @@ export function SignUpWithPasswordForm(): JSX.Element {
               <FormControl>
                 <PasswordInput placeholder="**********" {...field} />
               </FormControl>
-              <FormMessage className="pt-2 sm:text-sm" />
+              <FormMessage className="pt-2 " />
             </FormItem>
           )}
         />
@@ -118,7 +118,7 @@ export function SignUpWithPasswordForm(): JSX.Element {
               <FormControl>
                 <PasswordInput placeholder="**********" {...field} />
               </FormControl>
-              <FormMessage className="pt-2 sm:text-sm" />
+              <FormMessage className="pt-2 " />
             </FormItem>
           )}
         />

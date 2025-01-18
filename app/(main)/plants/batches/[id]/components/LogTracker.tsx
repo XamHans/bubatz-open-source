@@ -93,7 +93,7 @@ const LogTracker: React.FC = () => {
               <time className="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">
                 just now
               </time>
-              <div className="text-sm font-normal text-gray-500 dark:text-gray-300">
+              <div className=" font-normal text-gray-500 dark:text-gray-300">
                 Bonnie moved{' '}
                 <a
                   href="#"

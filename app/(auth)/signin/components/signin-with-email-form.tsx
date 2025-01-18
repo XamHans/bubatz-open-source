@@ -77,7 +77,7 @@ export function SignInWithEmailForm(): JSX.Element {
                   {...field}
                 />
               </FormControl>
-              <FormMessage className="pt-2 sm:text-sm" />
+              <FormMessage className="pt-2 " />
             </FormItem>
           )}
         />

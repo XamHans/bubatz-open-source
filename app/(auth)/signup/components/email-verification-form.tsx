@@ -92,7 +92,7 @@ export function EmailVerificationForm(): JSX.Element {
               <FormControl>
                 <Input placeholder="johnsmith@gmail.com" {...field} />
               </FormControl>
-              <FormMessage className="pt-2 sm:text-sm" />
+              <FormMessage className="pt-2 " />
             </FormItem>
           )}
         />

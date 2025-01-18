@@ -507,7 +507,7 @@ export default function SaleForm({ session }: SaleFormProps) {
                   <FormItem>
                     <FormLabel>{t('totalPrice')}</FormLabel>
                     <FormControl>
-                      <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background">
+                      <div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2  ring-offset-background">
                         {(
                           (form.getValues(`items.${index}.amount`) || 0) *
                           (form.getValues(`items.${index}.price`) || 0)
