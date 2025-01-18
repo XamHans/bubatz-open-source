@@ -21,13 +21,13 @@ export default function NewsSection() {
             Blog
           </h2>
 
-          <p className="max-w-[900px] text-xl text-zinc-500 md:text-lg lg:text-xl">
+          <p className="max-w-[900px] text-base text-zinc-500 sm:text-xl md:text-lg lg:text-xl">
             Bleib auf dem Laufenden, mit unseren Blogbeiträgen
           </p>
         </div>
 
-        <div className="mt-8 md:mt-12">
-          <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 md:mt-12">
+          <div className="grid grid-cols-1 gap-6 px-2 sm:px-0 md:grid-cols-2 lg:grid-cols-3">
             {recentPosts.map((post: any) => (
               <div key={post.slug} className="w-full">
                 <BlogPostCard
@@ -77,24 +77,24 @@ export function BlogPostCard({
   const fallbackImage = '/images/default-blog-image.jpg'
 
   return (
-    <Link href={`/${slug}`} className="block">
-      <CardContainer className="inter-var">
-        <CardBody className="group/card relative h-full rounded-xl border border-black/[0.1] p-3 transition-colors dark:border-white/[0.2] dark:bg-black dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] sm:p-4">
+    <Link href={`/${slug}`} className="block w-full">
+      <CardContainer className="inter-var w-full">
+        <CardBody className="group/card relative h-full rounded-xl border border-black/[0.1] bg-white p-3 transition-colors hover:bg-gray-50 dark:border-white/[0.2] dark:bg-black dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] sm:p-4">
           <CardItem
             translateZ="50"
-            className="text-base font-bold text-neutral-600 dark:text-white sm:text-lg"
+            className="text-sm font-bold text-neutral-600 dark:text-white sm:text-base"
           >
             {title}
           </CardItem>
 
-          <CardItem translateZ="100" className="mt-3 w-full">
+          <CardItem translateZ="100" className="mt-2 w-full sm:mt-3">
             <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl">
               <Image
                 src={image || fallbackImage}
                 alt={title}
                 fill
                 className="object-cover transition-transform duration-300 group-hover/card:scale-105"
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                sizes="(max-width: 640px) 90vw, (max-width: 768px) 45vw, 30vw"
                 priority
               />
             </div>
@@ -103,17 +103,17 @@ export function BlogPostCard({
           {excerpt && (
             <CardItem
               translateZ="60"
-              className="mt-3 text-xs text-neutral-500 dark:text-neutral-300"
+              className="mt-2 text-xs text-neutral-500 dark:text-neutral-300 sm:mt-3"
             >
               {excerpt}
             </CardItem>
           )}
 
-          <div className="mt-4 flex items-center justify-between sm:mt-6">
+          <div className="mt-3 flex items-center justify-between sm:mt-4">
             <CardItem
               translateZ={20}
               as="button"
-              className="rounded-xl bg-black px-2 py-1 text-xs font-bold text-white transition-colors hover:bg-neutral-800 dark:bg-white dark:text-black sm:px-3 sm:py-1.5"
+              className="rounded-xl bg-black px-2 py-1 text-xs font-bold text-white transition-colors hover:bg-neutral-800 dark:bg-white dark:text-black"
             >
               Jetzt lesen
             </CardItem>
